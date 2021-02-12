@@ -5,38 +5,94 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
         <!-- Local -->
         <link rel="stylesheet" href="index.css" type="text/css"/>
+        <title>EnecuumSwap</title>
     </head>
     <body>
         <!-- Local -->
-        <div id="navbar">
+        <div>
             <!-- Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" style="margin:10px">Navbar</a>
-                <button id="connect-btn" class="btn btn-secondary my-2 my-sm-0" type="submit">Connect</button>
+            <nav class="navbar navbar-expand-lg navbar-light new-color">
+                <img src="logo.png" width="1.5%" height="1.5%">
+                <h3 class="navbar-brand">EnecuumSwap</h3>
+                <div id="root-connect" class="connect-btn"></div>
             </nav>
         </div>
-
+        <div id='connection-services'>
+        </div>
+        <div id="c-opacity">
+        </div>
         <div id="switch">
-
+            <!-- <h5 style="position: absolute; left: 43px; color: black; top: 5px; visibility: hidden;">Exchange</h5> -->
+            <!-- <div class="switch-mode" id="exchange-mode">
+                Exchange
+            </div> -->
+            <!-- <p style="position: absolute; right: 54px; color: black; top: 1px; visibility: visible; font-size: 22px;">Liquidity</p> -->
+            <!-- <div class="switch-mode" id="liquidity-mode">
+                Liquidity
+            </div> -->
         </div>
 
-        <div id="swap-card">
+        <div class="swap-card" id="exchange">
+            <h4 id="swap-mode-header">Exchange</h4>
+            <p id="under-header">Trade tokens in an instant</p>
             <div id="head-line"></div>
+
             <div class="swap-input" id="from">
+                <p class="side">From</p>
+                <input class="form-control mr-sm-2 input-field" type="text" placeholder="0.0">
+                <button class="btn btn-secondary my-2 my-sm-0 token-use" type="submit">TKN</button>
             </div>
+
             <div id="exch">
+                <i id="up-arrow"></i>
+                <i id="down-arrow"></i>
             </div>
+
             <div class="swap-input" id="to">
+                <p class="side">To</p>
+                <input class="form-control mr-sm-2 input-field" type="text" placeholder="0.0">
+                <button class="btn btn-secondary my-2 my-sm-0 token-use1" type="submit">TCN</button>
             </div>
-            <div style="height: 30px;">
+
+            <div style="height: 25px;">
             </div>
+
             <button class="btn btn-secondary my-2 my-sm-0 swap-input" type="submit"  id="submit">Submit</button>
+        </div>
+        <div class="swap-card" id="liquidity">
+            <h4 id="swap-mode-header">Liquidity</h4>
+            <p id="under-header">Add liquidity to receive LP tokens</p>
+            <div id="head-line"></div>
+
+            <div class="swap-input" id="from">
+                <p class="side">Input</p>
+                <input class="form-control mr-sm-2 input-field" type="text" placeholder="0.0">
+                <button class="btn btn-secondary my-2 my-sm-0 token-use" type="submit">TKN</button>
+            </div>
+
+            <div id="exch">
+                <p style="font-size: 40px; color: grey; left: 8px; position: absolute; bottom: -27px;">+</p>
+            </div>
+
+            <div class="swap-input" id="to">
+                <p class="side">Input</p>
+                <input class="form-control mr-sm-2 input-field" type="text" placeholder="0.0">
+                <button class="btn btn-secondary my-2 my-sm-0 token-use1" type="submit">TCN</button>
+            </div>
+
+            <div style="height: 25px;">
+            </div>
+
+            <button class="btn btn-secondary my-2 my-sm-0 swap-input" type="submit"  id="submit">Submit</button>
+        </div>
+
+        <div class="tokens-card">
+            
         </div>
 
         <!-- React -->
         <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
-
         <!-- Local -->
         <script src="index.js"></script>
     </body>

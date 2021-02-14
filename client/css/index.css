@@ -69,10 +69,6 @@ p {
     left: 50%;
 }
 
-#liquidity {
-    visibility: hidden;
-}
-
 #head-line {
     width: 100%;
     margin-top: 20px;
@@ -102,6 +98,14 @@ p {
     border-radius: 50px;
 }
 
+#exch:hover {
+    background-color: #747cf450;
+}
+
+#exch:hover i{
+    border-color: white;
+}
+
 #to {
     margin-top: 10px;
 }
@@ -121,7 +125,7 @@ i {
 #up-arrow {
     transform: rotate(135deg);
     margin-bottom: -6px;
-    margin-left: 9px;
+    margin-left: 11px;
 }
 
 #down-arrow {
@@ -170,7 +174,7 @@ i {
     right: 35px;
 }
 
-#close {
+.close {
   position: absolute;
   right: 32px;
   top: 34px;
@@ -178,10 +182,10 @@ i {
   height: 32px;
   opacity: 0.3;
 }
-#close:hover {
+.close:hover {
   opacity: 1;
 }
-#close:before, #close:after {
+.close:before, .close:after {
   position: absolute;
   left: 15px;
   content: ' ';
@@ -189,10 +193,10 @@ i {
   width: 2px;
   background-color: #333;
 }
-#close:before {
+.close:before {
   transform: rotate(45deg);
 }
-#close:after {
+.close:after {
   transform: rotate(-45deg);
 }
 
@@ -225,8 +229,9 @@ i {
     opacity: 0.2;
 }
 
-.tokens-card {
+#tokens-card {
     position: absolute;
+    z-index: 105;
     visibility: hidden;
     background-color: #ecf4fc;
     margin-top: 5%;
@@ -235,4 +240,20 @@ i {
     border-radius: 40px;
     margin-left: -165px;
     left: 50%;
+}
+
+.token-option:hover{
+    background: #747cf417;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 0;
+    left:-100px;
+    border-radius: 10px;
+    background-color: #dde9ff;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #747cf4;
 }

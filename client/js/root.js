@@ -3,35 +3,14 @@ const e = React.createElement;
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        // ---------------------------------------------------------------------- test-data
-        this.tokens = [
-            'ENQ',
-            'BTC',
-            'ETH',
-            'TKN',
-            'SVG',
-            'RGB',
-            'ADT',
-            'ADB',
-            'USD',
-            'DDT',
-            'VTB',
-            'UPD',
-            'UVC',
-            'POP',
-            'TOP',
-            'FAR'
-        ];
-        this.pairs = [
-            {
-                "token_0" : "BTC",
-                "token_1" : "ENQ",
-                't1_per_t2' : 1.05
-            }
-        ];
-        // ----------------------------------------------------------------------
+        this.tokens = swapApi.getTokens();
+        this.pairs = swapApi.getPairs();
+        this.connectionListVisibility = false;
+        this.modes = ['exchange', 'liquidity'];
+        this.mode = 0;
         this.activeField = 0;
         this.tokenFilter = '';
+        this.startToken = '...';
         this.active = {
             opacity : {
                 hover : 1,
@@ -46,19 +25,16 @@ class Root extends React.Component {
             },
             visibility : 'visible'
         }
-        this.connectionListVisibility = false;
-        this.modes = ['exchange', 'liquidity'];
-        this.mode = 0;
         this.exchange = {
             name0 : 'From',
             name1 : 'To',
             field0 : {
                 value : '',
-                token : '...'
+                token : this.startToken
             },
             field1 : {
                 value : '',
-                token : '...'
+                token : this.startToken
             }
         };
         this.liquidity = {
@@ -66,18 +42,20 @@ class Root extends React.Component {
             name1 : 'Input',
             field0 : {
                 value : '',
-                token : '...'
+                token : this.startToken
             },
             field1 : {
                 value : '',
-                token : '...'
+                token : this.startToken
             }
         }
         this.state = {
+
             header : 'Exchange',
             addition : 'Trade tokens in an instant',
             plusVis : 'hidden',
             exchVis : 'visible',
+
             name0  : this.exchange.name0,
             value0 : this.exchange.field0.value,
             token0 : this.exchange.field0.token,
@@ -87,12 +65,16 @@ class Root extends React.Component {
         };
     };
     
+    // ======================================================================================================== utils
     getMode () {
         return this.modes[this.mode];
     };
 
-    getActiveField () {
-        return (this.activeField == 0) ? 'field0' : 'field1';
+    getActiveField (reverse) {
+        if (reverse)
+            return (this.activeField == 0) ? 'field1' : 'field0';
+        else 
+            return (this.activeField == 0) ? 'field0' : 'field1';
     };
 
     refreshState () {
@@ -114,6 +96,7 @@ class Root extends React.Component {
         let mode = this.getMode();
         let field = this.getActiveField();
         eval(`this.${mode}.${field}.token = token`);
+        this.countCounterField(mode, field);
         this.refreshState();
         this.closeConnectionList();
     };
@@ -139,7 +122,6 @@ class Root extends React.Component {
                 pair = ['active', 'passive'];
             else
                 pair = ['passive', 'active'];
-            // -------------------------------------------------------------------------------- TODO refactoring
             let exchange_mode = document.getElementById('exchange-mode');
             let liquidity_mode = document.getElementById('liquidity-mode');
             let switch_e_text = document.getElementById('switch-e-text');
@@ -159,7 +141,6 @@ class Root extends React.Component {
     };
 
     closeConnectionList () {
-        // -------------------------------------------------------------------------------- TODO refactoring
         let cnct_services = document.getElementById('connection-services');
         let cnct_opacity = document.getElementById('c-opacity');
         let tkn_list = document.getElementById('tokens-card');
@@ -170,7 +151,6 @@ class Root extends React.Component {
     };
 
     openConnectionList () {
-        // -------------------------------------------------------------------------------- TODO refactoring
         let cnct_services = document.getElementById('connection-services');
         let cnct_opacity = document.getElementById('c-opacity');
         if (!this.connectionListVisibility) {
@@ -193,7 +173,47 @@ class Root extends React.Component {
 
     getInputFieldId () {
         return (this.activeField == 0) ? 'input-token-use': 'input-token-use1';
-    };  
+    };
+
+    searchSwap (tokens) {
+        return this.pairs.find(el => {
+            if (tokens.indexOf(el.token_0.name) != -1 && 
+                tokens.indexOf(el.token_1.name) != -1 && 
+                el.token_0.name !== el.token_1.name) {
+                return el;
+            }
+        });
+    };
+
+    countCoinValue (fromTokenValue, toTokenValue) {
+        try {
+            return toTokenValue / fromTokenValue;
+        } catch {
+            return 0;
+        }
+    };
+
+    getPrice (fromTokenValue, toTokenValue, coinValue) {
+        return this.countCoinValue(fromTokenValue, toTokenValue) * coinValue;
+    };
+
+    countCounterField (mode, field) {
+        let field_0 = eval(`this.${mode}.${field}`);
+        let field_1 = eval(`this.${mode}.${this.getActiveField(true)}`);
+        if (field_0.token !== this.startToken && field_1.token !== this.startToken) {
+            let pair = this.searchSwap([field_0.token, field_1.token]);
+            if (pair === undefined)
+                return;
+            let counterFieldPrice;
+            if (field_0.token == pair.token_0.name)
+                counterFieldPrice = this.getPrice(pair.token_0.volume, pair.token_1.volume, field_0.value);
+            else
+                counterFieldPrice = this.getPrice(pair.token_1.volume, pair.token_0.volume, field_0.value);
+            if (counterFieldPrice)
+                field_1.value = counterFieldPrice;
+            this.refreshState();
+        }
+    };
 
     changeField (fieldClass) {
         this.assignActiveField(fieldClass);
@@ -201,13 +221,21 @@ class Root extends React.Component {
         let field = this.getActiveField();
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
-
+                // nothing to do. this.refreshState() will save you previous naumber
+            } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
+                let newVal = document.getElementById(this.getInputFieldId()).value;
+                eval(`this.${mode}.${field}.value = newVal`);
+                this.countCounterField(mode, field);
             } else {
-                eval(`this.${mode}.${field}.value = document.getElementById("${this.getInputFieldId()}").value`);
+                let newVal = document.getElementById(this.getInputFieldId()).value;
+                if ((new RegExp('^[0-9]+\\.?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal)) {
+                    eval(`this.${mode}.${field}.value = newVal`);
+                    this.countCounterField(mode, field);
+                }
             }
             this.refreshState();
         }
-    }
+    };
 
     openTokenList (fieldClass) {
         if (fieldClass === 'token-use')
@@ -234,6 +262,7 @@ class Root extends React.Component {
             this.activeField = 1;
     };
 
+    // ============================================================================== input field (render's elements)
     getInputField (fieldName, fieldClass, tokenName, value) {
         return [
             e(
@@ -269,6 +298,7 @@ class Root extends React.Component {
         ];
     };
 
+    // ======================================================================================================= render
     render () {
         return [ 
             e(
@@ -329,7 +359,7 @@ class Root extends React.Component {
             e(
                 'div',
                 {
-                    class : 'swap-card',
+                    class : 'swap-card'
                 },
                 e(Card, { outer : this})
             ),

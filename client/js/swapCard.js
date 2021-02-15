@@ -88,7 +88,7 @@ class Card extends React.Component {
                 'div',
                 {
                     style : {
-                        height : '25px'
+                        height : '25px',
                     }
                 }
             ),

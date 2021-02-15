@@ -9,8 +9,7 @@ class Root extends React.Component {
             this.tokens = await (await swapApi.getTokens()).json();
             this.pairs = await (await swapApi.getPairs()).json();
             console.log(this.tokens);
-        }, 1000);
-
+        }, 100);
         this.connectionListVisibility = false;
         this.modes = ['exchange', 'liquidity'];
         this.mode = 0;
@@ -56,7 +55,6 @@ class Root extends React.Component {
             }
         }
         this.state = {
-
             header : 'Exchange',
             addition : 'Trade tokens in an instant',
             plusVis : 'hidden',

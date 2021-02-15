@@ -6,6 +6,9 @@ class Tokens extends React.Component {
         this.state = {
             list : this.makeList()
         };
+        setInterval(() => {
+            this.setState( { list : this.makeList()} );
+        }, 100);
     }
 
     getTokens (searchWord) {

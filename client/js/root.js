@@ -3,8 +3,14 @@ const e = React.createElement;
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        this.tokens = swapApi.getTokens();
-        this.pairs = swapApi.getPairs();
+        this.tokens = [];
+        this.pairs = [];
+        setInterval(async () => {
+            this.tokens = await (await swapApi.getTokens()).json();
+            this.pairs = await (await swapApi.getPairs()).json();
+            console.log(this.tokens);
+        }, 1000);
+
         this.connectionListVisibility = false;
         this.modes = ['exchange', 'liquidity'];
         this.mode = 0;

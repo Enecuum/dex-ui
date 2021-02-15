@@ -1,37 +1,22 @@
 class SwapApi {
+    constructor () {
+        this.url = 'http://localhost';
+        this.port = 1234;
+    }
+
     getTokens () {
-        return [
-            'ENQ',
-            'BTC',
-            'ETH',
-            'TKN',
-            'SVG',
-            'RGB',
-            'ADT',
-            'ADB',
-            'USD',
-            'DDT',
-            'VTB',
-            'UPD',
-            'UVC',
-            'POP',
-            'TOP',
-            'FAR'
-        ];
+        return fetch(`${this.url}:${this.port}/getTokens`,
+            {
+                method : 'GET'
+            }
+        );
     };
     getPairs () {
-        return [
+        return fetch(`${this.url}:${this.port}/getPairs`,
             {
-                token_0 : {
-                    name : 'ENQ',
-                    volume : 560
-                },
-                token_1 : {
-                    name : 'ETH',
-                    volume : 1.4
-                }
+                method : 'GET'
             }
-        ]
+        );
     }
 };
 

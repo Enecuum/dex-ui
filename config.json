@@ -1,0 +1,6 @@
+{
+    "obfuscated" : {
+        "status" : true,
+        "postfix" : ".obfuscated.js"
+    }
+}

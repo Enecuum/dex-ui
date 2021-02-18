@@ -1,8 +1,9 @@
+const config = require('./config.json');
 const express = require('express');
-const bodyParser = express.json();
-const app = express();
+const https = require('https');
+// const bodyParser = express.json();
 const fs = require('fs');
-
+const app = express();
 
 app.get('/', (req, res) => {
     res.writeHead(200, {
@@ -28,7 +29,11 @@ app.get('/js/*', (req, res) => {
     res.writeHead(200, {
         'Content-Type': 'text/html',
     });
-    let data = fs.readFileSync(`./client/js/${urlArr[urlArr.length - 1]}`);
+    let fileName = urlArr[urlArr.length - 1];
+    if (config.obfuscated.status) {
+        fileName = fileName.substring(0, fileName.length - 3) + config.obfuscated.postfix;
+    }
+    let data = fs.readFileSync(`./client/js/${fileName}`);
     res.write(data);
     res.end();
 });
@@ -61,4 +66,8 @@ app.get('/getPairs', (req, res) => {
     res.end();
 });
 
-app.listen(1234);
+https.createServer({
+    key: fs.readFileSync('./https/key.pem', { encoding : 'utf8' }),
+    cert: fs.readFileSync('./https/server.crt', { encoding : 'utf8' })
+}, app)
+.listen(1234);

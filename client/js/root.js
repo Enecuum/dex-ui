@@ -1,64 +1,30 @@
 const e = React.createElement;
+const startToken = '...';
+let presets = new Presets();
 
 class Root extends React.Component {
     constructor (props) {
         super(props);
         this.tokens = [];
         this.pairs = [];
-        setInterval(async () => {
-            this.tokens = await (await swapApi.getTokens()).json();
-            this.pairs = await (await swapApi.getPairs()).json();
-            console.log(this.tokens);
-        }, 100);
+        // -------------------------------------
         this.connectionListVisibility = false;
         this.modes = ['exchange', 'liquidity'];
         this.mode = 0;
         this.activeField = 0;
         this.tokenFilter = '';
-        this.startToken = '...';
-        this.active = {
-            opacity : {
-                hover : 1,
-                simple : 1
-            },
-            visibility : 'hidden'
-        };
-        this.passive = {
-            opacity : {
-                hover : 0.2,
-                simple : 0
-            },
-            visibility : 'visible'
-        }
-        this.exchange = {
-            name0 : 'From',
-            name1 : 'To',
-            field0 : {
-                value : '',
-                token : this.startToken
-            },
-            field1 : {
-                value : '',
-                token : this.startToken
-            }
-        };
-        this.liquidity = {
-            name0 : 'Input',
-            name1 : 'Input',
-            field0 : {
-                value : '',
-                token : this.startToken
-            },
-            field1 : {
-                value : '',
-                token : this.startToken
-            }
-        }
+        // -------------------------------------
+        this.active = presets.active;
+        this.passive = presets.passive;
+        // -------------------------------------
+        this.exchange = presets.exchange;
+        this.liquidity = presets.liquidity;
+        // -------------------------------------
         this.state = {
-            header : 'Exchange',
-            addition : 'Trade tokens in an instant',
-            plusVis : 'hidden',
-            exchVis : 'visible',
+            header : this.exchange.header,
+            addition : this.exchange.addition,
+            plusVis : this.exchange.plusVis,
+            exchVis : this.exchange.exchVis,
 
             name0  : this.exchange.name0,
             value0 : this.exchange.field0.value,
@@ -67,6 +33,39 @@ class Root extends React.Component {
             value1 : this.exchange.field1.value,
             token1 : this.exchange.field1.token
         };
+        this.updExternalData();
+    };
+
+    async updExternalData () {
+        this.tokens = await (await swapApi.getTokens()).json();
+        this.pairs = await (await swapApi.getPairs()).json();
+    }
+
+    // ==================================================================================================== upd state
+
+    switchPageState () {
+        let mode = this.getMode();
+        this.updState('header', this[mode].header);
+        this.updState('addition', this[mode].addition);
+        this.updState('plusVis', this[mode].plusVis);
+        this.updState('exchVis', this[mode].exchVis);
+    };
+
+    updCardInternals () {
+        let mode = this.getMode();
+        this.updState('name0', this[mode].name0);
+        this.updState('value0', this[mode].field0.value);
+        this.updState('token0', this[mode].field0.token);
+        this.updState('name1', this[mode].name1);
+        this.updState('value1', this[mode].field1.value);
+        this.updState('token1', this[mode].field1.token);
+    };
+
+    updState (key, value) {
+        this.setState(state => {
+            state[key] = value;
+            return state;
+        });
     };
     
     // ======================================================================================================== utils
@@ -81,27 +80,12 @@ class Root extends React.Component {
             return (this.activeField == 0) ? 'field0' : 'field1';
     };
 
-    refreshState () {
-        let mode = this.getMode();
-        this.setState(state => {
-            eval(`
-                state.name0  = this.${mode}.name0;
-                state.value0 = this.${mode}.field0.value;
-                state.token0 = this.${mode}.field0.token;
-                state.name1  = this.${mode}.name1;
-                state.value1 = this.${mode}.field1.value;
-                state.token1 = this.${mode}.field1.token;
-            `);
-            return state;
-        });
-    };
-
     changeToken (token) {
         let mode = this.getMode();
         let field = this.getActiveField();
-        eval(`this.${mode}.${field}.token = token`);
+        this[mode][field].token = token;
         this.countCounterField(mode, field);
-        this.refreshState();
+        this.updCardInternals();
         this.closeConnectionList();
     };
 
@@ -111,11 +95,11 @@ class Root extends React.Component {
         let mode = this.getMode();
         let tmp;
         for (let prop of ['value', 'token']) {
-            eval(`tmp = this.${mode}.field0.${prop}`);
-            eval(`this.${mode}.field0.${prop} = this.${mode}.field1.${prop}`);
-            eval(`this.${mode}.field1.${prop} = tmp`);
+            tmp = this[mode].field0[prop];
+            this[mode].field0[prop] = this[mode].field1[prop];
+            this[mode].field1[prop] = tmp;
         }
-        this.refreshState();
+        this.updCardInternals();
     };
 
     switchMode (onElement) {
@@ -130,17 +114,12 @@ class Root extends React.Component {
             let liquidity_mode = document.getElementById('liquidity-mode');
             let switch_e_text = document.getElementById('switch-e-text');
             let switch_l_text = document.getElementById('switch-l-text');
-            eval(`switch_e_text.style.visibility = this.${pair[0]}.visibility;`);
-            eval(`switch_l_text.style.visibility = this.${pair[1]}.visibility;`);
-            eval(`exchange_mode.style.opacity = this.${pair[0]}.opacity.simple;`);
-            eval(`liquidity_mode.style.opacity = this.${pair[1]}.opacity.simple;`);
-            this.setState(state => {
-                let tmp = state.plusVis;
-                state.plusVis = state.exchVis;
-                state.exchVis = tmp;
-                return state;
-            });
-            this.refreshState();
+            switch_e_text.style.visibility = this[pair[0]].visibility;
+            switch_l_text.style.visibility = this[pair[1]].visibility;
+            exchange_mode.style.opacity = this[pair[0]].opacity.simple;
+            liquidity_mode.style.opacity = this[pair[1]].opacity.simple;
+            this.switchPageState();
+            this.updCardInternals();
         }
     };
 
@@ -202,9 +181,9 @@ class Root extends React.Component {
     };
 
     countCounterField (mode, field) {
-        let field_0 = eval(`this.${mode}.${field}`);
-        let field_1 = eval(`this.${mode}.${this.getActiveField(true)}`);
-        if (field_0.token !== this.startToken && field_1.token !== this.startToken) {
+        let field_0 = this[mode][field];
+        let field_1 = this[mode][this.getActiveField(true)];
+        if (field_0.token !== startToken && field_1.token !== startToken) {
             let pair = this.searchSwap([field_0.token, field_1.token]);
             if (pair === undefined)
                 return;
@@ -215,7 +194,7 @@ class Root extends React.Component {
                 counterFieldPrice = this.getPrice(pair.token_1.volume, pair.token_0.volume, field_0.value);
             if (counterFieldPrice)
                 field_1.value = counterFieldPrice;
-            this.refreshState();
+            this.updCardInternals();
         }
     };
 
@@ -225,19 +204,19 @@ class Root extends React.Component {
         let field = this.getActiveField();
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
-                // nothing to do. this.refreshState() will save you previous naumber
+                // nothing to do. this.updCardInternals() will save you previous naumber
             } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
                 let newVal = document.getElementById(this.getInputFieldId()).value;
-                eval(`this.${mode}.${field}.value = newVal`);
+                this[mode][field].value = newVal;
                 this.countCounterField(mode, field);
             } else {
                 let newVal = document.getElementById(this.getInputFieldId()).value;
                 if ((new RegExp('^[0-9]+\\.?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal)) {
-                    eval(`this.${mode}.${field}.value = newVal`);
+                    this[mode][field].value = newVal;
                     this.countCounterField(mode, field);
                 }
             }
-            this.refreshState();
+            this.updCardInternals();
         }
     };
 
@@ -335,7 +314,7 @@ class Root extends React.Component {
                                 id : 'root-connect',
                                 class : 'connect-btn'
                             },
-                            e(Connect, { outer : this})
+                            e(Connect, { outer : this })
                         ),
                     ]
                 )
@@ -345,7 +324,7 @@ class Root extends React.Component {
                 {
                     id : 'connection-services'
                 },
-                e(ConnectionService, { outer : this})
+                e(ConnectionService, { outer : this })
             ),
             e(
                 'div',
@@ -358,21 +337,21 @@ class Root extends React.Component {
                 {
                     id : 'switch'
                 },
-                e(Switch, { outer : this})
+                e(Switch, { outer : this })
             ),
             e(
                 'div',
                 {
                     class : 'swap-card'
                 },
-                e(Card, { outer : this})
+                e(Card, { outer : this })
             ),
             e(
                 'div',
                 {
                     id : 'tokens-card'
                 },
-                e(Tokens, { outer : this})
+                e(Tokens, { outer : this })
             )
         ]
     };

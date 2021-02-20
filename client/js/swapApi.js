@@ -1,18 +1,17 @@
 class SwapApi {
     constructor () {
-        this.url = 'http://localhost';
-        this.port = 1234;
+        this.url = `https://${location.host}`;
     }
 
     getTokens () {
-        return fetch(`${this.url}:${this.port}/getTokens`,
+        return fetch(`${this.url}/getTokens`,
             {
                 method : 'GET'
             }
         );
     };
     getPairs () {
-        return fetch(`${this.url}:${this.port}/getPairs`,
+        return fetch(`${this.url}/getPairs`,
             {
                 method : 'GET'
             }

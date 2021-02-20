@@ -57,16 +57,20 @@ class ConnectionService extends React.Component {
                     }
                 }
             ),
-            e(
-                'h5',
+            e(  
+                'button',
                 {
+                    class : 'btn btn-secondary',
                     style : {
-                        textAlign : 'center',
-                        width: '100%',
-                        marginTop: '100px'
+                        borderRadius: '20px',
+                        width: '90%',
+                        height: '60px',
+                        marginLeft: '5%',
+                        marginTop: '20px',
+                        fontSize: '20px'
                     }
                 },
-                'Here you will be able to choose the service'
+                'EnqWallet'
             )
         ]
     }

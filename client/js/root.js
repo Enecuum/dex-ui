@@ -168,32 +168,52 @@ class Root extends React.Component {
         });
     };
 
-    countCoinValue (fromTokenValue, toTokenValue) {
+    countCoinValue (input_0, input_1) {
         try {
-            return toTokenValue / fromTokenValue;
+            return input_1 / input_0;
         } catch {
             return 0;
         }
     };
 
-    getPrice (fromTokenValue, toTokenValue, coinValue) {
-        return this.countCoinValue(fromTokenValue, toTokenValue) * coinValue;
+    getAddLiquidityPrice (input_0, input_1, coinValue) {
+        return this.countCoinValue(input_0, input_1) * coinValue;
+    };
+
+    countLiqudity (pair) {
+        return pair.token_0.volume * pair.token_1.volume;
+    };
+
+    getSwapPrice (pair, amountIn) {
+        if (amountIn == 0) // use if instead of try/catch in order to check empty string
+            return 0;
+        return (1 - pair.pool_fee) * this.countLiqudity(pair) / amountIn;
+    };
+
+    countPrice (activeField, pair) {
+        if (this.mode == 1) {
+            if (activeField.token == pair.token_0.name)
+                return this.getAddLiquidityPrice(pair.token_0.volume, pair.token_1.volume, activeField.value);
+            else
+                return this.getAddLiquidityPrice(pair.token_1.volume, pair.token_0.volume, activeField.value);
+        } else {
+            if (activeField.token == pair.token_0.name)
+                return this.getSwapPrice(pair, activeField.value);
+            else
+                return this.getSwapPrice(pair, activeField.value);
+        }
     };
 
     countCounterField (mode, field) {
-        let field_0 = this[mode][field];
-        let field_1 = this[mode][this.getActiveField(true)];
-        if (field_0.token !== startToken && field_1.token !== startToken) {
-            let pair = this.searchSwap([field_0.token, field_1.token]);
+        let activeField = this[mode][field];
+        let counterField = this[mode][this.getActiveField(true)];
+        if (activeField.token !== startToken && counterField.token !== startToken) {
+            let pair = this.searchSwap([activeField.token, counterField.token]);
             if (pair === undefined)
                 return;
-            let counterFieldPrice;
-            if (field_0.token == pair.token_0.name)
-                counterFieldPrice = this.getPrice(pair.token_0.volume, pair.token_1.volume, field_0.value);
-            else
-                counterFieldPrice = this.getPrice(pair.token_1.volume, pair.token_0.volume, field_0.value);
+            let counterFieldPrice = this.countPrice(activeField, pair);
             if (counterFieldPrice)
-                field_1.value = counterFieldPrice;
+                counterField.value = counterFieldPrice;
             this.updCardInternals();
         }
     };
@@ -204,7 +224,7 @@ class Root extends React.Component {
         let field = this.getActiveField();
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
-                // nothing to do. this.updCardInternals() will save you previous naumber
+                // nothing to do. this.updCardInternals() will save you previous number
             } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
                 let newVal = document.getElementById(this.getInputFieldId()).value;
                 this[mode][field].value = newVal;
@@ -304,6 +324,7 @@ class Root extends React.Component {
                         e(
                             'h3',
                             {
+                                key : 0,
                                 class : 'navbar-brand'
                             },
                             'EnecuumSwap'
@@ -361,3 +382,4 @@ ReactDOM.render(
     e(Root),
     document.getElementById('root')
 );
+

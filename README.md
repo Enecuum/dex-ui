@@ -8,6 +8,17 @@ Acording the React.JS rules the app uses 'state' variable in order to bind prope
 
 #### Frontend scheme
 
-User interactions scheme
+User interactions scheme. Red border page is the start page.
 
 ![front_scheme](doc_img/front_scheme.png)
+
+#### Formulas for auto-complete
+
+Exchange : 
+```
+    (1 - pool_fee) * liqudity / amount_in, liquidity = volume_1 * volume_2
+```
+Liquidity : 
+```
+    input_1 * volume_2 / volume_1 or input_2 * volume_1 / volume_2 
+```

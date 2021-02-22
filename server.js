@@ -66,6 +66,16 @@ app.get('/getPairs', (req, res) => {
     res.end();
 });
 
+app.get('/web-enq/*', (req, res) => {
+    res.writeHead(200, {
+        'Content-Type': 'text/html',
+    });
+    let urlArr = req.url.split('/');
+    let data = fs.readFileSync(`./web-enq/prebuild/${urlArr[urlArr.length - 1]}`, { encoding : 'utf-8' });
+    res.write(data);
+    res.end();
+});
+
 https.createServer({
     key: fs.readFileSync('./https/key.pem', { encoding : 'utf8' }),
     cert: fs.readFileSync('./https/server.crt', { encoding : 'utf8' })

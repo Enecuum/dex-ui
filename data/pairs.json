@@ -2,12 +2,13 @@
     {
         "token_0" : {
             "name" : "ENQ",
-            "volume" : 560
+            "volume" : 1
         },
         "token_1" : {
             "name" : "ETH",
-            "volume" : 1.4
-        }
+            "volume" : 10
+        },
+        "pool_fee" : 0.1
     },
     {
         "token_0" : {
@@ -17,7 +18,8 @@
         "token_1" : {
             "name" : "BTC",
             "volume" : 1.4
-        }
+        },
+        "pool_fee" : 0.1
     },
     {
         "token_0" : {
@@ -27,6 +29,7 @@
         "token_1" : {
             "name" : "TKN",
             "volume" : 1.4
-        }
+        },
+        "pool_fee" : 0.1
     }
 ]

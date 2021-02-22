@@ -33,7 +33,13 @@ class Card extends React.Component {
                     class : 'swap-input',
                     id : 'from'
                 },
-                this.mySwapPage.getInputField(this.mySwapPage.state.name0, 'token-use', this.mySwapPage.state.token0, this.mySwapPage.state.value0)
+                this.mySwapPage.getInputField({
+                    fieldName : this.mySwapPage.state.name0, 
+                    fieldClass : 'token-use',
+                    tokenName : this.mySwapPage.state.token0, 
+                    value : this.mySwapPage.state.value0,
+                    userTokenAmount : this.mySwapPage.state.userTokenValue
+                })
             ),
             e(
                 'div',
@@ -82,7 +88,13 @@ class Card extends React.Component {
                     class : 'swap-input',
                     id : 'to'  
                 },
-                this.mySwapPage.getInputField(this.mySwapPage.state.name1, 'token-use1', this.mySwapPage.state.token1, this.mySwapPage.state.value1)
+                this.mySwapPage.getInputField({
+                    fieldName : this.mySwapPage.state.name1, 
+                    fieldClass : 'token-use1', 
+                    tokenName : this.mySwapPage.state.token1, 
+                    value : this.mySwapPage.state.value1,
+                    userTokenAmount : this.mySwapPage.state.userTokenValue
+                })
             ),
             e(
                 'div',
@@ -95,12 +107,12 @@ class Card extends React.Component {
             e(
                 'button',
                 {
-                    onClick : this.mySwapPage.openConnectionList.bind(this.mySwapPage),
+                    onClick : this.mySwapPage.sentTx.bind(this.mySwapPage),
                     class : 'btn btn-secondary my-2 my-sm-0 swap-input',
                     type : 'submit',
                     id : 'submit'
                 },
-                'Submit'
+                this.mySwapPage.state.submitName
             )
         ]
     }

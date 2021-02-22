@@ -7,12 +7,14 @@ class Root extends React.Component {
         super(props);
         this.tokens = [];
         this.pairs = [];
+        this.pubKey = '';
         // -------------------------------------
         this.connectionListVisibility = false;
         this.modes = ['exchange', 'liquidity'];
         this.mode = 0;
         this.activeField = 0;
         this.tokenFilter = '';
+        this.connectionStatus = false;
         // -------------------------------------
         this.active = presets.active;
         this.passive = presets.passive;
@@ -21,6 +23,11 @@ class Root extends React.Component {
         this.liquidity = presets.liquidity;
         // -------------------------------------
         this.state = {
+            exchColor : 'white',
+            lqdtColor : 'black',
+            exchBackColor : '#747cf4',
+            lqdtBackColor : '#ecf4fc',
+
             header : this.exchange.header,
             addition : this.exchange.addition,
             plusVis : this.exchange.plusVis,
@@ -31,9 +38,14 @@ class Root extends React.Component {
             token0 : this.exchange.field0.token,
             name1  : this.exchange.name1,
             value1 : this.exchange.field1.value,
-            token1 : this.exchange.field1.token
+            token1 : this.exchange.field1.token,
+            submitName : 'Connect',
+
+            userTokenValue : 0
         };
+        // -------------------------------------
         this.updExternalData();
+        Enecuum.connect();
     };
 
     async updExternalData () {
@@ -42,6 +54,28 @@ class Root extends React.Component {
     }
 
     // ==================================================================================================== upd state
+
+    switchTheSwitch () {
+        if (this.mode == 0) {
+            this.updState('exchColor', 'white');
+            this.updState('lqdtColor', 'black');
+            this.updState('exchBackColor', '#747cf4');
+            this.updState('lqdtBackColor', '#ecf4fc');
+        } else {
+            this.updState('exchColor', 'black');
+            this.updState('lqdtColor', 'white');
+            this.updState('exchBackColor', '#ecf4fc');
+            this.updState('lqdtBackColor', '#747cf4');
+        }
+    };
+
+    updSubmitName () {
+        console.log(window);
+        if (this.connectionStatus)
+            this.updState('submitName', 'Submit');
+        else
+            this.updState('submitName', 'Connect');
+    };
 
     switchPageState () {
         let mode = this.getMode();
@@ -80,11 +114,26 @@ class Root extends React.Component {
             return (this.activeField == 0) ? 'field0' : 'field1';
     };
 
+    writeUserTokenValue () {
+        this.updState('userTokenValue', 0);
+        return;
+        // let mode = this.getMode()
+        // Enecuum.balanceOf({
+        //     to : this.pubKey,
+        //     tokenHash : this[mode].token0
+        // }).then(
+        //     res => {
+        //         this.updState('userTokenValue', res.amount);
+        //     }
+        // );
+    };
+
     changeToken (token) {
         let mode = this.getMode();
         let field = this.getActiveField();
         this[mode][field].token = token;
         this.countCounterField(mode, field);
+        this.writeUserTokenValue();
         this.updCardInternals();
         this.closeConnectionList();
     };
@@ -102,24 +151,49 @@ class Root extends React.Component {
         this.updCardInternals();
     };
 
+    async sentTx () {
+        if (this.connectionStatus) {
+            // await Enecuum.sendTransaction({
+            //     from : this.pubKey,
+            //     to : presets.network.genesisPubKey,
+            //     value : presets.network.nativeToken.fee,
+            //     tokenHash : presets.network.nativeToken.hash,
+            //     data : 'data'
+            // });
+            alert('Send tx');
+        } else {
+            this.openConnectionList();
+        }
+    };
+
     switchMode (onElement) {
         if (onElement !== this.modes[this.mode]) {
-            this.mode = (this.mode + 1) % 2;
-            let pair;
-            if (this.mode === 0)
-                pair = ['active', 'passive'];
-            else
-                pair = ['passive', 'active'];
-            let exchange_mode = document.getElementById('exchange-mode');
-            let liquidity_mode = document.getElementById('liquidity-mode');
-            let switch_e_text = document.getElementById('switch-e-text');
-            let switch_l_text = document.getElementById('switch-l-text');
-            switch_e_text.style.visibility = this[pair[0]].visibility;
-            switch_l_text.style.visibility = this[pair[1]].visibility;
-            exchange_mode.style.opacity = this[pair[0]].opacity.simple;
-            liquidity_mode.style.opacity = this[pair[1]].opacity.simple;
+            this.mode = (this.mode + 1) % 2;            
+            this.switchTheSwitch();
             this.switchPageState();
             this.updCardInternals();
+        }
+    };
+
+    lightTheButton (button) {
+        if (button == 'exchange')
+            this.updState('exchBackColor', '#747cf473');
+        else
+            this.updState('lqdtBackColor', '#747cf473');
+    };
+
+    turnOffTheButton (button) {
+        if (button == 'exchange') {
+            if (this.mode == 0)
+                this.updState('exchBackColor', '#747cf4');
+            else 
+                this.updState('exchBackColor', '#ecf4fc');
+        }
+        else {
+            if (this.mode == 0)
+                this.updState('lqdtBackColor', '#ecf4fc');
+            else 
+                this.updState('lqdtBackColor', '#747cf4');
         }
     };
 
@@ -214,6 +288,8 @@ class Root extends React.Component {
             let counterFieldPrice = this.countPrice(activeField, pair);
             if (counterFieldPrice)
                 counterField.value = counterFieldPrice;
+            else 
+                counterField.value = '';
             this.updCardInternals();
         }
     };
@@ -266,37 +342,44 @@ class Root extends React.Component {
     };
 
     // ============================================================================== input field (render's elements)
-    getInputField (fieldName, fieldClass, tokenName, value) {
+    getInputField (props) {
         return [
             e(
                 'p',
                 { 
                     class : 'side',
                 },
-                fieldName
+                props.fieldName
             ),
             e(
                 'input',
                 {
-                    id : `input-${fieldClass}`,
-                    onChange : this.changeField.bind(this, fieldClass),
+                    id : `input-${props.fieldClass}`,
+                    onChange : this.changeField.bind(this, props.fieldClass),
                     class : 'form-control mr-sm-2 input-field',
                     type : 'text',
-                    value : value,
+                    value : props.value,
                     placeholder : '0.0'
                 }
             ),
             e(
                 'button',
                 {
-                    onClick : this.openTokenList.bind(this, fieldClass),
-                    class : `btn btn-secondary my-2 my-sm-0 ${fieldClass}`,
+                    onClick : this.openTokenList.bind(this, props.fieldClass),
+                    class : `btn btn-secondary my-2 my-sm-0 ${props.fieldClass}`,
                     type : 'submit',
                     style : {
                         height : '40px',
                     }
                 },
-                tokenName
+                props.tokenName
+            ),
+            e(
+                'div',
+                {
+                    id : 'token-info'
+                },
+                'your amount: ' + props.userTokenAmount
             )
         ];
     };

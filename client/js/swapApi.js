@@ -1,17 +1,17 @@
 class SwapApi {
     constructor () {
-        this.url = `https://${location.host}`;
+        this.url = location.href;
     }
 
     getTokens () {
-        return fetch(`${this.url}/getTokens`,
+        return fetch(`${this.url}getTokens`,
             {
                 method : 'GET'
             }
         );
     };
     getPairs () {
-        return fetch(`${this.url}/getPairs`,
+        return fetch(`${this.url}getPairs`,
             {
                 method : 'GET'
             }

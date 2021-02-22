@@ -28,6 +28,19 @@ class ConnectionService extends React.Component {
         this.mySwapPage = props.outer;
     }
 
+    async connectToEnq () {
+        await Enecuum.enable()
+        .then(res => {
+            this.mySwapPage.pubKey = res;
+            this.mySwapPage.connectionStatus = true;
+        },
+        () => {
+            this.mySwapPage.connectionStatus = false;
+        });
+        this.mySwapPage.closeConnectionList();
+        this.mySwapPage.updSubmitName();
+    };
+
     render () {
         return [ 
             e(
@@ -60,6 +73,7 @@ class ConnectionService extends React.Component {
             e(  
                 'button',
                 {
+                    onClick : this.connectToEnq.bind(this),
                     class : 'btn btn-secondary',
                     style : {
                         borderRadius: '20px',
@@ -87,50 +101,32 @@ class Switch extends React.Component {
     render () {
         return [
             e(
-                'p',
-                { 
-                    id : 'switch-e-text',
-                    style : {
-                        position : 'absolute',
-                        left : '45px',
-                        color : 'black',
-                        top : '1px',
-                        fontSize : '22px',
-                        visibility : this.mySwapPage.active.visibility
-                    }
-                },
-                'Exchange'
-            ),
-            e(
                 'div',
                 {
                     class : "switch-mode",
                     id : "exchange-mode",
-                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange')
+                    style : {
+                        color : this.mySwapPage.state.exchColor,
+                        backgroundColor : this.mySwapPage.state.exchBackColor
+                    },
+                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange'),
+                    onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'exchange'),
+                    onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'exchange')
                 },
                 'Exchange'
-            ),
-            e(
-                'p',
-                { 
-                    id : 'switch-l-text',
-                    style : {
-                        position : 'absolute',
-                        right : '54px',
-                        color : 'black',
-                        top : '1px',
-                        fontSize : '22px',
-                        visibility : this.mySwapPage.passive.visibility
-                    }
-                },
-                'Liquidity'
             ),
             e(
                 'div',
                 {
                     class : "switch-mode",
                     id : "liquidity-mode",
-                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity')
+                    style : {
+                        color : this.mySwapPage.state.lqdtColor,
+                        backgroundColor : this.mySwapPage.state.lqdtBackColor
+                    },
+                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity'),
+                    onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'liquidity'),
+                    onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'liquidity')
                 },
                 'Liquidity'
             )

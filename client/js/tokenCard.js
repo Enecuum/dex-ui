@@ -6,10 +6,14 @@ class Tokens extends React.Component {
         this.state = {
             list : this.makeList()
         };
-        setInterval(() => {
-            this.setState( { list : this.makeList()} );
-        }, 100);
+        this.initTokenList();
     }
+
+    async initTokenList () {
+        while (this.makeList().length === 0)
+            await new Promise(resolve => { setTimeout(resolve, 100) });
+        this.setState( { list : this.makeList()} );
+    };
 
     getTokens (searchWord) {
         return this.mySwapPage.tokens.filter(el => (new RegExp(`.*${searchWord.trim().toLowerCase()}.*`)).test(el.toLowerCase()));

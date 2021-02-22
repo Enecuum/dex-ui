@@ -2,7 +2,6 @@ class Presets {
     constructor () {
         this.active = {
             opacity : {
-                hover : 1,
                 simple : 1
             },
             visibility : 'hidden'
@@ -10,7 +9,6 @@ class Presets {
 
         this.passive = {
             opacity : {
-                hover : 0.2,
                 simple : 0
             },
             visibility : 'visible'
@@ -47,6 +45,13 @@ class Presets {
             field1 : {
                 value : '',
                 token : startToken
+            }
+        };
+        this.network = {
+            genesisPubKey : '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
+            nativeToken : {
+                hash : '0000000000000000000000000000000000000000000000000000000000000000',
+                fee : 100000000
             }
         };
     };

@@ -15,6 +15,7 @@ class Root extends React.Component {
         this.activeField = 0;
         this.tokenFilter = '';
         this.connectionStatus = false;
+        this.navOpen = false;
         // -------------------------------------
         this.active = presets.active;
         this.passive = presets.passive;
@@ -41,7 +42,10 @@ class Root extends React.Component {
             token1 : this.exchange.field1.token,
             submitName : 'Connect',
 
-            userTokenValue : 0
+            userTokenValue : 0,
+
+            leftNavWidth : '0px',
+            leftNavAWidth : '0px'
         };
         // -------------------------------------
         this.updExternalData();
@@ -384,6 +388,20 @@ class Root extends React.Component {
         ];
     };
 
+    // ================================================================================================== left navbar
+
+    openCloseNavbar () {
+        if (this.navOpen) {
+            this.navOpen = false;
+            this.setState({ leftNavWidth : '0px' });
+            this.setState({ leftNavAWidth : '0px' });
+        } else {
+            this.navOpen = true;
+            this.setState({ leftNavWidth : '160px' });
+            this.setState({ leftNavAWidth : '160px' });
+        }
+    };
+
     // ======================================================================================================= render
     render () {
         return [ 
@@ -401,14 +419,19 @@ class Root extends React.Component {
                             {
                                 src : 'img/logo.png',
                                 width : '30px',
-                                height : '30px'
+                                height : '30px',
+                                style : {
+                                    cursor: 'pointer'
+                                },
+                                onClick : this.openCloseNavbar.bind(this)
                             }
                         ),
                         e(
                             'h3',
                             {
                                 key : 0,
-                                class : 'navbar-brand'
+                                class : 'navbar-brand',
+                                onClick : this.openCloseNavbar.bind(this)
                             },
                             'EnecuumSwap'
                         ),
@@ -423,6 +446,14 @@ class Root extends React.Component {
                     ]
                 )
             ),
+            e(
+                'div',
+                {
+                    id : 'fixed-left-bar'
+                },
+                e(FixedLeftNavBar, { outer : this })
+            ),
+            e(LeftNavBar, { outer : this }),
             e(
                 'div',
                 {

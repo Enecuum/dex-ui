@@ -2,5 +2,6 @@
     "obfuscated" : {
         "status" : false,
         "postfix" : ".obfuscated.js"
-    }
+    },
+    "port" : 1234
 }

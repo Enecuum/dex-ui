@@ -80,4 +80,4 @@ https.createServer({
     key: fs.readFileSync('./https/key.pem', { encoding : 'utf8' }),
     cert: fs.readFileSync('./https/server.crt', { encoding : 'utf8' })
 }, app)
-.listen(1234);
+.listen(config.port);

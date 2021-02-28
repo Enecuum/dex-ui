@@ -1,0 +1,20 @@
+.navbar {
+    position: absolute;
+    width: 100%;
+}
+
+.navbar.new-color {
+    background-color: var(--color1);
+}
+
+.navbar-brand {
+    cursor: pointer;
+    margin-left: 0.5%;
+    margin-bottom: 0.2%;
+    margin-top: 0.2%;
+}
+
+.connect-btn {
+    position: absolute;
+    right: 1.5%;
+}

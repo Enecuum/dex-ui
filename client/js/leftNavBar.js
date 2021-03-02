@@ -46,12 +46,13 @@ class LeftNavBar extends React.Component {
             checked : true
         };
     };
-    
     changeColors () {
         let vars = document.documentElement.style;
         let theme = (!this.lightTheme) ? this.mySwapPage.colorThemes.light : this.mySwapPage.colorThemes.dark;
         vars.setProperty('--color1', theme.color1);
         vars.setProperty('--main-background', theme.background);
+        vars.setProperty('--text-color', theme.textColor);
+        vars.setProperty('--exit-color', theme.exitColor);
         let chckd = (this.lightTheme) ? false : true;
         this.setState({ checked : chckd });
         this.lightTheme = !this.lightTheme;

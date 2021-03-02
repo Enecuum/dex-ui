@@ -66,13 +66,13 @@ class Root extends React.Component {
     switchTheSwitch () {
         if (this.mode == 0) {
             this.updState('exchColor', 'white');
-            this.updState('lqdtColor', 'black');
+            this.updState('lqdtColor', 'var(--text-color)');
             this.updState('exchBackColor', '#747cf4');
-            this.updState('lqdtBackColor', '#var(--color1)');
+            this.updState('lqdtBackColor', 'var(--color1)');
         } else {
-            this.updState('exchColor', 'black');
+            this.updState('exchColor', 'var(--text-color)');
             this.updState('lqdtColor', 'white');
-            this.updState('exchBackColor', '#var(--color1)');
+            this.updState('exchBackColor', 'var(--color1)');
             this.updState('lqdtBackColor', '#747cf4');
         }
     };
@@ -195,11 +195,11 @@ class Root extends React.Component {
             if (this.mode == 0)
                 this.updState('exchBackColor', '#747cf4');
             else 
-                this.updState('exchBackColor', '#var(--color1)');
+                this.updState('exchBackColor', 'var(--color1)');
         }
         else {
             if (this.mode == 0)
-                this.updState('lqdtBackColor', '#var(--color1)');
+                this.updState('lqdtBackColor', 'var(--color1)');
             else 
                 this.updState('lqdtBackColor', '#747cf4');
         }

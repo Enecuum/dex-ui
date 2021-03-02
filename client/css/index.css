@@ -4,11 +4,14 @@
     --color3 : #747cf4;
     --main-background : white;
     --transition : 0.1s;
+    --text-color : black;
+    --exit-color : grey;
 }
 
 body {
     font-family: "Helvetica", sans-serif;
     background-color: var(--main-background);
+    color: var(--text-color);
 }
 
 p {

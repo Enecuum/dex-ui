@@ -53,13 +53,17 @@ class Presets {
                 color1 : '#ecf4fc',
                 color2 : '#e4ecfc',
                 color3 : '#747cf4',
-                background : 'white'
+                background : 'white',
+                textColor : 'black',
+                exitColor : 'grey'
             },
             dark : {
-                color1 : 'grey',
+                color1 : 'rgb(39, 38, 61)',
                 color2 : 'lightgrey',
                 color3 : 'black',
-                background : 'black'
+                background : '#131329',
+                textColor : '#2EC2A7',
+                exitColor : 'white'
             }
         };
 

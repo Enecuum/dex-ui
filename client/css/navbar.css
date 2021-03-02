@@ -15,7 +15,15 @@
     margin-top: 0.2%;
 }
 
+.navbar-light .navbar-brand {
+    color: var(--text-color);
+}
+
 .connect-btn {
     position: absolute;
     right: 1.5%;
+}
+
+.btn-secondary {
+    border-color: #00000000;
 }

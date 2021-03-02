@@ -16,6 +16,7 @@ class Root extends React.Component {
         this.tokenFilter = '';
         this.connectionStatus = false;
         this.navOpen = false;
+        this.colorThemes = presets.colorThemes;
         // -------------------------------------
         this.active = presets.active;
         this.passive = presets.passive;
@@ -27,7 +28,7 @@ class Root extends React.Component {
             exchColor : 'white',
             lqdtColor : 'black',
             exchBackColor : '#747cf4',
-            lqdtBackColor : '#ecf4fc',
+            lqdtBackColor : 'var(--color1)',
 
             header : this.exchange.header,
             addition : this.exchange.addition,
@@ -45,7 +46,10 @@ class Root extends React.Component {
             userTokenValue : 0,
 
             leftNavWidth : '0px',
-            leftNavAWidth : '0px'
+            leftNavAWidth : '0px',
+            swapCardLeft : '51%',
+            settingsVisibility : 'hidden',
+            bottomPosition : '-60px'
         };
         // -------------------------------------
         this.updExternalData();
@@ -64,11 +68,11 @@ class Root extends React.Component {
             this.updState('exchColor', 'white');
             this.updState('lqdtColor', 'black');
             this.updState('exchBackColor', '#747cf4');
-            this.updState('lqdtBackColor', '#ecf4fc');
+            this.updState('lqdtBackColor', '#var(--color1)');
         } else {
             this.updState('exchColor', 'black');
             this.updState('lqdtColor', 'white');
-            this.updState('exchBackColor', '#ecf4fc');
+            this.updState('exchBackColor', '#var(--color1)');
             this.updState('lqdtBackColor', '#747cf4');
         }
     };
@@ -191,11 +195,11 @@ class Root extends React.Component {
             if (this.mode == 0)
                 this.updState('exchBackColor', '#747cf4');
             else 
-                this.updState('exchBackColor', '#ecf4fc');
+                this.updState('exchBackColor', '#var(--color1)');
         }
         else {
             if (this.mode == 0)
-                this.updState('lqdtBackColor', '#ecf4fc');
+                this.updState('lqdtBackColor', '#var(--color1)');
             else 
                 this.updState('lqdtBackColor', '#747cf4');
         }
@@ -391,15 +395,17 @@ class Root extends React.Component {
     // ================================================================================================== left navbar
 
     openCloseNavbar () {
+        let data;
         if (this.navOpen) {
             this.navOpen = false;
-            this.setState({ leftNavWidth : '0px' });
-            this.setState({ leftNavAWidth : '0px' });
+            data = [0, 0, '51%', 'hidden', '-60px'];
         } else {
             this.navOpen = true;
-            this.setState({ leftNavWidth : '160px' });
-            this.setState({ leftNavAWidth : '160px' });
+            data = ['160px', '160px', '55%', 'visible', '15px'];
         }
+        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition'];
+        for (let i in necessaryProps)
+            this.updState(necessaryProps[i], data[i]);
     };
 
     // ======================================================================================================= render
@@ -470,14 +476,20 @@ class Root extends React.Component {
             e(
                 'div',
                 {
-                    id : 'switch'
+                    id : 'switch',
+                    style : {
+                        left : this.state.swapCardLeft
+                    }
                 },
                 e(Switch, { outer : this })
             ),
             e(
                 'div',
                 {
-                    class : 'swap-card'
+                    class : 'swap-card',
+                    style : {
+                        left : this.state.swapCardLeft
+                    }
                 },
                 e(Card, { outer : this })
             ),
@@ -496,4 +508,3 @@ ReactDOM.render(
     e(Root),
     document.getElementById('root')
 );
-

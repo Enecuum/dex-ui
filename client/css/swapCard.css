@@ -6,7 +6,7 @@
     width: 430px;
     border-radius: 40px;
     margin-left: -215px;
-    left: 50%;
+    transition: var(--transition);
 }
 
 #head-line {

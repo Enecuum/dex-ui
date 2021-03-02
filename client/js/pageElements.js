@@ -12,7 +12,7 @@ class Connect extends React.Component {
                 class : 'btn btn-secondary my-2 my-sm-0',
                 type : 'submit',
                 style : {
-                    backgroundColor : '#747cf4'
+                    backgroundColor : 'var(--color3)'
                 }
             },
             'Connect'

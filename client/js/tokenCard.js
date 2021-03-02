@@ -32,7 +32,7 @@ class Tokens extends React.Component {
                     class : 'token-option',
                     style : {
                         textAlign : 'left',
-                        color : '#747cf4',
+                        color : 'var(--color3)',
                         fontSize : '20px',
                         padding : '10px',
                         borderRadius : '10px'
@@ -112,7 +112,7 @@ class Tokens extends React.Component {
                         width : '90%',
                         marginLeft : '5%',
                         marginTop : '20px',
-                        backgroundColor : '#ecf4fc',
+                        backgroundColor : 'var(--color1)',
                         height : '77.5%',
                         border : 0
                     }

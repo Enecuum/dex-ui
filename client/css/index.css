@@ -3,6 +3,7 @@
     --color2 : #e4ecfc;
     --color3 : #747cf4;
     --main-background : white;
+    --transition : 0.1s;
 }
 
 body {

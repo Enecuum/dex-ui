@@ -17,6 +17,7 @@ class Root extends React.Component {
         this.connectionStatus = false;
         this.navOpen = false;
         this.colorThemes = presets.colorThemes;
+        this.language = 'eng';
         // -------------------------------------
         this.active = presets.active;
         this.passive = presets.passive;
@@ -26,22 +27,23 @@ class Root extends React.Component {
         // -------------------------------------
         this.state = {
             exchColor : 'white',
-            lqdtColor : 'black',
+            lqdtColor : 'var(--text-color)',
             exchBackColor : '#747cf4',
             lqdtBackColor : 'var(--color1)',
 
-            header : this.exchange.header,
-            addition : this.exchange.addition,
-            plusVis : this.exchange.plusVis,
-            exchVis : this.exchange.exchVis,
-
-            name0  : this.exchange.name0,
-            value0 : this.exchange.field0.value,
-            token0 : this.exchange.field0.token,
-            name1  : this.exchange.name1,
-            value1 : this.exchange.field1.value,
-            token1 : this.exchange.field1.token,
-            submitName : 'Connect',
+            langData : presets.langData,
+            card : {
+                header : '',
+                description : '',
+                plusVis : this.exchange.plusVis,
+                exchVis : this.exchange.exchVis,
+                input0 : '',
+                value0 : this.exchange.field0.value,
+                token0 : this.exchange.field0.token,
+                input1 : '',
+                value1 : this.exchange.field1.value,
+                token1 : this.exchange.field1.token
+            },
 
             userTokenValue : 0,
 
@@ -49,19 +51,40 @@ class Root extends React.Component {
             leftNavAWidth : '0px',
             swapCardLeft : '51%',
             settingsVisibility : 'hidden',
-            bottomPosition : '-60px'
+            bottomPosition : '-60px',
+            submitName : ''
         };
         // -------------------------------------
+        this.updLanguage('eng');
         this.updExternalData();
-        Enecuum.connect();
+        ENQweb3lib.connect();
     };
 
     async updExternalData () {
         this.tokens = await (await swapApi.getTokens()).json();
         this.pairs = await (await swapApi.getPairs()).json();
-    }
+    };
+
+    async updLanguage (language) {
+        let res = await (await swapApi.getLanguage(language)).json();
+        this.setState(state => {
+            state.langData = res;
+            return state;
+        });
+        this.updSubmitName ();
+        this.updCardInternals();
+        this.updSwitchPageState();
+    };
 
     // ==================================================================================================== upd state
+
+    changeLanguage () {
+        if (this.language == 'eng')
+            this.language = 'rus';
+        else
+            this.language = 'eng';
+        this.updLanguage(this.language); 
+    };
 
     switchTheSwitch () {
         if (this.mode == 0) {
@@ -78,29 +101,39 @@ class Root extends React.Component {
     };
 
     updSubmitName () {
-        console.log(window);
-        if (this.connectionStatus)
-            this.updState('submitName', 'Submit');
-        else
-            this.updState('submitName', 'Connect');
+        this.setState(state => {
+            state.submitName = (this.connectionStatus) ? 
+                                this.state.langData.trade.swapCard.submitButton.afterConnection :
+                                this.state.langData.trade.swapCard.submitButton.beforeConnection;
+            return state;
+        });
     };
 
-    switchPageState () {
+    updSwitchPageState () {
         let mode = this.getMode();
-        this.updState('header', this[mode].header);
-        this.updState('addition', this[mode].addition);
-        this.updState('plusVis', this[mode].plusVis);
-        this.updState('exchVis', this[mode].exchVis);
+        this.setState(state => {
+            for (let prop of ['header', 'description', 'input0', 'input1'])
+                state.card[prop] = this.state.langData.trade.swapCard[mode][prop];
+            return state;
+        });
+        this.setState(state => {
+            state.card.plusVis = this[mode].plusVis;
+            state.card.exchVis = this[mode].exchVis;
+            return state;
+        });
     };
 
     updCardInternals () {
         let mode = this.getMode();
-        this.updState('name0', this[mode].name0);
-        this.updState('value0', this[mode].field0.value);
-        this.updState('token0', this[mode].field0.token);
-        this.updState('name1', this[mode].name1);
-        this.updState('value1', this[mode].field1.value);
-        this.updState('token1', this[mode].field1.token);
+        this.setState(state => {
+            state.card.value0 = this[mode].field0.value; 
+            state.card.token0 = this[mode].field0.token;
+            state.card.value1 = this[mode].field1.value;
+            state.card.token1 = this[mode].field1.token; 
+            state.card.header = this.state.langData.trade.swapCard[mode].header; 
+            state.card.description = this.state.langData.trade.swapCard[mode].description; 
+            return state;
+        });
     };
 
     updState (key, value) {
@@ -126,7 +159,7 @@ class Root extends React.Component {
         this.updState('userTokenValue', 0);
         return;
         // let mode = this.getMode()
-        // Enecuum.balanceOf({
+        // ENQweb3lib.balanceOf({
         //     to : this.pubKey,
         //     tokenHash : this[mode].token0
         // }).then(
@@ -161,7 +194,7 @@ class Root extends React.Component {
 
     async sentTx () {
         if (this.connectionStatus) {
-            // await Enecuum.sendTransaction({
+            // await ENQweb3lib.sendTransaction({
             //     from : this.pubKey,
             //     to : presets.network.genesisPubKey,
             //     value : presets.network.nativeToken.fee,
@@ -178,7 +211,7 @@ class Root extends React.Component {
         if (onElement !== this.modes[this.mode]) {
             this.mode = (this.mode + 1) % 2;            
             this.switchTheSwitch();
-            this.switchPageState();
+            this.updSwitchPageState();
             this.updCardInternals();
         }
     };
@@ -433,10 +466,10 @@ class Root extends React.Component {
                             }
                         ),
                         e(
-                            'h3',
+                            'h5',
                             {
                                 key : 0,
-                                class : 'navbar-brand',
+                                class : 'navbar-custom',
                                 onClick : this.openCloseNavbar.bind(this)
                             },
                             'EnecuumSwap'

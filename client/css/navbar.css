@@ -15,6 +15,14 @@
     margin-top: 0.2%;
 }
 
+.navbar-custom {
+    cursor: pointer;
+    margin-left: 0.5%;
+    margin-bottom: 0.2%;
+    margin-top: 0.2%;
+    color: var(--text-color);
+}
+
 .navbar-light .navbar-brand {
     color: var(--text-color);
 }

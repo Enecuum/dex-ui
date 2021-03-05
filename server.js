@@ -66,6 +66,17 @@ app.get('/getPairs', (req, res) => {
     res.end();
 });
 
+app.get('/getLanguage/*', (req, res) => {
+    let urlArr = req.url.split('/');
+    let language = urlArr[urlArr.length - 1];
+    res.writeHead(200, {
+        'Content-Type': 'application/json',
+    });
+    let data = fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' });
+    res.write(data);
+    res.end();
+});
+
 app.get('/web-enq/*', (req, res) => {
     res.writeHead(200, {
         'Content-Type': 'text/html',

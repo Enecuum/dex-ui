@@ -46,6 +46,7 @@ class LeftNavBar extends React.Component {
             checked : true
         };
     };
+
     changeColors () {
         let vars = document.documentElement.style;
         let theme = (!this.lightTheme) ? this.mySwapPage.colorThemes.light : this.mySwapPage.colorThemes.dark;
@@ -72,22 +73,22 @@ class LeftNavBar extends React.Component {
                     e(
                         'div',
                         { id : 'first-in-nav', class : 'nav-element'},
-                        'Trade'
+                        this.mySwapPage.state.langData.navbars.left[0]
                     ),
                     e(
                         'div',
                         {class : 'nav-element'},
-                        'Title1'
+                        this.mySwapPage.state.langData.navbars.left[1]
                     ),
                     e(
                         'div',
                         {class : 'nav-element'},
-                        'Title2'
+                        this.mySwapPage.state.langData.navbars.left[2]
                     ),
                     e(
                         'div', 
                         {class : 'nav-element'},
-                        'Title3'
+                        this.mySwapPage.state.langData.navbars.left[3]
                     ),
 
                     e(
@@ -96,6 +97,7 @@ class LeftNavBar extends React.Component {
                             class : 'space-line'
                         }
                     ),
+
                     e(
                         'label',
                         {
@@ -127,7 +129,8 @@ class LeftNavBar extends React.Component {
                             id : 'language',
                             style : {
                                 visibility : this.mySwapPage.state.settingsVisibility
-                            }
+                            },
+                            onClick : this.mySwapPage.changeLanguage.bind(this.mySwapPage)
                         }
                     )
                 ]

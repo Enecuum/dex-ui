@@ -72,7 +72,7 @@ class Tokens extends React.Component {
                         marginLeft: '30px'
                     }
                 },
-                'Choose a token'
+                this.mySwapPage.state.langData.trade.tokenCard.header
             ),
             e(
                 'div',
@@ -91,7 +91,7 @@ class Tokens extends React.Component {
                     onChange : this.changeList.bind(this),
                     class : 'form-control mr-sm-2',
                     type : 'text',
-                    placeholder : 'Search by name',
+                    placeholder : this.mySwapPage.state.langData.trade.tokenCard.search,
                     style : {
                         textAlign : 'left',
                         width : '90%',

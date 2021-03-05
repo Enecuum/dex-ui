@@ -12,14 +12,14 @@ class Card extends React.Component {
                 {
                     id : 'swap-mode-header'
                 },
-                this.mySwapPage.state.header
+                this.mySwapPage.state.card.header
             ),
             e(
                 'p',
                 {
                     id : 'under-header'
                 },
-                this.mySwapPage.state.addition
+                this.mySwapPage.state.card.description
             ),
             e(
                 'div',
@@ -34,10 +34,10 @@ class Card extends React.Component {
                     id : 'from'
                 },
                 this.mySwapPage.getInputField({
-                    fieldName : this.mySwapPage.state.name0, 
+                    fieldName : this.mySwapPage.state.card.input0, 
                     fieldClass : 'token-use',
-                    tokenName : this.mySwapPage.state.token0, 
-                    value : this.mySwapPage.state.value0,
+                    tokenName : this.mySwapPage.state.card.token0, 
+                    value : this.mySwapPage.state.card.value0,
                     userTokenAmount : this.mySwapPage.state.userTokenValue
                 })
             ),
@@ -53,7 +53,7 @@ class Card extends React.Component {
                         {
                             id : 'up-arrow',
                             style : {
-                                visibility : this.mySwapPage.state.exchVis
+                                visibility : this.mySwapPage.state.card.exchVis
                             }
                         }
                     ),
@@ -62,7 +62,7 @@ class Card extends React.Component {
                         {
                             id : 'down-arrow',
                             style : {
-                                visibility : this.mySwapPage.state.exchVis
+                                visibility : this.mySwapPage.state.card.exchVis
                             }
                         }
                     ),
@@ -70,7 +70,7 @@ class Card extends React.Component {
                         'p',
                         {
                             style : {
-                                visibility : this.mySwapPage.state.plusVis,
+                                visibility : this.mySwapPage.state.card.plusVis,
                                 fontSize: '40px',
                                 color: 'grey',
                                 left: '8px',
@@ -89,10 +89,10 @@ class Card extends React.Component {
                     id : 'to'  
                 },
                 this.mySwapPage.getInputField({
-                    fieldName : this.mySwapPage.state.name1, 
+                    fieldName : this.mySwapPage.state.card.input1, 
                     fieldClass : 'token-use1', 
-                    tokenName : this.mySwapPage.state.token1, 
-                    value : this.mySwapPage.state.value1,
+                    tokenName : this.mySwapPage.state.card.token1,
+                    value : this.mySwapPage.state.card.value1,
                     userTokenAmount : this.mySwapPage.state.userTokenValue
                 })
             ),

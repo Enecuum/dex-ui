@@ -16,6 +16,13 @@ class SwapApi {
                 method : 'GET'
             }
         );
+    };
+    getLanguage (language) {
+        return fetch(`${this.url}getLanguage/${language}`,
+            {
+                method : 'GET'
+            }
+        );
     }
 };
 

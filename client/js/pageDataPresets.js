@@ -15,12 +15,8 @@ class Presets {
         };
         
         this.exchange = {
-            header : 'Exchange',
-            addition : 'Trade tokens in an instant',
             plusVis : 'hidden',
             exchVis : 'visible',
-            name0 : 'From',
-            name1 : 'To',
             field0 : {
                 value : '',
                 token : startToken
@@ -32,12 +28,8 @@ class Presets {
         };
 
         this.liquidity = {
-            header : 'Liquidity',
-            addition : 'Add liquidity to receive LP tokens',
             plusVis : 'visible',
             exchVis : 'hidden',
-            name0 : 'Input',
-            name1 : 'Input',
             field0 : {
                 value : '',
                 token : startToken
@@ -72,6 +64,24 @@ class Presets {
             nativeToken : {
                 hash : '0000000000000000000000000000000000000000000000000000000000000000',
                 fee : 100000000
+            }
+        };
+
+        this.langData = {
+            navbars : {
+                left : [],
+                top : {
+                    connectionCard : {}
+                }
+            },
+            trade : {
+                switch : {},
+                swapCard : {
+                    exchange : {},
+                    liquidity : {},
+                    submitButton : {}
+                },
+                tokenCard : {}
             }
         };
     };

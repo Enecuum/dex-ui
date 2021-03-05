@@ -15,7 +15,7 @@ class Connect extends React.Component {
                     backgroundColor : 'var(--color3)'
                 }
             },
-            'Connect'
+            this.mySwapPage.state.submitName
         );
     }
 };
@@ -29,7 +29,7 @@ class ConnectionService extends React.Component {
     }
 
     async connectToEnq () {
-        await Enecuum.enable()
+        await ENQweb3lib.enable()
         .then(res => {
             this.mySwapPage.pubKey = res;
             this.mySwapPage.connectionStatus = true;
@@ -58,7 +58,7 @@ class ConnectionService extends React.Component {
                         marginLeft : '6%'
                     }
                 },
-                'Connect your wallet'
+                this.mySwapPage.state.langData.navbars.top.connectionCard.header
             ),
             e(
                 'div',
@@ -113,7 +113,7 @@ class Switch extends React.Component {
                     onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'exchange'),
                     onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'exchange')
                 },
-                'Exchange'
+                this.mySwapPage.state.langData.trade.switch.mode0
             ),
             e(
                 'div',
@@ -128,7 +128,7 @@ class Switch extends React.Component {
                     onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'liquidity'),
                     onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'liquidity')
                 },
-                'Liquidity'
+                this.mySwapPage.state.langData.trade.switch.mode1
             )
         ]
     }

@@ -1,3 +1,43 @@
+let changeColor = function (cs, color) {
+    let navEl = document.getElementsByClassName(cs);
+    for (let el of navEl)
+        el.style.background = color;
+};
+
+let turnOn = function (cs) {
+    if (document.getElementsByClassName(cs)[0].style.background != 'var(--color3)')
+        changeColor(cs, 'var(--color3-t)');
+};
+
+let turnOff = function (cs) {
+    if (document.getElementsByClassName(cs)[0].style.background != 'var(--color3)')
+        changeColor(cs, 'var(--color1)');
+};
+
+let lightIt = function (general, cs) {
+    let allEl = document.getElementsByClassName(general);
+    for (let el of allEl)
+        el.style.background = 'var(--color1)';
+    changeColor(cs, 'var(--color3)');
+};
+
+let insertElements = function (elements, fixedNavbar) {
+    return elements.map((el, i) => {
+        let className = (i == 0) ? `n-e-${i} first-in-nav` : `n-e-${i}`;
+        return e(
+            'div',
+            { 
+                class : `nav-element ${className}`,
+                onMouseOver : turnOn.bind(this, className),
+                onMouseOut  : turnOff.bind(this, className),
+                onClick : lightIt.bind(this, 'nav-element', className)
+            },
+            (!fixedNavbar) ? el : undefined
+        );
+    });
+};
+
+
 class FixedLeftNavBar extends React.Component {
     constructor (props) {
         super(props);
@@ -6,23 +46,7 @@ class FixedLeftNavBar extends React.Component {
 
     render () {
         return [
-            e(
-                'div',
-                { class : 'nav-element' }
-            ),
-            e(
-                'div',
-                { class : 'nav-element' }
-            ),
-            e(
-                'div',
-                { class : 'nav-element' }
-            ),
-            e(
-                'div',
-                { class : 'nav-element' }
-            ),
-
+            ...insertElements(this.mySwapPage.state.langData.navbars.left, true),
             e(
                 'div',
                 {
@@ -70,27 +94,7 @@ class LeftNavBar extends React.Component {
                     },
                 },
                 [
-                    e(
-                        'div',
-                        { id : 'first-in-nav', class : 'nav-element'},
-                        this.mySwapPage.state.langData.navbars.left[0]
-                    ),
-                    e(
-                        'div',
-                        {class : 'nav-element'},
-                        this.mySwapPage.state.langData.navbars.left[1]
-                    ),
-                    e(
-                        'div',
-                        {class : 'nav-element'},
-                        this.mySwapPage.state.langData.navbars.left[2]
-                    ),
-                    e(
-                        'div', 
-                        {class : 'nav-element'},
-                        this.mySwapPage.state.langData.navbars.left[3]
-                    ),
-
+                    ...insertElements(this.mySwapPage.state.langData.navbars.left, false),
                     e(
                         'div',
                         {

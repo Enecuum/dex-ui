@@ -28,7 +28,7 @@ class Root extends React.Component {
         this.state = {
             exchColor : 'white',
             lqdtColor : 'var(--text-color)',
-            exchBackColor : '#747cf4',
+            exchBackColor : 'var(--color3)',
             lqdtBackColor : 'var(--color1)',
 
             langData : presets.langData,
@@ -90,13 +90,13 @@ class Root extends React.Component {
         if (this.mode == 0) {
             this.updState('exchColor', 'white');
             this.updState('lqdtColor', 'var(--text-color)');
-            this.updState('exchBackColor', '#747cf4');
+            this.updState('exchBackColor', 'var(--color3)');
             this.updState('lqdtBackColor', 'var(--color1)');
         } else {
             this.updState('exchColor', 'var(--text-color)');
             this.updState('lqdtColor', 'white');
             this.updState('exchBackColor', 'var(--color1)');
-            this.updState('lqdtBackColor', '#747cf4');
+            this.updState('lqdtBackColor', 'var(--color3)');
         }
     };
 
@@ -218,15 +218,15 @@ class Root extends React.Component {
 
     lightTheButton (button) {
         if (button == 'exchange')
-            this.updState('exchBackColor', '#747cf473');
+            this.updState('exchBackColor', 'var(--color3-t)');
         else
-            this.updState('lqdtBackColor', '#747cf473');
+            this.updState('lqdtBackColor', 'var(--color3-t)');
     };
 
     turnOffTheButton (button) {
         if (button == 'exchange') {
             if (this.mode == 0)
-                this.updState('exchBackColor', '#747cf4');
+                this.updState('exchBackColor', 'var(--color3)');
             else 
                 this.updState('exchBackColor', 'var(--color1)');
         }
@@ -234,7 +234,7 @@ class Root extends React.Component {
             if (this.mode == 0)
                 this.updState('lqdtBackColor', 'var(--color1)');
             else 
-                this.updState('lqdtBackColor', '#747cf4');
+                this.updState('lqdtBackColor', 'var(--color3)');
         }
     };
 

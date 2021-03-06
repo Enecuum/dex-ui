@@ -12,12 +12,15 @@
     position: relative;
     font-size: 18px;
     padding: 6px;
-    margin-top : 22px;
-    margin-left: 15px;
     cursor: pointer;
 }
 
-#first-in-nav {
+#left-navbar .nav-element {
+    height: 50px;
+    padding: 12px;
+}
+
+.first-in-nav {
     margin-top : 15px;
 }
 
@@ -30,11 +33,9 @@
 }
 
 #fixed-left-bar .nav-element {
-    border: 1px solid black;
-    width: 50px;
+    /* border: 1px solid black; */
+    width: 100%;
     height: 50px;
-    margin: 5px;
-    margin-top: 10px;
 }
 
 #settings {
@@ -111,7 +112,6 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
   
-/* Rounded sliders */
 .slider.round {
     border-radius: 34px;
 }

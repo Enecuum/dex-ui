@@ -21,18 +21,19 @@ let lightIt = function (general, cs) {
     changeColor(cs, 'var(--color3)');
 };
 
-let insertElements = function (elements, fixedNavbar) {
+let insertElements = function (elements, fixedNavbar, icons) {
     return elements.map((el, i) => {
         let className = (i == 0) ? `n-e-${i} first-in-nav` : `n-e-${i}`;
         return e(
-            'div',
-            { 
+            (fixedNavbar) ? 'img' : 'div',
+            {
                 class : `nav-element ${className}`,
                 onMouseOver : turnOn.bind(this, className),
                 onMouseOut  : turnOff.bind(this, className),
-                onClick : lightIt.bind(this, 'nav-element', className)
+                onClick : lightIt.bind(this, 'nav-element', className),
+                src : (fixedNavbar) ? `img/${icons[i]}.png` : undefined
             },
-            (!fixedNavbar) ? el : undefined
+            (fixedNavbar) ? undefined : el
         );
     });
 };
@@ -46,7 +47,7 @@ class FixedLeftNavBar extends React.Component {
 
     render () {
         return [
-            ...insertElements(this.mySwapPage.state.langData.navbars.left, true),
+            ...insertElements(this.mySwapPage.state.langData.navbars.left, true, ['trade', 'noname', 'noname', 'noname']),
             e(
                 'div',
                 {
@@ -54,8 +55,12 @@ class FixedLeftNavBar extends React.Component {
                 }
             ),
             e(
-                'div',
-                { id : 'settings' }
+                'img',
+                { 
+                    id : 'settings',
+                    src : 'img/settings.png',
+                    onClick : this.mySwapPage.openCloseNavbar.bind(this.mySwapPage)
+                }
             ),
         ];
     };
@@ -69,6 +74,8 @@ class LeftNavBar extends React.Component {
         this.state = {
             checked : true
         };
+        this.width = 60;
+        this.height = 60;
     };
 
     changeColors () {
@@ -82,6 +89,34 @@ class LeftNavBar extends React.Component {
         this.setState({ checked : chckd });
         this.lightTheme = !this.lightTheme;
     };
+
+    fillLangElements (languages) {
+        let columns = Math.ceil(Math.sqrt(languages.length));
+        let rows = Math.ceil(languages.length / columns);
+        // this.setState({ langWidth : `${(columns * this.width)}px` });
+        // this.setState({ langHeight : `${(rows * this.height)}px` });
+        return languages.map((el, i) => {
+            return e (
+                'div',
+                {
+                    class : 'lang-el',
+                    style : {
+                        marginLeft : `${(Math.floor(i / rows)) * this.width}px`,
+                        marginTop : `${(i % rows) * this.height}px`
+                    },
+                    onClick : this.mySwapPage.changeLanguage.bind(this.mySwapPage, el)
+                },
+                el
+            );
+        });
+    };
+
+    changeLangVisibility () {
+        if (this.mySwapPage.state.langVisibility == 'hidden')
+            this.mySwapPage.changeLangVisibility('visible');
+        else 
+            this.mySwapPage.changeLangVisibility('hidden');
+    };  
 
     render () {
         return [
@@ -128,14 +163,27 @@ class LeftNavBar extends React.Component {
                         ]
                     ),
                     e(
-                        'div',
+                        'img',
                         {
                             id : 'language',
+                            src : 'img/lang.png',
                             style : {
                                 visibility : this.mySwapPage.state.settingsVisibility
                             },
-                            onClick : this.mySwapPage.changeLanguage.bind(this.mySwapPage)
+                            onClick : this.changeLangVisibility.bind(this)
                         }
+                    ),
+                    e(
+                        'div',
+                        {
+                            id : 'language-panel',
+                            style : {
+                                width : '120px',
+                                height : '60px',
+                                visibility : this.mySwapPage.state.langVisibility
+                            },
+                        },
+                        this.fillLangElements(['rus', 'eng'])
                     )
                 ]
             )

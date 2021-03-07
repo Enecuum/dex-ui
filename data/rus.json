@@ -10,7 +10,7 @@
             "header" : "Enecuum",
             "connect" : "Подключение",
             "connectionCard" : {
-                "header" : "Подключите свой кошелёк"
+                "header" : "Подключите кошелёк"
             }
         }
     },

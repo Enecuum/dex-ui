@@ -17,7 +17,6 @@ class Root extends React.Component {
         this.connectionStatus = false;
         this.navOpen = false;
         this.colorThemes = presets.colorThemes;
-        this.language = 'eng';
         // -------------------------------------
         this.active = presets.active;
         this.passive = presets.passive;
@@ -51,6 +50,7 @@ class Root extends React.Component {
             leftNavAWidth : '0px',
             swapCardLeft : '51%',
             settingsVisibility : 'hidden',
+            langVisibility : 'hidden',
             bottomPosition : '-60px',
             submitName : ''
         };
@@ -78,12 +78,13 @@ class Root extends React.Component {
 
     // ==================================================================================================== upd state
 
-    changeLanguage () {
-        if (this.language == 'eng')
-            this.language = 'rus';
-        else
-            this.language = 'eng';
-        this.updLanguage(this.language); 
+    changeLanguage (language) {
+        this.updLanguage(language); 
+        this.openCloseNavbar();
+    };
+
+    changeLangVisibility (vis) {
+        this.setState({ langVisibility : vis }); 
     };
 
     switchTheSwitch () {
@@ -431,12 +432,12 @@ class Root extends React.Component {
         let data;
         if (this.navOpen) {
             this.navOpen = false;
-            data = [0, 0, '51%', 'hidden', '-60px'];
+            data = [0, 0, '51%', 'hidden', '-60px', 'hidden'];
         } else {
             this.navOpen = true;
-            data = ['160px', '160px', '55%', 'visible', '15px'];
+            data = ['160px', '160px', '55%', 'visible', '15px', 'hidden'];
         }
-        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition'];
+        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition', 'langVisibility'];
         for (let i in necessaryProps)
             this.updState(necessaryProps[i], data[i]);
     };

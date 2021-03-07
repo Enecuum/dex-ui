@@ -36,15 +36,18 @@
     /* border: 1px solid black; */
     width: 100%;
     height: 50px;
+    padding : 10px;
+    padding-left : 15px;
+    padding-right : 15px;
 }
 
 #settings {
     position: fixed;
-    border: 1px solid black;
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     margin: 5px;
-    bottom: 10px;
+    bottom: 20px;
+    left: 10px;
 }
 
 .space-line {
@@ -56,11 +59,10 @@
 
 #language {
     position: fixed;
-    bottom: 15px;
+    bottom: 25px;
     left: 80px;
-    border: 1px solid black;
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
 }
 
 #theme-toggler {
@@ -118,4 +120,29 @@ input:checked + .slider:before {
   
 .slider.round:before {
     border-radius: 50%;
+}
+
+#language-panel {
+    position: fixed;
+    bottom: 80px;
+    border-radius: 10px;
+    padding-left: 1px;
+    padding-top: 1px;
+    background-color: var(--lang-color);
+}
+
+.lang-el {
+    width : 58px;
+    height : 58px;
+    background-color : var(--color3-t);
+    color : white;
+    border-radius: 10px;
+    cursor: pointer;
+    position : fixed;
+    text-align : center;
+    padding-top : 17px;
+}
+
+.lang-el:hover {
+    background-color : var(--color2);
 }

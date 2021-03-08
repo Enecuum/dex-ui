@@ -1,33 +1,33 @@
 [
     {
         "token_0" : {
-            "name" : "ENQ",
+            "hash" : "123",
             "volume" : 1
         },
         "token_1" : {
-            "name" : "ETH",
+            "hash" : "1234",
             "volume" : 10
         },
         "pool_fee" : 0.1
     },
     {
         "token_0" : {
-            "name" : "ENQ",
+            "hash" : "123",
             "volume" : 560
         },
         "token_1" : {
-            "name" : "BTC",
+            "hash" : "abc",
             "volume" : 1.4
         },
         "pool_fee" : 0.1
     },
     {
         "token_0" : {
-            "name" : "ENQ",
+            "hash" : "123",
             "volume" : 560
         },
         "token_1" : {
-            "name" : "TKN",
+            "hash" : "123abc",
             "volume" : 1.4
         },
         "pool_fee" : 0.1

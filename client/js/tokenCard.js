@@ -16,7 +16,7 @@ class Tokens extends React.Component {
     };
 
     getTokens (searchWord) {
-        return this.mySwapPage.tokens.filter(el => (new RegExp(`.*${searchWord.trim().toLowerCase()}.*`)).test(el.toLowerCase()));
+        return this.mySwapPage.tokens.filter(el => (new RegExp(`.*${searchWord.trim().toLowerCase()}.*`)).test(el.name.toLowerCase()));
     }
 
     assignToken (token) {
@@ -38,7 +38,7 @@ class Tokens extends React.Component {
                         borderRadius : '10px'
                     }
                 },
-                el
+                el.name
             );
         });
     }

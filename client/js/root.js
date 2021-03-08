@@ -38,10 +38,10 @@ class Root extends React.Component {
                 exchVis : this.exchange.exchVis,
                 input0 : '',
                 value0 : this.exchange.field0.value,
-                token0 : this.exchange.field0.token,
+                token0 : this.exchange.field0.token.name,
                 input1 : '',
                 value1 : this.exchange.field1.value,
-                token1 : this.exchange.field1.token
+                token1 : this.exchange.field1.token.name
             },
 
             userTokenValue : 0,
@@ -128,9 +128,9 @@ class Root extends React.Component {
         let mode = this.getMode();
         this.setState(state => {
             state.card.value0 = this[mode].field0.value; 
-            state.card.token0 = this[mode].field0.token;
+            state.card.token0 = this[mode].field0.token.name;
             state.card.value1 = this[mode].field1.value;
-            state.card.token1 = this[mode].field1.token; 
+            state.card.token1 = this[mode].field1.token.name; 
             state.card.header = this.state.langData.trade.swapCard[mode].header; 
             state.card.description = this.state.langData.trade.swapCard[mode].description; 
             return state;
@@ -275,10 +275,11 @@ class Root extends React.Component {
     };
 
     searchSwap (tokens) {
+        let hashes = [tokens[0].hash, tokens[1].hash];
         return this.pairs.find(el => {
-            if (tokens.indexOf(el.token_0.name) != -1 && 
-                tokens.indexOf(el.token_1.name) != -1 && 
-                el.token_0.name !== el.token_1.name) {
+            if (hashes.indexOf(el.token_0.hash) != -1 && 
+                hashes.indexOf(el.token_1.hash) != -1 && 
+                el.token_0.hash !== el.token_1.hash) {
                 return el;
             }
         });
@@ -308,12 +309,12 @@ class Root extends React.Component {
 
     countPrice (activeField, pair) {
         if (this.mode == 1) {
-            if (activeField.token == pair.token_0.name)
-                return this.getAddLiquidityPrice(pair.token_0.volume, pair.token_1.volume, activeField.value);
+            if (activeField.token == pair.token_0.hash)
+                return this.getAddLiquidityPrice(pair.token_0.hash, pair.token_1.hash, activeField.value);
             else
                 return this.getAddLiquidityPrice(pair.token_1.volume, pair.token_0.volume, activeField.value);
         } else {
-            if (activeField.token == pair.token_0.name)
+            if (activeField.token == pair.token_0.hash)
                 return this.getSwapPrice(pair, activeField.value);
             else
                 return this.getSwapPrice(pair, activeField.value);

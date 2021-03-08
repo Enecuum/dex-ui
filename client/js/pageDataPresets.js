@@ -19,11 +19,17 @@ class Presets {
             exchVis : 'visible',
             field0 : {
                 value : '',
-                token : startToken
+                token : {
+                    name : startToken,
+                    hash : undefined
+                }
             },
             field1 : {
                 value : '',
-                token : startToken
+                token : {
+                    name : startToken,
+                    hash : undefined
+                }
             }
         };
 
@@ -32,11 +38,17 @@ class Presets {
             exchVis : 'hidden',
             field0 : {
                 value : '',
-                token : startToken
+                token : {
+                    name : startToken,
+                    hash : undefined
+                }
             },
             field1 : {
                 value : '',
-                token : startToken
+                token : {
+                    name : startToken,
+                    hash : undefined
+                }
             }
         };
 

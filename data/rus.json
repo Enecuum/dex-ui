@@ -1,10 +1,7 @@
 {
     "navbars" : {
         "left" : [
-                "Торговля",
-                "Title1",
-                "Title2",
-                "Title3"
+                "Торговля"
         ],
         "top" : {
             "header" : "Enecuum",
@@ -27,7 +24,7 @@
                 "input1" : "В"
             },
             "liquidity" : {
-                "header" : "Liquidity",
+                "header" : "Ликвидность",
                 "description" : "Добавить ликвидность для получения LP токенов",
                 "input0" : "Ввод",
                 "input1" : "Ввод"

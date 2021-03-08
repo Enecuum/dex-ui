@@ -1,53 +1,13 @@
-let changeColor = function (cs, color) {
-    let navEl = document.getElementsByClassName(cs);
-    for (let el of navEl)
-        el.style.background = color;
-};
-
-let turnOn = function (cs) {
-    if (document.getElementsByClassName(cs)[0].style.background != 'var(--color3)')
-        changeColor(cs, 'var(--color3-t)');
-};
-
-let turnOff = function (cs) {
-    if (document.getElementsByClassName(cs)[0].style.background != 'var(--color3)')
-        changeColor(cs, 'var(--color1)');
-};
-
-let lightIt = function (general, cs) {
-    let allEl = document.getElementsByClassName(general);
-    for (let el of allEl)
-        el.style.background = 'var(--color1)';
-    changeColor(cs, 'var(--color3)');
-};
-
-let insertElements = function (elements, fixedNavbar, icons) {
-    return elements.map((el, i) => {
-        let className = (i == 0) ? `n-e-${i} first-in-nav` : `n-e-${i}`;
-        return e(
-            (fixedNavbar) ? 'img' : 'div',
-            {
-                class : `nav-element ${className}`,
-                onMouseOver : turnOn.bind(this, className),
-                onMouseOut  : turnOff.bind(this, className),
-                onClick : lightIt.bind(this, 'nav-element', className),
-                src : (fixedNavbar) ? `img/${icons[i]}.png` : undefined
-            },
-            (fixedNavbar) ? undefined : el
-        );
-    });
-};
-
-
 class FixedLeftNavBar extends React.Component {
     constructor (props) {
         super(props);
         this.mySwapPage = props.outer;
+        this.icons = ['trade'];
     };
 
     render () {
         return [
-            ...insertElements(this.mySwapPage.state.langData.navbars.left, true, ['trade', 'noname', 'noname', 'noname']),
+            ...this.mySwapPage.insertElements(true, this.icons),
             e(
                 'div',
                 {
@@ -129,11 +89,14 @@ class LeftNavBar extends React.Component {
                     },
                 },
                 [
-                    ...insertElements(this.mySwapPage.state.langData.navbars.left, false),
+                    ...this.mySwapPage.insertElements(false),
                     e(
                         'div',
                         {
-                            class : 'space-line'
+                            class : 'space-line',
+                            style : {
+                                width : this.mySwapPage.state.leftNavWidth
+                            }
                         }
                     ),
 

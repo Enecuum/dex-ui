@@ -1,10 +1,11 @@
 .swap-card {
     position: fixed;
+    box-shadow: var(--box-shadow);
     background-color: var(--color1);
     margin-top: 250px;
     height: 500px;
     width: 430px;
-    border-radius: 40px;
+    border-radius: 30px;
     margin-left: -215px;
     transition: var(--transition);
 }
@@ -55,6 +56,7 @@
     background-color: var(--color3);
     height: 60px;
     margin-top: 5px !important;
+    border-radius: 30px;
 }
 
 i {
@@ -66,12 +68,12 @@ i {
 
 #up-arrow {
     transform: rotate(135deg);
-    margin-bottom: -6px;
+    margin-bottom: -5px;
     margin-left: 11px;
 }
 
 #down-arrow {
-    margin-bottom: -6px;
+    margin-bottom: -5px;
     transform: rotate(-45deg);
     /* margin-left: 14px; */
 }

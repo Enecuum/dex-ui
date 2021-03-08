@@ -45,14 +45,14 @@ class Root extends React.Component {
             },
 
             userTokenValue : 0,
-
             leftNavWidth : '0px',
             leftNavAWidth : '0px',
             swapCardLeft : '51%',
             settingsVisibility : 'hidden',
             langVisibility : 'hidden',
             bottomPosition : '-60px',
-            submitName : ''
+            submitName : '',
+            leftNavPage : 0
         };
         // -------------------------------------
         this.updLanguage('eng');
@@ -358,6 +358,60 @@ class Root extends React.Component {
             this.updCardInternals();
         }
     };
+    
+    turnOn (colorIndex) {
+        this.setState(state => {
+            state.leftNavColors[colorIndex] = 'var(--color3-t)';
+            return state;
+        });
+    };
+    
+    turnOff (colorIndex) {
+        this.setState(state => {
+            if (colorIndex != this.state.leftNavPage)
+                state.leftNavColors[colorIndex] = 'var(--color1)';
+            else 
+                state.leftNavColors[colorIndex] = 'var(--color3)';
+            return state;
+        });
+    };
+    
+    lightIt (colorIndex) {
+        this.setState(state => {
+            state.leftNavPage = colorIndex;
+            for (let i in state.leftNavColors)
+                state.leftNavColors[i] = 'var(--color1)';
+            state.leftNavColors[colorIndex] = 'var(--color3)';
+            return state;
+        });
+    };
+
+    insertElements (fixedNavbar, icons) {
+        let elements = this.state.langData.navbars.left;
+        this.setState(state => {
+            state.leftNavColors = elements.map((el, i) => {
+                return (this.state.leftNavPage != i) ? 'var(--color1)' : 'var(--color3)';
+            });
+        });
+        return elements.map((el, i) => {
+            let className = (i == 0) ? `n-e-${i} first-in-nav` : `n-e-${i}`;
+            return e(
+                (fixedNavbar) ? 'img' : 'div',
+                {
+                    key : i,
+                    class : `nav-element ${className}`,
+                    onMouseOver : this.turnOn.bind(this, i),
+                    onMouseOut  : this.turnOff.bind(this, i),
+                    onClick : this.lightIt.bind(this, i),
+                    src : (fixedNavbar) ? `img/${icons[i]}.png` : undefined,
+                    style : {
+                        backgroundColor : this.state.leftNavColors[i]
+                    }
+                },
+                (fixedNavbar) ? undefined : el
+            );
+        });
+    };
 
     openTokenList (fieldClass) {
         if (fieldClass === 'token-use')
@@ -474,7 +528,7 @@ class Root extends React.Component {
                                 class : 'navbar-custom',
                                 onClick : this.openCloseNavbar.bind(this)
                             },
-                            'EnecuumSwap'
+                            'ENEX'
                         ),
                         e(
                             'div',

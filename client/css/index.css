@@ -1,23 +1,25 @@
 :root {
-    --color1 : #ecf4fc;
+    --color1 : white;
     --color2 : #e4ecfc;
     --color3 : #747cf4;
     --color3-t : #747cf480;
-    --main-background : white;
+    --main-background : #f9fafb;
     --transition : 0.1s;
     --text-color : black;
     --exit-color : grey;
     --lang-color : #9ea4ff;
+    --box-shadow-r : rgba(0, 0, 0, 0.089) 8px 2px 25px 0px;
+    --box-shadow : rgba(0, 0, 0, 0.089) 0px 0px 25px 0px;
 }
 
 body {
-    font-family: "Helvetica", sans-serif;
+    font-family: 'Barlow', sans-serif;
     background-color: var(--main-background);
     color: var(--text-color);
 }
 
 p {
-    font-family: "Helvetica", sans-serif;
+    font-family: 'Barlow', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -30,4 +32,9 @@ p {
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: var(--color3);
+}
+
+::selection {
+    color: var(--text-color);
+    background: #00000000;
 }

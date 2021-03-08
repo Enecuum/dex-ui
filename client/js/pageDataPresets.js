@@ -54,20 +54,22 @@ class Presets {
 
         this.colorThemes = {
             light : {
-                color1 : '#ecf4fc',
+                color1 : 'white',
                 color2 : '#e4ecfc',
-                color3 : '#747cf4',
-                background : 'white',
+                color3 : 'rgb(96, 107, 251)',
+                background : '#f9fafb',
                 textColor : 'black',
-                exitColor : 'grey'
+                exitColor : 'grey',
+                boxShadow : 'rgba(5, 6, 13, 0.445) 7px 7px 15px 0px'
             },
             dark : {
-                color1 : 'rgb(39, 38, 61)',
+                color1 : 'rgb(33, 38, 62)',
                 color2 : 'lightgrey',
-                color3 : 'black',
-                background : '#131329',
-                textColor : '#2EC2A7',
-                exitColor : 'white'
+                color3 : 'rgb(96, 107, 251)',
+                background : 'rgb(21, 26, 47)',
+                textColor : 'white',
+                exitColor : 'white',
+                boxShadow : 'rgba(5, 6, 13, 0.445) 7px 7px 15px 0px'
             }
         };
 

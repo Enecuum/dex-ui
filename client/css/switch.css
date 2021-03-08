@@ -1,5 +1,6 @@
 #switch {
     position: fixed;
+    box-shadow: var(--box-shadow);
     margin-top: 150px;
     height: 35px;
     margin-left: 25px;

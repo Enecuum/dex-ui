@@ -1,10 +1,7 @@
 {
     "navbars" : {
         "left" : [
-                "Trade",
-                "Title1",
-                "Title2",
-                "Title3"
+                "Trade"
         ],
         "top" : {
             "header" : "Enecuum",

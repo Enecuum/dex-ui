@@ -73,9 +73,9 @@ class Card extends React.Component {
                                 visibility : this.mySwapPage.state.card.plusVis,
                                 fontSize: '40px',
                                 color: 'grey',
-                                left: '8px',
+                                left: '10px',
                                 position: 'absolute',
-                                bottom: '-26px'
+                                bottom: '-22px'
                             }
                         },
                         '+'

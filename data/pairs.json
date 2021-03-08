@@ -1,0 +1,35 @@
+[
+    {
+        "token_0" : {
+            "hash" : "123",
+            "volume" : 1
+        },
+        "token_1" : {
+            "hash" : "1234",
+            "volume" : 10
+        },
+        "pool_fee" : 0.1
+    },
+    {
+        "token_0" : {
+            "hash" : "123",
+            "volume" : 560
+        },
+        "token_1" : {
+            "hash" : "abc",
+            "volume" : 1.4
+        },
+        "pool_fee" : 0.1
+    },
+    {
+        "token_0" : {
+            "hash" : "123",
+            "volume" : 560
+        },
+        "token_1" : {
+            "hash" : "123abc",
+            "volume" : 1.4
+        },
+        "pool_fee" : 0.1
+    }
+]

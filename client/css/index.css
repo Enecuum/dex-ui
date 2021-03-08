@@ -1,0 +1,45 @@
+:root {
+    --color1 : white;
+    --color2 : #eeeaf4;
+    --color3 : #747cf4;
+    --color3-t : #747cf480;
+    --main-background : #f9fafb;
+    --transition : 0.1s;
+    --text-color : black;
+    --exit-color : grey;
+    --lang-color : #9ea4ff;
+    --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
+    --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
+}
+
+body {
+    font-family: 'Barlow', sans-serif;
+    background-color: var(--main-background);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+.btn {
+    font-family: 'Barlow', sans-serif;
+}
+
+p {
+    font-family: 'Barlow', sans-serif;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 0;
+    left:-100px;
+    border-radius: 10px;
+    background-color: #dde9ff;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: var(--color3);
+}
+
+::selection {
+    color: var(--text-color);
+    background: #00000000;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "enq-swap",
+  "version": "1.0.0",
+  "description": "swap service",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enecuum-dev-team/enq-swap.git"
+  },
+  "author": "wWrongName",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/enecuum-dev-team/enq-swap/issues"
+  },
+  "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

@@ -1,0 +1,42 @@
+{
+    "navbars" : {
+        "left" : [
+                "Торговля"
+        ],
+        "top" : {
+            "header" : "Enecuum",
+            "connect" : "Подключение",
+            "connectionCard" : {
+                "header" : "Подключите кошелёк"
+            }
+        }
+    },
+    "trade" : {
+        "switch" : {
+            "mode0" : "Обмен",
+            "mode1" : "Ликвидность"
+        },
+        "swapCard" : {
+            "exchange" : {
+                "header" : "Обмен",
+                "description" : "Торговля токенами в одно мгновение",
+                "input0" : "Из",
+                "input1" : "В"
+            },
+            "liquidity" : {
+                "header" : "Ликвидность",
+                "description" : "Добавить ликвидность для получения LP токенов",
+                "input0" : "Ввод",
+                "input1" : "Ввод"
+            },
+            "submitButton" : {
+                "beforeConnection" : "Подключение",
+                "afterConnection" : "Отправить"
+            }
+        },
+        "tokenCard" : {
+            "header" : "Выберите токен",
+            "search" : "Поиск по имени"
+        }
+    }
+}

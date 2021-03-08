@@ -405,7 +405,8 @@ class Root extends React.Component {
                     onClick : this.lightIt.bind(this, i),
                     src : (fixedNavbar) ? `img/${icons[i]}.png` : undefined,
                     style : {
-                        backgroundColor : this.state.leftNavColors[i]
+                        backgroundColor : this.state.leftNavColors[i],
+                        marginBottom : '2px'
                     }
                 },
                 (fixedNavbar) ? undefined : el
@@ -471,13 +472,13 @@ class Root extends React.Component {
                 },
                 props.tokenName
             ),
-            e(
-                'div',
-                {
-                    id : 'token-info'
-                },
-                'your amount: ' + props.userTokenAmount
-            )
+            // e(
+            //     'div',
+            //     {
+            //         id : 'token-info'
+            //     },
+            //     'your amount: ' + props.userTokenAmount
+            // )
         ];
     };
 

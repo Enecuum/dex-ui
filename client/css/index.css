@@ -1,6 +1,6 @@
 :root {
     --color1 : white;
-    --color2 : #e4ecfc;
+    --color2 : #eeeaf4;
     --color3 : #747cf4;
     --color3-t : #747cf480;
     --main-background : #f9fafb;
@@ -8,14 +8,19 @@
     --text-color : black;
     --exit-color : grey;
     --lang-color : #9ea4ff;
-    --box-shadow-r : rgba(0, 0, 0, 0.089) 8px 2px 25px 0px;
-    --box-shadow : rgba(0, 0, 0, 0.089) 0px 0px 25px 0px;
+    --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
+    --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
 }
 
 body {
     font-family: 'Barlow', sans-serif;
     background-color: var(--main-background);
     color: var(--text-color);
+    overflow-x: hidden;
+}
+
+.btn {
+    font-family: 'Barlow', sans-serif;
 }
 
 p {

@@ -81,7 +81,8 @@ class ConnectionService extends React.Component {
                         height: '60px',
                         marginLeft: '5%',
                         marginTop: '20px',
-                        fontSize: '20px'
+                        fontSize: '20px',
+                        backgroundColor : 'var(--color3)'
                     }
                 },
                 'EnqWallet'

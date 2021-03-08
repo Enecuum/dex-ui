@@ -55,7 +55,7 @@ class Presets {
         this.colorThemes = {
             light : {
                 color1 : 'white',
-                color2 : '#e4ecfc',
+                color2 : '#eeeaf4',
                 color3 : 'rgb(96, 107, 251)',
                 background : '#f9fafb',
                 textColor : 'black',
@@ -64,7 +64,7 @@ class Presets {
             },
             dark : {
                 color1 : 'rgb(33, 38, 62)',
-                color2 : 'lightgrey',
+                color2 : '#40458a',
                 color3 : 'rgb(96, 107, 251)',
                 background : 'rgb(21, 26, 47)',
                 textColor : 'white',

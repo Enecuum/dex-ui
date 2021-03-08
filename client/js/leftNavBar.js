@@ -45,6 +45,7 @@ class LeftNavBar extends React.Component {
         vars.setProperty('--main-background', theme.background);
         vars.setProperty('--text-color', theme.textColor);
         vars.setProperty('--exit-color', theme.exitColor);
+        vars.setProperty('--color2', theme.color2);
         let chckd = (this.lightTheme) ? false : true;
         this.setState({ checked : chckd });
         this.lightTheme = !this.lightTheme;

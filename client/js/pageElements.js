@@ -5,17 +5,15 @@ class Connect extends React.Component {
     }
 
     render () {
-        return e(
-            'button',
-            { 
-                onClick : this.mySwapPage.openConnectionList.bind(this.mySwapPage),
-                class : 'btn btn-secondary my-2 my-sm-0',
-                type : 'submit',
-                style : {
-                    backgroundColor : 'var(--color3)'
-                }
-            },
-            this.mySwapPage.state.submitName
+        return (
+            <button onClick={this.mySwapPage.openConnectionList.bind(this.mySwapPage)}
+                    class='btn btn-secondary my-2 my-sm-0'
+                    type='submit'
+                    style={{
+                        backgroundColor : 'var(--color3)'
+                    }}>
+                { this.mySwapPage.state.submitName }
+            </button>
         );
     }
 };
@@ -42,52 +40,38 @@ class ConnectionService extends React.Component {
     };
 
     render () {
-        return [ 
-            e(
-                'div',
-                { 
-                    class : "close",
-                    onClick : this.mySwapPage.closeConnectionList.bind(this.mySwapPage)
-                }
-            ),
-            e(
-                'h4',
-                {
-                    style : {
+        return (
+            <div>
+                <div class="close"
+                    onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}>
+                </div>
+                <h4 style={{
                         marginTop : '7%',
                         marginLeft : '6%'
-                    }
-                },
-                this.mySwapPage.state.langData.navbars.top.connectionCard.header
-            ),
-            e(
-                'div',
-                {
-                    style : {
+                    }}>
+                    {this.mySwapPage.state.langData.navbars.top.connectionCard.header}
+                </h4>
+                <div style={{
                         borderBottom: '1px solid #80808094',
                         marginTop : '25px',
                         width: '100%'
-                    }
-                }
-            ),
-            e(  
-                'button',
-                {
-                    onClick : this.connectToEnq.bind(this),
-                    class : 'btn btn-secondary',
-                    style : {
-                        borderRadius: '20px',
-                        width: '90%',
-                        height: '60px',
-                        marginLeft: '5%',
-                        marginTop: '20px',
-                        fontSize: '20px',
-                        backgroundColor : 'var(--color3)'
-                    }
-                },
-                'EnqWallet'
-            )
-        ]
+                    }}>
+                </div>
+                <button onClick={this.connectToEnq.bind(this)}
+                        class='btn btn-secondary'
+                        style={{
+                            borderRadius: '20px',
+                            width: '90%',
+                            height: '60px',
+                            marginLeft: '5%',
+                            marginTop: '20px',
+                            fontSize: '20px',
+                            backgroundColor : 'var(--color3)'
+                        }}>
+                    EnqWallet
+                </button>
+            </div>
+        );
     }
 };
 
@@ -100,37 +84,31 @@ class Switch extends React.Component {
     }
 
     render () {
-        return [
-            e(
-                'div',
-                {
-                    class : "switch-mode",
-                    id : "exchange-mode",
-                    style : {
-                        color : this.mySwapPage.state.exchColor,
-                        backgroundColor : this.mySwapPage.state.exchBackColor
-                    },
-                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange'),
-                    onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'exchange'),
-                    onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'exchange')
-                },
-                this.mySwapPage.state.langData.trade.switch.mode0
-            ),
-            e(
-                'div',
-                {
-                    class : "switch-mode",
-                    id : "liquidity-mode",
-                    style : {
-                        color : this.mySwapPage.state.lqdtColor,
-                        backgroundColor : this.mySwapPage.state.lqdtBackColor
-                    },
-                    onClick : this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity'),
-                    onMouseOver : this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'liquidity'),
-                    onMouseOut : this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'liquidity')
-                },
-                this.mySwapPage.state.langData.trade.switch.mode1
-            )
-        ]
+        return (
+            <div>
+                <div    class="switch-mode"
+                        id="exchange-mode"
+                        style={{
+                            color : this.mySwapPage.state.exchColor,
+                            backgroundColor : this.mySwapPage.state.exchBackColor
+                        }}
+                        onClick={this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange')}
+                        onMouseOver={this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'exchange')}
+                        onMouseOut={this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'exchange')}>
+                    {this.mySwapPage.state.langData.trade.switch.mode0}
+                </div>
+                <div    class="switch-mode"
+                        id="liquidity-mode"
+                        style={{
+                            color : this.mySwapPage.state.lqdtColor,
+                            backgroundColor : this.mySwapPage.state.lqdtBackColor
+                        }}
+                        onClick={this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity')}
+                        onMouseOver={this.mySwapPage.lightTheButton.bind(this.mySwapPage, 'liquidity')}
+                        onMouseOut={this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'liquidity')}>
+                    {this.mySwapPage.state.langData.trade.switch.mode1}
+                </div>
+            </div>
+        );
     }
 };

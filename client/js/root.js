@@ -288,7 +288,7 @@ class Root extends React.Component {
     countCoinValue (input_0, input_1) {
         try {
             return input_1 / input_0;
-        } catch {
+        } catch (e) {
             return 0;
         }
     };
@@ -395,22 +395,35 @@ class Root extends React.Component {
         });
         return elements.map((el, i) => {
             let className = (i == 0) ? `n-e-${i} first-in-nav` : `n-e-${i}`;
-            return e(
-                (fixedNavbar) ? 'img' : 'div',
-                {
-                    key : i,
-                    class : `nav-element ${className}`,
-                    onMouseOver : this.turnOn.bind(this, i),
-                    onMouseOut  : this.turnOff.bind(this, i),
-                    onClick : this.lightIt.bind(this, i),
-                    src : (fixedNavbar) ? `img/${icons[i]}.png` : undefined,
-                    style : {
-                        backgroundColor : this.state.leftNavColors[i],
-                        marginBottom : '2px'
-                    }
-                },
-                (fixedNavbar) ? undefined : el
-            );
+            if (fixedNavbar) {
+                return (
+                    <img key={i}
+                         class={`nav-element ${className}`}
+                         onMouseOver={this.turnOn.bind(this, i)}
+                         onMouseOut={this.turnOff.bind(this, i)}
+                         onClick={this.lightIt.bind(this, i)}
+                         src={(fixedNavbar) ? `img/${icons[i]}.png` : undefined}
+                         style={{
+                            backgroundColor : this.state.leftNavColors[i],
+                            marginBottom : '2px'
+                         }}>
+                    </img>
+                );
+            } else {
+                return (
+                    <div key={i}
+                         class={`nav-element ${className}`}
+                         onMouseOver={this.turnOn.bind(this, i)}
+                         onMouseOut={this.turnOff.bind(this, i)}
+                         onClick={this.lightIt.bind(this, i)}
+                         style={{
+                            backgroundColor : this.state.leftNavColors[i],
+                            marginBottom : '2px'
+                         }}>
+                        { el }
+                    </div>
+                );
+            }
         });
     };
 
@@ -441,45 +454,26 @@ class Root extends React.Component {
 
     // ============================================================================== input field (render's elements)
     getInputField (props) {
-        return [
-            e(
-                'p',
-                { 
-                    class : 'side',
-                },
-                props.fieldName
-            ),
-            e(
-                'input',
-                {
-                    id : `input-${props.fieldClass}`,
-                    onChange : this.changeField.bind(this, props.fieldClass),
-                    class : 'form-control mr-sm-2 input-field',
-                    type : 'text',
-                    value : props.value,
-                    placeholder : '0.0'
-                }
-            ),
-            e(
-                'button',
-                {
-                    onClick : this.openTokenList.bind(this, props.fieldClass),
-                    class : `btn btn-secondary my-2 my-sm-0 ${props.fieldClass}`,
-                    type : 'submit',
-                    style : {
-                        height : '40px',
-                    }
-                },
-                props.tokenName
-            ),
-            // e(
-            //     'div',
-            //     {
-            //         id : 'token-info'
-            //     },
-            //     'your amount: ' + props.userTokenAmount
-            // )
-        ];
+        return (
+            <div>
+                <p class='side'>
+                    { props.fieldName }
+                </p>
+                <input  id={`input-${props.fieldClass}`}
+                        onChange={this.changeField.bind(this, props.fieldClass)}
+                        class='form-control mr-sm-2 input-field'
+                        type='text'
+                        value={props.value}
+                        placeholder='0.0'>
+                </input>
+                <button onClick={this.openTokenList.bind(this, props.fieldClass)}
+                        class={`btn btn-secondary my-2 my-sm-0 ${props.fieldClass}`}
+                        type='submit'
+                        style={{ height : '40px' }}>
+                    { props.tokenName }
+                </button>
+            </div>
+        );
     };
 
     // ================================================================================================== left navbar
@@ -500,101 +494,38 @@ class Root extends React.Component {
 
     // ======================================================================================================= render
     render () {
-        return [ 
-            e(
-                'div',
-                null,
-                e(
-                    'nav',
-                    {
-                        class : 'navbar navbar-expand-lg navbar-light new-color'
-                    },
-                    [
-                        e(
-                            'img',
-                            {
-                                src : 'img/logo.png',
-                                width : '30px',
-                                height : '30px',
-                                style : {
-                                    cursor: 'pointer'
-                                },
-                                onClick : this.openCloseNavbar.bind(this)
-                            }
-                        ),
-                        e(
-                            'h5',
-                            {
-                                key : 0,
-                                class : 'navbar-custom',
-                                onClick : this.openCloseNavbar.bind(this)
-                            },
-                            'ENEX'
-                        ),
-                        e(
-                            'div',
-                            {
-                                id : 'root-connect',
-                                class : 'connect-btn'
-                            },
-                            e(Connect, { outer : this })
-                        ),
-                    ]
-                )
-            ),
-            e(
-                'div',
-                {
-                    id : 'fixed-left-bar'
-                },
-                e(FixedLeftNavBar, { outer : this })
-            ),
-            e(LeftNavBar, { outer : this }),
-            e(
-                'div',
-                {
-                    id : 'connection-services'
-                },
-                e(ConnectionService, { outer : this })
-            ),
-            e(
-                'div',
-                {
-                    id : 'c-opacity'
-                }
-            ),
-            e(
-                'div',
-                {
-                    id : 'switch',
-                    style : {
-                        left : this.state.swapCardLeft
-                    }
-                },
-                e(Switch, { outer : this })
-            ),
-            e(
-                'div',
-                {
-                    class : 'swap-card',
-                    style : {
-                        left : this.state.swapCardLeft
-                    }
-                },
-                e(Card, { outer : this })
-            ),
-            e(
-                'div',
-                {
-                    id : 'tokens-card'
-                },
-                e(Tokens, { outer : this })
-            )
-        ]
+        return (
+            <div>
+                <nav class='navbar navbar-expand-lg navbar-light new-color'> 
+                    <img onClick={ this.openCloseNavbar.bind(this) } src='img/logo.png' width='30px' height='30px' style={{cursor : 'pointer'}}></img>
+                    <h5 onClick={ this.openCloseNavbar.bind(this) } class='navbar-custom'>EnecuumSwap</h5>
+                    <div id='root-connect' class='connect-btn'>
+                        <Connect outer={ this } />
+                    </div>
+                </nav>
+                <div id='fixed-left-bar'>
+                    <FixedLeftNavBar outer={ this } />
+                </div>
+                <LeftNavBar outer={ this } />,
+                <div id='connection-services'>
+                    <ConnectionService outer={ this } />
+                </div>
+                <div id='c-opacity'></div>
+                <div id='switch' style={{ left : this.state.swapCardLeft }}>
+                    <Switch outer={ this } />
+                </div>
+                <div class='swap-card' style={{ left : this.state.swapCardLeft }}>
+                    <Card outer={ this } />
+                </div>
+                <div id='tokens-card'>
+                    <Tokens outer={ this } />
+                </div>
+            </div>
+        );
     };
 };
 
 ReactDOM.render(
-    e(Root),
+    <Root/>,
     document.getElementById('root')
 );

@@ -6,23 +6,16 @@ class FixedLeftNavBar extends React.Component {
     };
 
     render () {
-        return [
-            ...this.mySwapPage.insertElements(true, this.icons),
-            e(
-                'div',
-                {
-                    class : 'space-line'
-                }
-            ),
-            e(
-                'img',
-                { 
-                    id : 'settings',
-                    src : 'img/settings.png',
-                    onClick : this.mySwapPage.openCloseNavbar.bind(this.mySwapPage)
-                }
-            ),
-        ];
+        return (
+            <div>
+                {this.mySwapPage.insertElements(true, this.icons)}
+                <div class='space-line'></div>
+                <img id='settings'
+                     src='img/settings.png'
+                     onClick={this.mySwapPage.openCloseNavbar.bind(this.mySwapPage)}>
+                </img>
+            </div>
+        );
     };
 };
 
@@ -80,77 +73,34 @@ class LeftNavBar extends React.Component {
     };  
 
     render () {
-        return [
-            e(
-                'div',
-                {
-                    id : 'left-navbar',
-                    style : {
-                        width : this.mySwapPage.state.leftNavWidth
-                    },
-                },
-                [
-                    ...this.mySwapPage.insertElements(false),
-                    e(
-                        'div',
-                        {
-                            class : 'space-line',
-                            style : {
-                                width : this.mySwapPage.state.leftNavWidth
-                            }
-                        }
-                    ),
-
-                    e(
-                        'label',
-                        {
-                            id : 'theme-toggler',
-                            style : {
-                                bottom : this.mySwapPage.state.bottomPosition
-                            }
-                        },
-                        [
-                            e(
-                                'input',
-                                {
-                                    type : 'checkbox',
-                                    checked : this.state.checked,
-                                    onClick : this.changeColors.bind(this)
-                                }
-                            ),
-                            e(
-                                'span',
-                                {
-                                    class : 'slider round'
-                                }
-                            )
-                        ]
-                    ),
-                    e(
-                        'img',
-                        {
-                            id : 'language',
-                            src : 'img/lang.png',
-                            style : {
-                                visibility : this.mySwapPage.state.settingsVisibility
-                            },
-                            onClick : this.changeLangVisibility.bind(this)
-                        }
-                    ),
-                    e(
-                        'div',
-                        {
-                            id : 'language-panel',
-                            style : {
-                                width : '120px',
-                                height : '60px',
-                                visibility : this.mySwapPage.state.langVisibility
-                            },
-                        },
-                        this.fillLangElements(['rus', 'eng'])
-                    )
-                ]
-            )
-        ];
+        return (
+            <div id='left-navbar' style={{ width : this.mySwapPage.state.leftNavWidth }}>
+                {this.mySwapPage.insertElements(false, this.icons)}
+                <div class='space-line' style={{ width : this.mySwapPage.state.leftNavWidth }}>
+                </div>
+                <label id='theme-toggler' style={{ bottom : this.mySwapPage.state.bottomPosition }}>
+                    <input  type='checkbox'
+                            checked={this.state.checked}
+                            onClick={this.changeColors.bind(this)}>
+                    </input>
+                    <span class='slider round'></span>
+                </label>
+                <img id='language'
+                     src='img/lang.png'
+                     style={{
+                        visibility : this.mySwapPage.state.settingsVisibility
+                     }}
+                     onClick={this.changeLangVisibility.bind(this)}>            
+                </img>
+                <div id='language-panel'
+                     style={{
+                        width : '120px',
+                        height : '60px',
+                        visibility : this.mySwapPage.state.langVisibility
+                     }}>
+                    { this.fillLangElements(['rus', 'eng']) }
+                </div>
+            </div>
+        );
     };
 };

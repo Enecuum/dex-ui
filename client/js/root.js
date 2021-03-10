@@ -81,8 +81,7 @@ class Root extends React.Component {
     // ==================================================================================================== upd state
 
     changeLanguage (language) {
-        this.updLanguage(language); 
-        this.openCloseNavbar();
+        this.updLanguage(language);
     };
 
     changeLangVisibility (vis) {
@@ -500,7 +499,7 @@ class Root extends React.Component {
             <div className='h-100'>
                 <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>
                     <div className='d-flex align-items-end justify-content-between'>                 
-                        <span className='icon-Icon9 mr-5 mb-2' onClick={ this.openCloseNavbar.bind(this) } style={{ color : '#61758b', 'font-size' : '20px'}}/>                        
+                        <span className='icon-Icon9 mr-5 mb-2' onClick={ this.openCloseNavbar.bind(this) } style={{ color : '#61758b', fontSize : '20px'}}/>                        
                         <a className='navbar-brand py-0 my-0' href="#">
                             <img src='img/enex-logo.png' style={{cursor : 'pointer'}}></img>
                         </a>                     

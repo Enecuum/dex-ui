@@ -23,7 +23,7 @@ class SwapApi {
                 method : 'GET'
             }
         );
-    }
+    };
 };
 
 const swapApi = new SwapApi();

@@ -38,3 +38,20 @@
     color: var(--inactive-item);
 }
 /*socials in aside end*/
+
+
+
+
+
+
+/*ENQ exchange rate begin*/
+.exchange-rate img {
+    margin-left : 5px;
+}
+
+.exchange-rate div {
+    color : #9cb237;
+    margin-left : 10px;
+    font-weight: bold;
+}
+/*ENQ exchange rate end*/

@@ -1,8 +1,10 @@
+const sec = 1000;
+
 class Aside extends React.Component {
     constructor (props) {
         super(props);
         this.mySwapPage = props.outer;
-        console.log(this.mySwapPage)
+        // console.log(this.mySwapPage)
         this.itemsOrder = ['home', 'exchange', 'liquidity', 'ido', 'farms', 'pools', 'etm', 'info', 'docs'];
         this.menuItems = {
             home : {
@@ -41,7 +43,33 @@ class Aside extends React.Component {
                 iconClasses: 'icon-Icon19',
                 action: undefined
             }
-        }
+        };
+        this.exchRateUpdRate = 5 * sec;
+        this.state = {
+            exchangeRate : ''
+        };
+        this.monitorExchangeRate();
+    };
+
+    monitorExchangeRate () {
+        this.updExchangeRate();
+        setInterval(() => this.updExchangeRate(), this.exchRateUpdRate);
+    };
+
+    setExchangeRate (newValue) {
+        this.setState({ exchangeRate : newValue.toFixed(3) });
+    };
+
+    updExchangeRate () {
+        fetch('https://api.coingecko.com/api/v3/simple/price?ids=enq-enecuum&vs_currencies=USD')
+        .then(async res => {
+            res = await res.json();
+            this.setExchangeRate(res['enq-enecuum'].usd);
+        },
+        err => {
+            console.log(err);
+            this.setExchangeRate('---');
+        });
     };
 
     render () {
@@ -57,8 +85,11 @@ class Aside extends React.Component {
                 </div>
                 <div className='d-flex flex-column justify-content-between'>
                     <div className='d-flex align-items-center justify-content-between'>
-                        <div className='exchange-rate'>
-
+                        <div className='exchange-rate d-flex align-items-center justify-content-between menu-item'>
+                            <img src='img/logo.png' width='30px' height='30px'></img>
+                            <div>
+                                ${this.state.exchangeRate}
+                            </div>
                         </div>
                         <div className='lang-switcher d-flex align-items-center justify-content-between menu-item '>
                             <span className='icon-Icon6'/>                            
@@ -68,7 +99,7 @@ class Aside extends React.Component {
                         </div>
                     </div>
                     <Socials/>
-                </div>                
+                </div>
             </div>
         );
     };

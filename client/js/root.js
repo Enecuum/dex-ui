@@ -54,8 +54,10 @@ class Root extends React.Component {
             submitName : '',
             leftNavPage : 0
         };
+        this.siteLocales = presets.langData.siteLocales;
+        this.activeLocale = presets.langData.preferredLocale;
         // -------------------------------------
-        this.updLanguage('eng');
+        this.updLanguage(this.activeLocale);
         this.updExternalData();
         ENQweb3lib.connect();
     };
@@ -510,7 +512,7 @@ class Root extends React.Component {
                 <main role='main' className='container-fluid h-100 px-0'>
                     <div className='row'>
                         <div className='col-12'>
-                            <Aside />
+                            <Aside outer={this} />
                             <div id='connection-services'>
                                 <ConnectionService outer={ this } />
                             </div>

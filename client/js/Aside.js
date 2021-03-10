@@ -2,51 +2,43 @@ class Aside extends React.Component {
     constructor (props) {
         super(props);
         this.mySwapPage = props.outer;
+        console.log(this.mySwapPage)
         this.itemsOrder = ['home', 'exchange', 'liquidity', 'ido', 'farms', 'pools', 'etm', 'info', 'docs'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
-                text: '1',
                 action: undefined
             },
             exchange : {
                 iconClasses: 'icon-Icon10',
-                text: '2',
                 action: undefined
             },
             liquidity : {
                 iconClasses: 'icon-Icon18',
-                text: '3',
                 action: undefined
             },
             ido : {
                 iconClasses: 'icon-Icon21',
-                text: '4',
                 action: undefined
             },
             farms : {
                 iconClasses: 'icon-Icon20',
-                text: '5',
                 action: undefined
             },
             pools : {
                 iconClasses: 'icon-Icon22',
-                text: '6',
                 action: undefined
             },
             etm : {
                 iconClasses: 'icon-Icon25',
-                text: '7',
                 action: undefined
             },
             info : {
                 iconClasses: 'icon-Icon24',
-                text: '8',
                 action: undefined
             },
             docs : {
                 iconClasses: 'icon-Icon19',
-                text: '9',
                 action: undefined
             }
         }
@@ -59,7 +51,7 @@ class Aside extends React.Component {
                     {this.itemsOrder.map((item, index) => (
                         <div className='menu-item d-flex align-items-center justify-content-start mb-2'>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
-                            <span>{this.menuItems[item].text}</span>
+                            <span>{this.mySwapPage.state.langData.navbars.left[item]}</span>
                         </div>
                     ))}
                 </div>
@@ -68,7 +60,11 @@ class Aside extends React.Component {
                         <div className='exchange-rate'>
 
                         </div>
-                        <div className='lang-switcher'>
+                        <div className='lang-switcher d-flex align-items-center justify-content-between menu-item '>
+                            <span className='icon-Icon6'/>                            
+                            {this.mySwapPage.siteLocales.map((item, index) => (
+                                <div value={index} onClick={this.mySwapPage.changeLanguage.bind(this.mySwapPage, item)}>{item.toUpperCase()}</div>
+                            ))}
                         </div>
                     </div>
                     <Socials/>

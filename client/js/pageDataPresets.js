@@ -82,6 +82,8 @@ class Presets {
         };
 
         this.langData = {
+            siteLocales : ['rus', 'eng'],
+            preferredLocale : ['eng'],
             navbars : {
                 left : [],
                 top : {

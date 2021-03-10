@@ -3,8 +3,13 @@
         "left" : {
             "home" : "Home",
             "exchange" : "Exchange",
-            "liquidity" : "Liquidity"
-
+            "liquidity" : "Liquidity",
+            "ido" : "IDO",
+            "farms" : "Farms",
+            "pools" : "Pools",
+            "etm" : "ETM",
+            "info" : "Info",
+            "docs" : "Docs"
         },
         "top" : {
             "header" : "Enecuum",

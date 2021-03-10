@@ -9,7 +9,7 @@ class FixedLeftNavBar extends React.Component {
         return (
             <div>
                 {this.mySwapPage.insertElements(true, this.icons)}
-                <div class='space-line'></div>
+                <div className='space-line'></div>
                 <img id='settings'
                      src='img/settings.png'
                      onClick={this.mySwapPage.openCloseNavbar.bind(this.mySwapPage)}>
@@ -100,6 +100,7 @@ class LeftNavBar extends React.Component {
                      }}>
                     { this.fillLangElements(['rus', 'eng']) }
                 </div>
+                <Socials/>
             </div>
         );
     };

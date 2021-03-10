@@ -1,8 +1,16 @@
 {
     "navbars" : {
-        "left" : [
-                "Торговля"
-        ],
+        "left" : {
+            "home" : "Home",
+            "exchange" : "Обмен",
+            "liquidity" : "Ликвидность",
+            "ido" : "IDO",
+            "farms" : "Farms",
+            "pools" : "Пулы",
+            "etm" : "ETM",
+            "info" : "Информация",
+            "docs" : "Документация"
+        },
         "top" : {
             "header" : "Enecuum",
             "connect" : "Подключение",

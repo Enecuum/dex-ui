@@ -495,31 +495,38 @@ class Root extends React.Component {
     // ======================================================================================================= render
     render () {
         return (
-            <div>
-                <nav class='navbar navbar-expand-lg navbar-light new-color'> 
-                    <img onClick={ this.openCloseNavbar.bind(this) } src='img/logo.png' width='30px' height='30px' style={{cursor : 'pointer'}}></img>
-                    <h5 onClick={ this.openCloseNavbar.bind(this) } class='navbar-custom'>EnecuumSwap</h5>
-                    <div id='root-connect' class='connect-btn'>
+            <div className='h-100'>
+                <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>
+                    <div className='d-flex align-items-end justify-content-between'>                 
+                        <span className='icon-Icon9 mr-5 mb-2' onClick={ this.openCloseNavbar.bind(this) } style={{ color : '#61758b', 'font-size' : '20px'}}/>                        
+                        <a className='navbar-brand py-0 my-0' href="#">
+                            <img src='img/enex-logo.png' style={{cursor : 'pointer'}}></img>
+                        </a>                     
+                    </div>                    
+                    <div id='root-connect' className='connect-btn'>
                         <Connect outer={ this } />
                     </div>
                 </nav>
-                <div id='fixed-left-bar'>
-                    <FixedLeftNavBar outer={ this } />
-                </div>
-                <LeftNavBar outer={ this } />,
-                <div id='connection-services'>
-                    <ConnectionService outer={ this } />
-                </div>
-                <div id='c-opacity'></div>
-                <div id='switch' style={{ left : this.state.swapCardLeft }}>
-                    <Switch outer={ this } />
-                </div>
-                <div class='swap-card' style={{ left : this.state.swapCardLeft }}>
-                    <Card outer={ this } />
-                </div>
-                <div id='tokens-card'>
-                    <Tokens outer={ this } />
-                </div>
+                <main role='main' className='container-fluid h-100 px-0'>
+                    <div className='row'>
+                        <div className='col-12'>
+                            <Aside />
+                            <div id='connection-services'>
+                                <ConnectionService outer={ this } />
+                            </div>
+                            <div id='c-opacity'></div>
+                            <div id='switch' style={{ left : this.state.swapCardLeft }}>
+                                <Switch outer={ this } />
+                            </div>
+                            <div className='swap-card' style={{ left : this.state.swapCardLeft }}>
+                                <Card outer={ this } />
+                            </div>
+                            <div id='tokens-card'>
+                                <Tokens outer={ this } />
+                            </div>
+                        </div>    
+                    </div>
+                </main>
             </div>
         );
     };

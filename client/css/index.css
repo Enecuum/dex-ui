@@ -10,13 +10,22 @@
     --lang-color : #9ea4ff;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
+    --top-menu-height: 70px;
+    --menu-bg: rgba(26, 31, 46, 0.702);
+    --inactive-item: rgb(97, 117, 139);;
 }
 
 body {
     font-family: 'Barlow', sans-serif;
-    background-color: var(--main-background);
+    background-color: #202836;
     color: var(--text-color);
     overflow-x: hidden;
+    height: 100vh;
+    min-height: 600px;
+    background-image: url(../img/background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
 }
 
 .btn {

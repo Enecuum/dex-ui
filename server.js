@@ -24,6 +24,16 @@ app.get('/css/*', (req, res) => {
     res.end();
 });
 
+app.get('/fonts/*', (req, res) => {
+    let urlArr = req.url.split('/');
+    res.writeHead(200, {
+        'Content-Type': 'text/css',
+    });
+    let data = fs.readFileSync(`./client/fonts/${urlArr[urlArr.length - 1]}`);
+    res.write(data);
+    res.end();
+});
+
 app.get('/js/*', (req, res) => {
     let urlArr = req.url.split('/');
     res.writeHead(200, {

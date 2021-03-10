@@ -1,8 +1,11 @@
 {
     "navbars" : {
-        "left" : [
-                "Trade"
-        ],
+        "left" : {
+            "home" : "Home",
+            "exchange" : "Exchange",
+            "liquidity" : "Liquidity"
+
+        },
         "top" : {
             "header" : "Enecuum",
             "connect" : "Connect",

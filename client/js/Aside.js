@@ -73,19 +73,19 @@ class Aside extends React.Component {
     };
 
     render () {
-        let asideClasses = ('aside-' + (this.mySwapPage.navOpen ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between py-4 px-3';
+        let asideClasses = ('aside-' + (this.mySwapPage.navOpen ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3';
         return (
             <div id='aside' className={asideClasses}>
                 <div class='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
-                        <div className='menu-item d-flex align-items-center justify-content-start mb-2'>
+                        <div className='menu-item d-flex align-items-center justify-content-start mb-4'>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
                             <span className='aside-menu-text'>{this.mySwapPage.state.langData.navbars.left[item]}</span>
                         </div>
                     ))}
                 </div>
                 <div className='aside-footer d-flex flex-column justify-content-between'>
-                    <div className='d-flex align-items-center justify-content-between mb-4'>
+                    <div className='rate-langswitcher-wrapper d-flex align-items-center justify-content-between mb-4'>
                         <div className='exchange-rate d-flex align-items-center justify-content-between menu-item'>
                             <img src='img/logo.png' width='30px' height='30px'/>
                             <div>
@@ -100,6 +100,9 @@ class Aside extends React.Component {
                         </div>
                     </div>
                     <Socials/>
+                    <div className={(this.mySwapPage.navOpen ? 'd-none' : '') + ' aside-toggle text-center'} onClick={ this.mySwapPage.toggleNavbar.bind(this.mySwapPage, true) }>
+                        <span className='icon-Icon15'/>
+                    </div>
                 </div>
             </div>
         );

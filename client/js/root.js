@@ -501,7 +501,7 @@ class Root extends React.Component {
             <div className='h-100'>
                 <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>
                     <div className='d-flex align-items-end justify-content-between'>                 
-                        <span className={asideToggleClasses} onClick={ this.toggleNavbar.bind(this) }/>                        
+                        <span className={asideToggleClasses + ' aside-toggler'} onClick={ this.toggleNavbar.bind(this) }/>                        
                         <a className='navbar-brand py-0 my-0' href="#">
                             <img src='img/enex-logo.png' style={{cursor : 'pointer'}}></img>
                         </a>                     

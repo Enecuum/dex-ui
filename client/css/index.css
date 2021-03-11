@@ -1,3 +1,19 @@
+
+  @font-face {
+    font-family: "Ska Sans Regular";
+    src: url(/../fonts/5kaSansDesign-Regular_4.otf);
+  }
+
+  @font-face {
+    font-family: "Ska Sans Condensed";
+    src: url(/../fonts/5kaSansDesign-CondensedRegular_0.otf);
+  }
+
+  @font-face {
+    font-family: "Ska Sans Black";
+    src: url(/../fonts/5kaSansDesign-Black_1.otf);
+  }
+
 :root {
     --color1 : white;
     --color2 : #eeeaf4;
@@ -17,8 +33,11 @@
 
 }
 
-body {
-    font-family: 'Barlow', sans-serif;
+body, p, .btn {
+    font-family: 'Ska Sans Regular', sans-serif;
+}    
+
+body {    
     background-color: #202836;
     color: var(--text-color);
     overflow-x: hidden;
@@ -28,14 +47,6 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-}
-
-.btn {
-    font-family: 'Barlow', sans-serif;
-}
-
-p {
-    font-family: 'Barlow', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -53,4 +64,18 @@ p {
 ::selection {
     color: var(--text-color);
     background: #00000000;
+}
+
+.aside-toggle:hover {
+    cursor: pointer;
+    color: var(--active-item);
+}
+
+.aside-toggle {
+    color: var(--inactive-item);
+    font-size: 20px; 
+}
+
+.aside-toggler {
+    width: 35px;
 }

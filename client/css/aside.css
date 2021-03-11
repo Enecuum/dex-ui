@@ -1,25 +1,43 @@
 #aside {
     background-color: var(--menu-bg);
     top: var(--top-menu-height);
-    height: calc(100% - var(--top-menu-height));       
+    height: calc(100% - var(--top-menu-height));
+    transition: width 1s linear 0.2s;
+    width: 300px;
 }
 
 #aside a:hover,
 #aside .menu-item:hover  {
     cursor: pointer;
-    color: var(--active-item)!important;
+    color: var(--active-item)!important;    
 }
 
+#aside .menu-item:hover .aside-menu-text {
+    font-size: 30px;
+}
 
+#aside .aside-toggle {
+    font-size: 27px;
+}
+
+#aside .icon-wrapper {
+    font-size: 20px;
+}
+
+#aside .aside-menu-text {
+    font-size: 25px;
+    transition: font-size 0.2s;
+}
 
 /*if aside closed begin*/
-#aside.aside-closed .aside-footer,
-#aside.aside-closed .aside-menu-text {
-    display: none!important;
+#aside.aside-closed {
+    width: auto;
 }
 
-#aside.aside-closed .menu-item {
-    justify-content: center!important;
+#aside.aside-closed .rate-langswitcher-wrapper,
+#aside.aside-closed .socialsBar,
+#aside.aside-closed .aside-menu-text {
+    display: none!important;
 }
 
 #aside.aside-closed .icon-wrapper {
@@ -35,6 +53,7 @@
 
 /*menu in aside begin*/
 #aside .menu-item {
+    height: 25px;
     color: var(--inactive-item);
 }
 
@@ -54,12 +73,14 @@
 /*socials in aside begin*/
 #aside .socialsBar {
     display: flex;
+    -webkit-box-pack: justify!important;
+    -ms-flex-pack: justify!important;
+    justify-content: space-between!important;
     color: var(--inactive-item);
 }
 
 #aside .socialsBar a {
-    margin: 0px 10px 0px 10px;
-    font-size: 20px;
+    font-size: 27px;
     color: var(--inactive-item);
 }
 /*socials in aside end*/
@@ -70,9 +91,6 @@
 
 
 /*ENQ exchange rate begin*/
-.exchange-rate img {
-    margin-left : 5px;
-}
 
 .exchange-rate div {
     color : var(--color3);

@@ -1,8 +1,33 @@
 #aside {
     background-color: var(--menu-bg);
     top: var(--top-menu-height);
-    height: calc(100% - var(--top-menu-height));    
+    height: calc(100% - var(--top-menu-height));       
 }
+
+#aside a:hover,
+#aside .menu-item:hover  {
+    cursor: pointer;
+    color: var(--active-item)!important;
+}
+
+
+
+/*if aside closed begin*/
+#aside.aside-closed .aside-footer,
+#aside.aside-closed .aside-menu-text {
+    display: none!important;
+}
+
+#aside.aside-closed .menu-item {
+    justify-content: center!important;
+}
+
+#aside.aside-closed .icon-wrapper {
+    width: auto!important;
+    flex-basis: auto!important;
+}
+/*if aside closed end*/
+
 
 
 
@@ -50,7 +75,7 @@
 }
 
 .exchange-rate div {
-    color : #9cb237;
+    color : var(--color3);
     margin-left : 10px;
     font-weight: bold;
 }

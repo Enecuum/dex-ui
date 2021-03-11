@@ -15,7 +15,7 @@ class Root extends React.Component {
         this.activeField = 0;
         this.tokenFilter = '';
         this.connectionStatus = false;
-        this.navOpen = false;
+        this.navOpen = true;
         this.colorThemes = presets.colorThemes;
         // -------------------------------------
         this.active = presets.active;
@@ -73,7 +73,7 @@ class Root extends React.Component {
             state.langData = res;
             return state;
         });
-        this.updSubmitName ();
+        this.updSubmitName();
         this.updCardInternals();
         this.updSwitchPageState();
     };
@@ -479,7 +479,7 @@ class Root extends React.Component {
 
     // ================================================================================================== left navbar
 
-    openCloseNavbar () {
+    toggleNavbar () {
         let data;
         if (this.navOpen) {
             this.navOpen = false;
@@ -493,13 +493,15 @@ class Root extends React.Component {
             this.updState(necessaryProps[i], data[i]);
     };
 
+
     // ======================================================================================================= render
     render () {
+        let asideToggleClasses = (this.navOpen ? 'icon-Icon9' : 'icon-Icon8') + ' aside-toggle mr-5 mb-2';
         return (
             <div className='h-100'>
                 <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>
                     <div className='d-flex align-items-end justify-content-between'>                 
-                        <span className='icon-Icon9 mr-5 mb-2' onClick={ this.openCloseNavbar.bind(this) } style={{ color : '#61758b', fontSize : '20px'}}/>                        
+                        <span className={asideToggleClasses} onClick={ this.toggleNavbar.bind(this) }/>                        
                         <a className='navbar-brand py-0 my-0' href="#">
                             <img src='img/enex-logo.png' style={{cursor : 'pointer'}}></img>
                         </a>                     

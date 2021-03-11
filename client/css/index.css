@@ -1,7 +1,7 @@
 :root {
     --color1 : white;
     --color2 : #eeeaf4;
-    --color3 : #747cf4;
+    --color3 : #afcb08;
     --color3-t : #747cf480;
     --main-background : #f9fafb;
     --transition : 0.1s;
@@ -12,7 +12,9 @@
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
     --top-menu-height: 70px;
     --menu-bg: rgba(26, 31, 46, 0.702);
-    --inactive-item: rgb(97, 117, 139);;
+    --inactive-item: #61758b;
+    --active-item: #61c2d0;
+
 }
 
 body {

@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "regenerator-runtime": "^0.13.7"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

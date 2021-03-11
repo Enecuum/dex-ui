@@ -1,0 +1,82 @@
+#aside {
+    background-color: var(--menu-bg);
+    top: var(--top-menu-height);
+    height: calc(100% - var(--top-menu-height));       
+}
+
+#aside a:hover,
+#aside .menu-item:hover  {
+    cursor: pointer;
+    color: var(--active-item)!important;
+}
+
+
+
+/*if aside closed begin*/
+#aside.aside-closed .aside-footer,
+#aside.aside-closed .aside-menu-text {
+    display: none!important;
+}
+
+#aside.aside-closed .menu-item {
+    justify-content: center!important;
+}
+
+#aside.aside-closed .icon-wrapper {
+    width: auto!important;
+    flex-basis: auto!important;
+}
+/*if aside closed end*/
+
+
+
+
+
+
+/*menu in aside begin*/
+#aside .menu-item {
+    color: var(--inactive-item);
+}
+
+#aside .menu-item .icon-wrapper {
+    flex-basis: 50px;
+    width: 50px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+/*menu in aside end*/
+
+
+
+
+
+
+/*socials in aside begin*/
+#aside .socialsBar {
+    display: flex;
+    color: var(--inactive-item);
+}
+
+#aside .socialsBar a {
+    margin: 0px 10px 0px 10px;
+    font-size: 20px;
+    color: var(--inactive-item);
+}
+/*socials in aside end*/
+
+
+
+
+
+
+/*ENQ exchange rate begin*/
+.exchange-rate img {
+    margin-left : 5px;
+}
+
+.exchange-rate div {
+    color : var(--color3);
+    margin-left : 10px;
+    font-weight: bold;
+}
+/*ENQ exchange rate end*/

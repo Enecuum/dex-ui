@@ -2,10 +2,10 @@ const path = require('path');
 const outPath = path.resolve(__dirname, 'public');
 
 module.exports = {
-    entry : './client/js/root-tmp.js',
+    entry : './assets/js/root.js',
     output : {
         path : outPath,
-        filename : 'test.webpack.js',
+        filename : 'enex.webpack.js',
     },
     module : {
         rules : [
@@ -18,7 +18,7 @@ module.exports = {
                 use : 'css-loader'
             },
             {
-                test : /\.(png|jpg)$/,
+                test : /\.(png|jpg|svg|jpeg|woff|ttf|eot)$/,
                 use : 'file-loader'
             }
         ]

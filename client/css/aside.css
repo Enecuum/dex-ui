@@ -7,9 +7,25 @@
 }
 
 #aside a:hover,
-#aside .menu-item:hover  {
+#aside .menu-item:hover,
+#aside .lang-switcher:hover,
+#aside .lang-switcher:hover button  {
     cursor: pointer;
-    color: var(--active-item)!important;    
+    color: var(--active-item)!important;
+    text-decoration: none;    
+}
+
+#aside .lang-switcher .dropdown-item:hover,
+#aside .lang-switcher .dropdown-item:focus {
+    background-color: transparent;
+    color: var(--active-item)!important;
+}
+
+#aside .lang-switcher .btn:focus,
+#aside .lang-switcher .btn.focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    text-decoration: none;
 }
 
 #aside .menu-item:hover .aside-menu-text {
@@ -20,13 +36,29 @@
     font-size: 27px;
 }
 
-#aside .icon-wrapper {
+#aside .icon-wrapper,
+#aside .lang-switcher .dropdown-item {
     font-size: 20px;
 }
 
-#aside .aside-menu-text {
+#aside .aside-menu-text,
+#aside .exchange-rate,
+#aside .lang-switcher button {
     font-size: 25px;
+}
+
+#aside .lang-switcher .dropdown-toggle::after {
+    display: none;
+}
+
+#aside .aside-menu-text {
     transition: font-size 0.2s;
+}
+
+#aside .lang-switcher,
+#aside .lang-switcher button,
+#aside .lang-switcher .dropdown-item {
+    color: var(--inactive-item);
 }
 
 /*if aside closed begin*/

@@ -86,17 +86,22 @@ class Aside extends React.Component {
                 </div>
                 <div className='aside-footer d-flex flex-column justify-content-between'>
                     <div className='rate-langswitcher-wrapper d-flex align-items-center justify-content-between mb-4'>
-                        <div className='exchange-rate d-flex align-items-center justify-content-between menu-item'>
+                        <div className='exchange-rate d-flex align-items-center justify-content-between'>
                             <img src='img/logo.png' width='30px' height='30px'/>
                             <div>
                                 ${this.state.exchangeRate}
                             </div>
                         </div>
-                        <div className='lang-switcher d-flex align-items-center justify-content-between menu-item '>
-                            <span className='icon-Icon6'/>                            
-                            {this.mySwapPage.siteLocales.map((item, index) => (
-                                <div value={index} onClick={this.mySwapPage.changeLanguage.bind(this.mySwapPage, item)}>{item.toUpperCase()}</div>
-                            ))}
+                        <div className="dropup lang-switcher d-flex align-items-center justify-content-between">
+                            <button className="btn btn-link dropdown-toggle p-0 border-0" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span className='icon-Icon6 mr-2'/>
+                                <span className='text-uppercase'>{  this.mySwapPage.langTitles[this.mySwapPage.activeLocale].short }</span> 
+                            </button>
+                            <div className="dropdown-menu wrapper-1" aria-labelledby="dropdownMenu2">
+                                {this.mySwapPage.siteLocales.map((item, index) => (
+                                    <div className="dropdown-item text-center py-2" value={index} onClick={this.mySwapPage.changeLanguage.bind(this.mySwapPage, item)}>{ this.mySwapPage.langTitles[item].full }</div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     <Socials/>
@@ -108,3 +113,6 @@ class Aside extends React.Component {
         );
     };
 };
+
+
+

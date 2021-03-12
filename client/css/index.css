@@ -30,6 +30,8 @@
     --menu-bg: rgba(26, 31, 46, 0.702);
     --inactive-item: #61758b;
     --active-item: #61c2d0;
+    --border-radius-1: 5px;
+    --bg-color-1: rgb(27, 35, 48);
 
 }
 
@@ -78,4 +80,9 @@ body {
 
 .aside-toggler {
     width: 35px;
+}
+
+.wrapper-1 {
+    border-radius: var(--border-radius-1);
+    background-color: var(--bg-color-1);
 }

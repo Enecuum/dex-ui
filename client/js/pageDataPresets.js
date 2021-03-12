@@ -83,6 +83,16 @@ class Presets {
 
         this.langData = {
             siteLocales : ['rus', 'eng'],
+            langTitles : {
+                eng : {
+                    full : 'English',
+                    short : 'En'
+                },
+                rus : {
+                    full : 'Русский',
+                    short : 'Ru'
+                }
+            },
             preferredLocale : ['eng'],
             navbars : {
                 left : [],

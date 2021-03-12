@@ -18,7 +18,7 @@ class SwapCard extends React.Component {
                     { this.mySwapPage.state.card.description }
                 </p>
                 <div id='head-line'></div>
-                <div class='swap-input' id='from'>
+                <div className='swap-input' id='from'>
                     { 
                         this.mySwapPage.getInputField({ fieldName : this.mySwapPage.state.card.input0, 
                                                         fieldClass : 'token-use',
@@ -41,7 +41,7 @@ class SwapCard extends React.Component {
                         +
                     </p>
                 </div>
-                <div class='swap-input' id='to'>
+                <div className='swap-input' id='to'>
                     { 
                         this.mySwapPage.getInputField({ fieldName : this.mySwapPage.state.card.input1, 
                                                         fieldClass : 'token-use1', 
@@ -52,7 +52,7 @@ class SwapCard extends React.Component {
                 </div>
                 <div style={{ height : '25px' }}></div>
                 <button onClick={this.mySwapPage.sentTx.bind(this.mySwapPage)}
-                        class='btn btn-secondary my-2 my-sm-0 swap-input'
+                        className='btn btn-secondary my-2 my-sm-0 swap-input'
                         type='submit'
                         id='submit'>
                     {this.mySwapPage.state.submitName}

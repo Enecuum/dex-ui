@@ -10,7 +10,7 @@ class Connect extends React.Component {
     render () {
         return (
             <button onClick={this.mySwapPage.openConnectionList.bind(this.mySwapPage)}
-                    class='btn btn-secondary my-2 my-sm-0'
+                    className='btn btn-secondary my-2 my-sm-0'
                     type='submit'
                     style={{
                         backgroundColor : 'var(--color3)'

@@ -2,6 +2,7 @@ import React from 'react';
 import Socials from './Socials';
 import '../css/aside.css';
 import '../css/font-style.css';
+import img from '../img/logo.png';
 
 const sec = 1000;
 
@@ -80,7 +81,7 @@ class Aside extends React.Component {
         let asideClasses = ('aside-' + (this.mySwapPage.navOpen ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between py-4 px-3';
         return (
             <div id='aside' className={asideClasses}>
-                <div class='aside-menu'>
+                <div className='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
                         <div className='menu-item d-flex align-items-center justify-content-start mb-2'>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
@@ -91,7 +92,7 @@ class Aside extends React.Component {
                 <div className='aside-footer d-flex flex-column justify-content-between'>
                     <div className='d-flex align-items-center justify-content-between mb-4'>
                         <div className='exchange-rate d-flex align-items-center justify-content-between menu-item'>
-                            <img src='img/logo.png' width='30px' height='30px'/>
+                            <img src={img} width='30px' height='30px'/>
                             <div>
                                 ${this.state.exchangeRate}
                             </div>

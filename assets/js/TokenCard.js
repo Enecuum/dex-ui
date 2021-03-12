@@ -29,7 +29,7 @@ class TokenCard extends React.Component {
         return this.getTokens(this.mySwapPage.tokenFilter).map(el => {
             return (
                 <option onClick={this.assignToken.bind(this, el)}
-                        class='token-option'
+                        className='token-option'
                         style={{
                             textAlign: 'left',
                             color: 'var(--color3)',
@@ -53,7 +53,7 @@ class TokenCard extends React.Component {
     render () {
         return (
             <div>
-                <div class="close" onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)} style={{ marginTop : '-10px',
+                <div className="close" onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)} style={{ marginTop : '-10px',
                                                                                                                 marginRight : '-6px' }}>
                 </div>
                 <p style={{
@@ -71,7 +71,7 @@ class TokenCard extends React.Component {
                 </div>
                 <input  id='token-filter-field'
                         onChange={this.changeList.bind(this)}
-                        class='form-control mr-sm-2'
+                        className='form-control mr-sm-2'
                         type='text'
                         placeholder={this.mySwapPage.state.langData.trade.tokenCard.search}
                         style={{
@@ -83,7 +83,7 @@ class TokenCard extends React.Component {
                         }}>
                 </input>
                 <select multiple={true}
-                        class='form-control'
+                        className='form-control'
                         id='full-token-list'
                         style={{
                             borderRadius : '5px',

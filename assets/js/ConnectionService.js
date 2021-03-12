@@ -24,7 +24,7 @@ class ConnectionService extends React.Component {
     render () {
         return (
             <div>
-                <div class="close"
+                <div className="close"
                     onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}>
                 </div>
                 <h4 style={{
@@ -40,7 +40,7 @@ class ConnectionService extends React.Component {
                     }}>
                 </div>
                 <button onClick={this.connectToEnq.bind(this)}
-                        class='btn btn-secondary'
+                        className='btn btn-secondary'
                         style={{
                             borderRadius: '20px',
                             width: '90%',

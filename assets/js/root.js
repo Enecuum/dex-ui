@@ -417,7 +417,7 @@ class Root extends React.Component {
             if (fixedNavbar) {
                 return (
                     <img key={i}
-                         class={`nav-element ${className}`}
+                         className={`nav-element ${className}`}
                          onMouseOver={this.turnOn.bind(this, i)}
                          onMouseOut={this.turnOff.bind(this, i)}
                          onClick={this.lightIt.bind(this, i)}
@@ -431,7 +431,7 @@ class Root extends React.Component {
             } else {
                 return (
                     <div key={i}
-                         class={`nav-element ${className}`}
+                         className={`nav-element ${className}`}
                          onMouseOver={this.turnOn.bind(this, i)}
                          onMouseOut={this.turnOff.bind(this, i)}
                          onClick={this.lightIt.bind(this, i)}
@@ -475,18 +475,18 @@ class Root extends React.Component {
     getInputField (props) {
         return (
             <div>
-                <p class='side'>
+                <p className='side'>
                     { props.fieldName }
                 </p>
                 <input  id={`input-${props.fieldClass}`}
                         onChange={this.changeField.bind(this, props.fieldClass)}
-                        class='form-control mr-sm-2 input-field'
+                        className='form-control mr-sm-2 input-field'
                         type='text'
                         value={props.value}
                         placeholder='0.0'>
                 </input>
                 <button onClick={this.openTokenList.bind(this, props.fieldClass)}
-                        class={`btn btn-secondary my-2 my-sm-0 ${props.fieldClass}`}
+                        className={`btn btn-secondary my-2 my-sm-0 ${props.fieldClass}`}
                         type='submit'
                         style={{ height : '40px' }}>
                     { props.tokenName }

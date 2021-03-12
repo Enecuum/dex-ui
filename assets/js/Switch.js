@@ -10,7 +10,7 @@ class Switch extends React.Component {
     render () {
         return (
             <div>
-                <div    class="switch-mode"
+                <div    className="switch-mode"
                         id="exchange-mode"
                         style={{
                             color : this.mySwapPage.state.exchColor,
@@ -21,7 +21,7 @@ class Switch extends React.Component {
                         onMouseOut={this.mySwapPage.turnOffTheButton.bind(this.mySwapPage, 'exchange')}>
                     {this.mySwapPage.state.langData.trade.switch.mode0}
                 </div>
-                <div    class="switch-mode"
+                <div    className="switch-mode"
                         id="liquidity-mode"
                         style={{
                             color : this.mySwapPage.state.lqdtColor,

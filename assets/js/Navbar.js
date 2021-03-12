@@ -2,6 +2,7 @@ import React from 'react';
 import Connect from './Connect';
 import '../css/navbar.css';
 import '../css/font-style.css';
+import img from '../img/enex-logo.png';
 
 class Navbar extends React.Component {
     constructor (props) {
@@ -16,7 +17,7 @@ class Navbar extends React.Component {
                     <div className='d-flex align-items-end justify-content-between'>                 
                         <span className={asideToggleClasses} onClick={ this.root.toggleNavbar.bind(this.root) }/>                        
                         <a className='navbar-brand py-0 my-0' href="#">
-                            <img src='img/enex-logo.png' style={{cursor : 'pointer'}}></img>
+                            <img src={img} style={{cursor : 'pointer'}}></img>
                         </a>                     
                     </div>                    
                     <div id='root-connect' className='connect-btn'>

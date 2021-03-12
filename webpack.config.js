@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const outPath = path.resolve(__dirname, 'public');
 
 module.exports = {
@@ -14,8 +15,8 @@ module.exports = {
                 use : 'babel-loader'
             },
             {
-                test : /\.css$/,
-                use : 'css-loader'
+                test : /\.css$/i,
+                use : ['style-loader', 'css-loader']
             },
             {
                 test : /\.(png|jpg|svg|jpeg|woff|ttf|eot)$/,
@@ -30,6 +31,19 @@ module.exports = {
     devServer : {
         contentBase : outPath,
         port : 1235,
-        watchContentBase : true
+        watchContentBase : true,
+        before: (app) => {
+            app.get('/getLanguage/*', (req, res) => {
+                let urlArr = req.url.split('/');
+                let language = urlArr[urlArr.length - 1];
+                res.json(JSON.parse(fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' })));
+            });
+            app.get('/getPairs', (req, res) => {
+                res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
+            });
+            app.get('/getTokens', (req, res) => {
+                res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
+            });
+        }
     }
 };

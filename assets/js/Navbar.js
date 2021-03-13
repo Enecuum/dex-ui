@@ -15,7 +15,7 @@ class Navbar extends React.Component {
         return (
             <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>
                     <div className='d-flex align-items-end justify-content-between'>                 
-                        <span className={asideToggleClasses} onClick={ this.root.toggleNavbar.bind(this.root) }/>                        
+                        <span className={asideToggleClasses + ' aside-toggler'} onClick={ this.root.toggleNavbar.bind(this.root) }/>                        
                         <a className='navbar-brand py-0 my-0' href="#">
                             <img src={img} style={{cursor : 'pointer'}}></img>
                         </a>                     

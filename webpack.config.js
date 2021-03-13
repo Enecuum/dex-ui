@@ -15,11 +15,11 @@ module.exports = {
                 use : 'babel-loader'
             },
             {
-                test : /\.css$/i,
+                test : /\.css$/,
                 use : ['style-loader', 'css-loader']
             },
             {
-                test : /\.(png|jpg|svg|jpeg|woff|ttf|eot)$/,
+                test : /\.(png|jpg|svg|jpeg|woff|ttf|eot|otf)$/,
                 use : 'file-loader'
             }
         ]

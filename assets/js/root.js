@@ -74,6 +74,7 @@ class Root extends React.Component {
         };
         this.siteLocales = presets.langData.siteLocales;
         this.activeLocale = presets.langData.preferredLocale;
+        this.langTitles = presets.langData.langTitles;
         // -------------------------------------
         this.updLanguage(this.activeLocale);
         this.updExternalData();
@@ -91,6 +92,7 @@ class Root extends React.Component {
             state.langData = res;
             return state;
         });
+        this.activeLocale = language;
         this.updSubmitName();
         this.updCardInternals();
         this.updSwitchPageState();

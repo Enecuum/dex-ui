@@ -1,0 +1,132 @@
+#aside {
+    background-color: var(--menu-bg);
+    top: var(--top-menu-height);
+    height: calc(100% - var(--top-menu-height));
+    transition: width 1s linear 0.2s;
+    width: 300px;
+}
+
+#aside a:hover,
+#aside .menu-item:hover,
+#aside .lang-switcher:hover,
+#aside .lang-switcher:hover button  {
+    cursor: pointer;
+    color: var(--active-item)!important;
+    text-decoration: none;    
+}
+
+#aside .lang-switcher .dropdown-item:hover,
+#aside .lang-switcher .dropdown-item:focus {
+    background-color: transparent;
+    color: var(--active-item)!important;
+}
+
+#aside .lang-switcher .btn:focus,
+#aside .lang-switcher .btn.focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    text-decoration: none;
+}
+
+#aside .menu-item:hover .aside-menu-text {
+    font-size: 30px;
+}
+
+#aside .aside-toggle {
+    font-size: 27px;
+}
+
+#aside .icon-wrapper,
+#aside .lang-switcher .dropdown-item {
+    font-size: 20px;
+}
+
+#aside .aside-menu-text,
+#aside .exchange-rate,
+#aside .lang-switcher button {
+    font-size: 25px;
+}
+
+#aside .lang-switcher .dropdown-toggle::after {
+    display: none;
+}
+
+#aside .aside-menu-text {
+    transition: font-size 0.2s;
+}
+
+#aside .lang-switcher,
+#aside .lang-switcher button,
+#aside .lang-switcher .dropdown-item {
+    color: var(--inactive-item);
+}
+
+/*if aside closed begin*/
+#aside.aside-closed {
+    width: auto;
+}
+
+#aside.aside-closed .rate-langswitcher-wrapper,
+#aside.aside-closed .socialsBar,
+#aside.aside-closed .aside-menu-text {
+    display: none!important;
+}
+
+#aside.aside-closed .icon-wrapper {
+    width: auto!important;
+    flex-basis: auto!important;
+}
+/*if aside closed end*/
+
+
+
+
+
+
+/*menu in aside begin*/
+#aside .menu-item {
+    height: 25px;
+    color: var(--inactive-item);
+}
+
+#aside .menu-item .icon-wrapper {
+    flex-basis: 50px;
+    width: 50px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+/*menu in aside end*/
+
+
+
+
+
+
+/*socials in aside begin*/
+#aside .socialsBar {
+    display: flex;
+    -webkit-box-pack: justify!important;
+    -ms-flex-pack: justify!important;
+    justify-content: space-between!important;
+    color: var(--inactive-item);
+}
+
+#aside .socialsBar a {
+    font-size: 27px;
+    color: var(--inactive-item);
+}
+/*socials in aside end*/
+
+
+
+
+
+
+/*ENQ exchange rate begin*/
+
+.exchange-rate div {
+    color : var(--color3);
+    margin-left : 10px;
+    font-weight: bold;
+}
+/*ENQ exchange rate end*/

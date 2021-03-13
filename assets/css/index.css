@@ -1,0 +1,88 @@
+
+  @font-face {
+    font-family: "Ska Sans Regular";
+    src: url(../fonts/5kaSansDesign-Regular_4.otf);
+  }
+
+  @font-face {
+    font-family: "Ska Sans Condensed";
+    src: url(../fonts/5kaSansDesign-CondensedRegular_0.otf);
+  }
+
+  @font-face {
+    font-family: "Ska Sans Black";
+    src: url(../fonts/5kaSansDesign-Black_1.otf);
+  }
+
+:root {
+    --color1 : white;
+    --color2 : #eeeaf4;
+    --color3 : #afcb08;
+    --color3-t : #747cf480;
+    --main-background : #f9fafb;
+    --transition : 0.1s;
+    --text-color : black;
+    --exit-color : grey;
+    --lang-color : #9ea4ff;
+    --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
+    --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
+    --top-menu-height: 70px;
+    --menu-bg: rgba(26, 31, 46, 0.702);
+    --inactive-item: #61758b;
+    --active-item: #61c2d0;
+    --border-radius-1: 5px;
+    --bg-color-1: rgb(27, 35, 48);
+
+}
+
+body, p, .btn {
+    font-family: 'Ska Sans Regular', sans-serif;
+}    
+
+body {    
+    background-color: #202836;
+    color: var(--text-color);
+    overflow-x: hidden;
+    height: 100vh;
+    min-height: 600px;
+    background-image: url(../img/background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 0;
+    left:-100px;
+    border-radius: 10px;
+    background-color: #dde9ff;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: var(--color3);
+}
+
+::selection {
+    color: var(--text-color);
+    background: #00000000;
+}
+
+.aside-toggle:hover {
+    cursor: pointer;
+    color: var(--active-item);
+}
+
+.aside-toggle {
+    color: var(--inactive-item);
+    font-size: 20px; 
+}
+
+.aside-toggler {
+    width: 35px;
+}
+
+.wrapper-1 {
+    border-radius: var(--border-radius-1);
+    background-color: var(--bg-color-1);
+}

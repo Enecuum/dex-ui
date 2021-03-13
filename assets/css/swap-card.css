@@ -1,0 +1,130 @@
+.swap-card {
+    position: fixed;
+    box-shadow: var(--box-shadow);
+    background-color: var(--color1);
+    margin-top: 250px;
+    height: 500px;
+    width: 430px;
+    border-radius: 30px;
+    margin-left: -215px;
+    transition: var(--transition);
+}
+
+#head-line {
+    width: 100%;
+    margin-top: 20px;
+    border-bottom: 2px solid var(--main-background);
+}
+
+.swap-input {
+    background-color: var(--color2);
+    border: solid #00000000;
+    border-radius: 30px;
+    width: 90%;
+    height: 100px;
+    margin-left: 5%;
+}
+
+#from {
+    margin-top: 22px;
+}
+
+#exch {
+    transform: rotate(90deg);
+    cursor : default;
+    background-color: var(--color2);
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 195px;
+    border-radius: 50px;
+}
+
+#exch:hover {
+    background-color: #747cf450;
+}
+
+#exch:hover i{
+    border-color: var(--main-background);
+}
+
+#to {
+    margin-top: 10px;
+}
+
+#submit {
+    background-color: var(--color3);
+    height: 60px;
+    margin-top: 5px !important;
+    border-radius: 30px;
+}
+
+i {
+    border: solid grey;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+#up-arrow {
+    transform: rotate(135deg);
+    margin-bottom: -5px;
+    margin-left: 11px;
+}
+
+#down-arrow {
+    margin-bottom: -5px;
+    transform: rotate(-45deg);
+    /* margin-left: 14px; */
+}
+
+#swap-mode-header {
+    margin-top: 20px;
+    margin-left: 6%;
+}
+
+#under-header {
+    margin-left: 6%;
+}
+
+.input-field {
+    background-color: var(--color2);
+    border: 0;
+    margin-top: 30px;
+    margin-left: 24%;
+    border-radius: 50px;
+    text-align: center;
+    width: 200px;
+}
+
+.form-control {
+    color: var(--text-color);
+}
+
+.form-control:focus {
+    border: 0;
+    background-color: var(--color2);
+    color: var(--text-color);
+    box-shadow: #00000000;
+}
+
+.side {
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 25px;
+    width: 20px;
+}
+
+.token-use {
+    background-color: var(--color3);
+    position: absolute;
+    top: 160px;
+    right: 35px;
+}
+
+.token-use1 {
+    background-color: var(--color3);
+    position: absolute;
+    top: 321px;
+    right: 35px;
+}

@@ -43,10 +43,8 @@ class Root extends React.Component {
         this.liquidity = presets.liquidity;
         // -------------------------------------
         this.state = {
-            exchColor : 'white',
-            lqdtColor : 'var(--text-color)',
             exchBackColor : 'var(--color3)',
-            lqdtBackColor : 'var(--color1)',
+            lqdtBackColor : 'var(--color2)',
 
             langData : presets.langData,
             card : {
@@ -67,7 +65,6 @@ class Root extends React.Component {
             leftNavAWidth : '0px',
             swapCardLeft : '51%',
             settingsVisibility : 'hidden',
-            langVisibility : 'hidden',
             bottomPosition : '-60px',
             submitName : '',
             leftNavPage : 0
@@ -104,22 +101,13 @@ class Root extends React.Component {
         this.updLanguage(language);
     };
 
-    changeLangVisibility (vis) {
-        this.setState({ langVisibility : vis }); 
-    };
-
     switchTheSwitch () {
-        if (this.mode == 0) {
-            this.updState('exchColor', 'white');
-            this.updState('lqdtColor', 'var(--text-color)');
-            this.updState('exchBackColor', 'var(--color3)');
-            this.updState('lqdtBackColor', 'var(--color1)');
-        } else {
-            this.updState('exchColor', 'var(--text-color)');
-            this.updState('lqdtColor', 'white');
-            this.updState('exchBackColor', 'var(--color1)');
-            this.updState('lqdtBackColor', 'var(--color3)');
-        }
+        const switchItems = ['exchBackColor', 'lqdtBackColor'];
+        let colors = ['var(--color2)', 'var(--color3)'];
+        if (this.mode == 0)
+            [colors[0], colors[1]] = [colors[1], colors[0]];
+        for (let i in switchItems)
+            this.updState(switchItems[i], colors[i]);
     };
 
     updSubmitName () {
@@ -235,28 +223,6 @@ class Root extends React.Component {
             this.switchTheSwitch();
             this.updSwitchPageState();
             this.updCardInternals();
-        }
-    };
-
-    lightTheButton (button) {
-        if (button == 'exchange')
-            this.updState('exchBackColor', 'var(--color3-t)');
-        else
-            this.updState('lqdtBackColor', 'var(--color3-t)');
-    };
-
-    turnOffTheButton (button) {
-        if (button == 'exchange') {
-            if (this.mode == 0)
-                this.updState('exchBackColor', 'var(--color3)');
-            else 
-                this.updState('exchBackColor', 'var(--color1)');
-        }
-        else {
-            if (this.mode == 0)
-                this.updState('lqdtBackColor', 'var(--color1)');
-            else 
-                this.updState('lqdtBackColor', 'var(--color3)');
         }
     };
 
@@ -377,6 +343,11 @@ class Root extends React.Component {
                 }
             }
             this.updCardInternals();
+        } else if (['deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
+            let newVal = document.getElementById(this.getInputFieldId()).value;
+            this[mode][field].value = newVal;
+            this.countCounterField(mode, field);
+            this.updCardInternals();
         }
     };
     
@@ -477,12 +448,12 @@ class Root extends React.Component {
     getInputField (props) {
         return (
             <div>
-                <p className='side'>
+                <p className='input-name'>
                     { props.fieldName }
                 </p>
                 <input  id={`input-${props.fieldClass}`}
                         onChange={this.changeField.bind(this, props.fieldClass)}
-                        className='form-control mr-sm-2 input-field'
+                        className='c-input-field'
                         type='text'
                         value={props.value}
                         placeholder='0.0'>
@@ -503,12 +474,12 @@ class Root extends React.Component {
         let data;
         if (this.navOpen) {
             this.navOpen = false;
-            data = [0, 0, '51%', 'hidden', '-60px', 'hidden'];
+            data = [0, 0, '51%', 'hidden', '-60px'];
         } else {
             this.navOpen = true;
-            data = ['160px', '160px', '55%', 'visible', '15px', 'hidden'];
+            data = ['160px', '160px', '55%', 'visible', '15px'];
         }
-        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition', 'langVisibility'];
+        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition'];
         for (let i in necessaryProps)
             this.updState(necessaryProps[i], data[i]);
     };

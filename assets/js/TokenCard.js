@@ -91,7 +91,7 @@ class TokenCard extends React.Component {
                             width : '90%',
                             marginLeft : '5%',
                             marginTop : '20px',
-                            backgroundColor : 'var(--color1)',
+                            backgroundColor : 'var(--bg-swap-card)',
                             height : '77%',
                             border : 0
                         }}>

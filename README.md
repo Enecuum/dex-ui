@@ -36,6 +36,11 @@ Use webpack dev server for more convenient development. It is the best to create
 ```
 It is easy to use because of similarity to express node-module.
 
+Run dev server:
+```
+    npm run dev
+```
+
 #### Data structure
 
 Acording the React.JS rules the app uses 'state' variable in order to bind properties of interface particles. It was realised side data structure and method to manage 'interface data' for a reason of inconvenience of using nested structures in the 'state'. Take a look at this structure:

@@ -1,32 +1,41 @@
+.no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+}
+
 .swap-card {
     position: fixed;
     box-shadow: var(--box-shadow);
-    background-color: var(--color1);
+    background-color: var(--bg-swap-card);
     margin-top: 250px;
-    height: 500px;
+    height: 600px;
     width: 430px;
-    border-radius: 30px;
     margin-left: -215px;
     transition: var(--transition);
 }
 
+.swap-header-group {
+    height: 120px;
+}
+
 #head-line {
     width: 100%;
-    margin-top: 20px;
-    border-bottom: 2px solid var(--main-background);
+    margin-top: 0px;
+    border-bottom: 2px solid var(--inactive-item);
 }
 
 .swap-input {
     background-color: var(--color2);
     border: solid #00000000;
-    border-radius: 30px;
+    /* border-radius: 30px; */
     width: 90%;
     height: 100px;
     margin-left: 5%;
 }
 
 #from {
-    margin-top: 22px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 #exch {
@@ -40,50 +49,38 @@
     border-radius: 50px;
 }
 
-#exch:hover {
-    background-color: #747cf450;
+.exch-button {
+    font-size: '40px';
+    color : white;
+    margin-right: 19px;
+    transform: rotate(-90deg);
+    color: var(--color3);
 }
 
-#exch:hover i{
-    border-color: var(--main-background);
+#exch:hover {
+    background-color: var(--menu-bg);
 }
 
 #to {
-    margin-top: 10px;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 
 #submit {
     background-color: var(--color3);
     height: 60px;
-    margin-top: 5px !important;
-    border-radius: 30px;
-}
-
-i {
-    border: solid grey;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-}
-
-#up-arrow {
-    transform: rotate(135deg);
-    margin-bottom: -5px;
-    margin-left: 11px;
-}
-
-#down-arrow {
-    margin-bottom: -5px;
-    transform: rotate(-45deg);
-    /* margin-left: 14px; */
+    margin-top: 30px !important;
+    border-radius: 0px;
 }
 
 #swap-mode-header {
-    margin-top: 20px;
+    color : white;
+    margin-top: 27px;
     margin-left: 6%;
 }
 
 #under-header {
+    color: var(--active-item);
     margin-left: 6%;
 }
 
@@ -97,6 +94,17 @@ i {
     width: 200px;
 }
 
+.c-input-field {
+    outline: none;
+    margin-left: 14px;
+    background-color: var(--bg-color);
+    border: 0;
+    color: var(--active-item);
+}
+.c-input-field::placeholder {
+    color: var(--active-item);
+}
+
 .form-control {
     color: var(--text-color);
 }
@@ -108,10 +116,9 @@ i {
     box-shadow: #00000000;
 }
 
-.side {
-    position: absolute;
-    margin-top: 8px;
-    margin-left: 25px;
+.input-name {
+    margin-top: 10px;
+    margin-left: 15px;
     width: 20px;
 }
 
@@ -128,3 +135,13 @@ i {
     top: 321px;
     right: 35px;
 }
+
+.swap-card-top-items {
+    color : var(--color3);
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.swap-card-top-items:hover {
+    font-size: 27px;
+};

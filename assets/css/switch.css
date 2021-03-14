@@ -5,8 +5,7 @@
     height: 35px;
     margin-left: 25px;
     width: 380px;
-    border-radius: 40px;
-    background-color: var(--color1);
+    background-color: var(--bg-swap-card);
     margin-left: -190px;
     transition: var(--transition);
 }
@@ -26,7 +25,10 @@
     cursor: pointer;
     height: 35px;
     width: 190px;
-    border-radius: 40px;
     padding-top: 1px;
     font-size: 22px;
+}
+
+.switch-mode:hover {
+    background-color: var(--color3-t)!important;
 }

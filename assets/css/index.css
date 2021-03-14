@@ -16,12 +16,12 @@
 
 :root {
     --color1 : white;
-    --color2 : #eeeaf4;
+    --color2 : #61768b;
     --color3 : #afcb08;
-    --color3-t : #747cf480;
+    --color3-t : #afcb0880;
     --main-background : #f9fafb;
     --transition : 0.1s;
-    --text-color : black;
+    --text-color : white;
     --exit-color : grey;
     --lang-color : #9ea4ff;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
@@ -32,7 +32,7 @@
     --active-item: #61c2d0;
     --border-radius-1: 5px;
     --bg-color-1: rgb(27, 35, 48);
-
+    --bg-swap-card: #2c374b;
 }
 
 body, p, .btn {

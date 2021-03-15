@@ -44,6 +44,9 @@ module.exports = {
             app.get('/getTokens', (req, res) => {
                 res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
             });
+            app.get('/enqlib', (req, res) => {
+                res.send(fs.readFileSync(`./web-enq/prebuild/enqweb3.min.js`, { encoding : 'utf-8' }));
+            });
         }
     }
 };

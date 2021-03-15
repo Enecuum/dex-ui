@@ -8,16 +8,21 @@
     background-color: var(--bg-swap-card);
     margin-left: -190px;
     transition: var(--transition);
+    border-radius: var(--border-radius);
 }
 
 #liquidity-mode {
     position: absolute;
     right: 0;
     margin-top: -35px;
+    border-bottom-right-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
 }
 
 #exchange-mode {
     position: relative;
+    border-bottom-left-radius: var(--border-radius);
+    border-top-left-radius: var(--border-radius);
 }
 
 .switch-mode {

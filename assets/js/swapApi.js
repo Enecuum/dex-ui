@@ -24,6 +24,13 @@ class SwapApi {
             }
         );
     };
+    getEnqLib () {
+        return fetch(`${this.url}enqlib`,
+            {
+                method : 'GET'
+            }
+        );
+    };
 };
 
 export default SwapApi;

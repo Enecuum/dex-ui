@@ -15,7 +15,8 @@
             "header" : "Enecuum",
             "connect" : "Connect",
             "connectionCard" : {
-                "header" : "Connect your wallet"
+                "header" : "Connect to a wallet",
+                "clue" : "Learn how to connect"
             }
         }
     },

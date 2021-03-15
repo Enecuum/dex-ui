@@ -12,6 +12,7 @@
     width: 430px;
     margin-left: -215px;
     transition: var(--transition);
+    border-radius: var(--border-radius);
 }
 
 .swap-header-group {
@@ -27,7 +28,7 @@
 .swap-input {
     background-color: var(--color2);
     border: solid #00000000;
-    /* border-radius: 30px; */
+    border-radius: var(--border-radius);
     width: 90%;
     height: 100px;
     margin-left: 5%;
@@ -70,7 +71,7 @@
     background-color: var(--color3);
     height: 60px;
     margin-top: 30px !important;
-    border-radius: 0px;
+    border-radius: var(--border-radius);
 }
 
 #swap-mode-header {
@@ -124,16 +125,12 @@
 
 .token-use {
     background-color: var(--color3);
-    position: absolute;
-    top: 160px;
-    right: 35px;
+    margin-left: 100px;
 }
 
 .token-use1 {
     background-color: var(--color3);
-    position: absolute;
-    top: 321px;
-    right: 35px;
+    margin-left: 100px;
 }
 
 .swap-card-top-items {

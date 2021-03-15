@@ -18,11 +18,11 @@ class Aside extends React.Component {
             },
             exchange : {
                 iconClasses: 'icon-Icon10',
-                action: undefined
+                action: this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange')
             },
             liquidity : {
                 iconClasses: 'icon-Icon18',
-                action: undefined
+                action: this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity')
             },
             ido : {
                 iconClasses: 'icon-Icon21',
@@ -83,7 +83,7 @@ class Aside extends React.Component {
             <div id='aside' className={asideClasses}>
                 <div className='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
-                        <div className='menu-item d-flex align-items-center justify-content-start mb-4'>
+                        <div className='menu-item d-flex align-items-center justify-content-start mb-4' onClick={this.menuItems[item].action} >
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
                             <span className='aside-menu-text'>{this.mySwapPage.state.langData.navbars.left[item]}</span>
                         </div>

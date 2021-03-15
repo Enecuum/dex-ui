@@ -17,8 +17,8 @@
 :root {
     --color1 : white;
     --color2 : #61768b;
-    --color3 : #afcb08;
-    --color3-t : #afcb0880;
+    --color3 : #b4c941;
+    --color3-t : #b4c94180;
     --main-background : #f9fafb;
     --transition : 0.1s;
     --text-color : white;
@@ -30,7 +30,7 @@
     --menu-bg: rgba(26, 31, 46, 0.702);
     --inactive-item: #61758b;
     --active-item: #61c2d0;
-    --border-radius-1: 5px;
+    --border-radius: 5px;
     --bg-color-1: rgb(27, 35, 48);
     --bg-swap-card: #2c374b;
 }
@@ -63,10 +63,10 @@ body {
     background: var(--color3);
 }
 
-::selection {
+/* ::selection {
     color: var(--text-color);
     background: #00000000;
-}
+} */
 
 .aside-toggle:hover {
     cursor: pointer;

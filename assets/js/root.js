@@ -11,8 +11,6 @@ import TokenCard from './TokenCard';
 
 import Presets from './pageDataPresets';
 import SwapApi from './swapApi';
-import '../../web-enq/prebuild/ENQweb3lib.min.js';
-import '../../web-enq/prebuild/enqweb3.min.js';
 
 import '../css/popup-cards.css';
 
@@ -61,9 +59,7 @@ class Root extends React.Component {
             },
 
             userTokenValue : 0,
-            leftNavWidth : '0px',
-            leftNavAWidth : '0px',
-            swapCardLeft : '51%',
+            swapCardLeft : '55%',
             settingsVisibility : 'hidden',
             bottomPosition : '-60px',
             submitName : '',
@@ -75,7 +71,6 @@ class Root extends React.Component {
         // -------------------------------------
         this.updLanguage(this.activeLocale);
         this.updExternalData();
-        ENQweb3lib.connect();
     };
 
     async updExternalData () {
@@ -169,7 +164,7 @@ class Root extends React.Component {
         this.updState('userTokenValue', 0);
         return;
         // let mode = this.getMode()
-        // ENQweb3lib.balanceOf({
+        // Enecuum.balanceOf({
         //     to : this.pubKey,
         //     tokenHash : this[mode].token0
         // }).then(
@@ -203,14 +198,22 @@ class Root extends React.Component {
     };
 
     async sentTx () {
+        let data = this[this.getMode()];
         if (this.connectionStatus) {
-            // await ENQweb3lib.sendTransaction({
-            //     from : this.pubKey,
-            //     to : presets.network.genesisPubKey,
-            //     value : presets.network.nativeToken.fee,
-            //     tokenHash : presets.network.nativeToken.hash,
-            //     data : 'data'
-            // });
+            await Enecuum.sendTransaction({
+                from : this.pubKey,
+                to : presets.network.genesisPubKey,
+                value : presets.network.nativeToken.fee,
+                tokenHash : presets.network.nativeToken.hash,
+                data : {
+                    type : 'swap',
+                    parameters : {
+                        asset_in : data.field0.token.hash, 
+                        amount_in : data.field0.value,
+                        asset_out : data.field1.value
+                    }
+                }
+            });
             alert('Send tx');
         } else {
             this.openConnectionList();
@@ -474,12 +477,12 @@ class Root extends React.Component {
         let data;
         if (this.navOpen) {
             this.navOpen = false;
-            data = [0, 0, '51%', 'hidden', '-60px'];
+            data = ['51%', 'hidden', '-60px'];
         } else {
             this.navOpen = true;
-            data = ['160px', '160px', '55%', 'visible', '15px'];
+            data = ['55%', 'visible', '15px'];
         }
-        let necessaryProps = ['leftNavWidth', 'leftNavAWidth', 'swapCardLeft', 'settingsVisibility', 'bottomPosition'];
+        let necessaryProps = ['swapCardLeft', 'settingsVisibility', 'bottomPosition'];
         for (let i in necessaryProps)
             this.updState(necessaryProps[i], data[i]);
     };

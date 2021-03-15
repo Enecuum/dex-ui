@@ -11,8 +11,8 @@
     height: 600px;
     width: 430px;
     margin-left: -215px;
-    transition: var(--transition);
-    border-radius: var(--border-radius);
+    transition: var(--transition1);
+    border-radius: var(--border-radius1);
 }
 
 .swap-header-group {
@@ -22,13 +22,13 @@
 #head-line {
     width: 100%;
     margin-top: 0px;
-    border-bottom: 2px solid var(--inactive-item);
+    border-bottom: 2px solid var(--color2);
 }
 
 .swap-input {
     background-color: var(--color2);
     border: solid #00000000;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius1);
     width: 90%;
     height: 100px;
     margin-left: 5%;
@@ -71,7 +71,7 @@
     background-color: var(--color3);
     height: 60px;
     margin-top: 30px !important;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius1);
 }
 
 #swap-mode-header {
@@ -81,7 +81,7 @@
 }
 
 #under-header {
-    color: var(--active-item);
+    color: var(--color4);
     margin-left: 6%;
 }
 
@@ -100,20 +100,20 @@
     margin-left: 14px;
     background-color: var(--bg-color);
     border: 0;
-    color: var(--active-item);
+    color: var(--color4);
 }
 .c-input-field::placeholder {
-    color: var(--active-item);
+    color: var(--color4);
 }
 
 .form-control {
-    color: var(--text-color);
+    color: var(--color1);
 }
 
 .form-control:focus {
     border: 0;
     background-color: var(--color2);
-    color: var(--text-color);
+    color: var(--color1);
     box-shadow: #00000000;
 }
 

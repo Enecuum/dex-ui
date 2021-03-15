@@ -356,7 +356,7 @@ class Root extends React.Component {
     
     turnOn (colorIndex) {
         this.setState(state => {
-            state.leftNavColors[colorIndex] = 'var(--color3-t)';
+            state.leftNavColors[colorIndex] = 'var(--color3)';
             return state;
         });
     };

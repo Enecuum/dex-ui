@@ -19,7 +19,7 @@
     margin-top: 15%;
     height: 280px;
     width: 430px;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius1);
     margin-left: -215px;
     left: 50%;
 }

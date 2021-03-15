@@ -11,14 +11,14 @@
 #aside .lang-switcher:hover,
 #aside .lang-switcher:hover button  {
     cursor: pointer;
-    color: var(--active-item)!important;
+    color: var(--color4)!important;
     text-decoration: none;    
 }
 
 #aside .lang-switcher .dropdown-item:hover,
 #aside .lang-switcher .dropdown-item:focus {
     background-color: transparent;
-    color: var(--active-item)!important;
+    color: var(--color4)!important;
 }
 
 #aside .lang-switcher .btn:focus,
@@ -58,7 +58,7 @@
 #aside .lang-switcher,
 #aside .lang-switcher button,
 #aside .lang-switcher .dropdown-item {
-    color: var(--inactive-item);
+    color: var(--color2);
 }
 
 /*if aside closed begin*/
@@ -86,7 +86,7 @@
 /*menu in aside begin*/
 #aside .menu-item {
     height: 25px;
-    color: var(--inactive-item);
+    color: var(--color2);
 }
 
 #aside .menu-item .icon-wrapper {
@@ -108,12 +108,12 @@
     -webkit-box-pack: justify!important;
     -ms-flex-pack: justify!important;
     justify-content: space-between!important;
-    color: var(--inactive-item);
+    color: var(--color2);
 }
 
 #aside .socialsBar a {
     font-size: 27px;
-    color: var(--inactive-item);
+    color: var(--color2);
 }
 /*socials in aside end*/
 

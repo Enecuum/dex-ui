@@ -27,11 +27,11 @@
     margin-left: 0.5%;
     margin-bottom: 0.3%;
     margin-top: 0.3%;
-    color: var(--text-color);
+    color: var(--color1);
 }
 
 .navbar-light .navbar-brand {
-    color: var(--text-color);
+    color: var(--color1);
 }
 
 .connect-btn {

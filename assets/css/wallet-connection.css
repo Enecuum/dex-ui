@@ -1,5 +1,5 @@
 .enq-wallet {
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius1);
     width: 90%;
     height: 60px;
     margin-left: 5%;
@@ -36,7 +36,7 @@
 .c-clue {
     cursor: pointer;
     margin-top: 50px;
-    color: var(--active-item);
+    color: var(--color4);
 }
 
 .c-clue:hover {

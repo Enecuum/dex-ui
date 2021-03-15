@@ -15,24 +15,19 @@
   }
 
 :root {
-    --color1 : white;
-    --color2 : #61768b;
-    --color3 : #b4c941;
-    --color3-t : #b4c94180;
-    --main-background : #f9fafb;
-    --transition : 0.1s;
-    --text-color : white;
-    --exit-color : grey;
-    --lang-color : #9ea4ff;
+    --color1 : #ffffff;
+    --color2 : #61758b; /*синий текст в меню*/
+    --color3 : #b4c941; /*хаки*/
+    --color4: #61c2d0; /*активный пункт меню в асайде*/    
+    --main-background : #f9fafb; /*бэкграунд за планетой*/
+    --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
+    --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
+    --menu-bg: rgba(26, 31, 46, 0.702); /*полупрозрачный синий - бэкграунд асайда*/
+    --transition1 : 0.1s;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
     --top-menu-height: 70px;
-    --menu-bg: rgba(26, 31, 46, 0.702);
-    --inactive-item: #61758b;
-    --active-item: #61c2d0;
-    --border-radius: 5px;
-    --bg-color-1: rgb(27, 35, 48);
-    --bg-swap-card: #2c374b;
+    --border-radius1: 5px;
 }
 
 body, p, .btn {
@@ -41,7 +36,7 @@ body, p, .btn {
 
 body {    
     background-color: #202836;
-    color: var(--text-color);
+    color: var(--color1);
     overflow-x: hidden;
     height: 100vh;
     min-height: 600px;
@@ -64,17 +59,17 @@ body {
 }
 
 /* ::selection {
-    color: var(--text-color);
+    color: var(--color1);
     background: #00000000;
 } */
 
 .aside-toggle:hover {
     cursor: pointer;
-    color: var(--active-item);
+    color: var(--color4);
 }
 
 .aside-toggle {
-    color: var(--inactive-item);
+    color: var(--color2);
     font-size: 20px; 
 }
 

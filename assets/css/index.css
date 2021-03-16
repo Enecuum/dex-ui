@@ -16,10 +16,11 @@
 
 :root {
     --color1 : #ffffff;
-    --color2 : #61758b; /*синий текст в меню*/
+    --color2 : #61758b; /*синий текст в меню rgb(97, 117, 139);*/
     --color3 : #b4c941; /*хаки*/
     --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
-    --color4: #61c2d0; /*активный пункт меню в асайде*/    
+    --color4 : #61c2d0; /*активный пункт меню в асайде*/
+    --color5 : #435163; /*темный текст в инпуте карточки выбора токена*/
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
@@ -27,8 +28,10 @@
     --transition1 : 0.1s;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
+    --box-shadow2 : 0px 0px 98px 0px rgba(24, 29, 43, 0.6);
     --top-menu-height: 70px;
     --border-radius1: 5px;
+    --border-radius2: 3px;
 }
 
 body, p, .btn {
@@ -85,4 +88,36 @@ body {
 .wrapper-1 {
     border-radius: var(--border-radius-1);
     background-color: var(--bg-color-1);
+}
+
+.br-standard {
+    border-radius: var(--border-radius1);
+}
+
+.text-input-1 {
+    border-radius: var(--border-radius2);
+    color: var(--color5)!important;
+    border: 1px solid var(--color2); 
+    background: transparent;
+}
+
+.form-control.text-input-1:focus {
+    background-color: transparent;
+    border: 1px solid var(--color2);
+}
+
+.fire-tooltip {
+    color: var(--color4);
+}
+
+.close-1:hover {
+    color: var(--color4);
+}
+
+.hover-pointer {
+    cursor: pointer;
+}
+
+.tooltip-info {
+    
 }

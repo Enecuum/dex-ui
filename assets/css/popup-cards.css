@@ -30,13 +30,13 @@
 }
 
 #tokens-card {
-    position: fixed;
-    z-index: 150;
-    background-color: var(--bg-swap-card);
-    top : 20%;
+    position: absolute;
+    z-index: 105;
+    background-color: var(--bg-color-1);
+    box-shadow: var(--box-shadow2);
+    margin-top: -600px;
     height: 700px;
     width: 330px;
-    border-radius: 40px;
     margin-left: -165px;
     left: 50%;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'regenerator-runtime/runtime.js';
-
+import "regenerator-runtime/runtime.js";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './Navbar';
 import Aside from './Aside';
 import SwapCard from './SwapCard';

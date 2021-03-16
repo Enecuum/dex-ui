@@ -200,7 +200,7 @@ class SwapCard extends React.Component {
     renderTokenCard () {
         if (this.state.tokenListStatus)
             return (
-                <div id='tokens-card'>
+                <div id='tokens-card' className="p-4 br-standard">
                     <TokenCard root={ this.root } 
                                changeToken={ this.changeToken.bind(this) } 
                                closeTokenList={this.closeTokenList.bind(this)} />

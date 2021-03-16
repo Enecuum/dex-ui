@@ -1,5 +1,6 @@
 import React from 'react';
 import SwapApi from './swapApi';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import '../css/popup-cards.css';
 import '../css/token-card.css';
 
@@ -24,8 +25,10 @@ class TokenCard extends React.Component {
         this.setState({ list: this.makeList() });
     };
 
-    getTokens(searchWord) {
-        return this.tokens.filter(el => (new RegExp(`.*${searchWord.trim().toLowerCase()}.*`)).test(el.name.toLowerCase()));
+    getTokens (searchWord) {
+        let word = searchWord.trim().toLowerCase();
+        let regExpWord = new RegExp(`.*${word}.*`);
+        return this.tokens.filter(token => regExpWord.test(token.name.toLowerCase()) || word === token.hash);
     };
 
     assignToken(token) {
@@ -36,9 +39,9 @@ class TokenCard extends React.Component {
     makeList() {
         return this.getTokens(this.tokenFilter).map(el => {
             return (
-                <option onClick={this.assignToken.bind(this, el)} className='token-option'>
-                    { el.name}
-                </option>
+                <div className='token-option py-1 my-1 px-1 hover-pointer' onClick={this.assignToken.bind(this, el)}>
+                    { el.name }
+                </div>
             );
         });
     };
@@ -53,29 +56,28 @@ class TokenCard extends React.Component {
     render() {
         return (
             <div>
-                <div className="close" onClick={this.closeTokenList} style={{ marginTop: '-10px', marginRight: '-6px' }}>
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                    <div className="d-flex align-items-center justify-content-start">
+                        <span className="mr-3">
+                            {this.root.state.langData.trade.tokenCard.header}
+                        </span>
+                        <span className="icon-Icon4 fire-tooltip hover-pointer" />
+                    </div>
+                    <span className="icon-Icon17 close-1 hover-pointer" onClick={this.closeTokenList} />
                 </div>
-                <p style={{
-                    fontWeight: 'bold',
-                    marginTop: '22px',
-                    marginLeft: '30px'}}>
-                    {this.root.state.langData.trade.tokenCard.header}
-                </p>
-                <div style={{
-                    borderBottom: '1px solid #80808094',
-                    marginTop: '15px',
-                    width: '100%'
-                }}>
+
+                <div className="mb-4">
+                    <input  id='token-filter-field'
+                            onChange={this.changeList.bind(this)}
+                            className='text-input-1 form-control'
+                            type='text'
+                            placeholder={this.root.state.langData.trade.tokenCard.search} />
                 </div>
-                <input id='token-filter-field'
-                    onChange={this.changeList.bind(this)}
-                    className='form-control mr-sm-2'
-                    type='text'
-                    placeholder={this.root.state.langData.trade.tokenCard.search}>
-                </input>
-                <select multiple={true} className='form-control' id='full-token-list'>
-                    {this.state.list}
-                </select>
+
+
+                <div id='full-token-list' multiple={true}>
+                    { this.state.list }
+                </div>
             </div>
         );
     };

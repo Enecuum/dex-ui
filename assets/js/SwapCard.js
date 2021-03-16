@@ -122,11 +122,13 @@ class SwapCard extends React.Component {
             value = document.getElementById(fieldId).value;
         } else {}
 
+        let fieldObj = this.state[this.mode][field];
+        fieldObj.value = value;
         this.setState(state => { 
-            state[this.mode][field].value = value;
+            state[this.mode][field] = fieldObj;
             return state;
         });
-        this.countCounterField(field, this.getActiveField(fieldId, true));
+        this.countCounterField(fieldObj, this.getActiveField(fieldId, true));
     };
 
     searchSwap (tokens) {
@@ -149,6 +151,10 @@ class SwapCard extends React.Component {
     };
 
     getAddLiquidityPrice (input_0, input_1, coinValue) {
+        console.log(input_0);
+        console.log(input_1);
+        console.log(coinValue);
+
         return this.countCoinValue(input_0, input_1) * coinValue;
     };
 
@@ -164,20 +170,19 @@ class SwapCard extends React.Component {
 
     countPrice (activeField, pair) {
         if (this.mode == 'exchange') {
-            if (activeField.token == pair.token_0.hash)
-                return this.getAddLiquidityPrice(pair.token_0.hash, pair.token_1.hash, activeField.value);
+            if (activeField.token.hash == pair.token_0.hash)
+                return this.getSwapPrice(pair, activeField.value);
+            else
+                return this.getSwapPrice(pair, activeField.value);
+        } else {
+            if (activeField.token.hash == pair.token_0.hash)
+                return this.getAddLiquidityPrice(pair.token_0.volume, pair.token_1.volume, activeField.value);
             else
                 return this.getAddLiquidityPrice(pair.token_1.volume, pair.token_0.volume, activeField.value);
-        } else {
-            if (activeField.token == pair.token_0.hash)
-                return this.getSwapPrice(pair, activeField.value);
-            else
-                return this.getSwapPrice(pair, activeField.value);
         }
     };
 
-    countCounterField (field, cField) {
-        let activeField = this.state[this.mode][field];
+    countCounterField (activeField, cField) {
         let counterField = this.state[this.mode][cField];
 
         if (activeField.token.name !== startToken && counterField.token.name !== startToken) {
@@ -196,11 +201,13 @@ class SwapCard extends React.Component {
 
     changeToken (token) {
         let field = this.getActiveField(this.activeField);
+        let fieldObj = this.state[this.mode][field];
+        fieldObj.token = token;
         this.setState(state => {
-            state[this.mode][field].token = token;
+            state[this.mode][field] = fieldObj;
             return state;
         });
-        this.countCounterField(field, this.getActiveField(this.activeField, true));
+        this.countCounterField(fieldObj, this.getActiveField(this.activeField, true));
     };
 
     renderTokenCard () {

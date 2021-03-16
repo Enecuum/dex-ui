@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
   "dependencies": {
+    "bootstrap": "^4.6.0",
     "css-loader": "^5.0.2",
     "express": "^4.17.1",
+    "react-bootstrap": "^1.5.2",
     "regenerator-runtime": "^0.13.7",
     "style-loader": "^2.0.0"
   },

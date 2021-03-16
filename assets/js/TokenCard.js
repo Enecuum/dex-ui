@@ -1,4 +1,5 @@
 import React from 'react';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import '../css/popup-cards.css';
 
 class TokenCard extends React.Component {
@@ -18,7 +19,9 @@ class TokenCard extends React.Component {
     };
 
     getTokens (searchWord) {
-        return this.mySwapPage.tokens.filter(el => (new RegExp(`.*${searchWord.trim().toLowerCase()}.*`)).test(el.name.toLowerCase()));
+        let word = searchWord.trim().toLowerCase();
+        let regExpWord = new RegExp(`.*${word}.*`);
+        return this.mySwapPage.tokens.filter(token => regExpWord.test(token.name.toLowerCase()) || word === token.hash);
     };
 
     assignToken (token) {
@@ -28,17 +31,9 @@ class TokenCard extends React.Component {
     makeList () {
         return this.getTokens(this.mySwapPage.tokenFilter).map(el => {
             return (
-                <option onClick={this.assignToken.bind(this, el)}
-                        className='token-option'
-                        style={{
-                            textAlign: 'left',
-                            color: 'var(--color3)',
-                            fontSize: '20px',
-                            padding: '10px',
-                            borderRadius: '10px'
-                        }}>
+                <div className='token-option py-1 my-1 px-1 hover-pointer' onClick={this.assignToken.bind(this, el)}>
                     { el.name }
-                </option>
+                </div>
             );
         });
     };
@@ -53,50 +48,28 @@ class TokenCard extends React.Component {
     render () {
         return (
             <div>
-                <div className="close" onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)} style={{ marginTop : '-10px',
-                                                                                                                marginRight : '-6px' }}>
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                    <div className="d-flex align-items-center justify-content-start">
+                        <span className="mr-3">
+                            {this.mySwapPage.state.langData.trade.tokenCard.header}
+                        </span>
+                        <span className="icon-Icon4 fire-tooltip hover-pointer" />
+                    </div>
+                    <span className="icon-Icon17 close-1 hover-pointer" onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)} />
                 </div>
-                <p style={{
-                        fontWeight: 'bold',
-                        marginTop: '22px',
-                        marginLeft: '30px'
-                    }}>
-                    {this.mySwapPage.state.langData.trade.tokenCard.header}
-                </p>
-                <div style={{
-                        borderBottom: '1px solid #80808094',
-                        marginTop : '15px',
-                        width: '100%'
-                    }}>
+
+                <div className="mb-4">
+                    <input  id='token-filter-field'
+                            onChange={this.changeList.bind(this)}
+                            className='text-input-1 form-control'
+                            type='text'
+                            placeholder={this.mySwapPage.state.langData.trade.tokenCard.search} />
                 </div>
-                <input  id='token-filter-field'
-                        onChange={this.changeList.bind(this)}
-                        className='form-control mr-sm-2'
-                        type='text'
-                        placeholder={this.mySwapPage.state.langData.trade.tokenCard.search}
-                        style={{
-                            textAlign : 'left',
-                            width : '90%',
-                            marginLeft : '5%',
-                            marginTop : '15px',
-                            borderRadius : '20px'
-                        }}>
-                </input>
-                <select multiple={true}
-                        className='form-control'
-                        id='full-token-list'
-                        style={{
-                            borderRadius : '5px',
-                            position : 'absolute',
-                            width : '90%',
-                            marginLeft : '5%',
-                            marginTop : '20px',
-                            backgroundColor : 'var(--bg-swap-card)',
-                            height : '77%',
-                            border : 0
-                        }}>
+
+
+                <div id='full-token-list' multiple={true}>
                     { this.state.list }
-                </select>
+                </div>
             </div>
         );
     };

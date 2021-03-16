@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "regenerator-runtime/runtime.js";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './Navbar';
 import Aside from './Aside';
 import ConnectionService from './ConnectionService';
@@ -507,7 +507,7 @@ class Root extends React.Component {
                             <div className='swap-card' style={{ left : this.state.swapCardLeft }}>
                                 <SwapCard outer={ this } />
                             </div>
-                            <div id='tokens-card'>
+                            <div id='tokens-card' className="p-4 br-standard">
                                 <TokenCard outer={ this } />
                             </div>
                         </div>    

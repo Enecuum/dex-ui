@@ -1,4 +1,5 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Connect from './Connect';
 import '../css/navbar.css';
 import '../css/font-style.css';

@@ -23,7 +23,6 @@ class ConnectionService extends React.Component {
             this.mySwapPage.connectionStatus = false;
         });
         this.mySwapPage.closeConnectionList();
-        this.mySwapPage.updSubmitName();
     };
 
     render () {

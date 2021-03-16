@@ -1,12 +1,11 @@
 #switch {
     position: fixed;
     box-shadow: var(--box-shadow);
-    margin-top: 150px;
+    margin-top: -100px;
     height: 35px;
     margin-left: 25px;
     width: 380px;
     background-color: var(--bg-swap-card);
-    margin-left: -190px;
     transition: var(--transition1);
     border-radius: var(--border-radius1);
 }
@@ -35,5 +34,5 @@
 }
 
 .switch-mode:hover {
-    background-color: var(--color3)!important;
+    background-color: var(--color3-t)!important;
 }

@@ -1,0 +1,26 @@
+#full-token-list {
+    border-radius : 5px;
+    position : absolute;
+    width : 90%;
+    margin-left : 5%;
+    margin-top : 20px;
+    background-color : var(--bg-swap-card);
+    height : 77%;
+    border : 0
+}
+
+#token-filter-field {
+    text-align: left;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 15px;
+    border-radius: 20px
+}
+
+.token-option {
+    text-align: left;
+    color: var(--color3);
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+}

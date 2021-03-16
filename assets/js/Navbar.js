@@ -10,7 +10,7 @@ class Navbar extends React.Component {
         this.root = props.outer;
     };
     render () {
-        let asideToggleClasses = (this.root.navOpen ? 'icon-Icon9' : 'icon-Icon8') + ' aside-toggle mr-5 mb-2';
+        let asideToggleClasses = (this.root.state.navOpened ? 'icon-Icon9' : 'icon-Icon8') + ' aside-toggle mr-5 mb-2';
 
         return (
             <nav className='navbar navbar-expand-lg navbar-light fixed-top new-color align-items-center justify-content-between'>

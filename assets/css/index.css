@@ -18,6 +18,7 @@
     --color1 : #ffffff;
     --color2 : #61758b; /*синий текст в меню*/
     --color3 : #b4c941; /*хаки*/
+    --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
     --color4: #61c2d0; /*активный пункт меню в асайде*/    
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
@@ -32,7 +33,11 @@
 
 body, p, .btn {
     font-family: 'Ska Sans Regular', sans-serif;
-}    
+}
+
+.c-border {
+    border-radius: var(--border-radius1);
+}
 
 body {    
     background-color: #202836;

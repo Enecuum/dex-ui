@@ -18,11 +18,11 @@ class Aside extends React.Component {
             },
             exchange : {
                 iconClasses: 'icon-Icon10',
-                action: this.mySwapPage.switchMode.bind(this.mySwapPage, 'exchange')
+                action: undefined
             },
             liquidity : {
                 iconClasses: 'icon-Icon18',
-                action: this.mySwapPage.switchMode.bind(this.mySwapPage, 'liquidity')
+                action: undefined
             },
             ido : {
                 iconClasses: 'icon-Icon21',
@@ -78,7 +78,7 @@ class Aside extends React.Component {
     };
 
     render () {
-        let asideClasses = ('aside-' + (this.mySwapPage.navOpen ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3';
+        let asideClasses = ('aside-' + (this.mySwapPage.state.navOpened ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3';
         return (
             <div id='aside' className={asideClasses}>
                 <div className='aside-menu'>
@@ -110,7 +110,7 @@ class Aside extends React.Component {
                         </div>
                     </div>
                     <Socials/>
-                    <div className={(this.mySwapPage.navOpen ? 'd-none' : '') + ' aside-toggle text-center'} onClick={ this.mySwapPage.toggleNavbar.bind(this.mySwapPage, true) }>
+                    <div className={(this.mySwapPage.state.navOpened ? 'd-none' : '') + ' aside-toggle text-center'} onClick={ this.mySwapPage.toggleNavbar.bind(this.mySwapPage, true) }>
                         <span className='icon-Icon15'/>
                     </div>
                 </div>

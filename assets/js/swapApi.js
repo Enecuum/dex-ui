@@ -1,6 +1,6 @@
 class SwapApi {
     constructor () {
-        this.url = location.href;
+        this.url = location.href.replace('/#', '/');
     }
 
     getTokens () {

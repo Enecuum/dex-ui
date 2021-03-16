@@ -10,7 +10,7 @@
     margin-top: 250px;
     height: 600px;
     width: 430px;
-    margin-left: -215px;
+    left: 40%;
     transition: var(--transition1);
     border-radius: var(--border-radius1);
 }
@@ -123,14 +123,10 @@
     width: 20px;
 }
 
-.token-use {
+.token-button {
     background-color: var(--color3);
-    margin-left: 100px;
-}
-
-.token-use1 {
-    background-color: var(--color3);
-    margin-left: 100px;
+    margin-right: -10px;
+    margin-left: 90px;
 }
 
 .swap-card-top-items {

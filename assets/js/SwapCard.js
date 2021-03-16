@@ -2,10 +2,12 @@ import React from 'react';
 import History from './History';
 import Settings from './Settings';
 import TokenCard from './TokenCard';
+import SwapApi from './swapApi';
 
 import '../css/swap-card.css';
 import '../css/font-style.css';
 
+const swapApi = new SwapApi();
 const startToken = '...';
 
 class SwapCard extends React.Component {
@@ -50,6 +52,11 @@ class SwapCard extends React.Component {
             },
             tokenListStatus : false
         };
+        this.updPairs();
+    };
+
+    async updPairs() {
+        this.pairs = await (await swapApi.getPairs()).json();
     };
 
     swapPair () {
@@ -91,7 +98,6 @@ class SwapCard extends React.Component {
 
     openTokenList (fieldId) {
         this.activeField = fieldId;
-        console.log(123);
         this.setState({ tokenListStatus : true });
     };
 

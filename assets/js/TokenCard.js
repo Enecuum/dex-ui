@@ -74,8 +74,7 @@ class TokenCard extends React.Component {
                             placeholder={this.root.state.langData.trade.tokenCard.search} />
                 </div>
 
-
-                <div id='full-token-list' multiple={true}>
+                <div multiple={true}>
                     { this.state.list }
                 </div>
             </div>

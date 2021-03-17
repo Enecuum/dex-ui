@@ -1,6 +1,7 @@
 import React from 'react';
 import SwapApi from './swapApi';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Tooltip from './Tooltip';
 import '../css/popup-cards.css';
 import '../css/token-card.css';
 
@@ -61,7 +62,7 @@ class TokenCard extends React.Component {
                         <span className="mr-3">
                             {this.root.state.langData.trade.tokenCard.header}
                         </span>
-                        <span className="icon-Icon4 fire-tooltip hover-pointer" />
+                        <Tooltip text={this.root.state.langData.trade.tokenCard.tooltipText}/>
                     </div>
                     <span className="icon-Icon17 close-1 hover-pointer" onClick={this.closeTokenList} />
                 </div>

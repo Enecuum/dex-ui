@@ -19,7 +19,7 @@
     --color2 : #61758b; /*синий текст в меню rgb(97, 117, 139);*/
     --color3 : #b4c941; /*хаки*/
     --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
-    --color4 : #61c2d0; /*активный пункт меню в асайде*/
+    --color4 : #61c2d0; /*активный пункт меню в асайде    rgb(97, 194, 208)*/
     --color5 : #435163; /*темный текст в инпуте карточки выбора токена*/
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
@@ -119,5 +119,20 @@ body {
 }
 
 .tooltip-info {
-    
+    border: 1px solid var(--color4);
+    box-shadow: 0px 0px 16px 0px rgba(97, 194, 208, 0.23);
+    background-color: var(--bg-color-1);
+    color: var(--color4);
+}
+
+.tooltip-info .popover-body {
+    color: var(--color4);
+}
+
+.tooltip-info.bs-popover-bottom>.arrow::before {
+    border-bottom-color: var(--color4);
+}
+
+.tooltip-info.bs-popover-bottom>.arrow::after {
+    border-bottom-color: var(--bg-color-1);
 }

@@ -105,12 +105,12 @@ class Aside extends React.Component {
                             </div>
                         </div>
                         <div className="dropup lang-switcher d-flex align-items-center justify-content-between">
-                            <Dropdown className="wrapper-1">
+                            <Dropdown>
                                 <Dropdown.Toggle variant="link" id="dropdown-basic" className="btn btn-link">
                                     <span className='icon-Icon6 mr-2'/>
                                     <span className='text-uppercase'>{  this.mySwapPage.langTitles[this.mySwapPage.activeLocale].short }</span> 
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu>
+                                <Dropdown.Menu className="wrapper-1">
                                     {this.mySwapPage.siteLocales.map((item, index) => (
                                         <Dropdown.Item className="text-center py-2" value={index} onClick={this.mySwapPage.changeLanguage.bind(this.mySwapPage, item)}>{ this.mySwapPage.langTitles[item].full }</Dropdown.Item>
                                     ))}

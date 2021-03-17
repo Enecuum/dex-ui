@@ -3,5 +3,5 @@
     color: var(--color1);
     font-size: 20px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--border-radius2);
 }

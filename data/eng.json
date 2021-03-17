@@ -45,7 +45,8 @@
         },
         "tokenCard" : {
             "header" : "Choose a token",
-            "search" : "Search by name"
+            "search" : "Search by name",
+            "tooltipText" : "When you add liqutidity, you are given pool tokens that represent your share."
         }
     }
 }

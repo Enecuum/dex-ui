@@ -1,0 +1,18 @@
+.tooltip-info {
+    border: 1px solid var(--color4);
+    box-shadow: 0px 0px 16px 0px rgba(97, 194, 208, 0.23);
+    background-color: var(--bg-color-1);
+    color: var(--color4);
+}
+
+.tooltip-info .popover-body {
+    color: var(--color4);
+}
+
+.tooltip-info.bs-popover-bottom>.arrow::before {
+    border-bottom-color: var(--color4);
+}
+
+.tooltip-info.bs-popover-bottom>.arrow::after {
+    border-bottom-color: var(--bg-color-1);
+}

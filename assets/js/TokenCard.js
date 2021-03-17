@@ -16,7 +16,8 @@ class TokenCard extends React.Component {
         this.tokenFilter = '';
         this.tokens = [];
         this.state = {
-            list: this.makeList()
+            list: this.makeList(),
+            sort: 'asc'
         };
         this.updTokens();
     };
@@ -37,8 +38,55 @@ class TokenCard extends React.Component {
         this.closeTokenList();
     };
 
-    makeList() {
-        return this.getTokens(this.tokenFilter).map(el => {
+    toggleSortList() {
+        let sortOrder = 'unsort';
+        if (this.state.sort === 'unsort' || this.state.sort === 'desc')
+            sortOrder = 'asc';       
+        else if (this.state.sort === 'asc')
+            sortOrder = 'desc';        
+        else
+            sortOrder = 'asc';
+
+        this.setState({sort: sortOrder}, function() {
+            this.setState({list : this.makeList(this.state.sort)});
+        });
+    }
+
+    comparator(sortDirection) {
+        let allowedSortDirections = ['asc','desc','unsort'];
+        let defaultComparator = function(a,b) {
+                                return 0; //default return value (no sorting)
+                            }
+        if (sortDirection === undefined || allowedSortDirections.indexOf(sortDirection) !== -1) {
+            if (sortDirection === 'asc') {
+                return function(a,b) {
+                    var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase();
+                    if (nameA < nameB) //sortDirection string ascending
+                    return -1;
+                    if (nameA > nameB)
+                    return 1;
+                    return 0; //default return value (no sorting)
+                }
+            } else if (sortDirection === 'desc') {
+                return function(a,b) {
+                    var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase();
+                    if (nameA < nameB) //sortDirection string descending
+                    return 1;
+                    if (nameA > nameB)
+                    return -1;
+                    return 0; //default return value (no sorting)
+                }
+            } else if (sortDirection === 'unsort') {
+                return defaultComparator;
+            }                
+        } else {
+            console.log('Such sortDirection is not allowed. Sort by default direction - "unsort"')
+            return defaultComparator;
+        }
+    }
+
+    makeList(sortDirection = 'asc') {//allowable values are: 'asc','desc','unsort'
+        return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map(el => {
             return (
                 <div className='token-option py-1 my-1 px-1 hover-pointer' onClick={this.assignToken.bind(this, el)}>
                     { el.name }
@@ -75,7 +123,14 @@ class TokenCard extends React.Component {
                             placeholder={this.root.state.langData.trade.tokenCard.search} />
                 </div>
 
-                <div multiple={true}>
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                    <span>{this.root.state.langData.trade.tokenCard.tokenName}</span>
+                    <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
+                        <i className={'fas ' + 'fa-arrow-' + (this.state.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
+                    </span>                    
+                </div>
+
+                <div id="tokensList">
                     { this.state.list }
                 </div>
             </div>

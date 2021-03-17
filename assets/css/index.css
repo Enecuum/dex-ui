@@ -20,7 +20,7 @@
     --color3 : #b4c941; /*хаки*/
     --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
     --color4 : #61c2d0; /*активный пункт меню в асайде    rgb(97, 194, 208)*/
-    --color5 : #435163; /*темный текст в инпуте карточки выбора токена*/
+    --color5 : #435163; /*темный текст в инпуте карточки выбора токена rgb(67, 81, 99)*/
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
@@ -55,15 +55,21 @@ body {
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 7px;
     height: 0;
     left:-100px;
-    border-radius: 10px;
-    background-color: #dde9ff;
+    border: 1px solid var(--color5);
+    border-radius: 7px;
+    background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: var(--color3);
+    background: var(--color4);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color4) var(--color2);
 }
 
 /* ::selection {
@@ -116,23 +122,4 @@ body {
 
 .hover-pointer {
     cursor: pointer;
-}
-
-.tooltip-info {
-    border: 1px solid var(--color4);
-    box-shadow: 0px 0px 16px 0px rgba(97, 194, 208, 0.23);
-    background-color: var(--bg-color-1);
-    color: var(--color4);
-}
-
-.tooltip-info .popover-body {
-    color: var(--color4);
-}
-
-.tooltip-info.bs-popover-bottom>.arrow::before {
-    border-bottom-color: var(--color4);
-}
-
-.tooltip-info.bs-popover-bottom>.arrow::after {
-    border-bottom-color: var(--bg-color-1);
 }

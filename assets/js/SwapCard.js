@@ -8,15 +8,15 @@ import '../css/swap-card.css';
 import '../css/font-style.css';
 
 const swapApi = new SwapApi();
-const startToken = '...';
+const startToken = 'Select a token';
 
 class SwapCard extends React.Component {
     constructor(props) {
         super(props);
-        this.mode = props.mode;
         this.root = props.root;
         this.activeField = 0;
         this.pairs = [];
+        this.defaultToken = '';
         this.state = {
             exchange : {
                 field0 : {
@@ -50,7 +50,8 @@ class SwapCard extends React.Component {
                     }
                 }
             },
-            tokenListStatus : false
+            tokenListStatus : false,
+            liquidityMain : true
         };
         this.updPairs();
     };
@@ -79,12 +80,10 @@ class SwapCard extends React.Component {
                     value={props.value}
                     placeholder='0.0'>
                 </input>
-                <button onClick={ this.openTokenList.bind(this, props.fieldClass) }
-                        className={`btn btn-secondary my-2 my-sm-0 ${props.fieldClass} token-button`}
-                        type='submit'
-                        style={{ height: '40px' }}>
-                    {props.tokenName}
-                </button>
+                <div className={`${props.fieldClass} token-button row hover-pointer`} onClick={ this.openTokenList.bind(this, props.fieldClass) }>
+                    <div className='col d-flex justify-content-center align-items-center'>{props.tokenName}</div>
+                    <span className='icon-Icon26 d-flex justify-content-begin align-items-center toggle-token'></span>
+                </div>
             </div>
         );
     };
@@ -107,7 +106,7 @@ class SwapCard extends React.Component {
 
     changeField (fieldId) {
         let field = this.getActiveField(fieldId);
-        let value = this.state[this.mode][field].value;
+        let value = this.state[this.root.state.menuItem][field].value;
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
                 // nothing to do. this.updCardInternals() will save you previous number
@@ -122,10 +121,10 @@ class SwapCard extends React.Component {
             value = document.getElementById(fieldId).value;
         } else {}
 
-        let fieldObj = this.state[this.mode][field];
+        let fieldObj = this.state[this.root.state.menuItem][field];
         fieldObj.value = value;
         this.setState(state => { 
-            state[this.mode][field] = fieldObj;
+            state[this.root.state.menuItem][field] = fieldObj;
             return state;
         });
         this.countCounterField(fieldObj, this.getActiveField(fieldId, true));
@@ -142,7 +141,7 @@ class SwapCard extends React.Component {
         });
     };
 
-    countCoinValue (input_0, input_1) {
+    divide (input_0, input_1) {
         try {
             return input_1 / input_0;
         } catch (e) {
@@ -151,11 +150,7 @@ class SwapCard extends React.Component {
     };
 
     getAddLiquidityPrice (input_0, input_1, coinValue) {
-        console.log(input_0);
-        console.log(input_1);
-        console.log(coinValue);
-
-        return this.countCoinValue(input_0, input_1) * coinValue;
+        return this.divide(input_0, input_1) * coinValue;
     };
 
     countLiqudity (pair) {
@@ -169,7 +164,7 @@ class SwapCard extends React.Component {
     };
 
     countPrice (activeField, pair) {
-        if (this.mode == 'exchange') {
+        if (this.root.state.menuItem == 'exchange') {
             if (activeField.token.hash == pair.token_0.hash)
                 return this.getSwapPrice(pair, activeField.value);
             else
@@ -183,7 +178,7 @@ class SwapCard extends React.Component {
     };
 
     countCounterField (activeField, cField) {
-        let counterField = this.state[this.mode][cField];
+        let counterField = this.state[this.root.state.menuItem][cField];
 
         if (activeField.token.name !== startToken && counterField.token.name !== startToken) {
             let pair = this.searchSwap([activeField.token, counterField.token]);
@@ -193,7 +188,7 @@ class SwapCard extends React.Component {
             if (!counterFieldPrice)
                 counterFieldPrice = '';
             this.setState(state => {
-                state[this.mode][cField].value = counterFieldPrice;
+                state[this.root.state.menuItem][cField].value = counterFieldPrice;
                 return state;
             });
         }
@@ -201,10 +196,10 @@ class SwapCard extends React.Component {
 
     changeToken (token) {
         let field = this.getActiveField(this.activeField);
-        let fieldObj = this.state[this.mode][field];
+        let fieldObj = this.state[this.root.state.menuItem][field];
         fieldObj.token = token;
         this.setState(state => {
-            state[this.mode][field] = fieldObj;
+            state[this.root.state.menuItem][field] = fieldObj;
             return state;
         });
         this.countCounterField(fieldObj, this.getActiveField(this.activeField, true));
@@ -227,10 +222,10 @@ class SwapCard extends React.Component {
                 <div className='row no-gutters swap-header-group'>
                     <div className='col-9'>
                         <h4 className='row' id='swap-mode-header'>
-                            {this.root.state.langData.trade.swapCard[this.mode].header}
+                            {this.root.state.langData.trade.swapCard[this.root.state.menuItem].header}
                         </h4>
                         <p className='row' id='under-header'>
-                            {this.root.state.langData.trade.swapCard[this.mode].description}
+                            {this.root.state.langData.trade.swapCard[this.root.state.menuItem].description}
                         </p>
                     </div>
                     <div className='col d-flex justify-content-center align-items-center no-gutters'>
@@ -241,10 +236,10 @@ class SwapCard extends React.Component {
                 <div id='head-line'></div>
                 <div className='row swap-input' id='from'>
                     {this.getInputField({
-                        fieldName: this.root.state.langData.trade.swapCard[this.mode].input0,
+                        fieldName: this.root.state.langData.trade.swapCard[this.root.state.menuItem].input0,
                         fieldClass: 'token-use',
-                        tokenName: this.state[this.mode].field0.token.name,
-                        value: this.state[this.mode].field0.value
+                        tokenName: this.state[this.root.state.menuItem].field0.token.name,
+                        value: this.state[this.root.state.menuItem].field0.value
                     })}
                 </div>
                 <div className='row' id='exch' onClick={ this.swapPair.bind(this) }>
@@ -252,10 +247,10 @@ class SwapCard extends React.Component {
                 </div>
                 <div className='swap-input' id='to'>
                     {this.getInputField({
-                        fieldName: this.root.state.langData.trade.swapCard[this.mode].input1,
+                        fieldName: this.root.state.langData.trade.swapCard[this.root.state.menuItem].input1,
                         fieldClass: 'token-use1',
-                        tokenName: this.state[this.mode].field1.token.name,
-                        value: this.state[this.mode].field1.value
+                        tokenName: this.state[this.root.state.menuItem].field1.token.name,
+                        value: this.state[this.root.state.menuItem].field1.value
                     })}
                 </div>
                 <div className='row no-gutters'>
@@ -268,19 +263,151 @@ class SwapCard extends React.Component {
                     id='submit'>
                     { this.root.state.langData.trade.swapCard.submitButton.afterConnection }
                 </button>
-                { this.renderTokenCard() }
             </div>
         );
     };
 
-    renderLiquidityCard () {
+    renderMainLiquidityCard () {
         return (
-            <div></div>
+            <div>
+                <div className='row no-gutters swap-header-group'>
+                    <div className='col-9'>
+                        <h4 className='row' id='swap-mode-header'>
+                            {this.root.state.langData.trade.swapCard[this.root.state.menuItem].header}
+                        </h4>
+                        <p className='row' id='under-header'>
+                            {this.root.state.langData.trade.swapCard[this.root.state.menuItem].description}
+                        </p>
+                    </div>
+                    <div className='col d-flex justify-content-center align-items-center no-gutters'>
+                        <div className='col d-flex justify-content-center align-items-center no-gutters'>
+                            <Settings />
+                            <History />
+                        </div>
+                    </div>
+                </div>
+                <button className='btn btn-secondary my-2 my-sm-0 liquidity-btn' type='submit' onClick={this.changeLiquidityCard.bind(this)}>
+                    {this.root.state.langData.trade.swapCard[this.root.state.menuItem].addButton}
+                </button>
+                <div id='head-line'></div>
+                <div className='row no-gutters your-liquidity-header'>
+                    <div className='col-9'>
+                        {this.root.state.langData.trade.swapCard[this.root.state.menuItem].yourLiquidity}
+                    </div>
+                    <div className='col d-flex justify-content-end'>
+                        <span className='icon-Icon4'></span>
+                    </div>
+                </div>
+                <div className='your-liquidity-field'>
+                    {/* future content */}
+                </div>
+                <div className='your-liquidity-header'>
+                    {this.root.state.langData.trade.swapCard[this.root.state.menuItem].additionInfo}
+                </div>
+            </div>
         );
     };
 
+    renderAddLiquidityCard () {
+        let langProp_Per_ = this.root.state.langData.trade.swapCard[this.root.state.menuItem].per;
+        return (
+            <div>
+                <div className='row no-gutters swap-header-group'>
+                    <div className='col d-flex justify-content-end align-items-center no-gutters' onClick={this.changeLiquidityCard.bind(this)}>
+                        <span className='icon-Icon13 back-button hover-pointer'></span>
+                    </div>
+                    <h4 className='col-9 d-flex justify-content-center align-items-center add-liquidity-header' id='swap-mode-header'>
+                        {this.root.state.langData.trade.swapCard[this.root.state.menuItem].secondHeader}
+                    </h4>
+                    <div className='col d-flex justify-content-begin align-items-center no-gutters'>
+                        <span className='icon-Icon4'></span>
+                    </div>
+                </div>
+                <div className='row swap-input no-top-margin' id='from'>
+                    {this.getInputField({
+                        fieldName: this.root.state.langData.trade.swapCard[this.root.state.menuItem].input0,
+                        fieldClass: 'token-use',
+                        tokenName: this.state[this.root.state.menuItem].field0.token.name,
+                        value: this.state[this.root.state.menuItem].field0.value
+                    })}
+                </div>
+                <span className='icon-Icon17 d-flex justify-content-center plus-liquidity' />
+                <div className='swap-input' id='to'>
+                    {this.getInputField({
+                        fieldName: this.root.state.langData.trade.swapCard[this.root.state.menuItem].input1,
+                        fieldClass: 'token-use1',
+                        tokenName: this.state[this.root.state.menuItem].field1.token.name,
+                        value: this.state[this.root.state.menuItem].field1.value
+                    })}
+                </div>
+                <div className='pool-prices'>{this.root.state.langData.trade.swapCard[this.root.state.menuItem].priceAndPoolShare}</div>
+                <div className='swap-input price-and-poolshare-field row'>
+                    <div className='col'>
+                        <div className='row d-flex justify-content-center'>{this.countExchangeRate(true)}</div>
+                        <div className='row d-flex justify-content-center'>{ this.getExchangeText(langProp_Per_, true) }</div>
+                    </div>
+                    <div className='col'>
+                        <div className='row d-flex justify-content-center'>{this.countExchangeRate(false)}</div>
+                        <div className='row d-flex justify-content-center'>{ this.getExchangeText(langProp_Per_, false) }</div>
+                    </div>
+                    <div className='col'>
+                        <div className='row d-flex justify-content-center'>-</div>
+                        <div className='row d-flex justify-content-center'>{this.root.state.langData.trade.swapCard[this.root.state.menuItem].shareOfPool}</div>
+                    </div>
+                </div>
+                <button
+                    className='btn btn-secondary my-2 my-sm-0 swap-input '
+                    type='submit'
+                    id='submit'>
+                    { this.root.state.langData.trade.swapCard.submitButton.afterConnection }
+                </button>
+            </div>
+        );
+    };
+
+    getExchTokenName (name) {
+        return (name == startToken) ? '-' : name;
+    };
+
+    getExchangeText (langProp_Per_, firstPerSecond) {
+        let first = this.getExchTokenName(this.state.liquidity.field0.token.name);
+        let second = this.getExchTokenName(this.state.liquidity.field1.token.name);
+        if (firstPerSecond) 
+            return `${first} ${langProp_Per_} ${second}`;
+        else    
+            return `${second} ${langProp_Per_} ${first}`;
+    };
+
+    countExchangeRate (firstPerSecond) {
+        let pair = this.searchSwap([this.state.liquidity.field0.token, this.state.liquidity.field1.token]);
+        if (pair === undefined)
+            return '-';
+        pair = {...pair};
+        if (pair.token_0.hash !== this.state.liquidity.field0.token.hash) {
+            if (!firstPerSecond)
+                pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
+        } else {
+            if (firstPerSecond) 
+                pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
+        }
+        return this.divide(pair.token_0.volume, pair.token_1.volume);
+    };
+
+    changeLiquidityCard () {
+        this.setState({ liquidityMain : !this.state.liquidityMain});
+    };
+
+    renderLiquidityCard () {
+        return (this.state.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
+    };
+
     render() {
-        return (this.mode == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard();
+        return (
+            <div>
+                { (this.root.state.menuItem == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard() }
+                { this.renderTokenCard() }
+            </div>
+        );
     };
 };
 

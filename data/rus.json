@@ -34,7 +34,14 @@
             },
             "liquidity" : {
                 "header" : "Ликвидность",
+                "secondHeader" : "Добавить Ликвидность",
                 "description" : "Добавить ликвидность для получения LP токенов",
+                "addButton" : "Добавить",
+                "yourLiquidity" : "Ваша ликвидность",
+                "additionInfo" : "Если вы вложили токены ENX в ферму, верните их, и они появятся тут.",
+                "priceAndPoolShare" : "Цена и доля в пуле",
+                "per" : "на",
+                "shareOfPool" : "Доля в пуле",
                 "input0" : "Ввод",
                 "input1" : "Ввод"
             },

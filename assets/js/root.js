@@ -108,18 +108,27 @@ class Root extends React.Component {
                         <div id='switch' >
                             <Switch root={ this }/>
                         </div>
-                        <SwapCard mode={this.state.menuItem} root={ this } />
+                        <SwapCard root={ this } />
                     </div>
                 );
             case 'liquidity':
                 return (
-                    <UnknownPage />  
+                    <div className='swap-card' style={{ left : this.state.swapCardLeft}}>
+                        <div id='switch' >
+                            <Switch root={ this }/>
+                        </div>
+                        <SwapCard root={ this } />
+                    </div>
                 );
             default:
                 return (
                     <UnknownPage />
                 );
         };
+    };
+
+    changeMenuItem (newItem) {
+        this.setState({ menuItem : newItem });
     };
 
     openConnectionList () {

@@ -121,3 +121,16 @@ body {
 .tooltip-info {
     
 }
+
+.back-button { /*iconItem13*/
+    transform: rotate(90deg);
+    font-size: 18px;
+}
+
+.back-button:hover {
+    color: var(--color4);
+}
+
+.no-top-margin {
+    margin-top: 0 !important;
+}

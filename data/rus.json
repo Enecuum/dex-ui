@@ -52,7 +52,9 @@
         },
         "tokenCard" : {
             "header" : "Выберите токен",
-            "search" : "Поиск по имени"
+            "search" : "Поиск по имени",
+            "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
+            "tokenName" : "Токены"
         }
     }
 }

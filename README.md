@@ -1,5 +1,4 @@
 # Dex
-[![AMM DEX](https://github.com/Enecuum/internal-docs/blob/master/etp5-en.md)]
 
 #### Intro 
 This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. Here you cand find all information about frontend part of that project.

@@ -12,15 +12,21 @@ class ConnectionService extends React.Component {
     }
 
     async connectToEnq () {
-        if (!this.mySwapPage.connectionStatus)
+        if (!this.mySwapPage.state.connectionStatus)
             await Enecuum.connect();
         await Enecuum.enable()
         .then(res => {
             this.mySwapPage.pubKey = res.pubkey;
-            this.mySwapPage.connectionStatus = true;
+            this.mySwapPage.setState(state => {
+                state.connectionStatus = true;
+                return state;
+            });
         },
         () => {
-            this.mySwapPage.connectionStatus = false;
+            this.mySwapPage.setState(state => {
+                state.connectionStatus = false;
+                return state;
+            });
         });
         this.mySwapPage.closeConnectionList();
     };

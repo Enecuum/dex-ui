@@ -32,13 +32,77 @@
 
 .navbar-light .navbar-brand {
     color: var(--color1);
-}
+}*/
 
 .connect-btn {
-    position: absolute;
-    right: 1.5%;
+    width: 120px;
+    height: 28px;
+    border-radius: var(--border-radius1);
 }
 
-.btn-secondary {
+/* .btn-secondary {
     border-color: #00000000;
-}*/
+} */
+
+.wallet-info-boxes {
+    border : 1px double var(--color5);
+    height: 28px;
+    margin: 6px;
+    font-size: 14px;
+    border-radius: var(--border-radius1);
+}
+
+.wallet-group {
+    width: 240px;
+}
+
+.enx-amount {
+    border : 0;
+    background: linear-gradient(to right, #eaa63e, #dd7046);
+    width: 70px;
+}
+
+.net {
+    width: 70px;
+}
+
+.dropdown-toggle {
+    width: 70px;
+    height: 28px;
+    padding-top: 0px;
+}
+
+.dropdown-toggle::after{
+    display: none;
+}
+
+.dropdown-toggle:hover, .dropdown-toggle:focus {
+    text-decoration: none;
+}
+
+.dropdown-toggle span {
+    text-decoration: none;
+}
+
+.net-item {
+    color: var(--color1);
+}
+
+.net-item:hover {
+    background-color: #00000000;
+    color: var(--color4);
+}
+
+.addr {
+    background-color: var(--bg-swap-card);
+    position: absolute;
+    margin-top: -29px !important;
+    margin-left: 109px !important;
+    margin: 0;
+    width: 130px;
+}
+
+.enq-vol {
+    width: 110px;
+    height: 28px;
+}

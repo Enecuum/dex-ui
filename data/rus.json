@@ -43,7 +43,8 @@
                 "per" : "на",
                 "shareOfPool" : "Доля в пуле",
                 "input0" : "Ввод",
-                "input1" : "Ввод"
+                "input1" : "Ввод",
+                "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share."
             },
             "submitButton" : {
                 "beforeConnection" : "Подключение",

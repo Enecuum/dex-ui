@@ -207,3 +207,12 @@
     font-size: 10px;
     margin-right: 10px;
 }
+
+.my-token-amount {
+    position: absolute;
+    width: 200px;
+    height: 20px;
+    right: 40px;
+    margin-top: -70px;
+    color: var(--color1);
+}

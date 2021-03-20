@@ -21,15 +21,15 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.pubKey = '';
-        // -------------------------------------
-        this.connectionStatus = false;
 
         this.state = {
+            connectionStatus : false,
             navOpened : true,
             connecionListOpened : false,
             menuItem : 'exchange',
             langData : presets.langData,
-            swapCardLeft : '45%'
+            swapCardLeft : '45%',
+            net : presets.network.defaultNet
         };
 
         this.siteLocales = presets.langData.siteLocales;
@@ -54,20 +54,16 @@ class Root extends React.Component {
         this.updLanguage(language);
     };
 
-
-    // writeUserTokenValue () {
-    //     this.updState('userTokenValue', 0);
-    //     return;
-    //     let mode = this.getMode()
-    //     Enecuum.balanceOf({
-    //         to : this.pubKey,
-    //         tokenHash : this[mode].token0
-    //     }).then(
-    //         res => {
-    //             this.updState('userTokenValue', res.amount);
-    //         }
-    //     );
-    // };
+    getBalance (hash) {
+        try {
+            return Enecuum.balanceOf({
+                to : this.pubKey,
+                tokenHash : hash
+            });
+        } catch (err) {
+            return new Promise((resolve, reject) => { reject(err) });
+        }
+    };
 
     // async sentTx () {
     //     let data = this[this.getMode()];

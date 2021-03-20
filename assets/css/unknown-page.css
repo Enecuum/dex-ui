@@ -1,4 +1,11 @@
 .msg {
     color : var(--color1);
-    margin-top: 20%;
+    margin-left: -150px;
+}
+
+.unknown-img {
+    position: fixed;
+    width: 45%;
+    height: 50%;
+    top: 20%;
 }

@@ -44,7 +44,8 @@
                 "shareOfPool" : "Share of pool",
                 "Price" : "Price and pool share",
                 "input0" : "Input",
-                "input1" : "Input"
+                "input1" : "Input",
+                "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share."
             },
             "submitButton" : {
                 "beforeConnection" : "Connect a wallet",

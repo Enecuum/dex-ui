@@ -58,6 +58,8 @@ class SwapCard extends React.Component {
             tokenListStatus: false,
             liquidityMain: true
         };
+        this.pairExists = false;
+        this.readyToSubmit = false;
         this.updPairs();
     };
 
@@ -72,15 +74,15 @@ class SwapCard extends React.Component {
         });
     };
 
-    changeBalance () {
+    changeBalance() {
         let field = this.getActiveField(this.activeField);
         this.root.getBalance(this.state[this.root.state.menuItem][field].token.hash)
-        .then(balance => {
-            this.setState(state => {
-                state[this.root.state.menuItem][field].walletValue = (balance !== undefined) ? `Balance: ${balance.amount}` : '-';
-                return state;
+            .then(balance => {
+                this.setState(state => {
+                    state[this.root.state.menuItem][field].walletValue = (balance !== undefined) ? `Balance: ${balance.amount}` : '-';
+                    return state;
+                });
             });
-        });
     }
 
     getInputField(props) {
@@ -121,7 +123,9 @@ class SwapCard extends React.Component {
     };
 
     closeTokenList() {
-        this.setState({ tokenListStatus: false });
+        this.setState({ tokenListStatus: false }, () => {
+            this.establishReadiness();
+        });
     }
 
     changeField(fieldId) {
@@ -146,8 +150,27 @@ class SwapCard extends React.Component {
         this.setState(state => {
             state[this.root.state.menuItem][field] = fieldObj;
             return state;
+        }, () => {
+            this.establishReadiness();
         });
         this.countCounterField(fieldObj, this.getActiveField(fieldId, true));
+    };
+
+    establishReadiness() {
+        if (this.isReadyToSubmit())
+            this.readyToSubmit = true;
+        else
+            this.readyToSubmit = false;
+    };
+
+    isReadyToSubmit() {
+        if (this.state[this.root.state.menuItem].field0.value != 0 &&
+            this.state[this.root.state.menuItem].field1.value != 0 &&
+            this.state[this.root.state.menuItem].field0.token.hash != undefined &&
+            this.state[this.root.state.menuItem].field1.token.hash != undefined) {
+            return true;
+        }
+        return false;
     };
 
     searchSwap(tokens) {
@@ -202,8 +225,9 @@ class SwapCard extends React.Component {
 
         if (activeField.token.name !== startToken && counterField.token.name !== startToken) {
             let pair = this.searchSwap([activeField.token, counterField.token]);
-            if (pair === undefined)
+            if (pair === undefined) {
                 return;
+            }
             let counterFieldPrice = this.countPrice(activeField, pair);
             if (!counterFieldPrice)
                 counterFieldPrice = '';
@@ -277,12 +301,7 @@ class SwapCard extends React.Component {
                     <div className='col-7 d-flex justify-content-center'>Coming soon</div>
                     <div className='col-3 d-flex justify-content-end'>1%</div>
                 </div>
-                <button
-                    className='btn btn-secondary my-2 my-sm-0 swap-input'
-                    type='submit'
-                    id='submit'>
-                    {this.root.state.langData.trade.swapCard.submitButton.afterConnection}
-                </button>
+                { this.getSubmitButton() }
             </div>
         );
     };
@@ -375,13 +394,55 @@ class SwapCard extends React.Component {
                         <div className='row d-flex justify-content-center'>{this.root.state.langData.trade.swapCard[this.root.state.menuItem].shareOfPool}</div>
                     </div>
                 </div>
-                <button
-                    className='btn btn-secondary my-2 my-sm-0 swap-input '
-                    type='submit'
-                    id='submit'>
-                    {this.root.state.langData.trade.swapCard.submitButton.afterConnection}
-                </button>
+                { this.getSubmitButton() }
             </div>
+        );
+    };
+
+    establishPairExistence() {
+        if (this.searchSwap([this.state[this.root.state.menuItem].field0.token, this.state[this.root.state.menuItem].field1.token]) == undefined)
+            this.pairExists = false;
+        else 
+            this.pairExists = true;
+    };
+
+    getSubmitButton() {
+        let names = this.root.state.langData.trade.swapCard.submitButton;
+        let buttonName;
+        if (this.root.state.connectionStatus == false)
+            buttonName = names.beforeConnection;
+        else {
+            if (this.root.state.menuItem == 'exchange')
+                buttonName = names.swap;
+            else if (this.root.state.menuItem == 'liquidity')
+                buttonName = names.addLiquidity;
+            if (!this.readyToSubmit)
+                buttonName = names.fillAllFields;
+            if (this.pairExists == false) {
+                buttonName = names.createPair;
+                return (
+                    <div className='row no-gutters'>
+                        <div className='col-7 swap-input about-button-info d-flex justify-content-center align-items-center'>
+                            { this.root.state.langData.trade.swapCard.aboutButtonInfo.withoutPair }
+                        </div>
+                        <button
+                            className='col btn btn-secondary my-2 my-sm-0 swap-input alt-submit'
+                            type='submit'
+                            id='submit'>
+                            { buttonName }
+                        </button>
+                    </div>
+                );
+            }
+        }
+        return (
+            <button
+                className='btn btn-secondary my-2 my-sm-0 swap-input'
+                type='submit'
+                id='submit'
+                style={{backgroundColor : (this.root.state.connectionStatus) ? undefined : 'var(--color5)'}}>
+                { buttonName }
+            </button>
         );
     };
 
@@ -400,8 +461,9 @@ class SwapCard extends React.Component {
 
     countExchangeRate(firstPerSecond) {
         let pair = this.searchSwap([this.state.liquidity.field0.token, this.state.liquidity.field1.token]);
-        if (pair === undefined)
+        if (pair === undefined) {
             return '-';
+        }
         pair = { ...pair };
         if (pair.token_0.hash !== this.state.liquidity.field0.token.hash) {
             if (!firstPerSecond)
@@ -422,6 +484,8 @@ class SwapCard extends React.Component {
     };
 
     render() {
+        this.establishReadiness();
+        this.establishPairExistence();
         return (
             <div>
                 { (this.root.state.menuItem == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard()}

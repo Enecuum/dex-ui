@@ -66,24 +66,6 @@
     width: 70px;
 }
 
-.dropdown-toggle {
-    width: 70px;
-    height: 28px;
-    padding-top: 0px;
-}
-
-.dropdown-toggle::after{
-    display: none;
-}
-
-.dropdown-toggle:hover, .dropdown-toggle:focus {
-    text-decoration: none;
-}
-
-.dropdown-toggle span {
-    text-decoration: none;
-}
-
 .net-item {
     color: var(--color1);
 }

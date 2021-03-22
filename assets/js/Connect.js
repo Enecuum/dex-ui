@@ -55,8 +55,8 @@ class Connect extends React.Component {
 
     renderWalletInfo() {
         return (
-            <dev className='d-flex align-items-center'>
-                <dev className='net wallet-info-boxes d-flex align-items-center justify-content-center'>
+            <div className='d-flex align-items-center'>
+                <div className='net wallet-info-boxes d-flex align-items-center justify-content-center'>
                     <Dropdown>
                         <Dropdown.Toggle variant="link" id="dropdown-basic">
                             <span className='text-uppercase'>{this.networks[this.root.state.net.toLowerCase()].name}</span>
@@ -67,15 +67,15 @@ class Connect extends React.Component {
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>
-                </dev>
-                <dev className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center'>
+                </div>
+                <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center'>
                     {this.state.enx} ENX
-                </dev>
-                <dev className='wallet-group wallet-info-boxes'>
-                    <dev className='enq-vol d-flex align-items-center justify-content-center'>{this.state.coinAmount} {this.state.coinName}</dev>
-                    <dev className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.state.pubKey}</dev>
-                </dev>
-            </dev>
+                </div>
+                <div className='wallet-group wallet-info-boxes'>
+                    <div className='enq-vol d-flex align-items-center justify-content-center'>{this.state.coinAmount} {this.state.coinName}</div>
+                    <div className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.state.pubKey}</div>
+                </div>
+            </div>
         );
     };
 

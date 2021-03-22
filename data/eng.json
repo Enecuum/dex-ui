@@ -34,13 +34,25 @@
             },
             "liquidity" : {
                 "header" : "Liquidity",
+                "secondHeader" : "Add Liquidity",
                 "description" : "Add liquidity to receive LP tokens",
+                "addButton" : "Add liquidity",
+                "yourLiquidity" : "Your liquidity",
+                "additionInfo" : "If you staked your ENX tokens in a farm, unstake them to see them here.",
+                "priceAndPoolShare" : "Price and pool share",
+                "per" : "per",
+                "shareOfPool" : "Share of pool",
+                "Price" : "Price and pool share",
                 "input0" : "Input",
-                "input1" : "Input"
+                "input1" : "Input",
+                "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share."
             },
             "submitButton" : {
-                "beforeConnection" : "Connect",
-                "afterConnection" : "Submit"
+                "beforeConnection" : "Connect a wallet",
+                "afterConnection" : "Submit",
+                "AddLiquidity" : "Add liquidity",
+                "FillAllFields" : "Fill all fields",
+                "Swap" : "Swap"
             }
         },
         "tokenCard" : {

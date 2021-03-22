@@ -11,6 +11,7 @@ class TokenCard extends React.Component {
     constructor(props) {
         super(props);
         this.changeToken = props.changeToken;
+        this.changeBalance = props.changeBalance;
         this.closeTokenList = props.closeTokenList;
         this.root = props.root;
         this.tokenFilter = '';
@@ -36,6 +37,7 @@ class TokenCard extends React.Component {
     assignToken(token) {
         this.changeToken(token);
         this.closeTokenList();
+        this.changeBalance();
     };
 
     toggleSortList() {

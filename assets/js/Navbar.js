@@ -10,6 +10,7 @@ class Navbar extends React.Component {
         super(props);
         this.root = props.outer;
     };
+    
     render () {
         let asideToggleClasses = (this.root.state.navOpened ? 'icon-Icon9' : 'icon-Icon8') + ' aside-toggle mr-5 mb-2';
 
@@ -21,7 +22,7 @@ class Navbar extends React.Component {
                             <img src={img} style={{cursor : 'pointer'}}></img>
                         </a>                     
                     </div>                    
-                    <div id='root-connect' className='connect-btn'>
+                    <div id='root-connect'>
                         <Connect outer={ this.root } />
                     </div>
             </nav>

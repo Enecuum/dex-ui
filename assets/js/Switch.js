@@ -5,37 +5,23 @@ class Switch extends React.Component {
     constructor (props) {
         super(props);
         this.root = props.root;
-        this.mode = props.root.state.mode;
-        this.state = {
-            exchBackColor : 'var(--color3)',
-            lqdtBackColor : 'var(--color2)'
-        };
     }
 
     switchMode (newMode) {
-        if (newMode !== this.mode) {
+        if (newMode !== this.root.state.menuItem) {
             this.root.setState({ menuItem : newMode });
-            this.mode = newMode;
-            this.switchTheSwitch();
+            this.root.state.menuItem = newMode;
         }
     };
 
-    switchTheSwitch () {
-        const switchItems = ['exchBackColor', 'lqdtBackColor'];
-        let colors = ['var(--color2)', 'var(--color3)'];
-        if (this.mode == 'exchange')
-            [colors[0], colors[1]] = [colors[1], colors[0]];
-        for (let i in switchItems)
-            this.setState({ [switchItems[i]] : colors[i] });
-    };
-
     render () {
+        let colors = (this.root.state.menuItem == 'exchange') ? ['var(--color3)', 'var(--color2)'] : ['var(--color2)', 'var(--color3)'];
         return (
             <div>
                 <div    className="switch-mode"
                         id="exchange-mode"
                         style={{
-                            backgroundColor : this.state.exchBackColor
+                            backgroundColor : colors[0]
                         }}
                         onClick={this.switchMode.bind(this, 'exchange')}>
                     {this.root.state.langData.trade.switch.mode0}
@@ -43,7 +29,7 @@ class Switch extends React.Component {
                 <div    className="switch-mode"
                         id="liquidity-mode"
                         style={{
-                            backgroundColor : this.state.lqdtBackColor
+                            backgroundColor : colors[1]
                         }}
                         onClick={this.switchMode.bind(this, 'liquidity')}>
                     {this.root.state.langData.trade.switch.mode1}

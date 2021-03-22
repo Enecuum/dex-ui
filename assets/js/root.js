@@ -22,15 +22,15 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.pubKey = '';
-        // -------------------------------------
-        this.connectionStatus = false;
 
         this.state = {
+            connectionStatus : false,
             navOpened : true,
             connecionListOpened : false,
             menuItem : 'exchange',
             langData : presets.langData,
-            swapCardLeft : '45%'
+            swapCardLeft : '45%',
+            net : presets.network.defaultNet
         };
 
         this.siteLocales = presets.langData.siteLocales;
@@ -55,20 +55,16 @@ class Root extends React.Component {
         this.updLanguage(language);
     };
 
-
-    // writeUserTokenValue () {
-    //     this.updState('userTokenValue', 0);
-    //     return;
-    //     let mode = this.getMode()
-    //     Enecuum.balanceOf({
-    //         to : this.pubKey,
-    //         tokenHash : this[mode].token0
-    //     }).then(
-    //         res => {
-    //             this.updState('userTokenValue', res.amount);
-    //         }
-    //     );
-    // };
+    getBalance (hash) {
+        try {
+            return Enecuum.balanceOf({
+                to : this.pubKey,
+                tokenHash : hash
+            });
+        } catch (err) {
+            return new Promise((resolve, reject) => { reject(err) });
+        }
+    };
 
     // async sentTx () {
     //     let data = this[this.getMode()];
@@ -109,18 +105,27 @@ class Root extends React.Component {
                         <div id='switch' >
                             <Switch root={ this }/>
                         </div>
-                        <SwapCard mode={this.state.menuItem} root={ this } />
+                        <SwapCard root={ this } />
                     </div>
                 );
             case 'liquidity':
                 return (
-                    <UnknownPage />  
+                    <div className='swap-card' style={{ left : this.state.swapCardLeft}}>
+                        <div id='switch' >
+                            <Switch root={ this }/>
+                        </div>
+                        <SwapCard root={ this } />
+                    </div>
                 );
             default:
                 return (
                     <UnknownPage />
                 );
         };
+    };
+
+    changeMenuItem (newItem) {
+        this.setState({ menuItem : newItem });
     };
 
     openConnectionList () {

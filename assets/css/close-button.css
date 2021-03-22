@@ -1,4 +1,4 @@
-.close {
+.close-btn {
   position: absolute;
   right: 32px;
   top: 34px;
@@ -8,11 +8,11 @@
   cursor: pointer;
 }
 
-.close:hover {
+.close-btn:hover {
   opacity: 1;
 }
 
-.close:before, .close:after {
+.close-btn:before, .close-btn:after {
   position: absolute;
   left: 15px;
   content: ' ';
@@ -21,10 +21,10 @@
   background-color: var(--color3);
 }
 
-.close:before {
+.close-btn:before {
   transform: rotate(45deg);
 }
 
-.close:after {
+.close-btn:after {
   transform: rotate(-45deg);
 }

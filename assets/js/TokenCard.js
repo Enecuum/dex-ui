@@ -132,8 +132,9 @@ class TokenCard extends React.Component {
 
                 <div id="tokensList">
                     { this.state.list }
-                </div>
+                </div>                
             </div>
+            
         );
     };
 };

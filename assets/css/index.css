@@ -77,6 +77,11 @@ body {
     background: #00000000;
 } */
 
+#toastWrapper {
+    right: 50px;
+    top: var(--top-menu-height);
+}
+
 .aside-toggle:hover {
     cursor: pointer;
     color: var(--color4);

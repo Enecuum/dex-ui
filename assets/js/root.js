@@ -13,6 +13,7 @@ import Presets from './pageDataPresets';
 import SwapApi from './swapApi';
 
 import '../css/popup-cards.css';
+import CommonToast from './CommonToast';
 
 let presets = new Presets();
 const swapApi = new SwapApi();
@@ -146,7 +147,7 @@ class Root extends React.Component {
         return (
             <div className='h-100'>
                 <Navbar outer={ this } />
-                <main role='main' className='container-fluid h-100 px-0'>
+                <main role='main' className='container-fluid h-100 px-0 position-relative'>
                     <div className='row'>
                         <div className='col-12'>
                             <Aside outer={ this }/>
@@ -154,6 +155,9 @@ class Root extends React.Component {
                             {this.connecionList()}
                         </div>    
                     </div>
+                    <div id="toastWrapper" className="position-absolute pt-4">
+                        <CommonToast outer={ this }/>
+                    </div>                    
                 </main>
             </div>
         );

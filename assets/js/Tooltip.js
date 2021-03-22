@@ -9,7 +9,6 @@ import '../css/tooltip.css';
 class Tooltip extends React.Component {
     constructor (props) {
         super(props);
-        this.rawProps = props;
         this.text = props.text;              
     };
 

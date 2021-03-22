@@ -28,7 +28,7 @@ class ConnectionService extends React.Component {
     render () {
         return (
             <div>
-                <div className="close"
+                <div className="close-btn"
                     onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}>
                 </div>
                 <h4 style={{

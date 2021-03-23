@@ -9,6 +9,10 @@ class Navbar extends React.Component {
     constructor (props) {
         super(props);
         this.root = props.outer;
+
+        this.state = {
+            pending: this.root.state.pending
+        }
     };
     
     render () {

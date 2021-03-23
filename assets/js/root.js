@@ -30,7 +30,8 @@ class Root extends React.Component {
             menuItem : 'exchange',
             langData : presets.langData,
             swapCardLeft : '45%',
-            net : presets.network.defaultNet
+            net : presets.network.defaultNet,
+            pending : true
         };
 
         this.siteLocales = presets.langData.siteLocales;

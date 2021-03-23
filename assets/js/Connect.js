@@ -13,7 +13,8 @@ class Connect extends React.Component {
             coinName: presets.network.nativeToken.name,
             coinAmount: 0,
             enx: 0,
-            pubKey: this.root.pubKey
+            pubKey: this.root.pubKey,
+            pending: this.root.state.pending
         };
         this.networks = {
             bit : {
@@ -53,9 +54,15 @@ class Connect extends React.Component {
         return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
     };
 
+
+
     renderWalletInfo() {
         return (
-            <div className='wallet-info-wrapper d-flex align-items-center'>
+            <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
+                <div id="pendingIndicator" className="d-flex align-items-center justify-content-end px-3 mr-3">
+                    <span className="mr-2">Pending</span>
+                    <span class="spinner icon-Icon3"></span>
+                </div>
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <Dropdown Menu alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">

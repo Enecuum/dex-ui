@@ -145,3 +145,12 @@ body {
 .no-top-margin {
     margin-top: 0 !important;
 }
+
+.spinner {
+    animation: 1s linear infinite rotate-clockwise;
+}
+
+@keyframes rotate-clockwise {
+    from {transform: rotate(0deg)}
+    to {transform: rotate(360deg)}
+}

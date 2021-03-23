@@ -38,8 +38,15 @@
     height: 28px;
 } 
 
-.connect-btn, .wallet-info-boxes, .enq-vol {
+.connect-btn, .wallet-info-boxes, .enq-vol, #pendingIndicator {
     height: 100%;
+}
+
+
+#pendingIndicator {
+    color: var(--color1);
+    background-color: var(--color3);
+    border-radius: var(--border-radius1);
 }
 
 .connect-btn {
@@ -68,7 +75,7 @@
 
 
 .wallet-info-boxes {
-    border : 1px double var(--color5);
+    border : 1px solid var(--color5);
     font-size: 14px;
     border-radius: var(--border-radius1);
 }
@@ -96,4 +103,6 @@
     width: 130px;
     position: relative;
     right: -1px;
+    top: 0px;
+    height: calc(100% + 2px);
 }

@@ -216,3 +216,17 @@
     margin-top: -70px;
     color: var(--color1);
 }
+
+.about-button-info {
+    background-color: var(--color5);
+    height: 60px;
+    width: 60%;
+    margin-top: 30px !important;
+    margin-bottom: 23px !important;
+    border-radius: var(--border-radius1);
+}
+
+.alt-submit {
+    width: 30%;
+    margin-right: 5%;
+}

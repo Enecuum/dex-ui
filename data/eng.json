@@ -50,9 +50,14 @@
             "submitButton" : {
                 "beforeConnection" : "Connect a wallet",
                 "afterConnection" : "Submit",
-                "AddLiquidity" : "Add liquidity",
-                "FillAllFields" : "Fill all fields",
-                "Swap" : "Swap"
+                "addLiquidity" : "Add liquidity",
+                "fillAllFields" : "Fill all fields",
+                "swap" : "Swap",
+                "createPair" : "Create pair"
+            },
+            "aboutButtonInfo" : {
+                "withoutPair" : "There is no such pair",
+                "lackOfLiquidity" : "Insufficient liquidity for this trade"
             }
         },
         "tokenCard" : {

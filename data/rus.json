@@ -47,8 +47,16 @@
                 "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share."
             },
             "submitButton" : {
-                "beforeConnection" : "Подключение",
-                "afterConnection" : "Отправить"
+                "beforeConnection" : "Подключите кошелёк",
+                "afterConnection" : "Submit",
+                "addLiquidity" : "Добавить ликвидность",
+                "fillAllFields" : "Заполните все поля",
+                "swap" : "Обменять",
+                "createPair" : "Создать пару"
+            },
+            "aboutButtonInfo" : {
+                "withoutPair" : "Такой пары не существует",
+                "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
             }
         },
         "tokenCard" : {

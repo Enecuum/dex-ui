@@ -17,7 +17,8 @@ class CommonToast extends React.Component {
         return (
           <Toast show="true">
             <Toast.Header>
-              <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" />
+              {/* <img src="holder.js/20x20?text=%20" className="rounded mr-2" alt="" /> */}
+              <img src="#" className="rounded mr-2" alt="" />
               <strong className="mr-auto">Connected with Metamask</strong>
               <Button variant="outline-info" size="sm">{this.mySwapPage.state.langData.info}</Button>{' '}
             </Toast.Header>

@@ -88,9 +88,9 @@ class TokenCard extends React.Component {
     }
 
     makeList(sortDirection = 'asc') {//allowable values are: 'asc','desc','unsort'
-        return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map(el => {
+        return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map((el, i) => {
             return (
-                <div className='token-option py-1 my-1 px-1 hover-pointer' onClick={this.assignToken.bind(this, el)}>
+                <div className='token-option py-1 my-1 px-1 hover-pointer' key={i} onClick={this.assignToken.bind(this, el)}>
                     { el.name }
                 </div>
             );

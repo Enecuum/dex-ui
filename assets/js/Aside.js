@@ -88,17 +88,12 @@ class Aside extends React.Component {
             <div id='aside' className={asideClasses}>
                 <div className='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
-                        <div className='menu-item d-flex align-items-center justify-content-start mb-4' onClick={this.menuItems[item].action} style={ (this.root.state.menuItem === item) ? this.activeItemStyle : undefined }>
+                        <div className='menu-item d-flex align-items-center justify-content-start mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.root.state.menuItem === item) ? this.activeItemStyle : undefined }>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
                             <span className='aside-menu-text'>{this.root.state.langData.navbars.left[item]}</span>
                         </div>
                     ))}
                 </div>
-
-
-
-
-
 
                 <div className='aside-footer d-flex flex-column justify-content-between'>
                     <div className='rate-langswitcher-wrapper d-flex align-items-center justify-content-between mb-4'>
@@ -116,7 +111,7 @@ class Aside extends React.Component {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu alignRight className="wrapper-1">
                                     {this.root.siteLocales.map((item, index) => (
-                                        <Dropdown.Item className="text-center py-2" value={index} onClick={this.root.changeLanguage.bind(this.root, item)}>{ this.root.langTitles[item].full }</Dropdown.Item>
+                                        <Dropdown.Item className="text-center py-2" key={index} value={index} onClick={this.root.changeLanguage.bind(this.root, item)}>{ this.root.langTitles[item].full }</Dropdown.Item>
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>

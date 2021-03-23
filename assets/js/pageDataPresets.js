@@ -1,5 +1,3 @@
-const startToken = '...';
-
 class Presets {
     constructor () {
         this.network = {
@@ -10,6 +8,17 @@ class Presets {
                 fee : 100000000
             },
             defaultNet : 'BIT'
+        };
+
+        this.swapTokens = {
+            emptyToken : {
+                name : 'Select a token',
+                hash : undefined
+            },
+            defaultToken : {
+                name : 'ENQ',
+                hash : '123'
+            }
         };
 
         this.langData = {

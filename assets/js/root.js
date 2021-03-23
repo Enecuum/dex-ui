@@ -67,29 +67,6 @@ class Root extends React.Component {
         }
     };
 
-    // async sentTx () {
-    //     let data = this[this.getMode()];
-    //     if (this.connectionStatus) {
-    //         Enecuum.sendTransaction({
-    //             from : this.pubKey,
-    //             to : presets.network.genesisPubKey,
-    //             value : presets.network.nativeToken.fee,
-    //             tokenHash : presets.network.nativeToken.hash,
-    //             data : {
-    //                 type : 'swap',
-    //                 parameters : {
-    //                     asset_in : data.field0.token.hash, 
-    //                     amount_in : data.field0.value,
-    //                     asset_out : data.field1.value
-    //                 }
-    //             }
-    //         });
-    //         alert('Send tx');
-    //     } else {
-    //         this.openConnectionList();
-    //     }
-    // };
-
     toggleNavbar () {
         if (this.state.swapCardLeft == '45%') // just for tests
             this.setState({ swapCardLeft : '41%' });

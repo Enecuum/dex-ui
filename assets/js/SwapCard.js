@@ -4,12 +4,13 @@ import Settings from './Settings';
 import TokenCard from './TokenCard';
 import SwapApi from './swapApi';
 import Tooltip from './Tooltip';
+import Presets from './pageDataPresets';
 
 import '../css/swap-card.css';
 import '../css/font-style.css';
 
 const swapApi = new SwapApi();
-const startToken = 'Select a token';
+const presets = new Presets();
 
 class SwapCard extends React.Component {
     constructor(props) {
@@ -23,36 +24,24 @@ class SwapCard extends React.Component {
                 field0: {
                     walletValue: '-',
                     value: '',
-                    token: {
-                        name: startToken,
-                        hash: undefined
-                    }
+                    token: {...presets.swapTokens.defaultToken}
                 },
                 field1: {
                     walletValue: '-',
                     value: '',
-                    token: {
-                        name: startToken,
-                        hash: undefined
-                    }
+                    token: {...presets.swapTokens.emptyToken}
                 }
             },
             liquidity: {
                 field0: {
                     walletValue: '-',
                     value: '',
-                    token: {
-                        name: startToken,
-                        hash: undefined
-                    }
+                    token: {...presets.swapTokens.defaultToken}
                 },
                 field1: {
                     walletValue: '-',
                     value: '',
-                    token: {
-                        name: startToken,
-                        hash: undefined
-                    }
+                    token: {...presets.swapTokens.emptyToken}
                 }
             },
             tokenListStatus: false,
@@ -179,6 +168,7 @@ class SwapCard extends React.Component {
             if (hashes.indexOf(el.token_0.hash) != -1 &&
                 hashes.indexOf(el.token_1.hash) != -1 &&
                 el.token_0.hash !== el.token_1.hash) {
+                    
                 return el;
             }
         });
@@ -223,7 +213,7 @@ class SwapCard extends React.Component {
     countCounterField(activeField, cField) {
         let counterField = this.state[this.root.state.menuItem][cField];
 
-        if (activeField.token.name !== startToken && counterField.token.name !== startToken) {
+        if (activeField.token.name !== presets.swapTokens.emptyToken.name && counterField.token.name !== presets.swapTokens.emptyToken.name) {
             let pair = this.searchSwap([activeField.token, counterField.token]);
             if (pair === undefined) {
                 return;
@@ -400,7 +390,14 @@ class SwapCard extends React.Component {
     };
 
     establishPairExistence() {
-        if (this.searchSwap([this.state[this.root.state.menuItem].field0.token, this.state[this.root.state.menuItem].field1.token]) == undefined)
+        let token0 = this.state[this.root.state.menuItem].field0.token;
+        let token1 = this.state[this.root.state.menuItem].field1.token;
+        if (token0.hash == presets.swapTokens.emptyToken.hash || token1.hash == presets.swapTokens.emptyToken.hash) {
+            this.pairExists = true; // make an exclusion for first page render
+            console.log(123);
+            return;
+        }
+        if (this.searchSwap([token0, token1]) == undefined)
             this.pairExists = false;
         else 
             this.pairExists = true;
@@ -447,7 +444,7 @@ class SwapCard extends React.Component {
     };
 
     getExchTokenName(name) {
-        return (name == startToken) ? '-' : name;
+        return (name == presets.swapTokens.emptyToken.name) ? '-' : name;
     };
 
     getExchangeText(langProp_Per_, firstPerSecond) {

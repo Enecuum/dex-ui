@@ -4,6 +4,7 @@ import Connect from './Connect';
 import '../css/navbar.css';
 import '../css/font-style.css';
 import img from '../img/enex-logo.png';
+import IndicatorPanel from './IndicatorPanel';
 
 class Navbar extends React.Component {
     constructor (props) {
@@ -27,7 +28,7 @@ class Navbar extends React.Component {
                         </a>                     
                     </div>                    
                     <div id='root-connect'>
-                        <Connect outer={ this.root } />
+                        {(!this.root.state.connectionStatus) ? <Connect outer={ this.root } /> : <IndicatorPanel root={ this.root } />}
                     </div>
             </nav>
         );

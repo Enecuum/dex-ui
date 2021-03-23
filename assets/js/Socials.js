@@ -33,7 +33,7 @@ class Socials extends React.Component {
         return (
             <div className='socialsBar'>
                 {this.order.map((social, index) => (
-                    <a href={this.items[social].link}>
+                    <a href={this.items[social].link} key={index}>
                         <span className={this.items[social].iconClasses}/>
                     </a>
                 ))}

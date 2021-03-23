@@ -114,7 +114,7 @@ class Aside extends React.Component {
                                     <span className='icon-Icon6 mr-2'/>
                                     <span className='text-uppercase'>{  this.root.langTitles[this.root.activeLocale].short }</span> 
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu className="wrapper-1">
+                                <Dropdown.Menu alignRight className="wrapper-1">
                                     {this.root.siteLocales.map((item, index) => (
                                         <Dropdown.Item className="text-center py-2" value={index} onClick={this.root.changeLanguage.bind(this.root, item)}>{ this.root.langTitles[item].full }</Dropdown.Item>
                                     ))}

@@ -55,10 +55,10 @@ class Connect extends React.Component {
 
     renderWalletInfo() {
         return (
-            <div className='d-flex align-items-center'>
-                <div className='net wallet-info-boxes d-flex align-items-center justify-content-center'>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="link" id="dropdown-basic">
+            <div className='wallet-info-wrapper d-flex align-items-center'>
+                <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
+                    <Dropdown Menu alignRight >
+                        <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
                             <span className='text-uppercase'>{this.networks[this.root.state.net.toLowerCase()].name}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="wrapper-1">
@@ -68,11 +68,11 @@ class Connect extends React.Component {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center'>
+                <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-3'>
                     {this.state.enx} ENX
                 </div>
-                <div className='wallet-group wallet-info-boxes'>
-                    <div className='enq-vol d-flex align-items-center justify-content-center'>{this.state.coinAmount} {this.state.coinName}</div>
+                <div className='wallet-info-boxes d-flex align-items-center justify-content-between'>
+                    <div className='d-flex align-items-center justify-content-center px-3'>{this.state.coinAmount} {this.state.coinName}</div>
                     <div className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.state.pubKey}</div>
                 </div>
             </div>

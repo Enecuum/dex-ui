@@ -38,12 +38,12 @@ class ConnectionService extends React.Component {
             <>
               <Modal
                 show={this.mySwapPage.state.connecionListOpened}
-                aria-labelledby="example-custom-modal-styling-title"
+                aria-labelledby="custom-modal-styling-title"
                 onHide={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}
                 centered
               >
                 <Modal.Header closeButton>
-                  <Modal.Title id="example-custom-modal-styling-title">
+                  <Modal.Title id="custom-modal-styling-title">
                     {this.mySwapPage.state.langData.navbars.top.connectionCard.header}
                   </Modal.Title>
                 </Modal.Header>

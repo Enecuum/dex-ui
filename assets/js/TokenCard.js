@@ -1,8 +1,8 @@
 import React from 'react';
+import Modal from 'react-bootstrap/Modal'
 import SwapApi from './swapApi';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Tooltip from './Tooltip';
-import '../css/popup-cards.css';
 import '../css/token-card.css';
 
 const swapApi = new SwapApi();
@@ -106,37 +106,45 @@ class TokenCard extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="d-flex align-items-center justify-content-between mb-4">
+            <>
+              <Modal
+                show={true}
+                aria-labelledby="example-custom-modal-styling-title"
+                onHide={this.closeTokenList.bind(this)}
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title id="example-custom-modal-styling-title">
                     <div className="d-flex align-items-center justify-content-start">
                         <span className="mr-3">
                             {this.root.state.langData.trade.tokenCard.header}
                         </span>
                         <Tooltip text={this.root.state.langData.trade.tokenCard.tooltipText}/>
                     </div>
-                    <span className="icon-Icon17 close-1 hover-pointer" onClick={this.closeTokenList} />
-                </div>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="mb-4">
+                        <input  id='token-filter-field'
+                                onChange={this.changeList.bind(this)}
+                                className='text-input-1 form-control'
+                                type='text'
+                                placeholder={this.root.state.langData.trade.tokenCard.search} />
+                    </div>
 
-                <div className="mb-4">
-                    <input  id='token-filter-field'
-                            onChange={this.changeList.bind(this)}
-                            className='text-input-1 form-control'
-                            type='text'
-                            placeholder={this.root.state.langData.trade.tokenCard.search} />
-                </div>
+                    <div className="d-flex align-items-center justify-content-between mb-4">
+                        <span>{this.root.state.langData.trade.tokenCard.tokenName}</span>
+                        <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
+                            <i className={'fas ' + 'fa-arrow-' + (this.state.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
+                        </span>                    
+                    </div>
 
-                <div className="d-flex align-items-center justify-content-between mb-4">
-                    <span>{this.root.state.langData.trade.tokenCard.tokenName}</span>
-                    <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
-                        <i className={'fas ' + 'fa-arrow-' + (this.state.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
-                    </span>                    
-                </div>
-
-                <div id="tokensList">
-                    { this.state.list }
-                </div>                
-            </div>
-            
+                    <div id="tokensList">
+                        { this.state.list }
+                    </div>
+                </Modal.Body>
+              </Modal>
+            </>
         );
     };
 };

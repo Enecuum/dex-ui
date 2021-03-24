@@ -12,7 +12,6 @@ import ConnectionService from './ConnectionService';
 import Presets from './pageDataPresets';
 import SwapApi from './swapApi';
 
-import '../css/popup-cards.css';
 import CommonToast from './CommonToast';
 
 let presets = new Presets();
@@ -118,7 +117,6 @@ class Root extends React.Component {
         if (this.state.connecionListOpened)
             return (
                 <div>
-                    <div className="c-modal-fade"></div>
                     <div id='connection-services'>
                         <ConnectionService outer={ this } />
                     </div>

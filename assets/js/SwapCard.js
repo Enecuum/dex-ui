@@ -242,11 +242,11 @@ class SwapCard extends React.Component {
     renderTokenCard() {
         if (this.state.tokenListStatus)
             return (
-                <div id='tokens-card' className="p-4 br-standard">
+                <>
                     <TokenCard root={this.root} changeBalance={this.changeBalance.bind(this)}
                         changeToken={this.changeToken.bind(this)}
                         closeTokenList={this.closeTokenList.bind(this)} />
-                </div>
+                </>
             );
     };
 
@@ -394,7 +394,6 @@ class SwapCard extends React.Component {
         let token1 = this.state[this.root.state.menuItem].field1.token;
         if (token0.hash == presets.swapTokens.emptyToken.hash || token1.hash == presets.swapTokens.emptyToken.hash) {
             this.pairExists = true; // make an exclusion for first page render
-            console.log(123);
             return;
         }
         if (this.searchSwap([token0, token1]) == undefined)

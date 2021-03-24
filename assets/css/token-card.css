@@ -11,6 +11,10 @@
     border-radius: var(--border-radius2);
 }
 
+.token-option:hover{
+    background: #747cf417;
+}
+
 .sort-direction-toggler:hover {
 	color: var(--color4);
 }

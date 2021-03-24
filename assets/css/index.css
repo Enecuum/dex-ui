@@ -154,3 +154,24 @@ body {
     from {transform: rotate(0deg)}
     to {transform: rotate(360deg)}
 }
+
+.modal-content {
+    background-color: var(--bg-color-1);
+    box-shadow: var(--box-shadow2);
+}
+
+.close:not(:disabled):not(.disabled):focus, .close:not(:disabled):not(.disabled):hover {
+    opacity: 1;
+}
+
+.modal-content .close {
+    color: var(--color1);
+    text-shadow: none;
+    opacity: 1;
+    font-weight: 400;
+    font-size: 40px;
+}
+
+.modal-content .close:hover {
+    color: var(--color3);
+}

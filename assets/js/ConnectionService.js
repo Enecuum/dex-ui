@@ -1,4 +1,5 @@
 import React from 'react';
+import Modal from 'react-bootstrap/Modal'
 import '../css/close-button.css';
 import '../css/index.css';
 import '../css/wallet-connection.css';
@@ -9,6 +10,7 @@ class ConnectionService extends React.Component {
     constructor (props) {
         super(props);
         this.mySwapPage = props.outer;
+        this.showModal = true;
     }
 
     async connectToEnq () {
@@ -33,34 +35,33 @@ class ConnectionService extends React.Component {
 
     render () {
         return (
-            <div>
-                <div className="close-btn"
-                    onClick={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}>
-                </div>
-                <h4 style={{
-                        marginTop : '7%',
-                        marginLeft : '6%'
-                    }}>
+            <>
+              <Modal
+                show={this.mySwapPage.state.connecionListOpened}
+                aria-labelledby="example-custom-modal-styling-title"
+                onHide={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title id="example-custom-modal-styling-title">
                     {this.mySwapPage.state.langData.navbars.top.connectionCard.header}
-                </h4>
-                <div style={{
-                        borderBottom: '1px solid rgba(26, 31, 46)',
-                        marginTop : '25px',
-                        width: '100%'
-                    }}>
-                </div>
-                <div onClick={this.connectToEnq.bind(this)} className='enq-wallet d-flex align-items-center'>
-                    <p className='col-6'>ENQ Wallet</p>
-                    <div className='col-6 d-flex justify-content-end align-items-center' >
-                        <div className='c-circle'></div>
-                        <img src={img}></img>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div onClick={this.connectToEnq.bind(this)} className='enq-wallet d-flex align-items-center'>
+                        <p className='col-6'>ENQ Wallet</p>
+                        <div className='col-6 d-flex justify-content-end align-items-center' >
+                            <div className='c-circle'></div>
+                            <img src={img}></img>
+                        </div>
                     </div>
-                </div>
-                <div href='#' className='d-flex justify-content-center c-clue'>
-                    <span className='icon-Icon4'></span>
-                    {this.mySwapPage.state.langData.navbars.top.connectionCard.clue}
-                </div>
-            </div>
+                    <div href='#' className='d-flex justify-content-center c-clue'>
+                        <span className='icon-Icon4'></span>
+                        {this.mySwapPage.state.langData.navbars.top.connectionCard.clue}
+                    </div>
+                </Modal.Body>
+              </Modal>
+            </>
         );
     }
 };

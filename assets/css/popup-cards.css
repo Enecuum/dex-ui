@@ -8,7 +8,7 @@
     z-index: 100;
 }
 
-#connection-services {
+/*#connection-services {
     position: absolute;
     opacity: 1;
     z-index: 101;
@@ -19,7 +19,7 @@
     border-radius: var(--border-radius1);
     margin-left: -215px;
     left: 50%;
-}
+}*/
 
 #token-info {
     position: absolute;

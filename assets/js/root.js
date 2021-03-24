@@ -114,7 +114,7 @@ class Root extends React.Component {
         this.setState({ connecionListOpened : false });
     };
 
-    connecionList () {
+    connectionList () {
         if (this.state.connecionListOpened)
             return (
                 <div>
@@ -135,7 +135,7 @@ class Root extends React.Component {
                         <div className='col-12'>
                             <Aside outer={ this }/>
                             {this.menuViewController()}
-                            {this.connecionList()}
+                            {this.connectionList()}
                         </div>    
                     </div>
                     <div id="toastWrapper" className="position-absolute pt-4">

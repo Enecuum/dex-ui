@@ -40,7 +40,7 @@
 }
 
 .c-clue:hover {
-    color: #2847cf; 
+    color: var(--color3); 
 }
 
 .c-clue span {

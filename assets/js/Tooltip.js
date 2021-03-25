@@ -1,9 +1,7 @@
 import React from 'react';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Button from 'react-bootstrap/Button';
 import '../css/tooltip.css';
-
 
 
 class Tooltip extends React.Component {

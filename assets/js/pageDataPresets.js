@@ -47,7 +47,8 @@ class Presets {
                     liquidity : {},
                     submitButton : {}
                 },
-                tokenCard : {}
+                tokenCard : {},
+                confirmCard : {}
             }
         };
     };

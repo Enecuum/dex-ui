@@ -1,7 +1,6 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal'
+import Modal from 'react-bootstrap/Modal';
 import SwapApi from './swapApi';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Tooltip from './Tooltip';
 import '../css/token-card.css';
 

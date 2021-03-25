@@ -65,6 +65,15 @@
             "search" : "Search by name",
             "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
             "tokenName" : "Token name"
+        },
+        "confirmCard" : {
+            "header" : "You will receive",
+            "poolTokens" : "Pool Tokens",
+            "description" : "Output is estimated. If the price changes by more than 1% your transaction will revert.",
+            "deposited" : "Deposited",
+            "rates" : "Rates",
+            "shareOfPool" : "Share of pool",
+            "confirm" : "Confirm Supply"
         }
     },
     "info" : "Info"

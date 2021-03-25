@@ -8,6 +8,7 @@ import SwapCard from './SwapCard';
 import Switch from './Switch';
 import UnknownPage from './UnknownPage';
 import ConnectionService from './ConnectionService';
+import ConfirmSupply from './ConfirmSupply';
 
 import Presets from './pageDataPresets';
 import SwapApi from './swapApi';
@@ -138,7 +139,9 @@ class Root extends React.Component {
                     </div>
                     <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast outer={ this }/>
-                    </div>                    
+                    </div>
+                    <ConfirmSupply root={ this }/>
+                                      
                 </main>
             </div>
         );

@@ -26,7 +26,7 @@ class IndicatorPanel extends React.Component {
                     <span className="spinner icon-Icon3"></span>
                 </div>
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
-                    <Dropdown Menu alignRight >
+                    <Dropdown alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
                             <span className='text-uppercase'>{this.networks[this.props.net.toLowerCase()].name}</span>
                         </Dropdown.Toggle>

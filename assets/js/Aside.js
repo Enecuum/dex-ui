@@ -18,7 +18,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['home', 'exchange', 'liquidity', 'ido', 'farms', 'pools', 'etm', 'info', 'docs'];
+        this.itemsOrder = ['home', 'exchange', 'liquidity', 'ido', 'farms', 'pools', 'etm', 'info'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
@@ -106,6 +106,10 @@ class Aside extends React.Component {
                             <span className='aside-menu-text'>{this.props.langData[item]}</span>
                         </div>
                     ))}
+                    <a className='menu-item d-flex align-items-center justify-content-start mb-4' href="https://enex.gitbook.io/enex-space/" target="_blank">
+                        <span className='icon-Icon19 icon-wrapper'/>
+                        <span className='aside-menu-text'>{this.root.state.langData.navbars.left.docs}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
+                    </a>
                 </div>
 
                 <div className='aside-footer d-flex flex-column justify-content-between'>

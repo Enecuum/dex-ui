@@ -110,7 +110,7 @@ class TokenCard extends React.Component {
                 onHide={this.closeTokenList.bind(this)}
                 centered
               >
-                <Modal.Header closeButton>
+                <Modal.Header closeButton className="pb-0">
                   <Modal.Title id="example-custom-modal-styling-title">
                     <div className="d-flex align-items-center justify-content-start">
                         <span className="mr-3">

@@ -1,0 +1,19 @@
+.common-toast, .common-toast .toast-header {
+    background-color: var(--bg-color-1);
+}
+
+.common-toast .toast-header {
+    .border-bottom: none;
+}
+
+.common-toast button.close {
+    color: var(--color1);
+    text-shadow: none;
+    opacity: 1;
+    font-weight: 400;
+    font-size: 30px;
+}
+
+.common-toast .close:hover {
+    color: var(--color4);
+}

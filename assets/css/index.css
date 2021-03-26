@@ -155,6 +155,11 @@ body {
     to {transform: rotate(360deg)}
 }
 
+.modal-header {
+    border-bottom: none;
+}
+
+
 .modal-content {
     background-color: var(--bg-color-1);
     box-shadow: var(--box-shadow2);
@@ -174,4 +179,9 @@ body {
 
 .modal-content .close:hover {
     color: var(--color3);
+}
+
+.blankpage-content-wrapper {
+    background-color: rgba(0,0,0,0.7);
+    padding-left: 200px;
 }

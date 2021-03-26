@@ -9,7 +9,7 @@ import Navbar from './Navbar';
 import Aside from './Aside';
 import SwapCard from './SwapCard';
 import Switch from './Switch';
-import UnknownPage from './UnknownPage';
+import BlankPage from './blankPage';
 import ConnectionService from './ConnectionService';
 import CommonToast from './CommonToast';
 import SwapApi from './swapApi';
@@ -55,7 +55,7 @@ class Root extends React.Component {
                 );
             default:
                 return (
-                    <UnknownPage />
+                    <BlankPage text="Coming soon"/>
                 );
         };
     };
@@ -88,7 +88,7 @@ class Root extends React.Component {
             <div className='h-100'>
                 <Navbar />
                 <main role='main' className='container-fluid h-100 px-0 position-relative'>
-                    <div className='row'>
+                    <div className='row h-100'>
                         <div className='col-12'>
                             <Aside />
                             {this.menuViewController()}

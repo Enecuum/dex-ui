@@ -1,6 +1,6 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Presets from './pageDataPresets';
+import Presets from '../store/pageDataPresets';
 let presets = new Presets();
 
 class IndicatorPanel extends React.Component {

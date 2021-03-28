@@ -7,14 +7,22 @@ class ConfirmSupply extends React.Component {
     constructor(props) {
         super(props);
         this.root = props.root;
+        this.lang = props.lang;
     };
+
+    closeCard () {
+        this.setState({ confirmCard : false });
+    };
+
     render() {
-        let langData = this.root.state.langData.trade.confirmCard;
+        console.log(this.lang.trade.confirmCard);
+        let langData = this.lang.trade.confirmCard;
         return (
             <>
                 <Modal
-                    show={true}
+                    show={this.root.state.confirmCard}
                     aria-labelledby="example-custom-modal-styling-title"
+                    onHide={this.closeCard.bind(this.root)}
                     centered
                 >
                     <Modal.Header closeButton>

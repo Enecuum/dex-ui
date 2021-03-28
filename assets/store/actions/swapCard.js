@@ -1,0 +1,13 @@
+const actions =  {
+    SWAP_FIELDS : 0x0,
+    ASSIGN_WALLET_VALUE : 0x1,
+    OPEN_TOKEN_LIST : 0x3,
+    CLOSE_TOKEN_LIST : 0x4,
+    CHANGE_LIQUIDITY_MODE : 0x5,
+    OPEN_CONFIRM_CARD : 0x6,
+    CLOSE_CONFIRM_CARD : 0x7,
+    ASSIGN_COIN_VALUE : 0x8,
+    ASSIGN_TOKEN_VALUE : 0x9
+};
+
+export default actions;

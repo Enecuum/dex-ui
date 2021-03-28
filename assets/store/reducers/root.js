@@ -4,14 +4,11 @@ import actions from '../actions/root';
 function rootStore (state, changingProperty) {
     return {
         ...state,
-        root : {
-            ...state.root,
-            ...changingProperty
-        }
+        ...changingProperty
     };
 };
 
-export default function rootReducer (state = initialState, action) {
+export default function rootReducer (state = initialState.root, action) {
     switch (action.type) {
         case actions.OPEN_ASIDE: 
             return rootStore(state, {
@@ -43,7 +40,7 @@ export default function rootReducer (state = initialState, action) {
         case actions.CHANGE_MENU_ITEM:
             return rootStore(state, { menuItem : action.value });
 
-        default : 
+        default: 
             return state;
     }
 };

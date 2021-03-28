@@ -15,7 +15,7 @@ import ConnectionService from './ConnectionService';
 
 import presets from '../store/pageDataPresets';
 import SwapApi from './swapApi';
-import { mapStoreToProps, mapDispatchToProps } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
 import store from '../store/store';
 
@@ -24,7 +24,10 @@ const swapApi = new SwapApi();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        console.log(props);
+
+        this.props = props;
+        this.root = props;
+        this.root.changeMenuItem('asd');
         this.siteLocales = presets.langData.siteLocales;
         this.activeLocale = presets.langData.preferredLocale;
         this.langTitles = presets.langData.langTitles;
@@ -62,23 +65,24 @@ class Root extends React.Component {
     };
 
     menuViewController () {
-        switch (store.menuItem) {
+        console.log(this.root);
+        switch (this.root.menuItem) {
             case 'exchange':
                 return (
                     <div className='swap-card' style={{ left : store.swapCardLeft}}>
                         <div id='switch' >
-                            <Switch />
+                            {/* <Switch /> */}
                         </div>
-                        <SwapCard />
+                        {/* <SwapCard /> */}
                     </div>
                 );
             case 'liquidity':
                 return (
                     <div className='swap-card' style={{ left : store.swapCardLeft}}>
                         <div id='switch' >
-                            <Switch />
+                            {/* <Switch /> */}
                         </div>
-                        <SwapCard />
+                        {/* <SwapCard /> */}
                     </div>
                 );
             default:

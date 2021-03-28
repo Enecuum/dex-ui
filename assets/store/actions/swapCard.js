@@ -1,13 +1,13 @@
 const actions =  {
-    SWAP_FIELDS : 0x0,
-    ASSIGN_WALLET_VALUE : 0x1,
-    OPEN_TOKEN_LIST : 0x3,
-    CLOSE_TOKEN_LIST : 0x4,
-    CHANGE_LIQUIDITY_MODE : 0x5,
-    OPEN_CONFIRM_CARD : 0x6,
-    CLOSE_CONFIRM_CARD : 0x7,
-    ASSIGN_COIN_VALUE : 0x8,
-    ASSIGN_TOKEN_VALUE : 0x9
+    SWAP_FIELDS             : 0x10,
+    ASSIGN_WALLET_VALUE     : 0x11,
+    OPEN_TOKEN_LIST         : 0x13,
+    CLOSE_TOKEN_LIST        : 0x14,
+    CHANGE_LIQUIDITY_MODE   : 0x15,
+    OPEN_CONFIRM_CARD       : 0x16,
+    CLOSE_CONFIRM_CARD      : 0x17,
+    ASSIGN_COIN_VALUE       : 0x18,
+    ASSIGN_TOKEN_VALUE      : 0x19
 };
 
 export default actions;

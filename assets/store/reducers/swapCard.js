@@ -3,15 +3,12 @@ import actions from '../actions/swapCard';
 
 function swapCardStore(state, changingProperty) {
     return {
-        ...state,
-        swapCard: {
-            ...state.swapCard,
-            ...changingProperty
-        }
+        ...swapCard,
+        ...changingProperty
     };
 };
 
-function convertIntoMode(packed) {
+function convertIntoMode(state, packed) {
     if (state.root.menuItem == 'exchange')
         return { exchange: packed };
     else
@@ -21,7 +18,7 @@ function convertIntoMode(packed) {
 function fieldStore(state, field, changingProperty) {
     let mode = state.root.menuItem;
     return swapCardStore(state, {
-        ...convertIntoMode({
+        ...convertIntoMode(state, {
             ...state.swapCard[mode],
             field0: {
                 ...state.swapCard[mode][field],
@@ -38,7 +35,7 @@ function swapFields(state) {
         ...state,
         swapCard: {
             ...state.swapCard,
-            ...convertIntoMode({
+            ...convertIntoMode(state, {
                 ...state.swapCard[mode],
                 field0: state.swapCard[mode].field1,
                 field1: field0
@@ -47,7 +44,7 @@ function swapFields(state) {
     };
 };
 
-export default function swapCardReducer(state = initialState, action) {
+export default function swapCardReducer (state = initialState.swapCard, action) {
     switch (action.type) {
         case actions.SWAP_FIELDS:
             return swapFields(state);

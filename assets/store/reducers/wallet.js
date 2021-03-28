@@ -3,20 +3,17 @@ import actions from '../actions/wallet';
 
 function walletStore (state, changingProperty) {
     return {
-        ...state,
-        wallet : {
-            ...state.wallet,
-            ...changingProperty
-        }
+        ...wallet,
+        ...changingProperty
     };
 };
 
-export default function walletReducer (state = initialState, action) {
+export default function walletReducer (state = initialState.wallet, action) {
     switch (action.type) {
         case actions.SET_PUBKEY: 
             return walletStore(state, { pubkey : action.value });
 
-        default : 
+        default: 
             return state;
     }
 };

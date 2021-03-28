@@ -10,11 +10,6 @@ import ConfirmSupply from './ConfirmSupply';
 import '../css/swap-card.css';
 import '../css/font-style.css';
 
-import { useDispatch, useSelector } from 'react-redux';
-import totalStore from '../store/store';
-const { store, actionCreators } = totalStore;
-const sActions = actionCreators.swapCard;
-
 class SwapCard extends React.Component {
     constructor(props) {
         super(props);

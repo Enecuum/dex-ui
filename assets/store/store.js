@@ -10,6 +10,6 @@ const totalReducer = combineReducers({
     swapCard : swapCardReducer
 });
 
-const store = createStore(totalReducer);
+const store = createStore(totalReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 export default store;

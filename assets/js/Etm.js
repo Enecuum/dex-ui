@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ValueProcessor from './ValueProcessor';
-import TokenСonstraints from './TokenСonstraints';
+import TokenConstraints from './TokenConstraints';
 
 
 class Etm extends React.Component {
@@ -22,7 +22,7 @@ class Etm extends React.Component {
 		this.tickerDefault = '';
 		this.nameDefault = '';
 
-		this.tokenConstraints = new TokenСonstraints(this.MAX_SUPPLY_LIMIT);
+		this.tokenConstraints = new TokenConstraints(this.MAX_SUPPLY_LIMIT);
         this.state = {
         	mining_period: '',
 	        ticker: this.tickerDefault,    
@@ -52,6 +52,8 @@ class Etm extends React.Component {
 		const name = target.name;
 		this.setState({
 			[name] : value
+		}, function() {
+			console.log(name)
 		});
 	}
 
@@ -62,7 +64,7 @@ class Etm extends React.Component {
         return (
         	<div id="ETMWrapper" className="py-5 px-5">
         		<div className="h1 mb-5">Issue token</div>
-				<Form>
+				<Form onSubmit={e => { e.preventDefault(); }}>
 					<Form.Group as={Row} controlId="setTokenTicker">
 						<Form.Label column sm={2}>Ticker</Form.Label>
 						<Col xl={7}>
@@ -287,7 +289,10 @@ class Etm extends React.Component {
 					}
 					<Row>
 						<Col xl={{ span: 7, offset: 2 }} className="text-center">
-							<Button variant="primary" type="submit" >
+							<Button
+							variant="primary"
+							type="submit" 
+							>
 								Issue token
 							</Button>
 						</Col>					

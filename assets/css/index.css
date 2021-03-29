@@ -203,3 +203,9 @@ body {
     color: #e03266;
     font-size: 13px;
 }
+
+
+#ETMWrapper form .form-control {
+    background-color: var(--color5);
+    color: var(--color1);
+}

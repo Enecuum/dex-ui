@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './Navbar';
 import Aside from './Aside';
 import SwapCard from './SwapCard';
-import EtmForm from './EtmForm';
+import Etm from './Etm';
 import Switch from './Switch';
 import BlankPage from './blankPage';
 import ConnectionService from './ConnectionService';
@@ -57,7 +57,7 @@ class Root extends React.Component {
             case 'etm':
                 return (
                     <div id="ETMPage" style={{paddingLeft : (this.state.navOpened ? '330px' : '70px')}}>
-                        <EtmForm root={ this } />
+                        <Etm root={ this } />
                     </div>
                 );                
             default:

@@ -30,7 +30,7 @@ class SwapCard extends React.Component {
     };
 
     swapPair() {
-        this.props.swapFields();
+        this.props.swapFields(this.props.menuItem);
     };
 
     changeBalance() {
@@ -44,23 +44,28 @@ class SwapCard extends React.Component {
     getInputField(props) {
         return (
             <div>
-                <p className='input-name'>
-                    {props.fieldName}
-                </p>
-                <input id={props.fieldClass}
-                    onChange={this.changeField.bind(this, props.fieldClass)}
-                    className='c-input-field'
-                    type='text'
-                    value={props.value}
-                    placeholder='0.0'
-                    autoComplete='off'>
-                </input>
-                <div className={`${props.fieldClass} token-button row hover-pointer`} onClick={this.openTokenList.bind(this, props.fieldClass)}>
-                    <div className='col d-flex justify-content-center align-items-center'>{props.tokenName}</div>
-                    <span className='icon-Icon26 d-flex justify-content-begin align-items-center toggle-token'></span>
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                    <div className='input-name'>
+                        {props.fieldName}
+                    </div>
+                    <div className='my-token-amount d-flex justify-content-end'>
+                        {this.props[this.props.menuItem][this.getActiveField(props.fieldClass)].walletValue}
+                    </div>                
                 </div>
-                <div className='my-token-amount d-flex justify-content-end'>
-                    {this.props[this.props.menuItem][this.getActiveField(props.fieldClass)].walletValue}
+
+                <div className="d-flex align-items-center justify-content-between">
+                    <input id={props.fieldClass}
+                        onChange={this.changeField.bind(this, props.fieldClass)}
+                        className='c-input-field'
+                        type='text'
+                        value={props.value}
+                        placeholder='0.0'
+                        autoComplete='off'>
+                    </input>
+                    <div className={`${props.fieldClass} token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.fieldClass)}>
+                        <div className='d-flex align-items-center mr-2'>{props.tokenName}</div>
+                        <span className='icon-Icon26 d-flex align-items-center chevron-down'></span>
+                    </div>                
                 </div>
             </div>
         );
@@ -208,88 +213,102 @@ class SwapCard extends React.Component {
 
     renderExchangeCard() {
         return (
-            <div>
-                <div className='row no-gutters swap-header-group'>
-                    <div className='col-9'>
-                        <h4 className='row' id='swap-mode-header'>
-                            {this.props.langData[this.props.menuItem].header}
-                        </h4>
-                        <p className='row' id='under-header'>
-                            {this.props.langData[this.props.menuItem].description}
-                        </p>
+            <>
+                <div className="p-4 bottom-line-1">
+                    <div className='d-flex justify-content-between align-items-center'>
+                        <div className="mr-3">
+                            <div className='h4' id='swap-mode-header'>
+                                {this.props.langData[this.props.menuItem].header}
+                            </div>
+                            <div id='under-header'>
+                                {this.props.langData[this.props.menuItem].description}
+                            </div>
+                        </div>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            <div className='d-flex justify-content-center align-items-center'>
+                                <div className="control-container d-flex justify-content-center align-items-center mr-2">
+                                    <Settings />
+                                </div>
+                                <div className="control-container d-flex justify-content-center align-items-center">
+                                    <History />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className='col d-flex justify-content-center align-items-center no-gutters'>
-                        <Settings />
-                        <History />
+                </div>
+                <div className="p-4">
+                    <div className='swap-input py-2 px-3' id='from'>
+                        {this.getInputField({
+                            fieldName: this.props.langData[this.props.menuItem].input0,
+                            fieldClass: 'token-use',
+                            tokenName: this.props[this.props.menuItem].field0.token.name,
+                            value: this.props[this.props.menuItem].field0.value
+                        })}
                     </div>
-                </div>
-                <div id='head-line'></div>
-                <div className='row swap-input' id='from'>
-                    {this.getInputField({
-                        fieldName: this.props.langData[this.props.menuItem].input0,
-                        fieldClass: 'token-use',
-                        tokenName: this.props[this.props.menuItem].field0.token.name,
-                        value: this.props[this.props.menuItem].field0.value
-                    })}
-                </div>
-                <div className='row' id='exch' onClick={this.swapPair.bind(this)}>
-                    <span className='icon-Icon13 exch-button d-flex align-items-end' />
-                </div>
-                <div className='swap-input' id='to'>
-                    {this.getInputField({
-                        fieldName: this.props.langData[this.props.menuItem].input1,
-                        fieldClass: 'token-use1',
-                        tokenName: this.props[this.props.menuItem].field1.token.name,
-                        value: this.props[this.props.menuItem].field1.value
-                    })}
-                </div>
-                <div className='row no-gutters'>
-                    <div className='col-7 d-flex justify-content-center'>Coming soon</div>
-                    <div className='col-3 d-flex justify-content-end'>1%</div>
-                </div>
-                { this.getSubmitButton() }
-            </div>
+                    <div id='exch' className="d-flex justify-content-center align-items-center mx-auto my-3" onClick={this.swapPair.bind(this)}>
+                        <span className='icon-Icon13 exch-button hover-pointer' />
+                    </div>
+                    <div className='swap-input py-2 px-3' id='to'>
+                        {this.getInputField({
+                            fieldName: this.props.langData[this.props.menuItem].input1,
+                            fieldClass: 'token-use1',
+                            tokenName: this.props[this.props.menuItem].field1.token.name,
+                            value: this.props[this.props.menuItem].field1.value
+                        })}
+                    </div>
+                    <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
+                        <div>Coming soon</div>
+                        <div>1%</div>
+                    </div>
+                    { this.getSubmitButton() }
+                </div>    
+            </>
         );
     };
 
     renderMainLiquidityCard() {
         return (
-            <div>
-                <div className='row no-gutters swap-header-group'>
-                    <div className='col-9'>
-                        <h4 className='row' id='swap-mode-header'>
-                            {this.props.langData[this.props.menuItem].header}
-                        </h4>
-                        <p className='row' id='under-header'>
-                            {this.props.langData[this.props.menuItem].description}
-                        </p>
-                    </div>
-                    <div className='col d-flex justify-content-center align-items-center no-gutters'>
-                        <div className='col d-flex justify-content-center align-items-center no-gutters'>
-                            <Settings />
-                            <History />
+            <>
+                <div className="p-4 bottom-line-1">
+                    <div className='d-flex justify-content-between align-items-center mb-4'>
+                        <div className="mr-3">
+                            <div className='h4' id='swap-mode-header'>
+                                {this.props.langData[this.props.menuItem].header}
+                            </div>
+                            <div id='under-header'>
+                                {this.props.langData[this.props.menuItem].description}
+                            </div>
+                        </div>
+                        <div className='d-flex justify-content-center align-items-center'>
+                            <div className='d-flex justify-content-center align-items-center'>
+                                <div className="control-container d-flex justify-content-center align-items-center mr-2">
+                                    <Settings />
+                                </div>
+                                <div className="control-container d-flex justify-content-center align-items-center">
+                                    <History />
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <button className='btn btn-secondary liquidity-btn py-3 px-5' type='submit' onClick={this.changeLiquidityCard.bind(this)}>
+                        {this.props.langData[this.props.menuItem].addButton}
+                    </button>                    
                 </div>
-                <button className='btn btn-secondary my-2 my-sm-0 liquidity-btn' type='submit' onClick={this.changeLiquidityCard.bind(this)}>
-                    {this.props.langData[this.props.menuItem].addButton}
-                </button>
-                <div id='head-line'></div>
-                <div className='row no-gutters your-liquidity-header'>
-                    <div className='col-9'>
-                        {this.props.langData[this.props.menuItem].yourLiquidity}
+                <div className="p-4">    
+                    <div className='your-liquidity-header d-flex justify-content-between align-items-center mb-2'>
+                        <div>
+                            {this.props.langData[this.props.menuItem].yourLiquidity}
+                        </div>
+                        <Tooltip text='text'/> {/*this.props.langData.trade.tokenCard.tooltipText*/}
                     </div>
-                    <div className='col d-flex justify-content-end'>
-                        <span className='icon-Icon4'></span>
+                    <div className='your-liquidity-field mb-3'>
+                        {/* future content */}
+                    </div>
+                    <div className='your-liquidity-header'>
+                        {this.props.langData[this.props.menuItem].additionInfo}
                     </div>
                 </div>
-                <div className='your-liquidity-field'>
-                    {/* future content */}
-                </div>
-                <div className='your-liquidity-header'>
-                    {this.props.langData[this.props.menuItem].additionInfo}
-                </div>
-            </div>
+            </>
         );
     };
 
@@ -297,19 +316,15 @@ class SwapCard extends React.Component {
         let langData = this.props.langData;
         let langProp_Per_ = langData[this.props.menuItem].per;
         return (
-            <div>
-                <div className='row no-gutters swap-header-group'>
-                    <div className='col d-flex justify-content-end align-items-center no-gutters' onClick={this.changeLiquidityCard.bind(this)}>
-                        <span className='icon-Icon13 back-button hover-pointer'></span>
-                    </div>
-                    <h4 className='col-9 d-flex justify-content-center align-items-center add-liquidity-header' id='swap-mode-header'>
-                        {langData[this.props.menuItem].secondHeader}
+            <div className="p-4">
+                <div className='d-flex justify-content-between align-items-center mb-4'>
+                    <span className='icon-Icon13 back-button hover-pointer' onClick={this.changeLiquidityCard.bind(this)}></span>
+                    <h4 className='add-liquidity-header' id='swap-mode-header'>
+                        {this.props.langData[this.props.menuItem].secondHeader}
                     </h4>
-                    <div className='col d-flex justify-content-begin align-items-center no-gutters'>
-                        <Tooltip text={langData.liquidity.tooltipText} />
-                    </div>
+                    <Tooltip text={this.props.langData.liquidity.tooltipText} />
                 </div>
-                <div className='row swap-input no-top-margin' id='from'>
+                <div className='swap-input py-2 px-3' id='from'>
                     {this.getInputField({
                         fieldName: langData[this.props.menuItem].input0,
                         fieldClass: 'token-use',
@@ -317,8 +332,8 @@ class SwapCard extends React.Component {
                         value: this.props[this.props.menuItem].field0.value
                     })}
                 </div>
-                <span className='icon-Icon17 d-flex justify-content-center plus-liquidity' />
-                <div className='swap-input' id='to'>
+                <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-4' />
+                <div className='swap-input py-2 px-3' id='to'>
                     {this.getInputField({
                         fieldName: langData[this.props.menuItem].input1,
                         fieldClass: 'token-use1',
@@ -326,17 +341,17 @@ class SwapCard extends React.Component {
                         value: this.props[this.props.menuItem].field1.value
                     })}
                 </div>
-                <div className='pool-prices'>{langData[this.props.menuItem].priceAndPoolShare}</div>
-                <div className='swap-input price-and-poolshare-field row'>
-                    <div className='col'>
-                        <div className='row d-flex justify-content-center'>{this.countExchangeRate(true)}</div>
-                        <div className='row d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, true)}</div>
+                <div className='pool-prices my-3'>{this.props.langData[this.props.menuItem].priceAndPoolShare}</div>
+                <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
+                    <div>
+                        <div className='d-flex justify-content-center'>{this.countExchangeRate(true)}</div>
+                        <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, true)}</div>
                     </div>
-                    <div className='col'>
-                        <div className='row d-flex justify-content-center'>{this.countExchangeRate(false)}</div>
-                        <div className='row d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, false)}</div>
+                    <div>
+                        <div className='d-flex justify-content-center'>{this.countExchangeRate(false)}</div>
+                        <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, false)}</div>
                     </div>
-                    <div className='col'>
+                    <div>
                         <div className='row d-flex justify-content-center'>-</div>
                         <div className='row d-flex justify-content-center'>{langData[this.props.menuItem].shareOfPool}</div>
                     </div>
@@ -374,13 +389,12 @@ class SwapCard extends React.Component {
             if (this.pairExists == false) {
                 buttonName = names.createPair;
                 return (
-                    <div className='row no-gutters'>
-                        <div className='col-7 swap-input about-button-info d-flex justify-content-center align-items-center'>
+                    <div>
+                        <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
                             { this.props.langData.aboutButtonInfo.withoutPair }
                         </div>
                         <button
-                            className='col btn btn-secondary my-2 my-sm-0 swap-input alt-submit'
-                            onClick={this.openConfirmCard.bind(this)}
+                            className='btn btn-secondary alt-submit w-100 py-2'
                             type='submit'
                             id='submit'>
                             { buttonName }
@@ -391,7 +405,7 @@ class SwapCard extends React.Component {
         }
         return (
             <button
-                className='btn btn-secondary my-2 my-sm-0 swap-input'
+                className='btn btn-secondary w-100 py-2'
                 type='submit'
                 id='submit'
                 onClick={this.openConfirmCard.bind(this)}

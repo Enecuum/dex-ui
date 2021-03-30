@@ -18,15 +18,6 @@
 .liquidity-btn {
     border-radius: var(--border-radius1);
     background-color: var(--color3);
-    width: 200px;
-    height: 50px;
-    margin-left: 20px;
-    margin-top: -10px!important;
-    margin-bottom: 30px!important;
-}
-
-.swap-header-group {
-    height: 120px;
 }
 
 #head-line {
@@ -39,14 +30,7 @@
     background-color: var(--color2);
     border: solid #00000000;
     border-radius: var(--border-radius1);
-    width: 90%;
-    height: 100px;
-    margin-left: 5%;
-}
-
-#from {
-    margin-top: 30px;
-    margin-bottom: 20px;
+    min-height: 100px;
 }
 
 #exch {
@@ -55,15 +39,12 @@
     background-color: var(--color2);
     width: 40px;
     height: 40px;
-    margin-top: 10px;
-    margin-left: 195px;
     border-radius: 50px;
 }
 
 .exch-button {
     font-size: '40px';
     color : white;
-    margin-right: 19px;
     transform: rotate(-90deg);
     color: var(--color3);
 }
@@ -72,36 +53,22 @@
     background-color: var(--menu-bg);
 }
 
-#to {
-    margin-top: 20px;
-    margin-bottom: 30px;
-}
-
 #submit {
     background-color: var(--color3);
-    height: 60px;
-    margin-top: 30px !important;
-    margin-bottom: 23px !important;
     border-radius: var(--border-radius1);
 }
 
 #swap-mode-header {
-    color : white;
-    margin-top: 27px;
-    margin-left: 6%;
+    color : var(--color1);
 }
 
 #under-header {
     color: var(--color4);
-    margin-left: 6%;
-    width : 300px;
 }
 
 .input-field {
     background-color: var(--color2);
     border: 0;
-    margin-top: 30px;
-    margin-left: 24%;
     border-radius: 50px;
     text-align: center;
     width: 200px;
@@ -109,12 +76,11 @@
 
 .c-input-field {
     outline: none;
-    margin-left: 14px;
-    margin-top: 7px;
     background-color: var(--bg-color);
     border: 0;
     color: var(--color4);
 }
+
 .c-input-field::placeholder {
     color: var(--color4);
 }
@@ -130,54 +96,43 @@
     box-shadow: #00000000;
 }
 
-.input-name {
-    margin-top: 10px;
-    margin-left: 15px;
-    width: 20px;
-}
-
 .token-button {
-    position: absolute;
     background-color: #00000000;
     border-radius: var(--border-radius1);
-    height: 40px;
-    right: 44px;
-    margin-top: -32px;
 }
-.token-button:hover {
-    background-color: #00000032;
+
+.token-button .chevron-down {
+    font-size: 0.6rem;
 }
-.token-button:active{
-    background-color: #00000052;
+
+.control-container {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.bottom-line-1 {
+    border-bottom: 2px solid var(--color2);
 }
 
 .swap-card-top-items {
     color : var(--color3);
     font-size: 25px;
     cursor: pointer;
+    transition: all 0.1s;
 }
 
 .swap-card-top-items:hover {
-    font-size: 27px;
+    font-size: 28px; 
+    transition: all 0.1s;
 }
 
 .your-liquidity-field {
-    width: 370px;
     height: 120px;
     background-color: var(--color5);
-    margin-left: 30px;
     border-radius: var(--border-radius1);
-}
-
-.your-liquidity-header {
-    margin: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
-}
-
-.your-liquidity-header div span {
-    cursor: pointer;
-    color: var(--color4);
 }
 
 .add-liquidity-header {
@@ -191,29 +146,13 @@
 
 .price-and-poolshare-field {
     height: 80px;
-    padding-top: 5px;
 }
 
-.price-and-poolshare-field div div {
-    margin-top: 5px;
-}
-
-.pool-prices{
-    margin-left: 25px !important;
+.pool-prices {
     color: var(--color4);
 }
 
-.toggle-token {
-    font-size: 10px;
-    margin-right: 10px;
-}
-
 .my-token-amount {
-    position: absolute;
-    width: 200px;
-    height: 20px;
-    right: 40px;
-    margin-top: -70px;
     color: var(--color1);
 }
 

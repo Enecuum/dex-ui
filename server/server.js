@@ -5,6 +5,25 @@ const bodyParser = express.json();
 const fs = require('fs');
 const app = express();
 const TransferPoint = require('./transferPoint');
+const transferApi = new TransferPoint();
+
+app.post(`/api/${config.api_version}/tx`, bodyParser, (req, res) => {
+    transferApi.transferRequest(req.body)
+    .then(result => {
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+        });
+        res.write(JSON.stringify(result));
+        res.end();
+    },
+    error => {
+        res.writeHead(500, {
+            'Content-Type': 'application/json',
+        });
+        res.write(JSON.stringify(error));
+        res.end();
+    });
+});
 
 app.get('/', (req, res) => {
     res.writeHead(200, {
@@ -55,7 +74,7 @@ app.get('/web-enq/*', (req, res) => {
 });
 
 https.createServer({
-    key: fs.readFileSync('./https/key.pem', { encoding : 'utf8' }),
-    cert: fs.readFileSync('./https/server.crt', { encoding : 'utf8' })
+    key: fs.readFileSync('../https/key.pem', { encoding : 'utf8' }),
+    cert: fs.readFileSync('../https/server.crt', { encoding : 'utf8' })
 }, app)
-.listen(config.port);
+.listen(config.host_port);

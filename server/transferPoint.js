@@ -1,7 +1,12 @@
 const axios = require('axios');
 const argv = require('yargs').argv;
 const config = require('../config.json');
-const enq_web = require('../web-enq/prebuild/enqweb3.min.js');
+const ObjectFromData = require('../web-enq/packages/web-enq-utils/src/objectFromData');
+const objectFromData = new ObjectFromData();
+
+BigInt.prototype.toJSON = function () {
+    return this.toString();
+};
 
 class IdManager {
     constructor () {
@@ -45,7 +50,7 @@ class IdManager {
 class TransferPoint {
     constructor () {
         this.args = ['host_port', 'dex_url', 'dex_port']; // p - dex port, u - dex url, hp - host port
-        this.config = this.setConfig(...config);
+        this.config = this.setConfig({...config});
         this.idManager = new IdManager();
     };
 
@@ -56,16 +61,42 @@ class TransferPoint {
     };
 
     sendRequest (method, data) {
-        return axios.post(`${this.config.dex_url}:${this.config.dex_port}/${this.config.apiVersion}`, {
+        console.log({
             jsonrpc : config.json_rcp_version,
             method : method,
             id : this.idManager.createRequestId(),
-            params : this.parseData(data)
+            params : data
+        });
+        return axios.post(`${this.config.dex_url}:${this.config.dex_port}/${this.config.api_version}`, {
+            jsonrpc : config.json_rcp_version,
+            method : method,
+            id : this.idManager.createRequestId(),
+            params : data
         });
     };
 
     parseData (data) {
-        return Enqweb.Utils.ofd.parse(data);
+        return objectFromData.parse(data);
+    };
+ 
+    transferRequest (reqData) {
+        return new Promise((resolve, reject) => {
+            let data = this.parseData(reqData.data);
+            reqData.data = data.parameters;
+            this.sendRequest(data.type, reqData)
+            .then(res => {
+                this.idManager.completeRequestId(res.data.id);
+                this.idManager.deleteOldRequests();
+                console.log(res.data);
+                resolve({
+                    err : res.data.error,
+                    result : res.data.result
+                });
+            }, error => {
+                console.log(error);
+                reject({ error : `Internal server error: ${error}` });
+            });
+        });
     };
 };
 

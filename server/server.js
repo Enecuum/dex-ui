@@ -1,59 +1,16 @@
-const config = require('./config.json');
+const config = require('../config.json');
 const express = require('express');
 const https = require('https');
-// const bodyParser = express.json();
+const bodyParser = express.json();
 const fs = require('fs');
 const app = express();
+const TransferPoint = require('./transferPoint');
 
 app.get('/', (req, res) => {
     res.writeHead(200, {
         'Content-Type': 'text/html',
     });
     let data = fs.readFileSync(`./client/index.html`);
-    res.write(data);
-    res.end();
-});
-
-app.get('/css/*', (req, res) => {
-    let urlArr = req.url.split('/');
-    res.writeHead(200, {
-        'Content-Type': 'text/css',
-    });
-    let data = fs.readFileSync(`./client/css/${urlArr[urlArr.length - 1]}`);
-    res.write(data);
-    res.end();
-});
-
-app.get('/fonts/*', (req, res) => {
-    let urlArr = req.url.split('/');
-    res.writeHead(200, {
-        'Content-Type': 'text/css',
-    });
-    let data = fs.readFileSync(`./client/fonts/${urlArr[urlArr.length - 1]}`);
-    res.write(data);
-    res.end();
-});
-
-app.get('/js/*', (req, res) => {
-    let urlArr = req.url.split('/');
-    res.writeHead(200, {
-        'Content-Type': 'text/html',
-    });
-    let fileName = urlArr[urlArr.length - 1];
-    if (config.obfuscated.status) {
-        fileName = fileName.substring(0, fileName.length - 3) + config.obfuscated.postfix;
-    }
-    let data = fs.readFileSync(`./client/js/${fileName}`);
-    res.write(data);
-    res.end();
-});
-
-app.get('/img/*', (req, res) => {
-    let urlArr = req.url.split('/');
-    res.writeHead(200, {
-        'Content-Type': 'image/png',
-    });
-    let data = fs.readFileSync(`./client/img/${urlArr[urlArr.length - 1]}`);
     res.write(data);
     res.end();
 });

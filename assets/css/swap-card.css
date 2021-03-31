@@ -16,7 +16,6 @@
 }
 
 .liquidity-btn {
-    border-radius: var(--border-radius1);
     background-color: var(--color3);
 }
 
@@ -55,7 +54,6 @@
 
 #submit {
     background-color: var(--color3);
-    border-radius: var(--border-radius1);
 }
 
 #swap-mode-header {
@@ -132,7 +130,7 @@
 .your-liquidity-field {
     height: 120px;
     background-color: var(--color5);
-    border-radius: var(--border-radius1);
+    border-radius: var(--border-radius2);
 }
 
 .add-liquidity-header {

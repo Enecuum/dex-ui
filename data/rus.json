@@ -66,5 +66,6 @@
             "tokenName" : "Токены"
         }
     },
-    "info" : "Инфо"
+    "info" : "Инфо",
+    "submit" : "Submit"
 }

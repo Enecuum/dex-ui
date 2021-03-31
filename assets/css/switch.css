@@ -7,21 +7,21 @@
     width: 380px;
     background-color: var(--bg-swap-card);
     transition: var(--transition1);
-    border-radius: var(--border-radius1);
+    border-radius: var(--border-radius2);
 }
 
 #liquidity-mode {
     position: absolute;
     right: 0;
     margin-top: -35px;
-    border-bottom-right-radius: var(--border-radius1);
-    border-top-right-radius: var(--border-radius1);
+    border-bottom-right-radius: var(--border-radius2);
+    border-top-right-radius: var(--border-radius2);
 }
 
 #exchange-mode {
     position: relative;
-    border-bottom-left-radius: var(--border-radius1);
-    border-top-left-radius: var(--border-radius1);
+    border-bottom-left-radius: var(--border-radius2);
+    border-top-left-radius: var(--border-radius2);
 }
 
 .switch-mode {

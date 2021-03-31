@@ -209,3 +209,39 @@ body {
     background-color: var(--color5);
     color: var(--color1);
 }
+
+.modal-body, .modal-header {
+    padding: 1.5rem;
+}
+
+.token-pair-logo-wrapper .logo-wrapper-sm:last-child {
+    margin-left: -5px;
+}
+
+.logo-wrapper-xs, .logo-wrapper-sm {
+
+}
+
+.logo-wrapper-sm {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+    border: 7px solid var(--color1);
+    flex-shrink: 0;
+    flex-grow: 0;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--color1);
+    border-radius: 50%;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 400px;
+    }
+}
+
+.btn {
+    border-radius: var(--border-radius2);
+}

@@ -76,5 +76,6 @@
             "confirm" : "Confirm Supply"
         }
     },
-    "info" : "Info"
+    "info" : "Info",
+    "submit" : "Submit"
 }

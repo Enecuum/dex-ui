@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import '../css/confirm-supply.css';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import img1 from '../img/logo.png';
+import img2 from '../img/bry-logo.png';
 
 class ConfirmSupply extends React.Component {
     closeCard () {
@@ -23,58 +25,80 @@ class ConfirmSupply extends React.Component {
                     <Modal.Header closeButton>
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
-                                <span className="mr-3">
+                                <span>
                                     {langData.header}
                                 </span>
                             </div>
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <h1 className='mt-3'>
+                        <div className="h3 font-weight-bold">
                             0.96478
-                        </h1>
-                        <h5 className='mt-4'>
+                        </div>
+                        <div className="d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3">
+                            <div
+                                className="logo-wrapper-sm"
+                                style = {{ 
+                                    backgroundImage: `url(${img1})`
+                                }} />   
+                            <div
+                                className="logo-wrapper-sm"
+                                style = {{
+                                    backgroundImage: `url(${img2})`
+                                }} /> 
+                        </div>
+                        <div className='h5 mb-4'>
                             ENQ/BRY Pool Tokens
-                        </h5>
-                        <div className='confirm-supply-description mt-4'>
+                        </div>                        
+                        <div className='confirm-supply-description'>
                             {langData.description}
                         </div>
-                        <div className='mt-5'>
-                            <div className='row'>
-                                <div className='col'>
+                        <div className="my-5">
+                            <div className='d-flex align-items-center justify-content-between mb-2'>
+                                <div>
                                     ENQ {langData.deposited}
                                 </div>
-                                <div className='col d-flex justify-content-end'>
-                                    0.0699313
+                                <div className="d-flex align-items-center justify-content-end">
+                                    <div
+                                        className="logo-wrapper-xs mr-2"
+                                        style = {{
+                                            backgroundImage: `url(${img1})`
+                                        }} /> 
+                                    <span>0.0699313</span>
                                 </div>
                             </div>
-                            <div className='row'>
-                                <div className='col'>
+                            <div className='d-flex align-items-center justify-content-between mb-2'>
+                                <div>
                                     BRY {langData.deposited}
                                 </div>
-                                <div className='col d-flex justify-content-end'>
-                                    14.3588
+                                <div className="d-flex align-items-center justify-content-end">
+                                    <div
+                                        className="logo-wrapper-xs mr-2"
+                                        style = {{
+                                            backgroundImage: `url(${img2})`
+                                        }} /> 
+                                    <span>14.3588</span>
                                 </div>
                             </div>
-                            <div className='row'>
-                                <div className='col'>
+                            <div className='d-flex align-items-start justify-content-between mb-2'>
+                                <div>
                                     {langData.rates}
                                 </div>
-                                <div className='col-4'>
-                                    <div className='row d-flex justify-content-center'>1 ENQ = 206.3 BRY</div>
-                                    <div className='row'>1 BRY = 0.00487 ENQ</div>
+                                <div className='text-right'>
+                                    <div>1 ENQ = 206.3 BRY</div>
+                                    <div>1 BRY = 0.00487 ENQ</div>
                                 </div>
                             </div>
-                            <div className='row mb-5'>
-                                <div className='col'>
+                            <div className='d-flex align-items-start justify-content-between'>
+                                <div>
                                     {langData.shareOfPool}
                                 </div>
-                                <div className='col d-flex justify-content-end'>
+                                <div>
                                     0.0001204%
                                 </div>
-                            </div>
-                            <Button className='confirm-supply-button'>{langData.submit}</Button>
+                            </div>                            
                         </div>
+                        <Button className='btn-secondary confirm-supply-button w-100'>{langData.submit}</Button>
                     </Modal.Body>
                 </Modal>
             </>

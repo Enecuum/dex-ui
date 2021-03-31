@@ -29,7 +29,7 @@
 .swap-input {
     background-color: var(--color2);
     border: solid #00000000;
-    border-radius: var(--border-radius1);
+    border-radius: var(--border-radius2);
     min-height: 100px;
 }
 
@@ -142,10 +142,6 @@
 .plus-liquidity {
     transform: rotate(45deg);
     color: var(--color4);
-}
-
-.price-and-poolshare-field {
-    height: 80px;
 }
 
 .pool-prices {

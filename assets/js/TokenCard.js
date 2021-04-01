@@ -31,7 +31,7 @@ class TokenCard extends React.Component {
     };
 
     assignToken(token) {
-        this.props.assignTokenValue(token, this.activeField);
+        this.props.assignTokenValue(this.props.menuItem, this.activeField, token);
         this.props.closeTokenList();
         this.changeBalance();
     };

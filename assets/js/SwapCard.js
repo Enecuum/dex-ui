@@ -8,7 +8,9 @@ import presets from '../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import ExtRequests from './extRequests';
 
+const extRequests = new ExtRequests();
 const swapApi = new SwapApi();
 
 import '../css/swap-card.css';
@@ -33,7 +35,7 @@ class SwapCard extends React.Component {
 
     changeBalance() {
         let field = this.getActiveField(this.activeField);
-        this.root.getBalance(this.props[this.props.menuItem][field].token.hash)
+        extRequests.getBalance(this.props[this.props.menuItem][field].token.hash)
         .then(balance => {
             this.props.assignWalletValue((balance !== undefined) ? `Balance: ${balance.amount}` : '-');
         });
@@ -437,7 +439,6 @@ class SwapCard extends React.Component {
     };  
 
     render() {
-        console.log(this.props);
         this.establishReadiness();
         this.establishPairExistence();
         return (

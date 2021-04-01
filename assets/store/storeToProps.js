@@ -35,9 +35,11 @@ function mapStoreToProps(component) {
             };
         case components.TOKEN_CARD:
             return function (state) {
-                let multistate = state.tokenCard;
-                multistate.langData = state.root.langData.trade.tokenCard;
-                return multistate;
+                return {
+                    ...state.tokenCard,
+                    langData: state.root.langData.trade.tokenCard,
+                    menuItem: state.root.menuItem
+                };
             };
         default:
             return undefined;
@@ -52,7 +54,10 @@ function mapDispatchToProps(component) {
             };
         case components.SWAP_CARD:
             return function (dispatch) {
-                return bindActionCreators(swapCardCreator, dispatch);
+                return bindActionCreators({
+                    ...swapCardCreator,
+                    getBalance : rootCreator.getBalance
+                }, dispatch);
             };
         case components.SWITCH:
             return function (dispatch) {
@@ -62,10 +67,11 @@ function mapDispatchToProps(component) {
             };
         case components.TOKEN_CARD:
             return function (dispatch) {
-                let multidispatch = tokenCardCreator;
-                multidispatch.assignTokenValue = swapCardCreator.assignTokenValue;
-                multidispatch.closeTokenList = swapCardCreator.closeTokenList;
-                return bindActionCreators(multidispatch, dispatch);
+                return bindActionCreators({
+                    ...tokenCardCreator,
+                    assignTokenValue : swapCardCreator.assignTokenValue,
+                    closeTokenList : swapCardCreator.closeTokenList
+                }, dispatch);
             };
         default:
             return undefined;

@@ -42,17 +42,6 @@ class Root extends React.Component {
         this.updLanguage(language);
     };
 
-    getBalance (hash) {
-        try {
-            return Enecuum.balanceOf({
-                to : this.pubKey,
-                tokenHash : hash
-            });
-        } catch (err) {
-            return new Promise((resolve, reject) => { reject(err) });
-        }
-    };
-
     toggleNavbar () {
         if (this.props.navOpened)
             this.props.closeAside();
@@ -61,7 +50,6 @@ class Root extends React.Component {
     };
 
     menuViewController () {
-        console.log(this.props);
         switch (this.props.menuItem) {
             case 'exchange':
                 return (

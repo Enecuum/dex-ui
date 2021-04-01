@@ -3,15 +3,9 @@ import actionPack from '../actions/actions';
 const actions = actionPack.root;
 
 const actionCreators = {
-    openAside() {
+    toggleAside() {
         return {
-            type : actions.OPEN_ASIDE
-        };
-    },
-    
-    closeAside() {
-        return {
-            type : actions.CLOSE_ASIDE 
+            type : actions.TOGGLE_ASIDE
         };
     },
     
@@ -52,6 +46,13 @@ const actionCreators = {
         return {
             type : actions.CHANGE_MENU_ITEM,
             value : item
+        };
+    },
+
+    updActiveLocale(locale) {
+        return {
+            type : actions.UPD_ACTIVE_LOCALE,
+            value : locale
         };
     }
 };

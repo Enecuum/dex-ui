@@ -1,14 +1,15 @@
 const actionPack =  {
     root : {
-        OPEN_ASIDE              : 0x00,
-        CLOSE_ASIDE             : 0x01,
+        TOGGLE_ASIDE            : 0x00,
+        // CLOSE_ASIDE             : 0x01,
         CHANGE_NET              : 0x02,
         CHANGE_LANG             : 0x03,
         OPEN_CONNECTION_LIST    : 0x04,
         CLOSE_CONNECTION_LIST   : 0x05,
         CHANGE_CONN_STATUS      : 0x06,
         CHANGE_MENU_ITEM        : 0x07,
-        ASSIGN_PUBKEY           : 0x08
+        ASSIGN_PUBKEY           : 0x08,
+        UPD_ACTIVE_LOCALE       : 0x09
     },
     swapCard : {
         SWAP_FIELDS             : 0x10,
@@ -29,6 +30,9 @@ const actionPack =  {
         ASSIGN_TOKEN_LIST : 0x30,
         ASSIGN_ALL_TOKENS : 0x31,
         CHANGE_SORT_MODE : 0x32
+    },
+    aside : {
+        UPD_EXCH_RATE : 0x40
     }
 };
 

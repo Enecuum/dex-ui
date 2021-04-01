@@ -5,46 +5,41 @@ import '../css/index.css';
 import '../css/wallet-connection.css';
 import '../css/font-style.css';
 import img from '../img/logo.png';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
 class ConnectionService extends React.Component {
     constructor (props) {
         super(props);
-        this.mySwapPage = props.outer;
         this.showModal = true;
     }
 
     async connectToEnq () {
-        if (!this.mySwapPage.state.connectionStatus)
+        if (!this.props.connectionStatus)
             await Enecuum.connect();
         await Enecuum.enable()
         .then(res => {
-            this.mySwapPage.pubKey = res.pubkey;
-            this.mySwapPage.setState(state => {
-                state.connectionStatus = true;
-                return state;
-            });
+            this.props.pubKey = res.pubkey;
+            this.props.setConStatus(true);
         },
         () => {
-            this.mySwapPage.setState(state => {
-                state.connectionStatus = false;
-                return state;
-            });
+            this.props.setConStatus(false);
         });
-        this.mySwapPage.closeConnectionList();
+        this.props.closeConList();
     };
 
     render () {
         return (
             <>
               <Modal
-                show={this.mySwapPage.state.connecionListOpened}
+                show={this.props.connecionListOpened}
                 aria-labelledby="custom-modal-styling-title"
-                onHide={this.mySwapPage.closeConnectionList.bind(this.mySwapPage)}
+                onHide={this.props.closeConList.bind(this.props)}
                 centered
               >
                 <Modal.Header closeButton>
                   <Modal.Title id="custom-modal-styling-title">
-                    {this.mySwapPage.state.langData.navbars.top.connectionCard.header}
+                    {this.props.langData.header}
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -57,7 +52,7 @@ class ConnectionService extends React.Component {
                     </div>
                     <div href='#' className='d-flex justify-content-center c-clue'>
                         <span className='icon-Icon4'></span>
-                        {this.mySwapPage.state.langData.navbars.top.connectionCard.clue}
+                        {this.props.langData.clue}
                     </div>
                 </Modal.Body>
               </Modal>
@@ -66,4 +61,6 @@ class ConnectionService extends React.Component {
     }
 };
 
-export default ConnectionService;
+const WConnectionService = connect(mapStoreToProps(components.CONNECTION_SERVICE), mapDispatchToProps(components.CONNECTION_SERVICE))(ConnectionService);
+
+export default WConnectionService;

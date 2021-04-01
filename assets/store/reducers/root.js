@@ -2,7 +2,6 @@ import initialState from '../initialState';
 import actionPack from '../actions/actions';
 
 const actions = actionPack.root;
-console.log(actionPack);
 
 function rootStore (state, changingProperty) {
     return {
@@ -13,16 +12,11 @@ function rootStore (state, changingProperty) {
 
 export default function rootReducer (state = initialState.root, action) {
     switch (action.type) {
-        case actions.OPEN_ASIDE: 
+        case actions.TOGGLE_ASIDE: 
+            let leftOffset = (state.navOpened) ? '41%' : '45%';
             return rootStore(state, {
-                navOpened : true,
-                swapCardLeft : '45%'
-            });
-
-        case actions.CLOSE_ASIDE:
-            return rootStore(state, { 
-                navOpened : false,
-                swapCardLeft : '41%'
+                navOpened : !state.navOpened,
+                swapCardLeft : leftOffset
             });
 
         case actions.CHANGE_NET:
@@ -42,8 +36,10 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.CHANGE_MENU_ITEM:
             return rootStore(state, { menuItem : action.value });
+        case actions.UPD_ACTIVE_LOCALE:
+            return rootStore(state, { activeLocale : action.value });
 
-        default: 
+        default:
             return state;
     }
 };

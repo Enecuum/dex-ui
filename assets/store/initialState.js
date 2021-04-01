@@ -9,7 +9,10 @@ const initialState = {
         connectionStatus : false,
         pending : true,
         swapCardLeft : '45%',
-        menuItem : 'exchange'
+        menuItem : 'exchange',
+        siteLocales : presets.langData.siteLocales,
+        activeLocale : presets.langData.preferredLocale,
+        langTitles : presets.langData.langTitles
     },
     wallet : {
         pubkey : ''
@@ -49,8 +52,11 @@ const initialState = {
         tokens : [],
         sort : 'asc'
     },
-    Navbar : {},
-    Aside : {}
+    navbar : {
+    },
+    aside : {
+        exchangeRate : ''
+    }
 };
 
 export default initialState;

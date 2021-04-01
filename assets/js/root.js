@@ -5,15 +5,13 @@ import { Provider, connect } from 'react-redux';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// import Navbar from './Navbar';
+import Navbar from './Navbar';
 import Aside from './Aside';
 import SwapCard from './SwapCard';
 import Switch from './Switch';
 import UnknownPage from './UnknownPage';
 import ConnectionService from './ConnectionService';
 // import CommonToast from './CommonToast';
-
-import presets from '../store/pageDataPresets';
 import SwapApi from './swapApi';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
@@ -24,29 +22,15 @@ const swapApi = new SwapApi();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        this.siteLocales = presets.langData.siteLocales;
-        this.activeLocale = presets.langData.preferredLocale;
-        this.langTitles = presets.langData.langTitles;
-        this.updLanguage(this.activeLocale);
+        this.updLanguage();
     };
 
-    async updLanguage (language) {
-        await (await swapApi.getLanguage(language)).json()
+    async updLanguage () {
+        let locale = this.props.activeLocale;
+        await (await swapApi.getLanguage(locale)).json()
         .then(langData => {
-                this.activeLocale = language;
-                this.props.changeLanguage(langData);
+            this.props.changeLanguage(langData);
         });
-    };
-
-    changeLanguage (language) {
-        this.updLanguage(language);
-    };
-
-    toggleNavbar () {
-        if (this.props.navOpened)
-            this.props.closeAside();
-        else
-            this.props.openAside();
     };
 
     menuViewController () {
@@ -93,7 +77,7 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        {/* <ConnectionService /> */}
+                        <ConnectionService />
                     </div>
                 </div>
             );
@@ -102,13 +86,13 @@ class Root extends React.Component {
     render () {
         return (
             <div className='h-100'>
-                {/* <Navbar outer={ this } /> */}
+                <Navbar />
                 <main role='main' className='container-fluid h-100 px-0 position-relative'>
                     <div className='row'>
                         <div className='col-12'>
-                            {/* <Aside /> */}
+                            <Aside />
                             {this.menuViewController()}
-                            {/* {this.connectionList()} */}
+                            {this.connectionList()}
                         </div>
                     </div>
                     {/* <div id="toastWrapper" className="position-absolute pt-4">

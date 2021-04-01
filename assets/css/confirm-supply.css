@@ -6,8 +6,5 @@
 
 .confirm-supply-button {
     background-color: var(--color3);
-    height: 90%  !important;
-    /* margin-top: 30px !important;
-    margin-bottom: 23px !important; */
     border-radius: var(--border-radius1);
 }

@@ -12,7 +12,9 @@ import Etm from './Etm';
 import Switch from './Switch';
 import BlankPage from './blankPage';
 import ConnectionService from './ConnectionService';
-import CommonToast from './CommonToast';
+import ConfirmSupply from './ConfirmSupply';
+import WaitingConfirmation from './waitingConfirmation';
+
 import SwapApi from './swapApi';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
@@ -56,9 +58,10 @@ class Root extends React.Component {
                 );
             case 'etm':
                 return (
-                    <div id="ETMPage" style={{paddingLeft : (this.state.navOpened ? '330px' : '70px')}}>
-                        <Etm root={ this } />
-                    </div>
+                    <> </>
+                    // <div id="ETMPage" style={{paddingLeft : (this.state.navOpened ? '330px' : '70px')}}>
+                    //     <Etm root={ this } />
+                    // </div>
                 );                
             default:
                 return (
@@ -102,9 +105,11 @@ class Root extends React.Component {
                             {this.connectionList()}
                         </div>
                     </div>
-                    <div id="toastWrapper" className="position-absolute pt-4">
+                    {/* <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast />
-                    </div>
+                    </div> */}
+                    <ConfirmSupply />
+                    {/* <WaitingConfirmation root={ this }/>     */}
                 </main>
             </div>
         );

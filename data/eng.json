@@ -73,7 +73,9 @@
             "deposited" : "Deposited",
             "rates" : "Rates",
             "shareOfPool" : "Share of pool",
-            "confirm" : "Confirm Supply"
+            "confirm" : "Confirm Supply",
+            "waitingForConfirmation" : "Waiting for confirmation",
+            "confirmInWallet" : "Confirm this transaction in your wa"
         }
     },
     "info" : "Info",

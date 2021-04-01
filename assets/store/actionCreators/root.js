@@ -1,4 +1,6 @@
-import actions from '../actions/root';
+import actionPack from '../actions/actions';
+
+const actions = actionPack.root;
 
 const actionCreators = {
     openAside() {

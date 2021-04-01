@@ -1,9 +1,11 @@
 import initialState from '../initialState';
-import actions from '../actions/wallet';
+import actionPack from '../actions/actions';
+
+const actions = actionPack.wallet;
 
 function walletStore (state, changingProperty) {
     return {
-        ...wallet,
+        ...state,
         ...changingProperty
     };
 };

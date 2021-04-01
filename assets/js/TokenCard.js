@@ -4,53 +4,48 @@ import SwapApi from './swapApi';
 import Tooltip from './Tooltip';
 import '../css/token-card.css';
 
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+
+
 const swapApi = new SwapApi();
 
 class TokenCard extends React.Component {
     constructor(props) {
         super(props);
-        this.changeToken = props.changeToken;
-        this.changeBalance = props.changeBalance;
-        this.closeTokenList = props.closeTokenList;
-        this.root = props.root;
+        this.changeBalance = this.props.changeBalance;
+        this.activeField = this.props.activeField;
         this.tokenFilter = '';
-        this.tokens = [];
-        this.state = {
-            list: this.makeList(),
-            sort: 'asc'
-        };
         this.updTokens();
     };
 
     async updTokens() {
-        this.tokens = await (await swapApi.getTokens()).json();
-        this.setState({ list: this.makeList() });
+        this.props.assignAllTokens(await (await swapApi.getTokens()).json());
+        this.props.assignTokenList(this.makeList());
     };
 
     getTokens (searchWord) {
         let word = searchWord.trim().toLowerCase();
         let regExpWord = new RegExp(`.*${word}.*`);
-        return this.tokens.filter(token => regExpWord.test(token.name.toLowerCase()) || word === token.hash);
+        return this.props.tokens.filter(token => regExpWord.test(token.name.toLowerCase()) || word === token.hash);
     };
 
     assignToken(token) {
-        this.changeToken(token);
-        this.closeTokenList();
+        this.props.assignTokenValue(token, this.activeField);
+        this.props.closeTokenList();
         this.changeBalance();
     };
 
     toggleSortList() {
         let sortOrder = 'unsort';
-        if (this.state.sort === 'unsort' || this.state.sort === 'desc')
+        if (this.props.sort === 'unsort' || this.props.sort === 'desc')
             sortOrder = 'asc';       
-        else if (this.state.sort === 'asc')
+        else if (this.props.sort === 'asc')
             sortOrder = 'desc';        
         else
             sortOrder = 'asc';
-
-        this.setState({sort: sortOrder}, function() {
-            this.setState({list : this.makeList(this.state.sort)});
-        });
+        this.props.changeSort(sortOrder);
+        this.props.assignTokenList(this.makeList(this.props.sort));
     }
 
     comparator(sortDirection) {
@@ -99,8 +94,12 @@ class TokenCard extends React.Component {
     changeList() {
         if (['insertText', 'deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             this.tokenFilter = document.getElementById('token-filter-field').value;
-            this.setState({ list: this.makeList() });
+            this.props.assignTokenList(this.makeList());
         }
+    };
+
+    closeTokenList () {
+        this.props.closeTokenList();
     };
 
     render() {
@@ -116,9 +115,9 @@ class TokenCard extends React.Component {
                   <Modal.Title id="example-custom-modal-styling-title">
                     <div className="d-flex align-items-center justify-content-start">
                         <span className="mr-3">
-                            {this.root.state.langData.trade.tokenCard.header}
+                            {this.props.langData.header}
                         </span>
-                        <Tooltip text={this.root.state.langData.trade.tokenCard.tooltipText}/>
+                        <Tooltip text={this.props.langData.tooltipText}/>
                     </div>
                   </Modal.Title>
                 </Modal.Header>
@@ -128,18 +127,18 @@ class TokenCard extends React.Component {
                                 onChange={this.changeList.bind(this)}
                                 className='text-input-1 form-control'
                                 type='text'
-                                placeholder={this.root.state.langData.trade.tokenCard.search} />
+                                placeholder={this.props.langData.search} />
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between mb-4">
-                        <span>{this.root.state.langData.trade.tokenCard.tokenName}</span>
+                        <span>{this.props.langData.tokenName}</span>
                         <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
-                            <i className={'fas ' + 'fa-arrow-' + (this.state.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
+                            <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
                         </span>                    
                     </div>
 
                     <div id="tokensList">
-                        { this.state.list }
+                        { this.props.list }
                     </div>
                 </Modal.Body>
               </Modal>
@@ -148,4 +147,6 @@ class TokenCard extends React.Component {
     };
 };
 
-export default TokenCard;
+const WTokenCard = connect(mapStoreToProps(components.TOKEN_CARD), mapDispatchToProps(components.TOKEN_CARD))(TokenCard);
+
+export default WTokenCard;

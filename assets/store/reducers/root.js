@@ -1,5 +1,8 @@
 import initialState from '../initialState';
-import actions from '../actions/root';
+import actionPack from '../actions/actions';
+
+const actions = actionPack.root;
+console.log(actionPack);
 
 function rootStore (state, changingProperty) {
     return {

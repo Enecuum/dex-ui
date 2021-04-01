@@ -1,4 +1,6 @@
-import actions from '../actions/wallet';
+import actionPack from '../actions/actions';
+
+const actions = actionPack.wallet;
 
 const actionCreators = {
     setPubkey (pubkey) {

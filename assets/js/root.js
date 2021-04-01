@@ -24,10 +24,6 @@ const swapApi = new SwapApi();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-
-        this.props = props;
-        this.root = props;
-        this.root.changeMenuItem('asd');
         this.siteLocales = presets.langData.siteLocales;
         this.activeLocale = presets.langData.preferredLocale;
         this.langTitles = presets.langData.langTitles;
@@ -35,11 +31,11 @@ class Root extends React.Component {
     };
 
     async updLanguage (language) {
-       await (await swapApi.getLanguage(language)).json()
-       .then(langData => {
-            this.activeLocale = language;
-            store.dispatch(rootActions.changeLanguage(langData));
-       });
+        await (await swapApi.getLanguage(language)).json()
+        .then(langData => {
+                this.activeLocale = language;
+                this.props.changeLanguage(langData);
+        });
     };
 
     changeLanguage (language) {
@@ -58,31 +54,30 @@ class Root extends React.Component {
     };
 
     toggleNavbar () {
-        if (store.navOpened)
-            store.dispatch(actionCreators.closeAside());
+        if (this.props.navOpened)
+            this.props.closeAside();
         else
-            store.dispatch(actionCreators.openAside());
+            this.props.openAside();
     };
 
     menuViewController () {
-        console.log(this.root);
-        switch (this.root.menuItem) {
+        switch (this.props.menuItem) {
             case 'exchange':
                 return (
-                    <div className='swap-card' style={{ left : store.swapCardLeft}}>
+                    <div className='swap-card' style={{ left : this.props.swapCardLeft}}>
                         <div id='switch' >
-                            {/* <Switch /> */}
+                            <Switch />
                         </div>
-                        {/* <SwapCard /> */}
+                        <SwapCard />
                     </div>
                 );
             case 'liquidity':
                 return (
-                    <div className='swap-card' style={{ left : store.swapCardLeft}}>
+                    <div className='swap-card' style={{ left : this.props.swapCardLeft}}>
                         <div id='switch' >
-                            {/* <Switch /> */}
+                            <Switch />
                         </div>
-                        {/* <SwapCard /> */}
+                        <SwapCard />
                     </div>
                 );
             default:
@@ -93,19 +88,19 @@ class Root extends React.Component {
     };
 
     changeMenuItem (newItem) {
-        store.dispatch(actionCreators.changeMenuItem(newItem));
+        this.props.changeMenuItem(newItem);
     };
 
     openConnectionList () {
-        store.dispatch(actionCreators.openConList());
+        this.props.openConList();
     };
 
     closeConnectionList () {
-        store.dispatch(actionCreators.closeConList());
+        this.props.closeConList();
     };
 
     connectionList () {
-        if (store.connecionListOpened)
+        if (this.props.connecionListOpened)
             return (
                 <div>
                     <div id='connection-services'>

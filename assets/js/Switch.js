@@ -1,21 +1,16 @@
 import React from 'react';
 import '../css/switch.css';
 
-class Switch extends React.Component {
-    constructor (props) {
-        super(props);
-        this.root = props.root;
-    }
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
-    switchMode (newMode) {
-        if (newMode !== this.root.state.menuItem) {
-            this.root.setState({ menuItem : newMode });
-            this.root.state.menuItem = newMode;
-        }
+class Switch extends React.Component {
+    switchMode (mode) {
+        this.props.changeMenuItem(mode);
     };
 
     render () {
-        let colors = (this.root.state.menuItem == 'exchange') ? ['var(--color3)', 'var(--color2)'] : ['var(--color2)', 'var(--color3)'];
+        let colors = (this.props.menuItem == 'exchange') ? ['var(--color3)', 'var(--color2)'] : ['var(--color2)', 'var(--color3)'];
         return (
             <div>
                 <div    className="switch-mode"
@@ -24,7 +19,7 @@ class Switch extends React.Component {
                             backgroundColor : colors[0]
                         }}
                         onClick={this.switchMode.bind(this, 'exchange')}>
-                    {this.root.state.langData.trade.switch.mode0}
+                    {this.props.langData.mode0}
                 </div>
                 <div    className="switch-mode"
                         id="liquidity-mode"
@@ -32,11 +27,13 @@ class Switch extends React.Component {
                             backgroundColor : colors[1]
                         }}
                         onClick={this.switchMode.bind(this, 'liquidity')}>
-                    {this.root.state.langData.trade.switch.mode1}
+                    {this.props.langData.mode1}
                 </div>
             </div>
         );
     }
 };
 
-export default Switch;
+const WSwitch = connect(mapStoreToProps(components.SWITCH), mapDispatchToProps(components.SWITCH))(Switch);
+
+export default WSwitch;

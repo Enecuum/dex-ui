@@ -15,6 +15,7 @@ const initialState = {
         pubkey : ''
     },
     swapCard : {
+        pairs: [],
         exchange: {
             field0: {
                 walletValue: '-',
@@ -43,7 +44,11 @@ const initialState = {
         liquidityMain: true,
         confirmCard: false
     },
-    tokenCard : {},
+    tokenCard : {
+        list : [],
+        tokens : [],
+        sort : 'asc'
+    },
     Navbar : {},
     Aside : {}
 };

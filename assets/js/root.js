@@ -61,6 +61,7 @@ class Root extends React.Component {
     };
 
     menuViewController () {
+        console.log(this.props);
         switch (this.props.menuItem) {
             case 'exchange':
                 return (

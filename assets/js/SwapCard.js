@@ -437,6 +437,7 @@ class SwapCard extends React.Component {
     };  
 
     render() {
+        console.log(this.props);
         this.establishReadiness();
         this.establishPairExistence();
         return (

@@ -20,10 +20,11 @@ function mapStoreToProps(component) {
             };
         case components.SWAP_CARD:
             return function (state) {
-                let multistate = state.swapCard;
-                multistate.langData = state.root.langData.trade.swapCard;
-                multistate.menuItem = state.root.menuItem;
-                return multistate;
+                return {
+                    ...state.swapCard,
+                    langData: state.root.langData.trade.swapCard,
+                    menuItem: state.root.menuItem
+                };
             };
         case components.SWITCH:
             return function (state) {

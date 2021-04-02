@@ -78,5 +78,8 @@
         }
     },
     "info" : "Инфо",
-    "submit" : "Submit"
+    "submit" : "Submit",
+    "close" : "Закрыть",
+    "transactionSubmitted" : "Transaction submitted",
+    "waitingForConfirmation" : "Waiting for confirmation"
 }

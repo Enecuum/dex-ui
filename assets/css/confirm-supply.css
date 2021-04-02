@@ -8,3 +8,65 @@
     background-color: var(--color3);
     border-radius: var(--border-radius1);
 }
+
+.tx-state-submited {
+
+}
+
+.tx-state-waiting {
+
+}
+
+.bordered, .tx-state-icon-waiting {
+	border-width: 3px;
+	border-style: solid;
+}
+
+.bordered {
+	border-color: var(--color4);
+}
+
+.tx-state-icon-waiting, .tx-state-icon-wrapper {
+	padding: 30px;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+}
+
+.tx-state-icon-waiting {
+	border-top-color: var(--color4);
+	border-right-color: var(--color4);
+	border-bottom-color: var(--color4);
+	border-left-color: transparent;
+}
+
+.tx-state-icon-wrapper {
+    color: var(--color4);
+}
+
+.tx-state-icon {
+	font-size: 40px;
+}
+
+.tx-state-icon.icon-Icon13 {
+	transform: rotate(180deg);
+}
+
+a.wiew-in-explorer {
+	color: var(--color4);
+}
+
+a.wiew-in-explorer:hover {
+	color: var(--color3);
+	text-decoration: none;
+}
+
+.modal.tx-state-submitted .btn-secondary {
+	background-color: var(--color4);
+	border-color: var(--color4);
+}
+
+.modal.tx-state-submitted .btn-secondary:hover {
+	background-color: var(--color3);
+	border-color: var(--color3);
+}

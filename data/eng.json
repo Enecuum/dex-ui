@@ -75,9 +75,12 @@
             "shareOfPool" : "Share of pool",
             "confirm" : "Confirm Supply",
             "waitingForConfirmation" : "Waiting for confirmation",
-            "confirmInWallet" : "Confirm this transaction in your wa"
+            "confirmInWallet" : "Confirm this transaction in your wallet"
         }
     },
     "info" : "Info",
-    "submit" : "Submit"
+    "submit" : "Submit",
+    "close" : "Close",
+    "transactionSubmitted" : "Transaction submitted",
+    "waitingForConfirmation" : "Waiting for confirmation"
 }

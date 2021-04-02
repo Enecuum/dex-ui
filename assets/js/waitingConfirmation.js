@@ -30,6 +30,7 @@ class WaitingConfirmation extends React.Component {
     getContentByType(txStateType) {
 
 /////////////////////// TODO Использовать интерполируемые параметры в i18 для Swapping 20.6172 BRY for 0.100203 ENQ после добавления соответствующего функционала
+/////////////////////// TODO Использовать интерполируемые параметры в i18 для Wiew on pulse.enecuum.com после добавления соответствующего функционала
 
         if (txStateType === 'submitted') {
             return  (

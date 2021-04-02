@@ -36,6 +36,10 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.CHANGE_MENU_ITEM:
             return rootStore(state, { menuItem : action.value });
+
+        case actions.ASSIGN_PUBKEY:
+            return rootStore(state, { pubkey : action.value });
+
         case actions.UPD_ACTIVE_LOCALE:
             return rootStore(state, { activeLocale : action.value });
 

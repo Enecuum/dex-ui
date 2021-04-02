@@ -2,27 +2,22 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import '../css/confirm-supply.css';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
 class ConfirmSupply extends React.Component {
-    constructor(props) {
-        super(props);
-        this.root = props.root;
-        this.lang = props.lang;
-    };
-
     closeCard () {
-        this.setState({ confirmCard : false });
+        this.props.closeConfirmCard();
     };
 
     render() {
-        console.log(this.lang.trade.confirmCard);
-        let langData = this.lang.trade.confirmCard;
+        let langData = this.props.langData;
         return (
             <>
                 <Modal
-                    show={this.root.state.confirmCard}
+                    show={this.props.confirmCardOpened}
                     aria-labelledby="example-custom-modal-styling-title"
-                    onHide={this.closeCard.bind(this.root)}
+                    onHide={this.closeCard.bind(this)}
                     centered
                 >
                     <Modal.Header closeButton>
@@ -41,7 +36,7 @@ class ConfirmSupply extends React.Component {
                         <h5 className='mt-4'>
                             ENQ/BRY Pool Tokens
                         </h5>
-                        <div class='confirm-supply-description mt-4'>
+                        <div className='confirm-supply-description mt-4'>
                             {langData.description}
                         </div>
                         <div className='mt-5'>
@@ -87,4 +82,6 @@ class ConfirmSupply extends React.Component {
     };
 };
 
-export default ConfirmSupply;
+const WConfirmSupply = connect(mapStoreToProps(components.CONFIRM_SUPPLY), mapDispatchToProps(components.CONFIRM_SUPPLY))(ConfirmSupply);
+
+export default WConfirmSupply;

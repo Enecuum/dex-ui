@@ -1,19 +1,13 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Presets from '../store/pageDataPresets';
-let presets = new Presets();
+import ExtRequests from './extRequests';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+const extRequests = new ExtRequests();
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
-        this.root = props.root;
-        this.state = {
-            coinName: presets.network.nativeToken.name,
-            coinAmount: 0,
-            enx: 0,
-            pubKey: this.root.pubKey,
-            pending: this.root.state.pending
-        };
         this.networks = {
             bit : {
                 name : 'BIT',
@@ -34,7 +28,7 @@ class IndicatorPanel extends React.Component {
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <Dropdown Menu alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
-                            <span className='text-uppercase'>{this.networks[this.root.state.net.toLowerCase()].name}</span>
+                            <span className='text-uppercase'>{this.networks[this.props.net.toLowerCase()].name}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="wrapper-1">
                             {this.netsOrder.map((item, index) => (
@@ -44,11 +38,11 @@ class IndicatorPanel extends React.Component {
                     </Dropdown>
                 </div>
                 <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-3'>
-                    {this.state.enx} ENX
+                    {this.props.enx} ENX
                 </div>
                 <div className='wallet-info-boxes d-flex align-items-center justify-content-between'>
-                    <div className='d-flex align-items-center justify-content-center px-3'>{this.state.coinAmount} {this.state.coinName}</div>
-                    <div className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.state.pubKey}</div>
+                    <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
+                    <div className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.packAdressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );
@@ -56,12 +50,11 @@ class IndicatorPanel extends React.Component {
 
     updData() {
         setInterval(async () => {
-            this.root.getBalance(presets.network.nativeToken.hash)
+            extRequests.getBalance(this.props.nativeToken)
             .then(balance => {
                 if (balance !== undefined)
-                    this.setState({ coinAmount: balance.amount });
+                    this.props.updCoinAmount(balance.amount);
             });
-            this.setState({ pubKey: this.packAdressString(this.root.pubKey) });
         }, 1000);
     };
 
@@ -74,4 +67,6 @@ class IndicatorPanel extends React.Component {
     };
 };
 
-export default IndicatorPanel;
+const WIndicatorPanel = connect(mapStoreToProps(components.INDICATOR_PANEL), mapDispatchToProps(components.INDICATOR_PANEL))(IndicatorPanel);
+
+export default WIndicatorPanel;

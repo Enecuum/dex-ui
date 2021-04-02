@@ -37,7 +37,7 @@ class SwapCard extends React.Component {
         let field = this.getActiveField(this.activeField);
         extRequests.getBalance(this.props[this.props.menuItem][field].token.hash)
         .then(balance => {
-            this.props.assignWalletValue((balance !== undefined) ? `Balance: ${balance.amount}` : '-');
+            this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (balance !== undefined) ? `Balance: ${balance.amount}` : '-');
         });
     }
 
@@ -75,6 +75,7 @@ class SwapCard extends React.Component {
 
     openTokenList(fieldId) {
         this.activeField = fieldId;
+        this.props.updActiveField(this.getActiveField(fieldId));
         this.props.openTokenList();
     };
 
@@ -99,8 +100,9 @@ class SwapCard extends React.Component {
         } else if (['deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             value = document.getElementById(fieldId).value;
         } else { }
-
-        this.props.assignCoinValue(field, value);
+        let fieldObj = this.props[this.props.menuItem][field];
+        fieldObj.value = value;
+        this.props.assignCoinValue(this.props.menuItem, field, value);
         this.establishReadiness();
         this.countCounterField(fieldObj, this.getActiveField(fieldId, true));
     };
@@ -124,7 +126,7 @@ class SwapCard extends React.Component {
 
     searchSwap(tokens) {
         let hashes = [tokens[0].hash, tokens[1].hash];
-        return this.pairs.find(el => {
+        return this.props.pairs.find(el => {
             if (hashes.indexOf(el.token_0.hash) != -1 &&
                 hashes.indexOf(el.token_1.hash) != -1 &&
                 el.token_0.hash !== el.token_1.hash) {
@@ -181,11 +183,13 @@ class SwapCard extends React.Component {
             let counterFieldPrice = this.countPrice(activeField, pair);
             if (!counterFieldPrice)
                 counterFieldPrice = '';
-                this.props.assignCoinValue(cField, counterFieldPrice);
+                this.props.assignCoinValue(this.props.menuItem, cField, counterFieldPrice);
         }
     };
 
     changeToken(token) {
+        let fieldObj = this.props[this.props.menuItem][field];
+        fieldObj.token = token;
         let field = this.getActiveField(this.activeField);
         this.props.assignTokenValue(field, token);
         this.countCounterField(fieldObj, this.getActiveField(this.activeField, true));
@@ -196,7 +200,7 @@ class SwapCard extends React.Component {
             return (
                 <>
                     <TokenCard  changeBalance={this.changeBalance.bind(this)}
-                                assignTokenValue={this.props.assignTokenValue.bind(this.props, undefined, this.activeField)}
+                                assignTokenValue={this.props.assignTokenValue.bind(this.props, undefined)}
                     />
                 </>
             );
@@ -435,8 +439,8 @@ class SwapCard extends React.Component {
     };
 
     openConfirmCard() {
-
-    };  
+        this.props.openConfirmCard();
+    };
 
     render() {
         this.establishReadiness();
@@ -445,7 +449,7 @@ class SwapCard extends React.Component {
             <div>
                 { (this.props.menuItem == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard()}
                 { this.renderTokenCard() }
-                {/* <ConfirmSupply root={ this } lang={ this.props } /> */}
+                <ConfirmSupply />
             </div>
         );
     };

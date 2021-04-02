@@ -4,7 +4,7 @@ import Connect from './Connect';
 import '../css/navbar.css';
 import '../css/font-style.css';
 import img from '../img/enex-logo.png';
-// import IndicatorPanel from './IndicatorPanel';
+import IndicatorPanel from './IndicatorPanel';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
@@ -25,8 +25,7 @@ class Navbar extends React.Component {
                         </a>                     
                     </div>                    
                     <div id='root-connect'>
-                        <Connect />
-                        {/* {(!this.root.state.connectionStatus) ? <Connect outer={ this.root } /> : <IndicatorPanel root={ this.root } />} */}
+                        {(!this.props.connectionStatus) ? <Connect /> : <IndicatorPanel />}
                     </div>
             </nav>
         );

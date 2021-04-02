@@ -49,6 +49,13 @@ const actionCreators = {
         };
     },
 
+    assignPubkey(key) {
+        return {
+            type : actions.ASSIGN_PUBKEY,
+            value : key
+        };
+    },
+
     updActiveLocale(locale) {
         return {
             type : actions.UPD_ACTIVE_LOCALE,

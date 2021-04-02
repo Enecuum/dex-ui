@@ -14,7 +14,6 @@ class TokenCard extends React.Component {
     constructor(props) {
         super(props);
         this.changeBalance = this.props.changeBalance;
-        this.activeField = this.props.activeField;
         this.tokenFilter = '';
         this.updTokens();
     };
@@ -31,7 +30,7 @@ class TokenCard extends React.Component {
     };
 
     assignToken(token) {
-        this.props.assignTokenValue(this.props.menuItem, this.activeField, token);
+        this.props.assignTokenValue(this.props.menuItem, this.props.activeField, token);
         this.props.closeTokenList();
         this.changeBalance();
     };

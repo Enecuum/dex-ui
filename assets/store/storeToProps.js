@@ -1,21 +1,23 @@
 import { bindActionCreators } from 'redux';
 
 import rootCreator from './actionCreators/root';
-import walletCreator from './actionCreators/wallet';
 import swapCardCreator from './actionCreators/swapCard';
 import tokenCardCreator from './actionCreators/tokenCard';
 import asideCreator from './actionCreators/aside';
-import { connect } from 'react-redux';
+import indicatorPanelCreator from './actionCreators/indicatorPanel';
 
 const components = {
-    ROOT: 0x0,
-    SWAP_CARD: 0x1,
-    SWITCH: 0x2,
-    TOKEN_CARD: 0x3,
-    ASIDE: 0x4,
-    CONNECTION_SERVICE: 0x5,
-    NAVBAR : 0x6,
-    CONNECT : 0x7
+    ROOT                : 0x0,
+    SWAP_CARD           : 0x1,
+    SWITCH              : 0x2,
+    TOKEN_CARD          : 0x3,
+    ASIDE               : 0x4,
+    CONNECTION_SERVICE  : 0x5,
+    NAVBAR              : 0x6,
+    CONNECT             : 0x7,
+    TOAST               : 0x8,
+    INDICATOR_PANEL     : 0x9,
+    CONFIRM_SUPPLY      : 0xA
 };
 
 function mapStoreToProps(component) {
@@ -43,6 +45,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.tokenCard,
+                    activeField : state.swapCard.activeField,
                     langData: state.root.langData.trade.tokenCard,
                     menuItem: state.root.menuItem
                 };
@@ -62,7 +65,7 @@ function mapStoreToProps(component) {
         case components.CONNECTION_SERVICE:
             return function (state) {
                 return {
-                    pubkey : state.wallet.pubkey,
+                    pubkey : state.root.pubkey,
                     connectionStatus : state.root.connectionStatus,
                     connecionListOpened : state.root.connecionListOpened,
                     langData : state.root.langData.navbars.top.connectionCard
@@ -72,7 +75,8 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     pending : state.root.pending,
-                    navOpened: state.root.navOpened
+                    navOpened: state.root.navOpened,
+                    connectionStatus : state.root.connectionStatus
                 };
             };  
         case components.CONNECT:
@@ -82,6 +86,26 @@ function mapStoreToProps(component) {
 
                 };
             };  
+        case components.TOAST:
+            return function (state) {
+                return {
+                    info : state.root.langData.info  
+                };
+            }
+        case components.INDICATOR_PANEL:
+            return function (state) {
+                return {
+                    ...state.indicatorPanel,
+                    pubkey : state.root.pubkey
+                };
+            };
+        case components.CONFIRM_SUPPLY:
+            return function (state) {
+                return {
+                    langData : state.root.langData.trade.confirmCard,
+                    confirmCardOpened : state.swapCard.confirmCardOpened
+                };
+            };
         default:
             return undefined;
     }
@@ -128,7 +152,8 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     closeConList : rootCreator.closeConList,
-                    setConStatus : rootCreator.setConStatus
+                    setConStatus : rootCreator.setConStatus,
+                    assignPubkey : rootCreator.assignPubkey
                 }, dispatch);
             };
         case components.NAVBAR:
@@ -143,7 +168,20 @@ function mapDispatchToProps(component) {
                     openConList : rootCreator.openConList
                 }, dispatch);
             };
-        
+        case components.INDICATOR_PANEL:
+            return function (dispatch) {
+                return bindActionCreators({
+                    ...indicatorPanelCreator,
+                    assignPubkey : rootCreator.assignPubkey
+                }, dispatch);
+            };
+        case components.CONFIRM_SUPPLY:
+            return function (dispatch) {
+                return bindActionCreators({
+                    closeConfirmCard : swapCardCreator.closeConfirmCard
+                }, dispatch);
+            };
+
         default:
             return undefined; 
     }

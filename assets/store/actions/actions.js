@@ -1,7 +1,7 @@
 const actionPack =  {
     root : {
         TOGGLE_ASIDE            : 0x00,
-        // CLOSE_ASIDE             : 0x01,
+        // !!!!!!!!             : 0x01,
         CHANGE_NET              : 0x02,
         CHANGE_LANG             : 0x03,
         OPEN_CONNECTION_LIST    : 0x04,
@@ -21,18 +21,19 @@ const actionPack =  {
         CLOSE_CONFIRM_CARD      : 0x17,
         ASSIGN_COIN_VALUE       : 0x18,
         ASSIGN_TOKEN_VALUE      : 0x19,
-        UPD_PAIRS               : 0x1A
-    },
-    wallet : {
-        SET_PUBKEY : 0x20
+        UPD_PAIRS               : 0x1A,
+        UPD_ACTIVE_FIELD        : 0x1B
     },
     tokenCard : {
         ASSIGN_TOKEN_LIST : 0x30,
         ASSIGN_ALL_TOKENS : 0x31,
-        CHANGE_SORT_MODE : 0x32
+        CHANGE_SORT_MODE  : 0x32
     },
     aside : {
         UPD_EXCH_RATE : 0x40
+    },
+    indicatorPanel : {
+        UPD_COIN_AMOUNT : 0x50
     }
 };
 

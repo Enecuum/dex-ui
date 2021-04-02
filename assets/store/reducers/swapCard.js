@@ -17,14 +17,21 @@ function convertIntoMode(mode, packed) {
         return { liquidity: packed };
 };
 
+function convertIntoField(field, packed) {
+    if (field == 'field0')
+        return { field0: packed };
+    else
+        return { field1: packed };
+};
+
 function fieldStore(state, mode, field, changingProperty) {
     return swapCardStore(state, {
         ...convertIntoMode(mode, {
             ...state[mode],
-            field0: {
+            ...convertIntoField(field, {
                 ...state[mode][field],
                 ...changingProperty
-            }
+            })
         })
     });
 };
@@ -58,7 +65,7 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
             return swapCardStore(state, { tokenListStatus: false });
 
         case actions.CHANGE_LIQUIDITY_MODE:
-            return swapCardStore(state, { liquidityMain: !state.swapCard.liquidityMain });
+            return swapCardStore(state, { liquidityMain: !state.liquidityMain });
 
         case actions.OPEN_CONFIRM_CARD:
             return swapCardStore(state, { confirmCard: true });
@@ -74,6 +81,9 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
 
         case actions.UPD_PAIRS:
             return swapCardStore(state, { pairs: action.value });
+
+        case actions.UPD_ACTIVE_FIELD:
+            return swapCardStore(state, { activeField: action.value });
 
         default:
             return state;

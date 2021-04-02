@@ -19,7 +19,7 @@ class ConnectionService extends React.Component {
             await Enecuum.connect();
         await Enecuum.enable()
         .then(res => {
-            this.props.pubKey = res.pubkey;
+            this.props.assignPubkey(res.pubkey);
             this.props.setConStatus(true);
         },
         () => {

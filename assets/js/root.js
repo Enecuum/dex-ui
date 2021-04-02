@@ -11,7 +11,7 @@ import SwapCard from './SwapCard';
 import Switch from './Switch';
 import UnknownPage from './UnknownPage';
 import ConnectionService from './ConnectionService';
-// import CommonToast from './CommonToast';
+import CommonToast from './CommonToast';
 import SwapApi from './swapApi';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 
@@ -95,9 +95,9 @@ class Root extends React.Component {
                             {this.connectionList()}
                         </div>
                     </div>
-                    {/* <div id="toastWrapper" className="position-absolute pt-4">
-                        <CommonToast outer={ this }/>
-                    </div> */}
+                    <div id="toastWrapper" className="position-absolute pt-4">
+                        <CommonToast />
+                    </div>
                 </main>
             </div>
         );

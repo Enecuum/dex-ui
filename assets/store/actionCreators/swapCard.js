@@ -11,30 +11,27 @@ const actionCreators = {
     },
 
     assignWalletValue (mode, field, walletValue) {
-        let fieldName = (field == 0) ? 'field0' : 'field1';
         return {
             type : actions.ASSIGN_WALLET_VALUE,
-            field : fieldName,
+            field : field,
             value : walletValue,
             mode : mode
         };
     },
 
     assignCoinValue (mode, field, value) {
-        let fieldName = (field == 0) ? 'field0' : 'field1';
         return {
             type : actions.ASSIGN_COIN_VALUE,
-            field : fieldName,
+            field : field,
             value : value,
             mode : mode
         };
     },
 
     assignTokenValue (mode, field, value) {
-        let fieldName = (field == 0) ? 'field0' : 'field1';
         return {
             type : actions.ASSIGN_TOKEN_VALUE,
-            field : fieldName,
+            field : field,
             value : value,
             mode : mode
         };
@@ -73,6 +70,13 @@ const actionCreators = {
     updPairs (value) {
         return {
             type : actions.UPD_PAIRS,
+            value : value
+        };
+    },
+
+    updActiveField (value) {
+        return {
+            type : actions.UPD_ACTIVE_FIELD,
             value : value
         };
     }

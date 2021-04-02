@@ -10,12 +10,10 @@ const initialState = {
         pending : true,
         swapCardLeft : '45%',
         menuItem : 'exchange',
+        pubkey : '',
         siteLocales : presets.langData.siteLocales,
         activeLocale : presets.langData.preferredLocale,
         langTitles : presets.langData.langTitles
-    },
-    wallet : {
-        pubkey : ''
     },
     swapCard : {
         pairs: [],
@@ -43,9 +41,10 @@ const initialState = {
                 token: presets.swapTokens.emptyToken
             }
         },
+        activeField : 0,
         tokenListStatus: false,
         liquidityMain: true,
-        confirmCard: false
+        confirmCardOpened: false
     },
     tokenCard : {
         list : [],
@@ -56,6 +55,13 @@ const initialState = {
     },
     aside : {
         exchangeRate : ''
+    },
+    indicatorPanel : {
+        nativeToken: presets.network.nativeToken.hash,
+        coinName: presets.network.nativeToken.name,
+        net: presets.network.defaultNet,
+        coinAmount: 0,
+        enx: 0
     }
 };
 

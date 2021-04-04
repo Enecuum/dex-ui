@@ -9,6 +9,7 @@ This is the web application for DEX AMM (Decentralized EXchange with Automatic M
 * CSS-Framework: Bootstrap v4.6, docs - https://getbootstrap.com/docs/4.6/getting-started/introduction/
 * Module bundler: Webpack, docs - https://webpack.js.org/api/
 * Transcompiler: Babel, docs - https://babeljs.io/docs/en/
+* State container: Redux, docs - https://redux.js.org/introduction/getting-started
 
 #### Dependencies
 For communication with Enecuum blockchain application you must use the web-enq library and Enecuum-wallet extention. At the moment site maintains five methods:

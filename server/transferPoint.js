@@ -87,7 +87,6 @@ class TransferPoint {
             .then(res => {
                 this.idManager.completeRequestId(res.data.id);
                 this.idManager.deleteOldRequests();
-                console.log(res.data);
                 resolve({
                     err : res.data.error,
                     result : res.data.result

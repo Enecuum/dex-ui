@@ -15,6 +15,7 @@ class LogsCreator {
             thin : '\n------------------------------------------------------------\n'
         };
         this.mode = (mode) ? mode : filters.FULL;
+        this.startMessage();
     };
 
     // ------------------------------- utils
@@ -83,4 +84,7 @@ class LogsCreator {
     };
 };
 
-module.exports = LogsCreator;
+module.exports = {
+    LogsCreator,
+    filters
+};

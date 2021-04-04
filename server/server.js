@@ -18,14 +18,15 @@ app.post(`/api/${config.api_version}/tx`, bodyParser, (req, res) => {
             'Content-Type': 'application/json',
         });
         res.write(JSON.stringify(result));
+        res.end();
     },
     error => {
         res.writeHead(500, {
             'Content-Type': 'application/json',
         });
         res.write(JSON.stringify(error));
-    })
-    .then(res.end());
+        res.end();
+    });
 });
 
 app.get('/', (req, res) => {
@@ -33,6 +34,16 @@ app.get('/', (req, res) => {
         'Content-Type': 'text/html',
     });
     let data = fs.readFileSync(path.join(wconf.output.path, 'index.html'));
+    res.write(data);
+    res.end();
+});
+
+app.get('/*\.(otf|ttf|png|svg|eot|woff)$', (req, res) => {
+    let urlArr = req.url.split('/');
+    res.writeHead(200, {
+        'Content-Type': 'text/html',
+    });
+    let data = fs.readFileSync(path.join(wconf.output.path, urlArr[urlArr.length - 1]));
     res.write(data);
     res.end();
 });

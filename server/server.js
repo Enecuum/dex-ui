@@ -11,23 +11,37 @@ const app = express();
 const TransferPoint = require('./transferPoint');
 const transferApi = new TransferPoint();
 
+// -------------------------------------------------- utils
+
+function wrapJSONResponse (res, code, result) {
+    res.writeHead(code, {
+        'Content-Type': 'application/json',
+    });
+    res.write(JSON.stringify(result));
+    res.end();
+};
+
+// -------------------------------------------------- transfer point
+
 app.post(`/api/${config.api_version}/tx`, bodyParser, (req, res) => {
     transferApi.transferRequest(req.body)
-    .then(result => {
-        res.writeHead(200, {
-            'Content-Type': 'application/json',
-        });
-        res.write(JSON.stringify(result));
-        res.end();
-    },
-    error => {
-        res.writeHead(500, {
-            'Content-Type': 'application/json',
-        });
-        res.write(JSON.stringify(error));
-        res.end();
-    });
+    .then(
+        result => wrapJSONResponse(res, 200, result),
+        error => wrapJSONResponse(res, 500, error)
+    );
 });
+
+app.get(`/(tokens|pools)`, (req, res) => {
+    let urlArr = req.url.split('/');
+    let type = urlArr[urlArr.length - 1];
+    transferApi.transferRequest(type, true)
+    .then(
+        result => wrapJSONResponse(res, 200, result),
+        error => wrapJSONResponse(res, 500, error)
+    );
+});
+
+// -------------------------------------------------- index.html and other cite components
 
 app.get('/', (req, res) => {
     res.writeHead(200, {
@@ -56,6 +70,8 @@ app.get('/enex.webpack.js', (req, res) => {
     res.write(data);
     res.end();
 });
+
+// -------------------------------------------------- first time server API
 
 app.get('/getTokens', (req, res) => {
     res.writeHead(200, {
@@ -86,6 +102,8 @@ app.get('/getLanguage/*', (req, res) => {
     res.end();
 });
 
+// -------------------------------------------------- enq-web library
+
 app.get('/enqlib', (req, res) => {
     res.writeHead(200, {
         'Content-Type': 'text/html',
@@ -95,6 +113,8 @@ app.get('/enqlib', (req, res) => {
     res.write(data);
     res.end();
 });
+
+// ==================================================
 
 https.createServer({
     key: fs.readFileSync('../https/key.pem', { encoding : 'utf8' }),

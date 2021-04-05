@@ -77,6 +77,15 @@ Run dev server:
     npm run dev
 ```
 
+#### Redux
+
+We use Redux for more comfortable supervising of components states. You can find contatiner inside the [./assets/store][7] directory. There is introduced seven main files and directories for creating main redux structure:
+* store.js - main assembly file
+* initialState.js and pageDataPresets.js - describe main state structure of the project
+* [./actions][8] and [./actionCreators][9] - directories with rules and methods for using redux store
+* [./reducers][10] - middle layer for store control, change state object acording the actions
+* storetoProps.js - node for states and methods distribution across the components (react-redux connect())
+
 #### Frontend scheme
 
 User interactions scheme. Red border page is the start page.
@@ -85,7 +94,7 @@ User interactions scheme. Red border page is the start page.
 
 #### Enecuum AMM DEX documentation 
 
-For more information about AMM DEX functional read: https://github.com/Enecuum/internal-docs/blob/master/etp5.md
+For more information about AMM DEX functional read: https://github.com/Enecuum/docs/issues/6
 
 [1]:https://github.com/Enecuum/dex/tree/develop/public
 [2]:https://github.com/Enecuum/dex/blob/develop/webpack.config.js
@@ -93,3 +102,7 @@ For more information about AMM DEX functional read: https://github.com/Enecuum/i
 [4]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L7
 [5]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L12
 [6]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L31
+[7]:https://github.com/Enecuum/dex/tree/master/assets/store
+[8]:https://github.com/Enecuum/dex/tree/master/assets/store/actions
+[9]:https://github.com/Enecuum/dex/tree/master/assets/store/actionCreators
+[10]:https://github.com/Enecuum/dex/tree/master/assets/store/reducers

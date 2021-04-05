@@ -24,10 +24,7 @@ module.exports = {
             }
         ]
     },
-    // plugins : [
-    //     new HtmlWebpackPlugin()
-    // ]
-    mode : 'production',
+    mode : 'develop',
     devServer : {
         contentBase : outPath,
         port : 1235,

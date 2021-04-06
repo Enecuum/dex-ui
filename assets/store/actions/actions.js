@@ -22,7 +22,8 @@ const actionPack =  {
         ASSIGN_COIN_VALUE       : 0x18,
         ASSIGN_TOKEN_VALUE      : 0x19,
         UPD_PAIRS               : 0x1A,
-        UPD_ACTIVE_FIELD        : 0x1B
+        UPD_ACTIVE_FIELD        : 0x1B,
+        TOGGLE_REMOVE_LIQUIDITY_VIEW        : 0x1C
     },
     tokenCard : {
         ASSIGN_TOKEN_LIST : 0x30,

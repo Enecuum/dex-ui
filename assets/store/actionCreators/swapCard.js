@@ -79,6 +79,11 @@ const actionCreators = {
             type : actions.UPD_ACTIVE_FIELD,
             value : value
         };
+    },
+    toggleRemoveLiquidityView () {
+        return {
+            type : actions.TOGGLE_REMOVE_LIQUIDITY_VIEW
+        };
     }
 };
 

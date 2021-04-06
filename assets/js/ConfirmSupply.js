@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import LogoToken from './LogoToken';
 import '../css/confirm-supply.css';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
@@ -58,27 +59,13 @@ class ConfirmSupply extends React.Component {
                                 <div>
                                     ENQ {langData.deposited}
                                 </div>
-                                <div className="d-flex align-items-center justify-content-end">
-                                    <div
-                                        className="logo-wrapper-xs mr-2"
-                                        style = {{
-                                            backgroundImage: `url(${img1})`
-                                        }} /> 
-                                    <span>0.0699313</span>
-                                </div>
+                                <LogoToken props={{url : img1, value : '0.0699313'}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
                                     BRY {langData.deposited}
                                 </div>
-                                <div className="d-flex align-items-center justify-content-end">
-                                    <div
-                                        className="logo-wrapper-xs mr-2"
-                                        style = {{
-                                            backgroundImage: `url(${img2})`
-                                        }} /> 
-                                    <span>14.3588</span>
-                                </div>
+                                <LogoToken props={{url : img2, value : '14.3588'}} />
                             </div>
                             <div className='d-flex align-items-start justify-content-between mb-2'>
                                 <div>

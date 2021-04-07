@@ -9,7 +9,8 @@ const actionPack =  {
         CHANGE_CONN_STATUS      : 0x06,
         CHANGE_MENU_ITEM        : 0x07,
         ASSIGN_PUBKEY           : 0x08,
-        UPD_ACTIVE_LOCALE       : 0x09
+        UPD_ACTIVE_LOCALE       : 0x09,
+        CHANGE_PENDING_STATE    : 0x0A
     },
     swapCard : {
         SWAP_FIELDS                 : 0x10,

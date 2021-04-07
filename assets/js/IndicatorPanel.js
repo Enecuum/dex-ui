@@ -18,13 +18,24 @@ class IndicatorPanel extends React.Component {
         this.updData();
     };
 
-    renderWalletInfo() {
-        return (
-            <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
+    renderPendingIndicator () {
+        if (this.props.pendingIndicator)
+            return(
                 <div id="pendingIndicator" className="d-flex align-items-center justify-content-end px-3 mr-3">
                     <span className="mr-2">Pending</span>
                     <span className="spinner icon-Icon3"></span>
                 </div>
+            );
+        else
+            return(
+                <></>
+            );
+    };
+
+    renderWalletInfo() {
+        return (
+            <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
+                {this.renderPendingIndicator()}
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <Dropdown alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">

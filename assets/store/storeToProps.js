@@ -97,14 +97,18 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.indicatorPanel,
-                    pubkey : state.root.pubkey
+                    pubkey : state.root.pubkey,
+                    pendingIndicator : state.root.pendingIndicator
                 };
             };
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
                     langData : state.root.langData.trade.confirmCard,
-                    confirmCardOpened : state.swapCard.confirmCardOpened
+                    confirmCardOpened : state.swapCard.confirmCardOpened,
+                    exchange : state.swapCard.exchange,
+                    liquidity : state.swapCard.liquidity,
+                    menuItem: state.root.menuItem
                 };
             };
         case components.WAITING_CONFIRMATION:
@@ -190,7 +194,8 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     closeConfirmCard : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
-                    changeWaitingStateType : swapCardCreator.changeWaitingStateType
+                    changeWaitingStateType : swapCardCreator.changeWaitingStateType,
+                    changePendingIndicator : rootCreator.changePendingIndicator
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:

@@ -13,7 +13,8 @@ const initialState = {
         pubkey : '',
         siteLocales : presets.langData.siteLocales,
         activeLocale : presets.langData.preferredLocale,
-        langTitles : presets.langData.langTitles
+        langTitles : presets.langData.langTitles,
+        pendingIndicator : false
     },
     swapCard : {
         pairs: [],

@@ -61,6 +61,12 @@ const actionCreators = {
             type : actions.UPD_ACTIVE_LOCALE,
             value : locale
         };
+    },
+
+    changePendingIndicator() {
+        return {
+            type : actions.CHANGE_PENDING_STATE
+        };
     }
 };
 

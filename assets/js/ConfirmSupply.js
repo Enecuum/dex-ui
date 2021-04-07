@@ -17,6 +17,7 @@ class ConfirmSupply extends React.Component {
         this.props.openWaitingConfirmation();
         setTimeout(() => {
             this.props.changeWaitingStateType('submitted');
+            this.props.changePendingIndicator();
         }, 5000);
     };
 

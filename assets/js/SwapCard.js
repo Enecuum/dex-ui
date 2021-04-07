@@ -1,4 +1,5 @@
 import React from 'react';
+import Form from 'react-bootstrap/Form';
 import History from './History';
 import Settings from './Settings';
 import TokenCard from './TokenCard';
@@ -6,9 +7,15 @@ import SwapApi from './swapApi';
 import Tooltip from './Tooltip';
 import presets from '../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
+import LogoToken from './LogoToken';
+import ExtRequests from './extRequests';
+import utils from './utils.js'
+
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
-import ExtRequests from './extRequests';
+
+import img1 from '../img/logo.png';
+import img2 from '../img/bry-logo.png';
 
 const extRequests = new ExtRequests();
 const swapApi = new SwapApi();
@@ -129,28 +136,8 @@ class SwapCard extends React.Component {
         return false;
     };
 
-    searchSwap(tokens) {
-        let hashes = [tokens[0].hash, tokens[1].hash];
-        return this.props.pairs.find(el => {
-            if (hashes.indexOf(el.token_0.hash) != -1 &&
-                hashes.indexOf(el.token_1.hash) != -1 &&
-                el.token_0.hash !== el.token_1.hash) {
-                    
-                return el;
-            }
-        });
-    };
-
-    divide(input_0, input_1) {
-        try {
-            return input_1 / input_0;
-        } catch (e) {
-            return 0;
-        }
-    };
-
     getAddLiquidityPrice(input_0, input_1, coinValue) {
-        return this.divide(input_0, input_1) * coinValue;
+        return utils.divide(input_0, input_1) * coinValue;
     };
 
     countLiqudity(pair) {
@@ -181,7 +168,7 @@ class SwapCard extends React.Component {
         let counterField = this.props[this.props.menuItem][cField];
 
         if (activeField.token.name !== presets.swapTokens.emptyToken.name && counterField.token.name !== presets.swapTokens.emptyToken.name) {
-            let pair = this.searchSwap([activeField.token, counterField.token]);
+            let pair = utils.searchSwap(this.props.pairs, [activeField.token, counterField.token]);
             if (pair === undefined) {
                 return;
             }
@@ -344,22 +331,83 @@ class SwapCard extends React.Component {
                 <div className='pool-prices my-3'>{this.props.langData[this.props.menuItem].priceAndPoolShare}</div>
                 <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                     <div>
-                        <div className='d-flex justify-content-center'>{this.countExchangeRate(true)}</div>
+                        <div className='d-flex justify-content-center'>{utils.countExchangeRate(this.props.pairs, true, this.props.liquidity)}</div>
                         <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, true)}</div>
                     </div>
                     <div>
-                        <div className='d-flex justify-content-center'>{this.countExchangeRate(false)}</div>
+                        <div className='d-flex justify-content-center'>{utils.countExchangeRate(this.props.pairs, false, this.props.liquidity)}</div>
                         <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, false)}</div>
                     </div>
                     <div>
-                        <div className='row d-flex justify-content-center'>-</div>
-                        <div className='row d-flex justify-content-center'>{langData[this.props.menuItem].shareOfPool}</div>
+                        <div className='d-flex justify-content-center'>-</div>
+                        <div className='d-flex justify-content-center'>{langData[this.props.menuItem].shareOfPool}</div>
                     </div>
                 </div>
                 { this.getSubmitButton() }
             </div>
         );
     };
+
+    renderRemoveLiquidity() {
+        return (
+            <div className="p-4">
+                <div className="p-3">
+                    <div className="d-flex justify-content-between">
+                        <div>Amount</div>
+                        <div>Detailed</div>
+                    </div>
+                    <div className="h1 font-weight-bold my-3">0%</div>
+                    <div id="removeLiquidityRange">
+                        <Form className="mb-4">
+                          <Form.Group controlId="formBasicRangeCustom">
+                            <Form.Control type="range" 
+                                value="10"
+                                min="0"
+                                max="100" />
+                          </Form.Group>
+                        </Form>
+                        <div className="d-flex align-items-center justify-content-between">
+                            <button className="btn btn-secondary px-3 py-1">25%</button>
+                            <button className="btn btn-secondary px-3 py-1">50%</button>
+                            <button className="btn btn-secondary px-3 py-1">75%</button>
+                            <button className="btn btn-secondary px-3 py-1">MAX</button>
+                        </div>
+                        <div className="text-center my-3">
+                            <span className="icon-Icon13" style={{color: "var(--color4)"}}></span>
+                        </div>
+                        <div className="swap-input py-2 px-3 mb-4">
+                            <div className="d-flex align-items-center justify-content-between mb-3">
+                                <div>-</div>
+                                <div className="d-flex align-items-center justify-content-end">
+                                    <LogoToken data = {{url : img1, value : 'ENQ'}}/>
+                                </div>
+                            </div>
+                            <div className="d-flex align-items-center justify-content-between mb-3">
+                                <div>-</div>
+                                <div className="d-flex align-items-center justify-content-end">
+                                    <LogoToken data = {{url : img2, value : 'BRY'}}/>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                Receive WBNB
+                            </div>
+                        </div>
+                        <div className="d-flex align-items-start justify-content-between mb-3">
+                            <div>Price</div>
+                            <div>
+                                <div>1 ENQ = 0.00486145 BRY</div>
+                                <div>1 ENQ = 0.00486145 BRY</div>
+                            </div>
+                        </div>
+                        <div className="d-flex align-items-center justify-content-between">
+                            <button class="btn btn-secondary flex-fill mr-2">Approve</button>
+                            <button class="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
+                        </div>                    
+                    </div>                     
+                </div>
+            </div>
+        );    
+    }
 
     establishPairExistence() {
         let token0 = this.props[this.props.menuItem].field0.token;
@@ -368,7 +416,7 @@ class SwapCard extends React.Component {
             this.pairExists = true; // make an exclusion for first page render
             return;
         }
-        if (this.searchSwap([token0, token1]) == undefined)
+        if (utils.searchSwap(this.props.pairs, [token0, token1]) == undefined)
             this.pairExists = false;
         else 
             this.pairExists = true;
@@ -429,28 +477,13 @@ class SwapCard extends React.Component {
             return `${second} ${langProp_Per_} ${first}`;
     };
 
-    countExchangeRate(firstPerSecond) {
-        let pair = this.searchSwap([this.props.liquidity.field0.token, this.props.liquidity.field1.token]);
-        if (pair === undefined) {
-            return '-';
-        }
-        pair = { ...pair };
-        if (pair.token_0.hash !== this.props.liquidity.field0.token.hash) {
-            if (!firstPerSecond)
-                pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
-        } else {
-            if (firstPerSecond)
-                pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
-        }
-        return this.divide(pair.token_0.volume, pair.token_1.volume);
-    };
-
     changeLiquidityCard() {
         this.props.changeLiquidityMode();
     };
 
     renderLiquidityCard() {
-        return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
+        // return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
+        return this.renderRemoveLiquidity();
     };
 
     openConfirmCard() {

@@ -99,6 +99,12 @@ const actionCreators = {
             value : stateType
         };
     },
+    
+    toggleRemoveLiquidityView () {
+        return {
+            type : actions.TOGGLE_REMOVE_LIQUIDITY_VIEW
+        };
+    }
 };
 
 export default actionCreators;

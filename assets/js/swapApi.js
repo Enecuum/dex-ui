@@ -4,14 +4,14 @@ class SwapApi {
     }
 
     getTokens () {
-        return fetch(`${this.url}getTokens`,
+        return fetch(`${this.url}tokens`,
             {
                 method : 'GET'
             }
         );
     };
     getPairs () {
-        return fetch(`${this.url}getPairs`,
+        return fetch(`${this.url}pools`,
             {
                 method : 'GET'
             }

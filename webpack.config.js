@@ -35,10 +35,10 @@ module.exports = {
                 let language = urlArr[urlArr.length - 1];
                 res.json(JSON.parse(fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' })));
             });
-            app.get('/getPairs', (req, res) => {
+            app.get('/pools', (req, res) => {
                 res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
             });
-            app.get('/getTokens', (req, res) => {
+            app.get('/tokens', (req, res) => {
                 res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
             });
             app.get('/enqlib', (req, res) => {

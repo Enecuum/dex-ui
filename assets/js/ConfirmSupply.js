@@ -1,9 +1,13 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import LogoToken from './LogoToken';
 import '../css/confirm-supply.css';
+import utils from './utils.js'
+
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+
 import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 
@@ -23,6 +27,9 @@ class ConfirmSupply extends React.Component {
 
     render() {
         let langData = this.props.langData;
+        let modeStruct = this.props[this.props.menuItem];
+        let firstToken = modeStruct.field0.token;
+        let secondToken = modeStruct.field1.token;
         return (
             <>
                 <Modal
@@ -54,10 +61,10 @@ class ConfirmSupply extends React.Component {
                                 className="logo-wrapper-sm"
                                 style = {{
                                     backgroundImage: `url(${img2})`
-                                }} /> 
+                                }} />
                         </div>
                         <div className='h5 mb-4'>
-                            ENQ/BRY Pool Tokens
+                            {firstToken.name}/{secondToken.name} Pool Tokens
                         </div>                        
                         <div className='confirm-supply-description'>
                             {langData.description}
@@ -65,37 +72,23 @@ class ConfirmSupply extends React.Component {
                         <div className="my-5">
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    ENQ {langData.deposited}
+                                    {firstToken.name} {langData.deposited}
                                 </div>
-                                <div className="d-flex align-items-center justify-content-end">
-                                    <div
-                                        className="logo-wrapper-xs mr-2"
-                                        style = {{
-                                            backgroundImage: `url(${img1})`
-                                        }} /> 
-                                    <span>0.0699313</span>
-                                </div>
+                                <LogoToken data={{url : img1, value : modeStruct.field0.value}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    BRY {langData.deposited}
+                                    {secondToken.name} {langData.deposited}
                                 </div>
-                                <div className="d-flex align-items-center justify-content-end">
-                                    <div
-                                        className="logo-wrapper-xs mr-2"
-                                        style = {{
-                                            backgroundImage: `url(${img2})`
-                                        }} /> 
-                                    <span>14.3588</span>
-                                </div>
+                                <LogoToken data={{url : img2, value : modeStruct.field1.value}} />
                             </div>
                             <div className='d-flex align-items-start justify-content-between mb-2'>
                                 <div>
                                     {langData.rates}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 ENQ = 206.3 BRY</div>
-                                    <div>1 BRY = 0.00487 ENQ</div>
+                                    <div>1 {firstToken.name} = {utils.countExchangeRate(this.props.pairs, false, modeStruct)} {secondToken.name}</div>
+                                    <div>1 {secondToken.name} = {utils.countExchangeRate(this.props.pairs, true, modeStruct)} {firstToken.name}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
@@ -103,9 +96,9 @@ class ConfirmSupply extends React.Component {
                                     {langData.shareOfPool}
                                 </div>
                                 <div>
-                                    0.0001204%
+                                    {utils.countPoolShare(this.props.pairs, modeStruct.field0.value + modeStruct.field1.value, modeStruct)}%
                                 </div>
-                            </div>                            
+                            </div>                  
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.openWaitingConfirmation.bind(this)}>

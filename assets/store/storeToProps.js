@@ -108,7 +108,8 @@ function mapStoreToProps(component) {
                     confirmCardOpened : state.swapCard.confirmCardOpened,
                     exchange : state.swapCard.exchange,
                     liquidity : state.swapCard.liquidity,
-                    menuItem: state.root.menuItem
+                    menuItem : state.root.menuItem,
+                    pairs : state.swapCard.pairs
                 };
             };
         case components.WAITING_CONFIRMATION:

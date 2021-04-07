@@ -108,7 +108,7 @@ class Aside extends React.Component {
                     ))}
                     <a className='menu-item d-flex align-items-center justify-content-start mb-4' href="https://enex.gitbook.io/enex-space/" target="_blank">
                         <span className='icon-Icon19 icon-wrapper'/>
-                        <span className='aside-menu-text'>{this.root.state.langData.navbars.left.docs}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
+                        <span className='aside-menu-text'>{this.props.langData.docs}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
                     </a>
                 </div>
 

@@ -24,7 +24,7 @@ module.exports = {
             }
         ]
     },
-    mode : 'develop',
+    mode : 'development',
     devServer : {
         contentBase : outPath,
         port : 1235,

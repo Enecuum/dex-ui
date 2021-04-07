@@ -17,7 +17,8 @@ const components = {
     CONNECT             : 0x7,
     TOAST               : 0x8,
     INDICATOR_PANEL     : 0x9,
-    CONFIRM_SUPPLY      : 0xA
+    CONFIRM_SUPPLY      : 0xA,
+    WAITING_CONFIRMATION: 0xB
 };
 
 function mapStoreToProps(component) {
@@ -106,6 +107,15 @@ function mapStoreToProps(component) {
                     confirmCardOpened : state.swapCard.confirmCardOpened
                 };
             };
+        case components.WAITING_CONFIRMATION:
+            return function (state) {
+                return {
+                    langData : state.root.langData,
+                    visibility : state.swapCard.waitingConfirmation.visibility,
+                    txStateType : state.swapCard.waitingConfirmation.txStateType
+                };
+            };
+
         default:
             return undefined;
     }
@@ -178,7 +188,15 @@ function mapDispatchToProps(component) {
         case components.CONFIRM_SUPPLY:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeConfirmCard : swapCardCreator.closeConfirmCard
+                    closeConfirmCard : swapCardCreator.closeConfirmCard,
+                    openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
+                    changeWaitingStateType : swapCardCreator.changeWaitingStateType
+                }, dispatch); 
+            };
+        case components.WAITING_CONFIRMATION:
+            return function (dispatch) {
+                return bindActionCreators({
+                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation
                 }, dispatch);
             };
 

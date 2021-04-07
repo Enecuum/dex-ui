@@ -44,7 +44,11 @@ const initialState = {
         activeField : 0,
         tokenListStatus: false,
         liquidityMain: true,
-        confirmCardOpened: false
+        confirmCardOpened: false,
+        waitingConfirmation: {
+            visibility : false,
+            txStateType : 'waiting'
+        }
     },
     tokenCard : {
         list : [],

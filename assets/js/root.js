@@ -109,7 +109,7 @@ class Root extends React.Component {
                         <CommonToast />
                     </div> */}
                     <ConfirmSupply />
-                    {/* <WaitingConfirmation root={ this }/>     */}
+                    <WaitingConfirmation />    
                 </main>
             </div>
         );

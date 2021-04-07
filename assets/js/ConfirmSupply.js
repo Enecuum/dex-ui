@@ -12,6 +12,14 @@ class ConfirmSupply extends React.Component {
         this.props.closeConfirmCard();
     };
 
+    openWaitingConfirmation () {
+        this.closeCard();
+        this.props.openWaitingConfirmation();
+        setTimeout(() => {
+            this.props.changeWaitingStateType('submitted');
+        }, 5000);
+    };
+
     render() {
         let langData = this.props.langData;
         return (
@@ -98,7 +106,10 @@ class ConfirmSupply extends React.Component {
                                 </div>
                             </div>                            
                         </div>
-                        <Button className='btn-secondary confirm-supply-button w-100'>{langData.submit}</Button>
+                        <Button className='btn-secondary confirm-supply-button w-100'
+                                onClick={this.openWaitingConfirmation.bind(this)}>
+                            {langData.confirm}
+                        </Button>
                     </Modal.Body>
                 </Modal>
             </>

@@ -395,6 +395,7 @@ class SwapCard extends React.Component {
                         </div>
                         <button
                             className='btn btn-secondary alt-submit w-100 py-2'
+                            onClick={this.openConfirmCard.bind(this)}
                             type='submit'
                             id='submit'>
                             { buttonName }

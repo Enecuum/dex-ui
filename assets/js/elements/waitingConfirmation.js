@@ -1,10 +1,10 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import '../css/confirm-supply.css';
-
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import '../../css/confirm-supply.css';
 
 class WaitingConfirmation extends React.Component {
     constructor(props) {

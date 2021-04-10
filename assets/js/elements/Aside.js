@@ -1,16 +1,19 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Socials from './Socials';
-import '../css/aside.css';
-import '../css/font-style.css';
-import img from '../img/logo.png';
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
-import SwapApi from './swapApi';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import Socials from './Socials';
+import SwapApi from '../requests/swapApi';
+
+import img from '../../img/logo.png';
+import '../../css/font-style.css';
+import '../../css/aside.css';
+
+
 const swapApi = new SwapApi();
-
-
-const sec = 1000;
+const coinPriceUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=enq-enecuum&vs_currencies=USD';
+const sec = 1000; 
 
 class Aside extends React.Component {
     constructor (props) {
@@ -71,7 +74,7 @@ class Aside extends React.Component {
     };
 
     updExchangeRate () {
-        fetch('https://api.coingecko.com/api/v3/simple/price?ids=enq-enecuum&vs_currencies=USD')
+        fetch(coinPriceUrl)
         .then(async res => {
             res = await res.json();
             res = res['enq-enecuum'].usd;

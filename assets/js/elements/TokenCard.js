@@ -1,12 +1,12 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import SwapApi from './swapApi';
-import Tooltip from './Tooltip';
-import '../css/token-card.css';
-
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
+import SwapApi from '../requests/swapApi';
+import Tooltip from '../components/Tooltip';
+
+import '../../css/token-card.css';
 
 const swapApi = new SwapApi();
 

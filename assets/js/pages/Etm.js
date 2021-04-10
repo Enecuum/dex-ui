@@ -6,9 +6,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ValueProcessor from './ValueProcessor';
-import TokenConstraints from './TokenConstraints';
 
+import ValueProcessor from '../utils/ValueProcessor';
+import TokenConstraints from '../utils/TokenConstraints';
 
 class Etm extends React.Component {
     constructor (props) {

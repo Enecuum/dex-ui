@@ -1,7 +1,8 @@
 import React from 'react';
-import '../css/index.css';
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import '../../css/index.css';
 
 class Connect extends React.Component {
     renderConnectionButton() {

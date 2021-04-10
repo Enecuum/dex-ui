@@ -31,6 +31,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard,
+                    connectionStatus : state.root.connectionStatus,
                     langData: state.root.langData.trade.swapCard,
                     menuItem: state.root.menuItem
                 };

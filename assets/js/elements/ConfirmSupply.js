@@ -1,15 +1,15 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import LogoToken from './LogoToken';
-import '../css/confirm-supply.css';
-import utils from './utils.js'
-
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import img1 from '../img/logo.png';
-import img2 from '../img/bry-logo.png';
+import LogoToken from '../components/LogoToken';
+import utils from '../utils/swapUtils.js'
+
+import img1 from '../../img/logo.png';
+import img2 from '../../img/bry-logo.png';
+import '../../css/confirm-supply.css';
 
 class ConfirmSupply extends React.Component {
     closeCard () {

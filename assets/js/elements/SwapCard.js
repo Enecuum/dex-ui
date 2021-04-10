@@ -1,27 +1,27 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import presets from '../../store/pageDataPresets';
+import ConfirmSupply from './ConfirmSupply';
+import LogoToken from '../components/LogoToken';
+import Tooltip from '../components/Tooltip';
+import TokenCard from './TokenCard';
 import History from './History';
 import Settings from './Settings';
-import TokenCard from './TokenCard';
-import SwapApi from './swapApi';
-import Tooltip from './Tooltip';
-import presets from '../store/pageDataPresets';
-import ConfirmSupply from './ConfirmSupply';
-import LogoToken from './LogoToken';
-import ExtRequests from './extRequests';
-import utils from './utils.js'
+import ExtRequests from '../requests/extRequests';
+import testFormulas from '../utils/testFormulas';
+import utils from '../utils/swapUtils';
+import SwapApi from '../requests/swapApi';
 
-import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
-
-import img1 from '../img/logo.png';
-import img2 from '../img/bry-logo.png';
+import img1 from '../../img/logo.png';
+import img2 from '../../img/bry-logo.png';
+import '../../css/swap-card.css';
+import '../../css/font-style.css';
 
 const extRequests = new ExtRequests();
 const swapApi = new SwapApi();
-
-import '../css/swap-card.css';
-import '../css/font-style.css';
 
 class SwapCard extends React.Component {
     constructor(props) {
@@ -136,31 +136,17 @@ class SwapCard extends React.Component {
         return false;
     };
 
-    getAddLiquidityPrice(input_0, input_1, coinValue) {
-        return utils.divide(input_0, input_1) * coinValue;
-    };
-
-    countLiqudity(pair) {
-        return pair.token_0.volume * pair.token_1.volume;
-    };
-
-    getSwapPrice(pair, amountIn) {
-        if (amountIn == 0) // use 'if' instead of try/catch in order to check empty string
-            return 0;
-        return (1 - pair.pool_fee) * this.countLiqudity(pair) / amountIn;
-    };
-
     countPrice(activeField, pair) {
         if (this.props.menuItem == 'exchange') {
             if (activeField.token.hash == pair.token_0.hash)
-                return this.getSwapPrice(pair, activeField.value);
+                return testFormulas.getSwapPrice(pair, activeField.value);
             else
-                return this.getSwapPrice(pair, activeField.value);
+                return testFormulas.getSwapPrice(pair, activeField.value);
         } else {
             if (activeField.token.hash == pair.token_0.hash)
-                return this.getAddLiquidityPrice(pair.token_0.volume, pair.token_1.volume, activeField.value);
+                return testFormulas.getAddLiquidityPrice(pair.token_0.volume, pair.token_1.volume, activeField.value);
             else
-                return this.getAddLiquidityPrice(pair.token_1.volume, pair.token_0.volume, activeField.value);
+                return testFormulas.getAddLiquidityPrice(pair.token_1.volume, pair.token_0.volume, activeField.value);
         }
     };
 
@@ -244,8 +230,8 @@ class SwapCard extends React.Component {
                         })}
                     </div>
                     <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
-                        <div>Coming soon</div>
-                        <div>1%</div>
+                        {/* <div>Coming soon</div>
+                        <div>1%</div> */}
                     </div>
                     { this.getSubmitButton() }
                 </div>    
@@ -487,7 +473,8 @@ class SwapCard extends React.Component {
     };
 
     openConfirmCard() {
-        this.props.openConfirmCard();
+        if (this.props.connectionStatus && this.isReadyToSubmit())
+            this.props.openConfirmCard();
     };
 
     render() {

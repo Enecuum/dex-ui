@@ -63,7 +63,7 @@ const actionCreators = {
         };
     },
 
-    changePendingIndicator() {
+    changePendingIndicatorVisibility() {
         return {
             type : actions.CHANGE_PENDING_STATE
         };

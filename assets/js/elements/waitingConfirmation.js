@@ -12,13 +12,6 @@ class WaitingConfirmation extends React.Component {
         this.explorer_href = '#BLANK-LINK-TO-EXPLORER'; //ссылка для View on pulse.enecuum.com
     };
 
-    // Предлагаю принять, что у нас два основных вида оформления (и контента) модальных окон, соответствующим двум типам состояния транзакций:
-    // - ожидающая (waiting) транза
-    // - подтвержденная (submitted) транза
-    // это надо отразить двумя путями:
-    // повесить на модалку соответствующий стилевой класс
-    // отдать сам элемент с иконкой
-
     getHeaderPropNameByType() {
         let modalHeaderPropName = ""
         if (this.props.txStateType === 'submitted')

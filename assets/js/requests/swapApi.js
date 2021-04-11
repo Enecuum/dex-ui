@@ -1,3 +1,7 @@
+/** 
+ *  @fileoverview Minimal amount of API methods.
+ */
+
 class SwapApi {
     constructor () {
         this.url = location.href.replace('/#', '/');

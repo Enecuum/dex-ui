@@ -31,7 +31,7 @@ app.post(`/api/${config.api_version}/tx`, bodyParser, (req, res) => {
     );
 });
 
-app.get(`/(tokens|pools)`, (req, res) => {
+app.get(`/tokens|pools`, (req, res) => {
     let urlArr = req.url.split('/');
     let type = urlArr[urlArr.length - 1];
     transferApi.transferRequest(type, true)
@@ -73,23 +73,23 @@ app.get('/enex.webpack.js', (req, res) => {
 
 // -------------------------------------------------- first time server API
 
-app.get('/getTokens', (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'application/json',
-    });
-    let data = fs.readFileSync(`../data/tokens.json`, { encoding : 'utf-8' });
-    res.write(data);
-    res.end();
-});
+// app.get('/getTokens', (req, res) => {
+//     res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//     });
+//     let data = fs.readFileSync(`../data/tokens.json`, { encoding : 'utf-8' });
+//     res.write(data);
+//     res.end();
+// });
 
-app.get('/getPairs', (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'application/json',
-    });
-    let data = fs.readFileSync(`../data/pairs.json`, { encoding : 'utf-8' });
-    res.write(data);
-    res.end();
-});
+// app.get('/getPairs', (req, res) => {
+//     res.writeHead(200, {
+//         'Content-Type': 'application/json',
+//     });
+//     let data = fs.readFileSync(`../data/pairs.json`, { encoding : 'utf-8' });
+//     res.write(data);
+//     res.end();
+// });
 
 app.get('/getLanguage/*', (req, res) => {
     let urlArr = req.url.split('/');

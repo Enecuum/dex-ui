@@ -1,5 +1,4 @@
-function countExchangeRate(pairs, firstPerSecond, modeStruct) {
-    let pair = searchSwap(pairs, [modeStruct.field0.token, modeStruct.field1.token]);
+function countExchangeRate(pair, firstPerSecond, modeStruct) {
     if (pair === undefined) {
         return '-';
     }
@@ -25,8 +24,7 @@ function searchSwap(pairs, tokens) {
     });
 };
 
-function countPoolShare(pairs, inputVolume, modeStruct) {
-    let pair = searchSwap(pairs, [modeStruct.field0.token, modeStruct.field1.token]);
+function countPoolShare(pair, inputVolume) {
     if (pair === undefined) {
         return '-';
     }

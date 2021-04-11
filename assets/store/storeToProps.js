@@ -39,6 +39,7 @@ function mapStoreToProps(component) {
         case components.SWITCH:
             return function (state) {
                 return {
+                    pubkey : state.root.pubkey,
                     langData: state.root.langData.trade.switch,
                     menuItem: state.root.menuItem
                 };
@@ -197,7 +198,7 @@ function mapDispatchToProps(component) {
                     closeConfirmCard : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType : swapCardCreator.changeWaitingStateType,
-                    changePendingIndicator : rootCreator.changePendingIndicator
+                    changePendingIndicatorVisibility : rootCreator.changePendingIndicatorVisibility
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:

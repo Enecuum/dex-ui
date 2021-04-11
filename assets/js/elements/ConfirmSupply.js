@@ -6,6 +6,8 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 
 import LogoToken from '../components/LogoToken';
 import utils from '../utils/swapUtils.js'
+import testFormulas from '../utils/testFormulas';
+import extRequests from '../requests/extRequests';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -16,13 +18,21 @@ class ConfirmSupply extends React.Component {
         this.props.closeConfirmCard();
     };
 
-    openWaitingConfirmation () {
+    sendTransaction () {
         this.closeCard();
         this.props.openWaitingConfirmation();
-        setTimeout(() => {
+        this.props.changePendingIndicatorVisibility();
+        let tx;
+        if (this.props.menuItem == 'exchange')
+            tx = extRequests.swap(this.props.pubkey, this.props.exchange);
+        else if (this.props.menuItem == 'liquidity')
+            tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
+        else
+            tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
+        tx.then(result => {
+            this.props.changePendingIndicatorVisibility();
             this.props.changeWaitingStateType('submitted');
-            this.props.changePendingIndicator();
-        }, 5000);
+        });
     };
 
     render() {
@@ -30,6 +40,7 @@ class ConfirmSupply extends React.Component {
         let modeStruct = this.props[this.props.menuItem];
         let firstToken = modeStruct.field0.token;
         let secondToken = modeStruct.field1.token;
+        let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token]);
         return (
             <>
                 <Modal
@@ -49,7 +60,7 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            0.96478
+                            { testFormulas.countEnxAmount(pair, modeStruct.field1.value) }
                         </div>
                         <div className="d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3">
                             <div
@@ -87,8 +98,8 @@ class ConfirmSupply extends React.Component {
                                     {langData.rates}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.name} = {utils.countExchangeRate(this.props.pairs, false, modeStruct)} {secondToken.name}</div>
-                                    <div>1 {secondToken.name} = {utils.countExchangeRate(this.props.pairs, true, modeStruct)} {firstToken.name}</div>
+                                    <div>1 {firstToken.name} = {utils.countExchangeRate(pair, false, modeStruct)} {secondToken.name}</div>
+                                    <div>1 {secondToken.name} = {utils.countExchangeRate(pair, true, modeStruct)} {firstToken.name}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
@@ -96,12 +107,12 @@ class ConfirmSupply extends React.Component {
                                     {langData.shareOfPool}
                                 </div>
                                 <div>
-                                    {utils.countPoolShare(this.props.pairs, modeStruct.field0.value + modeStruct.field1.value, modeStruct)}%
+                                    {utils.countPoolShare(pair, modeStruct.field0.value + modeStruct.field1.value)}%
                                 </div>
                             </div>                  
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
-                                onClick={this.openWaitingConfirmation.bind(this)}>
+                                onClick={this.sendTransaction.bind(this)}>
                             {langData.confirm}
                         </Button>
                     </Modal.Body>

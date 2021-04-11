@@ -14,8 +14,16 @@ function getSwapPrice (pair, amountIn) {
     return (1 - pair.pool_fee) * countLiqudity(pair) / amountIn;
 };
 
+function countEnxAmount (pair, amount_2) {
+    try {
+        let required_1 = pair.token_0.volume * amount_2 / pair.token_1.volume;
+        return Math.sqrt(required_1 * amount_2);
+    } catch (err) {}
+};
+
 export default {
     getAddLiquidityPrice,
+    countEnxAmount,
     countLiqudity,
     getSwapPrice
 };

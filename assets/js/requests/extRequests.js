@@ -11,7 +11,7 @@ const requestType = {
     REMOVE  : 'remove_liquidity'
 };
 
-class ExtRequests {
+let extRequests = {
     /**
      * Get balance of the required token
      * @param {string} pubKey - users publick key (get it while connecting to the extention)
@@ -27,12 +27,12 @@ class ExtRequests {
         } catch (err) {
             return new Promise((resolve, reject) => { reject(err) });
         }
-    };
+    },
 
     /**
      * Create pool with two pairs that are chosen in ui-form
      * @param {string} pubkey - users publick key (get it while connecting to the extention)
-     * @param {object} modeStruct - data structure from initialState.js, such as 'liqudity', 'exchange', 'removeLiquidity'
+     * @param {object} modeStruct - data structure from initialState.js, such as 'swapCard.liqudity', 'swapCard.exchange'
      * @returns {Promise}
      */
     createPool (pubkey, modeStruct) {
@@ -42,7 +42,7 @@ class ExtRequests {
             asset_2  : modeStruct.field1.token.hash,
             amount_2 : modeStruct.field1.value
         });
-    };
+    },
 
     /**
      * Exchange pair of tokens
@@ -56,7 +56,7 @@ class ExtRequests {
             amount_in : exchangeMode.field0.value,
             asset_out : exchangeMode.field1.token.hash
         });
-    };
+    },
 
     /**
      * Exchange pair of tokens
@@ -71,7 +71,7 @@ class ExtRequests {
             asset_2  : liquidityMode.field1.token.hash,
             amount_2 : liquidityMode.field1.value
         });
-    };
+    },
 
     /**
      * Get coins at the cost of 'liquidity tokens'
@@ -84,7 +84,7 @@ class ExtRequests {
             lt : removeMode.lt,
             amount : removeMode.amount
         });
-    };
+    },
 
     sendTx (pubKey, reqType, params) {
         return Enecuum.sendTransaction({
@@ -97,7 +97,7 @@ class ExtRequests {
                 parameters : params
             }
         });
-    };
+    }
 };
 
-export default ExtRequests;
+export default extRequests;

@@ -7,6 +7,21 @@ class SwapApi {
         this.url = location.href.replace('/#', '/');
     }
 
+    createToken (ticker, emission, pubkey) {
+        return fetch(`${this.url}create_token`,
+            {
+                method : 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body : JSON.stringify({
+                    ticker   : ticker,
+                    emission : emission,
+                    pubkey   : pubkey
+                })
+            }
+        );
+    };
     getTokens () {
         return fetch(`${this.url}tokens`,
             {
@@ -36,5 +51,7 @@ class SwapApi {
         );
     };
 };
+let swApi = new SwapApi();
+window.myCustomFunctionCreateToken = swApi.createToken.bind(swApi);
 
 export default SwapApi;

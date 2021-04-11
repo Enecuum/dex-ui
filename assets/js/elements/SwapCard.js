@@ -10,7 +10,7 @@ import Tooltip from '../components/Tooltip';
 import TokenCard from './TokenCard';
 import History from './History';
 import Settings from './Settings';
-import ExtRequests from '../requests/extRequests';
+import extRequests from '../requests/extRequests';
 import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import SwapApi from '../requests/swapApi';
@@ -20,7 +20,6 @@ import img2 from '../../img/bry-logo.png';
 import '../../css/swap-card.css';
 import '../../css/font-style.css';
 
-const extRequests = new ExtRequests();
 const swapApi = new SwapApi();
 
 class SwapCard extends React.Component {

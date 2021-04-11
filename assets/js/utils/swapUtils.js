@@ -14,6 +14,12 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
 };
 
 function searchSwap(pairs, tokens) {
+    if (pairs.length == 0 || !Array.isArray(pairs))
+        return {
+            token_0 : {},
+            token_1 : {},
+            pool_fee : 0
+        };
     let hashes = [tokens[0].hash, tokens[1].hash];
     return pairs.find(el => {
         if (hashes.indexOf(el.token_0.hash) != -1 &&

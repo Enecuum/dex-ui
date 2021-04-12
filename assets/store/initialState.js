@@ -45,7 +45,7 @@ const initialState = {
         removeLiquidity : {
             simpleView : true,
             lt : undefined,
-            amount : ''
+            amount : 50
         },
         activeField : 0,
         tokenListStatus: false,

@@ -112,9 +112,18 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.TOGGLE_REMOVE_LIQUIDITY_VIEW:
             return swapCardStore(state, {
                 removeLiquidity : {
+                    ...state.removeLiquidity,
                     simpleView : !state.removeLiquidity.simpleView
                 }
-            });    
+            });
+
+        case actions.SET_REMOVE_LIQUIDITY_AMOUNT:
+            return swapCardStore(state, {
+                removeLiquidity : {
+                    ...state.removeLiquidity,
+                    amount : action.value
+                }
+            });                 
             
         default:
             return state;

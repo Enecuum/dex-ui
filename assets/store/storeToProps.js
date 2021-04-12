@@ -34,7 +34,8 @@ function mapStoreToProps(component) {
                     connectionStatus : state.root.connectionStatus,
                     langData: state.root.langData.trade.swapCard,
                     menuItem: state.root.menuItem,
-                    removeLiquidityView: state.swapCard.removeLiquidity.simpleView
+                    removeLiquidityView: state.swapCard.removeLiquidity.simpleView,
+                    removeLiquidityAmount: state.swapCard.removeLiquidity.amount
                 };
             };
         case components.SWITCH:

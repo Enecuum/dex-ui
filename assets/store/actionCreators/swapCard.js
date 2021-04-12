@@ -104,6 +104,13 @@ const actionCreators = {
         return {
             type : actions.TOGGLE_REMOVE_LIQUIDITY_VIEW
         };
+    },
+
+    setRemoveLiquidityValue (value) {
+        return {
+            type : actions.SET_REMOVE_LIQUIDITY_AMOUNT,
+            value : value
+        };
     }
 };
 

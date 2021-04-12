@@ -1,5 +1,6 @@
 import React from 'react';
-import '../css/aside.css';
+
+import '../../css/aside.css';
 
 class Socials extends React.Component {
     constructor () {

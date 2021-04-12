@@ -1,8 +1,8 @@
 import React from 'react';
-import '../css/switch.css';
-
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import '../../css/switch.css';
 
 class Switch extends React.Component {
     switchMode (mode) {

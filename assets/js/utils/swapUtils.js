@@ -1,5 +1,4 @@
-function countExchangeRate(pairs, firstPerSecond, modeStruct) {
-    let pair = searchSwap(pairs, [modeStruct.field0.token, modeStruct.field1.token]);
+function countExchangeRate(pair, firstPerSecond, modeStruct) {
     if (pair === undefined) {
         return '-';
     }
@@ -15,6 +14,12 @@ function countExchangeRate(pairs, firstPerSecond, modeStruct) {
 };
 
 function searchSwap(pairs, tokens) {
+    if (pairs.length == 0 || !Array.isArray(pairs))
+        return {
+            token_0 : {},
+            token_1 : {},
+            pool_fee : 0
+        };
     let hashes = [tokens[0].hash, tokens[1].hash];
     return pairs.find(el => {
         if (hashes.indexOf(el.token_0.hash) != -1 &&
@@ -25,8 +30,7 @@ function searchSwap(pairs, tokens) {
     });
 };
 
-function countPoolShare(pairs, inputVolume, modeStruct) {
-    let pair = searchSwap(pairs, [modeStruct.field0.token, modeStruct.field1.token]);
+function countPoolShare(pair, inputVolume) {
     if (pair === undefined) {
         return '-';
     }

@@ -63,9 +63,15 @@ const actionCreators = {
         };
     },
 
-    changePendingIndicator() {
+    showPendingIndicator() {
         return {
-            type : actions.CHANGE_PENDING_STATE
+            type : actions.SHOW_PENDING_STATE
+        };
+    },
+
+    hidePendingIndicator() {
+        return {
+            type : actions.HIDE_PENDING_STATE
         };
     }
 };

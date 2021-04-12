@@ -1,23 +1,16 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import '../css/confirm-supply.css';
-
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import '../../css/confirm-supply.css';
 
 class WaitingConfirmation extends React.Component {
     constructor(props) {
         super(props);
         this.explorer_href = '#BLANK-LINK-TO-EXPLORER'; //ссылка для View on pulse.enecuum.com
     };
-
-    // Предлагаю принять, что у нас два основных вида оформления (и контента) модальных окон, соответствующим двум типам состояния транзакций:
-    // - ожидающая (waiting) транза
-    // - подтвержденная (submitted) транза
-    // это надо отразить двумя путями:
-    // повесить на модалку соответствующий стилевой класс
-    // отдать сам элемент с иконкой
 
     getHeaderPropNameByType() {
         let modalHeaderPropName = ""
@@ -30,8 +23,8 @@ class WaitingConfirmation extends React.Component {
 
     getContentByType() {
 
-/////////////////////// TODO Использовать интерполируемые параметры в i18 для Swapping 20.6172 BRY for 0.100203 ENQ после добавления соответствующего функционала
-/////////////////////// TODO Использовать интерполируемые параметры в i18 для View on pulse.enecuum.com после добавления соответствующего функционала
+        // TODO Использовать интерполируемые параметры в i18 для Swapping 20.6172 BRY for 0.100203 ENQ после добавления соответствующего функционала
+        // TODO Использовать интерполируемые параметры в i18 для View on pulse.enecuum.com после добавления соответствующего функционала
 
         if (this.props.txStateType === 'submitted') {
             return  (

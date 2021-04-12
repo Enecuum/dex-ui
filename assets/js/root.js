@@ -1,24 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
-
+import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Navbar from './Navbar';
-import Aside from './Aside';
-import SwapCard from './SwapCard';
-import Etm from './Etm';
-import Switch from './Switch';
-import BlankPage from './blankPage';
-import ConnectionService from './ConnectionService';
-import ConfirmSupply from './ConfirmSupply';
-import WaitingConfirmation from './waitingConfirmation';
+import Navbar from './elements/Navbar';
+import Aside from './elements/Aside';
+import SwapCard from './elements/SwapCard';
+import Etm from './pages/Etm';
+import Switch from './elements/Switch';
+import BlankPage from './pages/blankPage';
+import ConnectionService from './elements/ConnectionService';
+import ConfirmSupply from './elements/ConfirmSupply';
+import WaitingConfirmation from './elements/waitingConfirmation';
 
-import SwapApi from './swapApi';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
-
-import store from '../store/store';
+import SwapApi from './requests/swapApi';
 
 const swapApi = new SwapApi();
 
@@ -39,14 +37,6 @@ class Root extends React.Component {
     menuViewController () {
         switch (this.props.menuItem) {
             case 'exchange':
-                return (
-                    <div className='swap-card' style={{ left : this.props.swapCardLeft}}>
-                        <div id='switch' >
-                            <Switch />
-                        </div>
-                        <SwapCard />
-                    </div>
-                );
             case 'liquidity':
                 return (
                     <div className='swap-card' style={{ left : this.props.swapCardLeft}}>
@@ -54,6 +44,8 @@ class Root extends React.Component {
                             <Switch />
                         </div>
                         <SwapCard />
+                        <ConfirmSupply />
+                        <WaitingConfirmation />    
                     </div>
                 );
             case 'etm':
@@ -108,8 +100,6 @@ class Root extends React.Component {
                     {/* <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast />
                     </div> */}
-                    <ConfirmSupply />
-                    <WaitingConfirmation />    
                 </main>
             </div>
         );

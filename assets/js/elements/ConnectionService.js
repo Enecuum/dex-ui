@@ -1,12 +1,13 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal'
-import '../css/close-button.css';
-import '../css/index.css';
-import '../css/wallet-connection.css';
-import '../css/font-style.css';
-import img from '../img/logo.png';
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import img from '../../img/logo.png';
+import '../../css/close-button.css';
+import '../../css/index.css';
+import '../../css/wallet-connection.css';
+import '../../css/font-style.css';
 
 class ConnectionService extends React.Component {
     constructor (props) {

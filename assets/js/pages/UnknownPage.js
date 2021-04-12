@@ -1,6 +1,7 @@
 import React from 'react';
-import '../css/unknown-page.css';
+
 import img from '../img/unknownPage.png';
+import '../../css/unknown-page.css';
 
 class UnknownPage extends React.Component {
     render () {

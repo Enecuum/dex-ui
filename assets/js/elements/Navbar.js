@@ -1,12 +1,14 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Connect from './Connect';
-import '../css/navbar.css';
-import '../css/font-style.css';
-import img from '../img/enex-logo.png';
-import IndicatorPanel from './IndicatorPanel';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import IndicatorPanel from './IndicatorPanel';
+
+import img from '../../img/enex-logo.png';
+import '../../css/navbar.css';
+import '../../css/font-style.css';
 
 class Navbar extends React.Component {
     constructor (props) {

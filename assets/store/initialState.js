@@ -43,7 +43,9 @@ const initialState = {
             }
         },
         removeLiquidity : {
-            simpleView : true
+            simpleView : true,
+            lt : undefined,
+            amount : ''
         },
         activeField : 0,
         tokenListStatus: false,

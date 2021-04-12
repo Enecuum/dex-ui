@@ -43,8 +43,11 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.UPD_ACTIVE_LOCALE:
             return rootStore(state, { activeLocale : action.value });
 
-        case actions.CHANGE_PENDING_STATE:
-            return rootStore(state, { pendingIndicator : !state.pendingIndicator });
+        case actions.SHOW_PENDING_STATE:
+            return rootStore(state, { pendingIndicator : true });
+
+         case actions.HIDE_PENDING_STATE:
+            return rootStore(state, { pendingIndicator : false });
 
         default:
             return state;

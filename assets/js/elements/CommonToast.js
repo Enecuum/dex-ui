@@ -2,8 +2,9 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Toast from 'react-bootstrap/Toast';
 import { connect } from 'react-redux';
-import { mapStoreToProps, components } from '../store/storeToProps';
-import '../css/common-toast.css';
+import { mapStoreToProps, components } from '../../store/storeToProps';
+
+import '../../css/common-toast.css';
 
 class CommonToast extends React.Component {
     constructor (props) {

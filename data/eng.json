@@ -58,6 +58,10 @@
             "aboutButtonInfo" : {
                 "withoutPair" : "There is no such pair",
                 "lackOfLiquidity" : "Insufficient liquidity for this trade"
+            },
+            "removeLiquidity" : {
+                "simple" : "Simple",
+                "detailed" : "Detailed"
             }
         },
         "tokenCard" : {

@@ -354,7 +354,7 @@ class SwapCard extends React.Component {
                 <div className="p-3">
                     <div className="d-flex justify-content-between">
                         <div>Amount</div>
-                        <div>Detailed</div>
+                        <div onClick={this.toggleView.bind(this)} className="hover-pointer">{ this.props.removeLiquidityView ? this.props.langData.removeLiquidity.simple : this.props.langData.removeLiquidity.detailed }</div>
                     </div>
                     <div className="h1 font-weight-bold my-3">0%</div>
                     <div id="removeLiquidityRange">
@@ -388,7 +388,7 @@ class SwapCard extends React.Component {
                                     <LogoToken data = {{url : img2, value : 'BRY'}}/>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div className="text-right">
                                 Receive WBNB
                             </div>
                         </div>
@@ -400,8 +400,8 @@ class SwapCard extends React.Component {
                             </div>
                         </div>
                         <div className="d-flex align-items-center justify-content-between">
-                            <button class="btn btn-secondary flex-fill mr-2">Approve</button>
-                            <button class="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
+                            <button className="btn btn-secondary flex-fill mr-2">Approve</button>
+                            <button className="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
                         </div>                    
                     </div>                     
                 </div>
@@ -489,6 +489,10 @@ class SwapCard extends React.Component {
     openConfirmCard() {
         this.props.openConfirmCard();
     };
+
+    toggleView() {
+        this.props.toggleRemoveLiquidityView();
+    }
 
     render() {
         this.establishReadiness();

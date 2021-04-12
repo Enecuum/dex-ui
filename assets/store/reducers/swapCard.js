@@ -47,10 +47,6 @@ function swapFields(state, mode) {
     });
 };
 
-function toggleRemoveLiquidityView() {
-    
-}
-
 export default function swapCardReducer(state = initialState.swapCard, action) {
     switch (action.type) {
         case actionPack.root.CHANGE_MENU_ITEM:
@@ -114,7 +110,11 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
             });
 
         case actions.TOGGLE_REMOVE_LIQUIDITY_VIEW:
-            return swapCardStore(state, { activeField: action.value });  ////////////////////////////////////////////
+            return swapCardStore(state, {
+                removeLiquidity : {
+                    simpleView : !state.removeLiquidity.simpleView
+                }
+            });    
             
         default:
             return state;

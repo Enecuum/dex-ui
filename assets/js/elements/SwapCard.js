@@ -153,7 +153,7 @@ class SwapCard extends React.Component {
     countCounterField(activeField, cField) {
         let counterField = this.props[this.props.menuItem][cField];
 
-        if (activeField.token.name !== presets.swapTokens.emptyToken.name && counterField.token.name !== presets.swapTokens.emptyToken.name) {
+        if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             let pair = utils.searchSwap(this.props.pairs, [activeField.token, counterField.token]);
             if (pair === undefined) {
                 return;
@@ -214,7 +214,7 @@ class SwapCard extends React.Component {
                         {this.getInputField({
                             fieldName: this.props.langData[this.props.menuItem].input0,
                             fieldClass: 'token-use',
-                            tokenName: this.props[this.props.menuItem].field0.token.name,
+                            tokenName: this.props[this.props.menuItem].field0.token.ticker,
                             value: this.props[this.props.menuItem].field0.value
                         })}
                     </div>
@@ -225,7 +225,7 @@ class SwapCard extends React.Component {
                         {this.getInputField({
                             fieldName: this.props.langData[this.props.menuItem].input1,
                             fieldClass: 'token-use1',
-                            tokenName: this.props[this.props.menuItem].field1.token.name,
+                            tokenName: this.props[this.props.menuItem].field1.token.ticker,
                             value: this.props[this.props.menuItem].field1.value
                         })}
                     </div>
@@ -301,7 +301,7 @@ class SwapCard extends React.Component {
                     {this.getInputField({
                         fieldName: langData[this.props.menuItem].input0,
                         fieldClass: 'token-use',
-                        tokenName: this.props[this.props.menuItem].field0.token.name,
+                        tokenName: this.props[this.props.menuItem].field0.token.ticker,
                         value: this.props[this.props.menuItem].field0.value
                     })}
                 </div>
@@ -310,7 +310,7 @@ class SwapCard extends React.Component {
                     {this.getInputField({
                         fieldName: langData[this.props.menuItem].input1,
                         fieldClass: 'token-use1',
-                        tokenName: this.props[this.props.menuItem].field1.token.name,
+                        tokenName: this.props[this.props.menuItem].field1.token.ticker,
                         value: this.props[this.props.menuItem].field1.value
                     })}
                 </div>
@@ -451,12 +451,12 @@ class SwapCard extends React.Component {
     };
 
     getExchTokenName(name) {
-        return (name == presets.swapTokens.emptyToken.name) ? '-' : name;
+        return (name == presets.swapTokens.emptyToken.ticker) ? '-' : name;
     };
 
     getExchangeText(langProp_Per_, firstPerSecond) {
-        let first = this.getExchTokenName(this.props.liquidity.field0.token.name);
-        let second = this.getExchTokenName(this.props.liquidity.field1.token.name);
+        let first = this.getExchTokenName(this.props.liquidity.field0.token.ticker);
+        let second = this.getExchTokenName(this.props.liquidity.field1.token.ticker);
         if (firstPerSecond)
             return `${first} ${langProp_Per_} ${second}`;
         else

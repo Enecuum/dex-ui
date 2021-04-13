@@ -74,7 +74,7 @@ class TransferPoint {
             id: this.idManager.createRequestId()
         };
         if (data)
-            txData.params = data;
+            txData.params = this.objToArray(data, method);
         logsCreator.msg(JSON.stringify(txData));
         return axios.post(`${this.config.dex_url}:${this.config.dex_port}/${this.config.api_version}`, txData);
     };
@@ -87,7 +87,7 @@ class TransferPoint {
                 emission : (emission) ? emission : 0
             })
             .then(res => {
-                logsCreator.msg(res);
+                logsCreator.msg(JSON.stringify(res.data));
                 resolve(res);
             },
             err => {
@@ -104,7 +104,7 @@ class TransferPoint {
             .then(res => {
                 resolve(responseRule(res));
                 this.idManager.completeRequestId(res.data.id);
-                logsCreator.msg(res);
+                logsCreator.msg(JSON.stringify(res.data));
             },
             error => {
                 logsCreator.err(error);
@@ -142,6 +142,22 @@ class TransferPoint {
                 result: res.data.result
             };
         });
+    };
+
+    objToArray (obj, method) {
+        if (method == 'create_pool' || method == 'add_liquidity') {
+            return [obj.asset_1, obj.amount_1, obj.asset_2, obj.amount_2];
+        } else if (method == 'swap') {
+            return [obj.asset_in, obj.amount_in, obj.asset_out];
+        } else if (method == 'remove_liquidity') {
+            return [obj.lt, obj.amount];
+        } else if (method == 'balance'){
+            return [obj.id]
+        } else if (method == 'create_token') {
+            return [obj.hash, obj.ticker, obj.emission];
+        } else {
+            return [];
+        }
     };
 };
 

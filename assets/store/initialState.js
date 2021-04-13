@@ -70,7 +70,7 @@ const initialState = {
     },
     indicatorPanel : {
         nativeToken: presets.network.nativeToken.hash,
-        coinName: presets.network.nativeToken.name,
+        coinName: presets.network.nativeToken.ticker,
         net: presets.network.defaultNet,
         coinAmount: 0,
         enx: 0

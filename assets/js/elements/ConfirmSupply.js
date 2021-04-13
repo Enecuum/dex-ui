@@ -75,7 +75,7 @@ class ConfirmSupply extends React.Component {
                                 }} />
                         </div>
                         <div className='h5 mb-4'>
-                            {firstToken.name}/{secondToken.name} Pool Tokens
+                            {firstToken.ticker}/{secondToken.ticker} Pool Tokens
                         </div>                        
                         <div className='confirm-supply-description'>
                             {langData.description}
@@ -83,13 +83,13 @@ class ConfirmSupply extends React.Component {
                         <div className="my-5">
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {firstToken.name} {langData.deposited}
+                                    {firstToken.ticker} {langData.deposited}
                                 </div>
                                 <LogoToken data={{url : img1, value : modeStruct.field0.value}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {secondToken.name} {langData.deposited}
+                                    {secondToken.ticker} {langData.deposited}
                                 </div>
                                 <LogoToken data={{url : img2, value : modeStruct.field1.value}} />
                             </div>
@@ -98,8 +98,8 @@ class ConfirmSupply extends React.Component {
                                     {langData.rates}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.name} = {utils.countExchangeRate(pair, false, modeStruct)} {secondToken.name}</div>
-                                    <div>1 {secondToken.name} = {utils.countExchangeRate(pair, true, modeStruct)} {firstToken.name}</div>
+                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>

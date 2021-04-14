@@ -66,7 +66,7 @@ class IndicatorPanel extends React.Component {
                 if (balance !== undefined)
                     this.props.updCoinAmount(balance.amount);
             });
-        }, 1000);
+        }, 5000);
     };
 
     packAdressString(addr) {

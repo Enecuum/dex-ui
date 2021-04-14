@@ -53,6 +53,7 @@ const initialState = {
         tokenListStatus: false,
         liquidityMain: true,
         confirmCardOpened: false,
+        createPool : false,
         waitingConfirmation: {
             visibility : false,
             txStateType : 'waiting'

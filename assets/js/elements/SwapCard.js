@@ -42,9 +42,8 @@ class SwapCard extends React.Component {
     changeBalance() {
         let field = this.getActiveField(this.activeField);
         extRequests.getBalance(this.props.pubkey, this.props[this.props.menuItem][field].token.hash)
-        .then(balance => {
-            console.log(balance);
-            this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (balance !== undefined) ? `Balance: ${balance.amount}` : '-');
+        .then(res => {
+            this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (res.data.result.amount !== undefined) ? `Balance: ${res.data.result.amount}` : '-');
         });
     }
 
@@ -151,6 +150,8 @@ class SwapCard extends React.Component {
     };
 
     countCounterField(activeField, cField) {
+        if (!this.pairExists)
+            return;
         let counterField = this.props[this.props.menuItem][cField];
 
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
@@ -402,10 +403,13 @@ class SwapCard extends React.Component {
             this.pairExists = true; // make an exclusion for first page render
             return;
         }
-        if (utils.searchSwap(this.props.pairs, [token0, token1]) == undefined)
+        if (utils.searchSwap(this.props.pairs, [token0, token1]).pool_fee == undefined) {
             this.pairExists = false;
-        else 
+            this.props.changeCreatePoolState(false);
+        } else { 
             this.pairExists = true;
+            this.props.changeCreatePoolState(true);
+        }
     };
 
     getSubmitButton() {
@@ -418,8 +422,9 @@ class SwapCard extends React.Component {
                 buttonName = names.swap;
             else if (this.props.menuItem == 'liquidity')
                 buttonName = names.addLiquidity;
-            if (!this.readyToSubmit)
+            if (!this.readyToSubmit) {
                 buttonName = names.fillAllFields;
+            }
             if (this.pairExists == false) {
                 buttonName = names.createPair;
                 return (

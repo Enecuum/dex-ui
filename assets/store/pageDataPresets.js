@@ -47,7 +47,16 @@ const presets =  {
                 submitButton: {}
             },
             tokenCard: {},
-            confirmCard: {}
+            confirmCard : {
+                waitingForConfirmationInternals : {
+                    swap : {
+                    },
+                    addLiquidity : {
+                    },
+                    createPool : { 
+                    }
+                }
+            },
         }
     }
 };

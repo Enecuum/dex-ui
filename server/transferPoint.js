@@ -115,6 +115,11 @@ class TransferPoint {
 
     filterData (req) {
         req = (Array.isArray(req)) ? req[0] : req;
+        if (req.data.type == 'user_balance') {
+            req.type = req.data.type;
+            req.data = req.data.params;
+            return req;
+        }
         if (req.data != 0) {
             let data = this.parseData(req.data);
             req.data = data.parameters;
@@ -151,7 +156,7 @@ class TransferPoint {
             return [obj.asset_in, obj.amount_in, obj.asset_out];
         } else if (method == 'remove_liquidity') {
             return [obj.lt, obj.amount];
-        } else if (method == 'balance'){
+        } else if (method == 'user_balance'){
             return [obj.id]
         } else if (method == 'create_token') {
             return [obj.hash, obj.ticker, obj.emission];

@@ -1,5 +1,5 @@
 function countExchangeRate(pair, firstPerSecond, modeStruct) {
-    if (pair === undefined) {
+    if (!pairExists(pair)) {
         return '-';
     }
     pair = { ...pair };
@@ -13,12 +13,17 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
     return divide(pair.token_0.volume, pair.token_1.volume);
 };
 
+function pairExists (pair) {
+    if (pair.pool_fee === undefined) 
+        return false;
+    return true;
+};
+
 function searchSwap(pairs, tokens) {
     if (pairs.length == 0 || !Array.isArray(pairs))
         return {
             token_0 : {},
-            token_1 : {},
-            pool_fee : 0
+            token_1 : {}
         };
     let hashes = [tokens[0].hash, tokens[1].hash];
     return pairs.find(el => {
@@ -31,8 +36,8 @@ function searchSwap(pairs, tokens) {
 };
 
 function countPoolShare(pair, inputVolume) {
-    if (pair === undefined) {
-        return '-';
+    if (!pairExists(pair)) {
+        return '100';
     }
     let poolVolume = pair.token_0.volume + pair.token_1.volume;
     return divide(inputVolume, poolVolume);
@@ -49,6 +54,7 @@ function divide(input_0, input_1) {
 export default {
     countExchangeRate,
     countPoolShare,
+    pairExists,
     searchSwap,
     divide
 };

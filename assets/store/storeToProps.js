@@ -117,9 +117,12 @@ function mapStoreToProps(component) {
         case components.WAITING_CONFIRMATION:
             return function (state) {
                 return {
-                    langData : state.root.langData,
-                    visibility : state.swapCard.waitingConfirmation.visibility,
-                    txStateType : state.swapCard.waitingConfirmation.txStateType
+                    ...state.swapCard.waitingConfirmation,
+                    createPool : state.swapCard.createPool,
+                    exchange : state.swapCard.exchange,
+                    liquidity : state.swapCard.liquidity,
+                    menuItem : state.root.menuItem,
+                    langData : state.root.langData
                 };
             };
 
@@ -198,13 +201,16 @@ function mapDispatchToProps(component) {
                     closeConfirmCard : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType : swapCardCreator.changeWaitingStateType,
-                    changePendingIndicatorVisibility : rootCreator.changePendingIndicatorVisibility
+                    showPendingIndicator : rootCreator.showPendingIndicator,
+                    hidePendingIndicator : rootCreator.hidePendingIndicator
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation
+                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation,
+                    changeWaitingStateType : swapCardCreator.changeWaitingStateType,
+                    changeCreatePoolState : swapCardCreator.changeCreatePoolState
                 }, dispatch);
             };
 

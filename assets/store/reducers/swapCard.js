@@ -114,8 +114,11 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
             });
 
         case actions.TOGGLE_REMOVE_LIQUIDITY_VIEW:
-            return swapCardStore(state, { activeField: action.value });  ////////////////////////////////////////////
+            return swapCardStore(state, { activeField : action.value });  ////////////////////////////////////////////
             
+        case actions.CHANGE_CREATE_POOL_STATE:
+            return swapCardStore(state, { createPool : action.value });
+
         default:
             return state;
     }

@@ -13,13 +13,33 @@ class WaitingConfirmation extends React.Component {
     };
 
     getHeaderPropNameByType() {
-        let modalHeaderPropName = ""
+        let modalHeaderPropName = "";
         if (this.props.txStateType === 'submitted')
             modalHeaderPropName = "transactionSubmitted";
         else if (this.props.txStateType === 'waiting')
             modalHeaderPropName = "waitingForConfirmation"; 
+        else if (this.props.txStateType === 'rejected')
+            modalHeaderPropName = "transactionRejected"; 
         return modalHeaderPropName;
     }
+
+    getDescription () {
+        let lang = this.props.langData.trade.confirmCard.waitingForConfirmationInternals;
+        let mode, middleWord;
+        if (this.props.menuItem == 'exchange' && !this.props.createPool) {
+            mode = lang.swap.header;
+            middleWord = lang.swap.to;
+        } else if (this.props.menuItem == 'liquidity') {
+            mode = lang.addLiquidity.header;
+            middleWord = lang.addLiquidity.plus;
+        } else {
+            mode = lang.createPool.header;
+            middleWord = lang.addLiquidity.and;
+        }
+        let field0 = this.props[this.props.menuItem].field0;
+        let field1 = this.props[this.props.menuItem].field1;
+        return `${mode} ${field0.value} ${field0.token.ticker} ${middleWord} ${field1.value} ${field1.token.ticker}`;
+    };
 
     getContentByType() {
 
@@ -39,23 +59,28 @@ class WaitingConfirmation extends React.Component {
                                 <span className="icon-Icon11"></span>
                             </a>
                             <Button className='btn-secondary mx-auto mt-3'
-                                    onClick={this.props.closeWaitingConfirmation.bind(this.props)}
+                                    onClick={this.closeWaitingConfirmation.bind(this)}
                                 >{ this.props.langData.close }</Button>
 
                         </>
                     );    
-        } else if (this.props.txStateType === 'waiting') {          
+        } else if (this.props.txStateType === 'waiting') {       
             return  (
                         <>
                             <div className="tx-state-icon-waiting spinner d-flex align-items-center justify-content-center mx-auto" />
                             <div>                                
-                                <div className="mt-4">Swapping 20.6172 BRY for 0.100203 ENQ</div>
+                                <div className="mt-4">{ this.getDescription() }</div>
                                 <div className="small mt-2">{ this.props.langData.trade.confirmCard.confirmInWallet }</div>
-                            </div>                            
+                            </div>                     
                         </>
                     );    
         }
     }
+
+    closeWaitingConfirmation () {
+        this.props.closeWaitingConfirmation();
+        this.props.changeWaitingStateType('waiting');
+    };
 
     render() {
         return (
@@ -64,7 +89,7 @@ class WaitingConfirmation extends React.Component {
                     show={this.props.visibility}
                     aria-labelledby="example-custom-modal-styling-title"
                     className={'tx-state-' +  this.props.txStateType}
-                    onHide={this.props.closeWaitingConfirmation.bind(this.props)}
+                    onHide={this.closeWaitingConfirmation.bind(this)}
                     centered >
                     <Modal.Header closeButton  className="pb-0">
                         <Modal.Title id="example-custom-modal-styling-title">

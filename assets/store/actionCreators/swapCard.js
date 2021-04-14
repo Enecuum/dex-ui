@@ -104,6 +104,13 @@ const actionCreators = {
         return {
             type : actions.TOGGLE_REMOVE_LIQUIDITY_VIEW
         };
+    },
+
+    changeCreatePoolState (booleanVar) {
+        return {
+            type : actions.CHANGE_CREATE_POOL_STATE,
+            value : booleanVar
+        };
     }
 };
 

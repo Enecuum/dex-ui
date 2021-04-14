@@ -18,20 +18,25 @@ class ConfirmSupply extends React.Component {
         this.props.closeConfirmCard();
     };
 
-    sendTransaction () {
+    sendTransaction (pair) {
         this.closeCard();
         this.props.openWaitingConfirmation();
-        this.props.changePendingIndicatorVisibility();
+        this.props.showPendingIndicator();
         let tx;
-        if (this.props.menuItem == 'exchange')
+        if (this.props.menuItem == 'exchange' && utils.pairExists(pair)) {
             tx = extRequests.swap(this.props.pubkey, this.props.exchange);
-        else if (this.props.menuItem == 'liquidity')
+        } else if (this.props.menuItem == 'liquidity') {
             tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
-        else
+        } else {
             tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
+        }
         tx.then(result => {
-            this.props.changePendingIndicatorVisibility();
+            this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('submitted');
+        },
+        error => {
+            this.props.hidePendingIndicator();
+            this.props.changeWaitingStateType('rejected');
         });
     };
 
@@ -60,7 +65,7 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            { testFormulas.countEnxAmount(pair, modeStruct.field1.value) }
+                            { testFormulas.countEnxAmount(pair, modeStruct, this.props.menuItem) }
                         </div>
                         <div className="d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3">
                             <div
@@ -112,7 +117,7 @@ class ConfirmSupply extends React.Component {
                             </div>                  
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
-                                onClick={this.sendTransaction.bind(this)}>
+                                onClick={this.sendTransaction.bind(this, pair)}>
                             {langData.confirm}
                         </Button>
                     </Modal.Body>

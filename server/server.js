@@ -57,7 +57,7 @@ class TestServer {
             );
         });
 
-        this.app.get(`/balance`, (req, res) => {
+        this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
             let body = {
                 data : {
                     type : 'user_balance',

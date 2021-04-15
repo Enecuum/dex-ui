@@ -40,14 +40,12 @@ const initialState = {
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.emptyToken
-            },
-            removeLiquidity : {
-                simpleView : true
             }
         },
         removeLiquidity : {
+            simpleView : true,
             lt : undefined,
-            amount : ''
+            amount : 50
         },
         activeField : 0,
         tokenListStatus: false,

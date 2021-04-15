@@ -110,6 +110,13 @@ const actionCreators = {
         return {
             type : actions.CHANGE_CREATE_POOL_STATE,
             value : booleanVar
+        }
+    },
+    
+    setRemoveLiquidityValue (value) {
+        return {
+            type : actions.SET_REMOVE_LIQUIDITY_AMOUNT,
+            value : value
         };
     }
 };

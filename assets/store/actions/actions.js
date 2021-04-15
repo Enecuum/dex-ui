@@ -29,7 +29,8 @@ const actionPack =  {
         CLOSE_WAITING_CONFIRMATION      : 0x1D,
         CHANGE_WAITING_STATE_TYPE       : 0x1E,
         TOGGLE_REMOVE_LIQUIDITY_VIEW    : 0x1F,
-        CHANGE_CREATE_POOL_STATE        : 0x101
+        SET_REMOVE_LIQUIDITY_AMOUNT     : 0x20,
+        CHANGE_CREATE_POOL_STATE        : 0x21
     },
     tokenCard : {
         ASSIGN_TOKEN_LIST : 0x30,

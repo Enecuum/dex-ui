@@ -29,6 +29,27 @@ class SwapCard extends React.Component {
         this.pairExists = false;
         this.readyToSubmit = false;
         this.updPairs();
+
+        this.removeLiquidity= {
+            ranges : [
+                {
+                    value : 25,
+                    alias : '25%'
+                },
+                {
+                    value : 50,
+                    alias : '50%'
+                },
+                {
+                    value : 75,
+                    alias : '75%'
+                },
+                {
+                    value : 100,
+                    alias : 'MAX'
+                }
+            ]
+        }
     };
 
     async updPairs() {
@@ -342,23 +363,24 @@ class SwapCard extends React.Component {
                 <div className="p-3">
                     <div className="d-flex justify-content-between">
                         <div>Amount</div>
-                        <div>Detailed</div>
+                        <div onClick={this.toggleView.bind(this)} className="hover-pointer">{ this.props.removeLiquidityView ? this.props.langData.removeLiquidity.simple : this.props.langData.removeLiquidity.detailed }</div>
                     </div>
-                    <div className="h1 font-weight-bold my-3">0%</div>
+                    <div className="h1 font-weight-bold my-3">{this.props.removeLiquidityAmount}%</div>
                     <div id="removeLiquidityRange">
                         <Form className="mb-4">
                           <Form.Group controlId="formBasicRangeCustom">
                             <Form.Control type="range" 
-                                value="10"
+                                value= {this.props.removeLiquidityAmount}
                                 min="0"
-                                max="100" />
+                                max="100"
+                                step="0.1" 
+                                onChange = {e => this.setRemoveLiquidityValue(e.target.value)} />
                           </Form.Group>
                         </Form>
                         <div className="d-flex align-items-center justify-content-between">
-                            <button className="btn btn-secondary px-3 py-1">25%</button>
-                            <button className="btn btn-secondary px-3 py-1">50%</button>
-                            <button className="btn btn-secondary px-3 py-1">75%</button>
-                            <button className="btn btn-secondary px-3 py-1">MAX</button>
+                            {this.removeLiquidity.ranges.map((item, index) => (
+                                <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
+                            ))}
                         </div>
                         <div className="text-center my-3">
                             <span className="icon-Icon13" style={{color: "var(--color4)"}}></span>
@@ -376,7 +398,7 @@ class SwapCard extends React.Component {
                                     <LogoToken data = {{url : img2, value : 'BRY'}}/>
                                 </div>
                             </div>
-                            <div class="text-right">
+                            <div className="text-right">
                                 Receive WBNB
                             </div>
                         </div>
@@ -388,8 +410,8 @@ class SwapCard extends React.Component {
                             </div>
                         </div>
                         <div className="d-flex align-items-center justify-content-between">
-                            <button class="btn btn-secondary flex-fill mr-2">Approve</button>
-                            <button class="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
+                            <button className="btn btn-secondary flex-fill mr-2">Approve</button>
+                            <button className="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
                         </div>                    
                     </div>                     
                 </div>
@@ -482,6 +504,14 @@ class SwapCard extends React.Component {
         if (this.props.connectionStatus && this.isReadyToSubmit())
             this.props.openConfirmCard();
     };
+
+    toggleView() {
+        this.props.toggleRemoveLiquidityView();
+    }
+
+    setRemoveLiquidityValue(value) {
+        this.props.setRemoveLiquidityValue(value);
+    }
 
     render() {
         this.establishReadiness();

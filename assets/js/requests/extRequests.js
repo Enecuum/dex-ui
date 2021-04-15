@@ -92,6 +92,7 @@ let extRequests = {
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,
             tokenHash : presets.network.nativeToken.hash,
+            nonce : Math.floor(Math.random() * 1e10),
             data : {
                 type : reqType,
                 parameters : params

@@ -23,10 +23,12 @@ class ConfirmSupply extends React.Component {
         this.props.openWaitingConfirmation();
         this.props.showPendingIndicator();
         let tx;
-        if (this.props.menuItem == 'exchange' && utils.pairExists(pair)) {
-            tx = extRequests.swap(this.props.pubkey, this.props.exchange);
-        } else if (this.props.menuItem == 'liquidity') {
-            tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
+        if (utils.pairExists(pair)) {
+            if (this.props.menuItem == 'exchange') {
+                tx = extRequests.swap(this.props.pubkey, this.props.exchange);
+            } else if (this.props.menuItem == 'liquidity') {
+                tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
+            }
         } else {
             tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
         }

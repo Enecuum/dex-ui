@@ -18,7 +18,7 @@ class TestServer {
         try {
             res.write(JSON.stringify(result));
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
         res.end();
     };
@@ -68,9 +68,20 @@ class TestServer {
             };
             transferApi.transferRequest(body)
             .then(
-                result => this.wrapJSONResponse(res, 200, result),
+                responce => {
+                    let balance = responce.result[req.query.token];
+                    if (balance !== undefined)
+                        this.wrapJSONResponse(res, 200, { amount : balance });
+                    else 
+                        this.wrapJSONResponse(res, 200, { amount : 0 });
+                },
                 error => this.wrapJSONResponse(res, 500, error)
             );
+        });
+
+        this.app.post('/faucet', bodyParser, (req, res) => {
+            transferApi.faucet(req.body.id, req.body.hash, req.body.amount)
+            .finally(result => this.wrapJSONResponse(res, 200, result));
         });
 
         this.app.post('/create_token', bodyParser, (req, res) => {

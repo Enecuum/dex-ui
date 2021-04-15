@@ -61,7 +61,7 @@ class IndicatorPanel extends React.Component {
 
     updData() {
         setInterval(async () => {
-            extRequests.getBalance(this.props.nativeToken)
+            extRequests.getBalance(this.props.pubkey, this.props.nativeToken)
             .then(balance => {
                 if (balance !== undefined)
                     this.props.updCoinAmount(balance.amount);

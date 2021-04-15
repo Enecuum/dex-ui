@@ -82,9 +82,27 @@ class TransferPoint {
     createToken (ticker, emission, pubkey) {
         return new Promise((resolve, reject) => {
             this.sendRequest('create_token', {
-                hash : tokenHashGen.createTokenHash(pubkey),
-                ticker : ticker,
+                hash     : tokenHashGen.createTokenHash(pubkey),
+                ticker   : ticker,
                 emission : (emission) ? emission : 0
+            })
+            .then(res => {
+                logsCreator.msg(JSON.stringify(res.data));
+                resolve(res);
+            },
+            err => {
+                logsCreator.err(err);
+                reject(err);
+            })
+        });
+    };
+
+    faucet (id, hash, amount) {
+        return new Promise((resolve, reject) => {
+            this.sendRequest('fauset', {
+                id : id,
+                hash : hash,
+                amount : amount
             })
             .then(res => {
                 logsCreator.msg(JSON.stringify(res.data));
@@ -160,6 +178,8 @@ class TransferPoint {
             return [obj.id]
         } else if (method == 'create_token') {
             return [obj.hash, obj.ticker, obj.emission];
+        } else if (method == 'fauset') {
+            return [obj.id, obj.hash, obj.amount];
         } else {
             return [];
         }

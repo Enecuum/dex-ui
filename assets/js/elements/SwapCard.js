@@ -43,7 +43,8 @@ class SwapCard extends React.Component {
         let field = this.getActiveField(this.activeField);
         extRequests.getBalance(this.props.pubkey, this.props[this.props.menuItem][field].token.hash)
         .then(res => {
-            this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (res.data.result.amount !== undefined) ? `Balance: ${res.data.result.amount}` : '-');
+            console.log();
+            this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (res.amount !== undefined) ? `Balance: ${res.amount}` : '-');
         });
     }
 
@@ -405,10 +406,10 @@ class SwapCard extends React.Component {
         }
         if (utils.searchSwap(this.props.pairs, [token0, token1]).pool_fee == undefined) {
             this.pairExists = false;
-            this.props.changeCreatePoolState(false);
-        } else { 
-            this.pairExists = true;
             this.props.changeCreatePoolState(true);
+        } else {
+            this.pairExists = true;
+            this.props.changeCreatePoolState(false);
         }
     };
 
@@ -473,8 +474,8 @@ class SwapCard extends React.Component {
     };
 
     renderLiquidityCard() {
-        // return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
-        return this.renderRemoveLiquidity();
+        return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
+        // return this.renderRemoveLiquidity();
     };
 
     openConfirmCard() {

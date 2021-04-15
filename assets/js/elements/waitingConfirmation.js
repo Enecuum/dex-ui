@@ -26,15 +26,17 @@ class WaitingConfirmation extends React.Component {
     getDescription () {
         let lang = this.props.langData.trade.confirmCard.waitingForConfirmationInternals;
         let mode, middleWord;
-        if (this.props.menuItem == 'exchange' && !this.props.createPool) {
-            mode = lang.swap.header;
-            middleWord = lang.swap.to;
-        } else if (this.props.menuItem == 'liquidity') {
-            mode = lang.addLiquidity.header;
-            middleWord = lang.addLiquidity.plus;
+        if (!this.props.createPool) {
+            if (this.props.menuItem == 'exchange') {
+                mode = lang.swap.header;
+                middleWord = lang.swap.to;
+            } else if (this.props.menuItem == 'liquidity') {
+                mode = lang.addLiquidity.header;
+                middleWord = lang.addLiquidity.plus;
+            }
         } else {
             mode = lang.createPool.header;
-            middleWord = lang.addLiquidity.and;
+            middleWord = lang.createPool.and;
         }
         let field0 = this.props[this.props.menuItem].field0;
         let field1 = this.props[this.props.menuItem].field1;
@@ -79,7 +81,9 @@ class WaitingConfirmation extends React.Component {
 
     closeWaitingConfirmation () {
         this.props.closeWaitingConfirmation();
-        this.props.changeWaitingStateType('waiting');
+        setTimeout(() => {
+            this.props.changeWaitingStateType('waiting')
+        }, 1000);
     };
 
     render() {

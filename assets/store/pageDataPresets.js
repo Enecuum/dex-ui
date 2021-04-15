@@ -3,7 +3,7 @@ const presets =  {
         genesisPubKey: '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
         nativeToken: {
             ticker: 'ENQ',
-            hash: '0000000000000000000000000000000000000000000000000000000000000000',
+            hash: 'b07932c60f6499c7aff2ada0583ee157',
             fee: 100000000
         },
         defaultNet: 'BIT'

@@ -28,6 +28,7 @@ class SwapCard extends React.Component {
         this.activeField = 0;
         this.pairExists = false;
         this.readyToSubmit = false;
+        this.activePair = {};
         this.updPairs();
 
         this.removeLiquidity= {
@@ -52,8 +53,10 @@ class SwapCard extends React.Component {
         }
     };
 
-    async updPairs() {
-        this.props.updPairs(await (await swapApi.getPairs()).json());
+    updPairs() {
+        setInterval(async () => {
+            this.props.updPairs(await (await swapApi.getPairs()).json());
+        }, 5000);
     };
 
     swapPair() {
@@ -64,7 +67,6 @@ class SwapCard extends React.Component {
         let field = this.getActiveField(this.activeField);
         extRequests.getBalance(this.props.pubkey, this.props[this.props.menuItem][field].token.hash)
         .then(res => {
-            console.log();
             this.props.assignWalletValue(this.props.menuItem, this.props.activeField, (res.amount !== undefined) ? `Balance: ${res.amount}` : '-');
         });
     }
@@ -177,11 +179,11 @@ class SwapCard extends React.Component {
         let counterField = this.props[this.props.menuItem][cField];
 
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
-            let pair = utils.searchSwap(this.props.pairs, [activeField.token, counterField.token]);
-            if (pair === undefined) {
+            this.activePair = utils.searchSwap(this.props.pairs, [activeField.token, counterField.token]);
+            if (this.activePair === undefined) {
                 return;
             }
-            let counterFieldPrice = this.countPrice(activeField, pair);
+            let counterFieldPrice = this.countPrice(activeField, this.activePair);
             if (!counterFieldPrice)
                 counterFieldPrice = '';
                 this.props.assignCoinValue(this.props.menuItem, cField, counterFieldPrice);
@@ -308,6 +310,16 @@ class SwapCard extends React.Component {
         );
     };
 
+    showExchRate (firstToken) {
+        let res = utils.countExchangeRate(this.activePair, firstToken, this.props.liquidity) + '';
+        return res.substring(0, 6);
+    };
+
+    showPullShare () {
+        let res =  utils.countPoolShare(this.activePair, this.props.liquidity.field0.value + this.props.liquidity.field1.value) + '';
+        return res.substring(0, 6) + '%';
+    };
+
     renderAddLiquidityCard() {
         let langData = this.props.langData;
         let langProp_Per_ = langData[this.props.menuItem].per;
@@ -340,15 +352,15 @@ class SwapCard extends React.Component {
                 <div className='pool-prices my-3'>{this.props.langData[this.props.menuItem].priceAndPoolShare}</div>
                 <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                     <div>
-                        <div className='d-flex justify-content-center'>{utils.countExchangeRate(this.props.pairs, true, this.props.liquidity)}</div>
+                        <div className='d-flex justify-content-center'>{this.showExchRate(true)}</div>
                         <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, true)}</div>
                     </div>
                     <div>
-                        <div className='d-flex justify-content-center'>{utils.countExchangeRate(this.props.pairs, false, this.props.liquidity)}</div>
+                        <div className='d-flex justify-content-center'>{this.showExchRate(false)}</div>
                         <div className='d-flex justify-content-center'>{this.getExchangeText(langProp_Per_, false)}</div>
                     </div>
                     <div>
-                        <div className='d-flex justify-content-center'>-</div>
+                        <div className='d-flex justify-content-center'>{this.showPullShare()}</div>
                         <div className='d-flex justify-content-center'>{langData[this.props.menuItem].shareOfPool}</div>
                     </div>
                 </div>

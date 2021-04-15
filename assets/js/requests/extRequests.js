@@ -88,6 +88,7 @@ let extRequests = {
 
     sendTx (pubKey, reqType, params) {
         return Enecuum.sendTransaction({
+            amount:0,
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,

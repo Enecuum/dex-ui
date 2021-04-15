@@ -16,6 +16,7 @@ class TestServer {
             'Content-Type': 'application/json',
         });
         try {
+            console.log(JSON.stringify(result))
             res.write(JSON.stringify(result));
         } catch (err) {
             // console.log(err);
@@ -34,6 +35,23 @@ class TestServer {
         }
     };  
 
+    convertPools (pools) {
+        return pools.map(element => {
+            return {
+                token_0 : {
+                    hash : element.t1,
+                    volume : element.v1
+                },
+                token_1 : {
+                    hash :  element.t2,
+                    volume : element.v2
+                },
+                pool_fee : 0,
+                lt : element.lt
+            };
+        });
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
@@ -47,12 +65,25 @@ class TestServer {
             );
         });
 
-        this.app.get(`/tokens|pools`, (req, res) => {
+        this.app.get(`/tokens`, (req, res) => {
             let urlArr = req.url.split('/');
             let type = urlArr[urlArr.length - 1];
             transferApi.straightRequest(type)
             .then(
                 result => this.wrapJSONResponse(res, 200, result),
+                error => this.wrapJSONResponse(res, 500, error)
+            );
+        });
+
+        this.app.get(`/pools`, (req, res) => {
+            let urlArr = req.url.split('/');
+            let type = urlArr[urlArr.length - 1];
+            transferApi.straightRequest(type)
+            .then(
+                result => {
+                    let pools = this.convertPools(result);
+                    this.wrapJSONResponse(res, 200, pools)
+                },
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });

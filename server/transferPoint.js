@@ -142,6 +142,7 @@ class TransferPoint {
             let data = this.parseData(req.data);
             req.data = data.parameters;
             req.type = data.type;
+            req.data.from = req.from;
         } else
             req.data = undefined;
         return req;
@@ -169,11 +170,11 @@ class TransferPoint {
 
     objToArray (obj, method) {
         if (method == 'create_pool' || method == 'add_liquidity') {
-            return [obj.asset_1, obj.amount_1, obj.asset_2, obj.amount_2];
+            return [obj.from, obj.asset_1, obj.amount_1, obj.asset_2, obj.amount_2];
         } else if (method == 'swap') {
-            return [obj.asset_in, obj.amount_in, obj.asset_out];
+            return [obj.from, obj.asset_in, obj.amount_in, obj.asset_out];
         } else if (method == 'remove_liquidity') {
-            return [obj.lt, obj.amount];
+            return [obj.from, obj.lt, obj.amount];
         } else if (method == 'user_balance'){
             return [obj.id]
         } else if (method == 'create_token') {

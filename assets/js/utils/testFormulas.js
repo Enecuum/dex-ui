@@ -25,7 +25,7 @@ function countEnxAmount (pair, uiPair, mode) {
         return 0;
     } else if (mode == 'liquidity') {
         let required_1 = pair.token_0.volume * uiPair.field1.value / pair.token_1.volume;
-        return Math.sqrt(required_1 * amount_2);
+        return Math.sqrt(required_1 * uiPair.field1.value);
     }
     // dev warning
     return 'wrong mode';

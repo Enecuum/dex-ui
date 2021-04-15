@@ -113,6 +113,7 @@ function mapStoreToProps(component) {
                     exchange : state.swapCard.exchange,
                     liquidity : state.swapCard.liquidity,
                     menuItem : state.root.menuItem,
+                    pubkey : state.root.pubkey,
                     pairs : state.swapCard.pairs
                 };
             };

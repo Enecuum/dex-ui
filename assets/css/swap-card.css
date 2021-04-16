@@ -3,15 +3,19 @@
     margin-left: 0;
 }
 
-.swap-card {
+.swap-card-wrapper {
     position: fixed;
-    box-shadow: var(--box-shadow);
-    background-color: var(--bg-swap-card);
     margin-top: 250px;
-    height: auto;
-    width: 430px;
     left: 40%;
     transition: var(--transition1);
+}
+
+.swap-card {    
+    box-shadow: var(--box-shadow);
+    background-color: var(--bg-swap-card);    
+    height: auto;
+    width: 430px;
+
     border-radius: var(--border-radius1);
 }
 

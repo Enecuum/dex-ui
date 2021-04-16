@@ -251,3 +251,13 @@ body {
 .btn {
     border-radius: var(--border-radius2);
 }
+
+.text-color3 {
+    color: var(--color3);
+}
+
+.general-card {
+    box-shadow: var(--box-shadow);
+    background-color: var(--bg-swap-card);
+    border-radius: var(--border-radius1);   
+}

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
+import PairLogos from '../components/PairLogos';
 import LogoToken from '../components/LogoToken';
 import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
@@ -62,18 +63,7 @@ class ConfirmSupply extends React.Component {
                         <div className="h3 font-weight-bold">
                             { testFormulas.countEnxAmount(pair, modeStruct.field1.value) }
                         </div>
-                        <div className="d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3">
-                            <div
-                                className="logo-wrapper-sm"
-                                style = {{ 
-                                    backgroundImage: `url(${img1})`
-                                }} />   
-                            <div
-                                className="logo-wrapper-sm"
-                                style = {{
-                                    backgroundImage: `url(${img2})`
-                                }} />
-                        </div>
+                        <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>
                             {firstToken.name}/{secondToken.name} Pool Tokens
                         </div>                        

@@ -409,7 +409,7 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="d-flex align-items-center justify-content-between">
                             <button className="btn btn-secondary flex-fill mr-2">Approve</button>
-                            <button className="btn btn-secondary flex-fill ml-2">Enter an ammount</button>
+                            <button className="btn btn-secondary flex-fill ml-2">Enter an amount</button>
                         </div>                    
                     </div>                     
                 </div>
@@ -490,7 +490,7 @@ class SwapCard extends React.Component {
     };
 
     renderLiquidityCard() {
-        // return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
+        //return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
         return this.renderRemoveLiquidity();
     };
 

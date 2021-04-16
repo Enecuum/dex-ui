@@ -15,8 +15,12 @@ import BlankPage from './pages/blankPage';
 import ConnectionService from './elements/ConnectionService';
 import ConfirmSupply from './elements/ConfirmSupply';
 import WaitingConfirmation from './elements/waitingConfirmation';
+import SwapAddon from './components/SwapAddon';
+import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 
 import SwapApi from './requests/swapApi';
+import img1 from '../img/logo.png';
+import img2 from '../img/bry-logo.png';
 
 const swapApi = new SwapApi();
 
@@ -39,14 +43,20 @@ class Root extends React.Component {
             case 'exchange':
             case 'liquidity':
                 return (
-                    <div className='swap-card' style={{ left : this.props.swapCardLeft}}>
-                        <div id='switch' >
-                            <Switch />
+                    <div className="swap-card-wrapper" style={{ left : this.props.swapCardLeft}}>
+                        <div className='swap-card'>
+                            <div id='switch' >
+                                <Switch />
+                            </div>
+                            <SwapCard />
+                            <ConfirmSupply />
+                            <WaitingConfirmation />
                         </div>
-                        <SwapCard />
-                        <ConfirmSupply />
-                        <WaitingConfirmation />    
-                    </div>
+                        <div className="addon-card-wrapper mt-4">
+                            <SwapAddon />
+                            <LPTokensWalletInfo data={{token1 : 'ENQ', token2 : 'BRY', logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
+                        </div>
+                    </div>    
                 );
             case 'etm':
                 return (

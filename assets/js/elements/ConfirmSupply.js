@@ -105,8 +105,8 @@ class ConfirmSupply extends React.Component {
                                     {langData.rates}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {firstToken.ticker}</div>
+                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
@@ -114,7 +114,7 @@ class ConfirmSupply extends React.Component {
                                     {langData.shareOfPool}
                                 </div>
                                 <div>
-                                    {utils.countPoolShare(pair, modeStruct.field0.value + modeStruct.field1.value)}%
+                                    {utils.countPoolShare(pair, modeStruct)}%
                                 </div>
                             </div>                  
                         </div>

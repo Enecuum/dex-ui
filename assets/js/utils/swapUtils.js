@@ -1,6 +1,5 @@
 function countExchangeRate(pair, firstPerSecond, modeStruct) {
     if (!pairExists(pair)) {
-        console.log(pair);
         return '-';
     }
     pair = { ...pair };
@@ -38,17 +37,19 @@ function searchSwap(pairs, tokens) {
     return (validPair) ? validPair : emptyPair;
 };
 
-function countPoolShare(pair, inputVolume) {
+function countPoolShare(pair, modeStruct) {
     if (!pairExists(pair)) {
         return '-';
     }
-    let poolVolume = pair.token_0.volume + pair.token_1.volume;
-    return divide(inputVolume, poolVolume);
+    let inputVolume = Number(modeStruct.field0.value) * Number(modeStruct.field1.value);
+    let poolVolume = Number(pair.token_0.volume) * Number(pair.token_1.volume);
+    let res = divide(inputVolume, poolVolume) * 100;
+    return (res > 100) ? 100 : res;
 };
 
 function divide(input_0, input_1) {
     try {
-        return input_1 / input_0;
+        return input_0 / input_1;
     } catch (e) {
         return 0;
     }

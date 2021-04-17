@@ -16,7 +16,6 @@ class TestServer {
             'Content-Type': 'application/json',
         });
         try {
-            console.log(JSON.stringify(result))
             res.write(JSON.stringify(result));
         } catch (err) {
             // console.log(err);

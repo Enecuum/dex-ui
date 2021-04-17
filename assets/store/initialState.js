@@ -20,11 +20,13 @@ const initialState = {
         pairs: [],
         exchange: {
             field0: {
+                id : 0,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.defaultToken
             },
             field1: {
+                id : 1,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.emptyToken
@@ -32,11 +34,13 @@ const initialState = {
         },
         liquidity: {
             field0: {
+                id : 2,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.defaultToken
             },
             field1: {
+                id : 3,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.emptyToken

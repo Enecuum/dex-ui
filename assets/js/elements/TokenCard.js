@@ -32,7 +32,7 @@ class TokenCard extends React.Component {
     assignToken(token) {
         this.props.assignTokenValue(this.props.menuItem, this.props.activeField, token);
         this.props.closeTokenList();
-        this.changeBalance();
+        this.changeBalance(this.props.activeField, token.hash);
     };
 
     toggleSortList() {

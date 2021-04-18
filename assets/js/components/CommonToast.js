@@ -1,6 +1,5 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
-import Toast from 'react-bootstrap/Toast';
+import { Button, Toast } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, components } from '../../store/storeToProps';
 

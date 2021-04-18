@@ -18,12 +18,13 @@ const initialState = {
     },
     swapCard : {
         pairs: [],
+        ltList: [],
         exchange: {
             field0: {
                 id : 0,
                 walletValue: '-',
                 value: '',
-                token: presets.swapTokens.defaultToken
+                token: presets.swapTokens.emptyToken
             },
             field1: {
                 id : 1,
@@ -37,7 +38,7 @@ const initialState = {
                 id : 2,
                 walletValue: '-',
                 value: '',
-                token: presets.swapTokens.defaultToken
+                token: presets.swapTokens.emptyToken
             },
             field1: {
                 id : 3,
@@ -54,6 +55,7 @@ const initialState = {
         activeField : 0,
         tokenListStatus: false,
         liquidityMain: true,
+        liquidityRemove: false,
         confirmCardOpened: false,
         createPool : false,
         waitingConfirmation: {

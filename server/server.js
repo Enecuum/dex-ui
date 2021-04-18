@@ -51,6 +51,25 @@ class TestServer {
         });
     };
 
+    getBalanceBody (id) {
+        return {
+            data : {
+                type : 'user_balance',
+                params : {
+                    id : id
+                }
+            }
+        };
+    };
+
+    getltData (balances, pools) {
+        let filtered = [];
+        for (let pool of pools)
+            if (balances[pool.lt] !== undefined)
+                filtered.push(pool);
+        return { data : filtered};
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
@@ -65,9 +84,7 @@ class TestServer {
         });
 
         this.app.get(`/tokens`, (req, res) => {
-            let urlArr = req.url.split('/');
-            let type = urlArr[urlArr.length - 1];
-            transferApi.straightRequest(type)
+            transferApi.straightRequest('tokens')
             .then(
                 result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
@@ -75,9 +92,7 @@ class TestServer {
         });
 
         this.app.get(`/pools`, (req, res) => {
-            let urlArr = req.url.split('/');
-            let type = urlArr[urlArr.length - 1];
-            transferApi.straightRequest(type)
+            transferApi.straightRequest('pools')
             .then(
                 result => {
                     let pools = this.convertPools(result);
@@ -87,22 +102,34 @@ class TestServer {
             );
         });
 
-        this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
-            let body = {
-                data : {
-                    type : 'user_balance',
-                    params : {
-                        id : req.query.id
-                    }
-                }
-            };
-            transferApi.transferRequest(body)
+        this.app.get(`/lt_data`, (req, res) => {  
+            transferApi.transferRequest(this.getBalanceBody(req.query.id))
             .then(
-                responce => {
-                    let balance = responce.result[req.query.token];
-                    if (balance !== undefined)
+                balances => {
+                    if (balances.result !== undefined) {
+                        transferApi.straightRequest('pools')
+                        .then(
+                            pools => {
+                                this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
+                            },
+                            error => this.wrapJSONResponse(res, 500, error)
+                        );
+                    } else {
+                        this.wrapJSONResponse(res, 200, { data : []})
+                    }
+                },
+                error => this.wrapJSONResponse(res, 500, error)
+            );
+        });
+
+        this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
+            transferApi.transferRequest(this.getBalanceBody(req.query.id))
+            .then(
+                response => {
+                    let balance = response.result[req.query.token];
+                    if (balance !== undefined) {
                         this.wrapJSONResponse(res, 200, { amount : balance });
-                    else 
+                    } else 
                         this.wrapJSONResponse(res, 200, { amount : 0 });
                 },
                 error => this.wrapJSONResponse(res, 500, error)

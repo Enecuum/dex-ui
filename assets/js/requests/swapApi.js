@@ -35,6 +35,13 @@ class SwapApi {
             })
         });
     };
+    getltData (pubkey) {
+        return fetch(`${this.url}lt_data?id=${pubkey}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
     getTokens () {
         return fetch(`${this.url}tokens`,
             {

@@ -118,6 +118,19 @@ const actionCreators = {
             type : actions.SET_REMOVE_LIQUIDITY_AMOUNT,
             value : value
         };
+    },
+    
+    updltList (list) {
+        return {
+            type : actions.UPD_LT_LIST,
+            value : list
+        };
+    },
+
+    changeRemoveLiquidityVisibility () {
+        return {
+            type : actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY
+        };
     }
 };
 

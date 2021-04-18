@@ -18,7 +18,8 @@ const components = {
     TOAST               : 0x8,
     INDICATOR_PANEL     : 0x9,
     CONFIRM_SUPPLY      : 0xA,
-    WAITING_CONFIRMATION: 0xB
+    WAITING_CONFIRMATION: 0xB,
+    LIQUIDITY_TOKEN_ZONE: 0xC
 };
 
 function mapStoreToProps(component) {
@@ -128,6 +129,15 @@ function mapStoreToProps(component) {
                     langData : state.root.langData
                 };
             };
+        case components.LIQUIDITY_TOKEN_ZONE:
+            return function (state) {
+                return {
+                    pubkey : state.root.pubkey,
+                    ltList : state.swapCard.ltList,
+                    menuItem : state.root.menuItem,
+                    tList  : state.tokenCard.tokens
+                };
+            };
 
         default:
             return undefined;
@@ -138,7 +148,10 @@ function mapDispatchToProps(component) {
     switch (component) {
         case components.ROOT:
             return function (dispatch) {
-                return bindActionCreators(rootCreator, dispatch);
+                return bindActionCreators({
+                    ...rootCreator,
+                    assignAllTokens : tokenCardCreator.assignAllTokens
+                }, dispatch);
             };
         case components.SWAP_CARD:
             return function (dispatch) {
@@ -214,6 +227,15 @@ function mapDispatchToProps(component) {
                     closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation,
                     changeWaitingStateType : swapCardCreator.changeWaitingStateType,
                     changeCreatePoolState : swapCardCreator.changeCreatePoolState
+                }, dispatch);
+            };
+        case components.LIQUIDITY_TOKEN_ZONE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updltList : swapCardCreator.updltList,
+                    changeLiquidityMode : swapCardCreator.changeLiquidityMode,
+                    assignTokenValue : swapCardCreator.assignTokenValue,
+                    changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility
                 }, dispatch);
             };
 

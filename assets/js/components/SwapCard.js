@@ -1,19 +1,20 @@
 import React from 'react';
-import Form from 'react-bootstrap/Form';
+import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import presets from '../../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
-import LogoToken from '../components/LogoToken';
-import Tooltip from '../components/Tooltip';
+import LogoToken from '../elements/LogoToken';
+import Tooltip from '../elements/Tooltip';
 import TokenCard from './TokenCard';
 import History from './History';
 import Settings from './Settings';
-import extRequests from '../requests/extRequests';
+import ExtRequests from '../requests/extRequests';
 import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import SwapApi from '../requests/swapApi';
+import LiquidityTokensZone from './LiquidityTokensZone';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -21,6 +22,7 @@ import '../../css/swap-card.css';
 import '../../css/font-style.css';
 
 const swapApi = new SwapApi();
+const extRequests = new ExtRequests();
 
 class SwapCard extends React.Component {
     constructor(props) {
@@ -290,8 +292,8 @@ class SwapCard extends React.Component {
                         </div>
                         <Tooltip text='text'/> {/*this.props.langData.trade.tokenCard.tooltipText*/}
                     </div>
-                    <div className='your-liquidity-field mb-3'>
-                        {/* future content */}
+                    <div className='your-liquidity-field my-3'>
+                        <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
                     </div>
                     <div className='your-liquidity-header'>
                         {this.props.langData[this.props.menuItem].additionInfo}
@@ -376,11 +378,11 @@ class SwapCard extends React.Component {
                     <div id="removeLiquidityRange">
                         <Form className="mb-4">
                           <Form.Group controlId="formBasicRangeCustom">
-                            <Form.Control type="range" 
+                            <Form.Control type="range"
                                 value= {this.props.removeLiquidityAmount}
                                 min="0"
                                 max="100"
-                                step="0.1" 
+                                step="0.1"
                                 onChange = {e => this.setRemoveLiquidityValue(e.target.value)} />
                           </Form.Group>
                         </Form>
@@ -504,8 +506,10 @@ class SwapCard extends React.Component {
     };
 
     renderLiquidityCard() {
-        return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
-        // return this.renderRemoveLiquidity();
+        if (this.props.liquidityRemove)
+            return this.renderRemoveLiquidity();
+        else
+            return (this.props.liquidityMain) ? this.renderMainLiquidityCard() : this.renderAddLiquidityCard();
     };
 
     openConfirmCard() {

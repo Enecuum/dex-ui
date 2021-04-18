@@ -1,9 +1,11 @@
 import React from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import extRequests from '../requests/extRequests';
+import ExtRequests from '../requests/extRequests';
+
+const extRequests = new ExtRequests();
 
 class IndicatorPanel extends React.Component {
     constructor (props) {

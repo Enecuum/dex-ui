@@ -6,15 +6,16 @@ import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Navbar from './elements/Navbar';
-import Aside from './elements/Aside';
-import SwapCard from './elements/SwapCard';
-import Etm from './pages/Etm';
-import Switch from './elements/Switch';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation } from './components/entry';
+// import Navbar from './components/Navbar';
+// import Aside from './components/Aside';
+// import SwapCard from './components/SwapCard';
+// import Switch from './components/Switch';
+// import ConnectionService from './components/ConnectionService';
+// import ConfirmSupply from './components/ConfirmSupply';
+// import WaitingConfirmation from './components/waitingConfirmation';
 import BlankPage from './pages/blankPage';
-import ConnectionService from './elements/ConnectionService';
-import ConfirmSupply from './elements/ConfirmSupply';
-import WaitingConfirmation from './elements/waitingConfirmation';
+import Etm from './pages/Etm';
 
 import SwapApi from './requests/swapApi';
 
@@ -24,6 +25,11 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.updLanguage();
+        this.updTokens();
+    };
+
+    async updTokens() {
+        this.props.assignAllTokens(await (await swapApi.getTokens()).json());
     };
 
     async updLanguage () {

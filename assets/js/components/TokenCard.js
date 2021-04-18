@@ -1,10 +1,10 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal';
+import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import SwapApi from '../requests/swapApi';
-import Tooltip from '../components/Tooltip';
+import Tooltip from '../elements/Tooltip';
 
 import '../../css/token-card.css';
 
@@ -80,7 +80,7 @@ class TokenCard extends React.Component {
         }
     }
 
-    makeList(sortDirection = 'asc') {//allowable values are: 'asc','desc','unsort'
+    makeList(sortDirection = 'asc') { //allowable values are: 'asc','desc','unsort'
         return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map((el, i) => {
             return (
                 <div className='token-option py-1 my-1 px-1 hover-pointer' key={i} onClick={this.assignToken.bind(this, el)}>

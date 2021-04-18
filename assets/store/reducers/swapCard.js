@@ -128,6 +128,12 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.CHANGE_CREATE_POOL_STATE:
             return swapCardStore(state, { createPool : action.value });
 
+        case actions.UPD_LT_LIST:
+            return swapCardStore(state, { ltList : action.value });
+
+        case actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY:
+            return swapCardStore(state, {liquidityRemove : !state.liquidityRemove});
+
         default:
             return state;
     }

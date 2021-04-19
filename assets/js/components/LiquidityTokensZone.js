@@ -75,7 +75,7 @@ class LiquidityTokensZone extends React.Component {
                 let fToken = this.getTokenByHash(el.t1);
                 let sToken = this.getTokenByHash(el.t2);
                 return (
-                    <Card className="liquidity-tokens-zone">
+                    <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
                             <Accordion.Toggle eventKey={index+''} as="div">
                                 {fToken.ticker}/{sToken.ticker}

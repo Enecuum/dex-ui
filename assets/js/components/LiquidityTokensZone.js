@@ -77,18 +77,31 @@ class LiquidityTokensZone extends React.Component {
                 return (
                     <Card className="liquidity-tokens-zone">
                         <Card.Header>
-                            <Accordion.Toggle eventKey={index+''}>
+                            <Accordion.Toggle eventKey={index+''} as="div">
                                 {fToken.ticker}/{sToken.ticker}
                             </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey={index+''}>
                             <Card.Body>
-                                <div className="d-flex justify-content-start">Pooled {fToken.ticker}: {el.v1}</div>
-                                <div className="d-flex justify-content-start">Pooled {sToken.ticker}: {el.v2}</div>
-                                <div className="d-flex justify-content-start">Your pool tokens: {this.poolAmount}</div>
+                                <div className="mb-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span className="mr-2">Pooled {fToken.ticker}:</span>{el.v1}
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span className="mr-2">Pooled {sToken.ticker}:</span>
+                                        {el.v2}
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span className="mr-2">Your pool tokens:</span>
+                                        {this.poolAmount}
+                                    </div>                                
+                                </div>
+
                                 {/* Your pool share is absent because of lack of data. */}
-                                <Button variant="success" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                <Button variant="success" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
+                                <div className="d-flex align-items-center justify-content-between">
+                                    <Button className="mr-2 btn liquidity-btn" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
+                                    <Button className="ml-2 btn liquidity-btn" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
+                                </div>
                             </Card.Body>
                         </Accordion.Collapse>
                     </Card>

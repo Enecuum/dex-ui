@@ -1,5 +1,5 @@
 import React from 'react';
-import Tooltip from '../components/Tooltip';
+import Tooltip from '../elements/Tooltip';
 
 class SwapAddon extends React.Component {
     constructor(props) {

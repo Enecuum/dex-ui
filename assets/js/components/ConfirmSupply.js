@@ -1,38 +1,47 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import PairLogos from '../components/PairLogos';
-import LogoToken from '../components/LogoToken';
+import LogoToken from '../elements/LogoToken';
+
 import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
-import extRequests from '../requests/extRequests';
+import ExtRequests from '../requests/extRequests';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/confirm-supply.css';
+
+const extRequests = new ExtRequests();
 
 class ConfirmSupply extends React.Component {
     closeCard () {
         this.props.closeConfirmCard();
     };
 
-    sendTransaction () {
+    sendTransaction (pair) {
         this.closeCard();
         this.props.openWaitingConfirmation();
-        this.props.changePendingIndicatorVisibility();
+        this.props.showPendingIndicator();
         let tx;
-        if (this.props.menuItem == 'exchange')
-            tx = extRequests.swap(this.props.pubkey, this.props.exchange);
-        else if (this.props.menuItem == 'liquidity')
-            tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
-        else
+        if (utils.pairExists(pair)) {
+            if (this.props.menuItem == 'exchange') {
+                tx = extRequests.swap(this.props.pubkey, this.props.exchange);
+            } else if (this.props.menuItem == 'liquidity') {
+                tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
+            }
+        } else {
             tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
+        }
         tx.then(result => {
-            this.props.changePendingIndicatorVisibility();
+            this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('submitted');
+        },
+        error => {
+            this.props.hidePendingIndicator();
+            this.props.changeWaitingStateType('rejected');
         });
     };
 
@@ -61,11 +70,11 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            { testFormulas.countEnxAmount(pair, modeStruct.field1.value) }
+                            { testFormulas.countEnxAmount(pair, modeStruct, this.props.menuItem) }
                         </div>
                         <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>
-                            {firstToken.name}/{secondToken.name} Pool Tokens
+                            {firstToken.ticker}/{secondToken.ticker} Pool Tokens
                         </div>                        
                         <div className='confirm-supply-description'>
                             {langData.description}
@@ -73,13 +82,13 @@ class ConfirmSupply extends React.Component {
                         <div className="my-5">
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {firstToken.name} {langData.deposited}
+                                    {firstToken.ticker} {langData.deposited}
                                 </div>
                                 <LogoToken data={{url : img1, value : modeStruct.field0.value}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {secondToken.name} {langData.deposited}
+                                    {secondToken.ticker} {langData.deposited}
                                 </div>
                                 <LogoToken data={{url : img2, value : modeStruct.field1.value}} />
                             </div>
@@ -88,8 +97,8 @@ class ConfirmSupply extends React.Component {
                                     {langData.rates}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.name} = {utils.countExchangeRate(pair, false, modeStruct)} {secondToken.name}</div>
-                                    <div>1 {secondToken.name} = {utils.countExchangeRate(pair, true, modeStruct)} {firstToken.name}</div>
+                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
@@ -97,12 +106,12 @@ class ConfirmSupply extends React.Component {
                                     {langData.shareOfPool}
                                 </div>
                                 <div>
-                                    {utils.countPoolShare(pair, modeStruct.field0.value + modeStruct.field1.value)}%
+                                    {utils.countPoolShare(pair, modeStruct)}%
                                 </div>
                             </div>                  
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
-                                onClick={this.sendTransaction.bind(this)}>
+                                onClick={this.sendTransaction.bind(this, pair)}>
                             {langData.confirm}
                         </Button>
                     </Modal.Body>

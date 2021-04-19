@@ -2,8 +2,8 @@ const presets =  {
     network : {
         genesisPubKey: '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
         nativeToken: {
-            name: 'ENQ',
-            hash: '0000000000000000000000000000000000000000000000000000000000000000',
+            ticker: 'ENQ',
+            hash: 'b07932c60f6499c7aff2ada0583ee157',
             fee: 100000000
         },
         defaultNet: 'BIT'
@@ -11,11 +11,11 @@ const presets =  {
 
     swapTokens : {
         emptyToken: {
-            name: 'Select a token',
+            ticker: 'Select a token',
             hash: undefined
         },
         defaultToken: {
-            name: 'ENQ',
+            ticker: 'ENQ',
             hash: '123'
         }
     },
@@ -47,7 +47,16 @@ const presets =  {
                 submitButton: {}
             },
             tokenCard: {},
-            confirmCard: {}
+            confirmCard : {
+                waitingForConfirmationInternals : {
+                    swap : {
+                    },
+                    addLiquidity : {
+                    },
+                    createPool : { 
+                    }
+                }
+            },
         }
     }
 };

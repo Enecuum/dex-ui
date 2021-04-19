@@ -79,12 +79,27 @@
             "shareOfPool" : "Share of pool",
             "confirm" : "Confirm Supply",
             "waitingForConfirmation" : "Waiting for confirmation",
-            "confirmInWallet" : "Confirm this transaction in your wallet"
+            "confirmInWallet" : "Confirm this transaction in your wallet",
+            "waitingForConfirmationInternals" : {
+                "swap" : {
+                    "header" : "Swapping",
+                    "to" : "to"
+                },
+                "addLiquidity" : {
+                    "header" : "Adding liquidity",
+                    "plus" : "+"
+                },
+                "createPool" : {
+                    "header" : "Creating pool",
+                    "and" : "and"
+                }
+            }
         }
     },
     "info" : "Info",
     "submit" : "Submit",
     "close" : "Close",
-    "transactionSubmitted" : "Transaction submitted",
-    "waitingForConfirmation" : "Waiting for confirmation"
+    "transactionSubmitted" : "Transaction was submitted",
+    "waitingForConfirmation" : "Waiting for confirmation",
+    "transactionRejected" : "Transaction was rejected"
 }

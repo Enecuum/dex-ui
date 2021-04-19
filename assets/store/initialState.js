@@ -18,13 +18,16 @@ const initialState = {
     },
     swapCard : {
         pairs: [],
+        ltList: [],
         exchange: {
             field0: {
+                id : 0,
                 walletValue: '-',
                 value: '',
-                token: presets.swapTokens.defaultToken
+                token: presets.swapTokens.emptyToken
             },
             field1: {
+                id : 1,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.emptyToken
@@ -32,11 +35,13 @@ const initialState = {
         },
         liquidity: {
             field0: {
+                id : 2,
                 walletValue: '-',
                 value: '',
-                token: presets.swapTokens.defaultToken
+                token: presets.swapTokens.emptyToken
             },
             field1: {
+                id : 3,
                 walletValue: '-',
                 value: '',
                 token: presets.swapTokens.emptyToken
@@ -50,7 +55,9 @@ const initialState = {
         activeField : 0,
         tokenListStatus: false,
         liquidityMain: true,
+        liquidityRemove: false,
         confirmCardOpened: false,
+        createPool : false,
         waitingConfirmation: {
             visibility : false,
             txStateType : 'waiting'
@@ -68,7 +75,7 @@ const initialState = {
     },
     indicatorPanel : {
         nativeToken: presets.network.nativeToken.hash,
-        coinName: presets.network.nativeToken.name,
+        coinName: presets.network.nativeToken.ticker,
         net: presets.network.defaultNet,
         coinAmount: 0,
         enx: 0

@@ -106,10 +106,30 @@ const actionCreators = {
         };
     },
 
+    changeCreatePoolState (booleanVar) {
+        return {
+            type : actions.CHANGE_CREATE_POOL_STATE,
+            value : booleanVar
+        }
+    },
+    
     setRemoveLiquidityValue (value) {
         return {
             type : actions.SET_REMOVE_LIQUIDITY_AMOUNT,
             value : value
+        };
+    },
+    
+    updltList (list) {
+        return {
+            type : actions.UPD_LT_LIST,
+            value : list
+        };
+    },
+
+    changeRemoveLiquidityVisibility () {
+        return {
+            type : actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY
         };
     }
 };

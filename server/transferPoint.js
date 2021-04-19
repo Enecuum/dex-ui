@@ -74,7 +74,7 @@ class TransferPoint {
             id: this.idManager.createRequestId()
         };
         if (data)
-            txData.params = data;
+            txData.params = this.objToArray(data, method);
         logsCreator.msg(JSON.stringify(txData));
         return axios.post(`${this.config.dex_url}:${this.config.dex_port}/${this.config.api_version}`, txData);
     };
@@ -82,12 +82,30 @@ class TransferPoint {
     createToken (ticker, emission, pubkey) {
         return new Promise((resolve, reject) => {
             this.sendRequest('create_token', {
-                hash : tokenHashGen.createTokenHash(pubkey),
-                ticker : ticker,
+                hash     : tokenHashGen.createTokenHash(pubkey),
+                ticker   : ticker,
                 emission : (emission) ? emission : 0
             })
             .then(res => {
-                logsCreator.msg(res);
+                logsCreator.msg(JSON.stringify(res.data));
+                resolve(res);
+            },
+            err => {
+                logsCreator.err(err);
+                reject(err);
+            })
+        });
+    };
+
+    faucet (id, hash, amount) {
+        return new Promise((resolve, reject) => {
+            this.sendRequest('fauset', {
+                id : id,
+                hash : hash,
+                amount : amount
+            })
+            .then(res => {
+                logsCreator.msg(JSON.stringify(res.data));
                 resolve(res);
             },
             err => {
@@ -104,7 +122,7 @@ class TransferPoint {
             .then(res => {
                 resolve(responseRule(res));
                 this.idManager.completeRequestId(res.data.id);
-                logsCreator.msg(res);
+                logsCreator.msg(JSON.stringify(res.data));
             },
             error => {
                 logsCreator.err(error);
@@ -115,10 +133,16 @@ class TransferPoint {
 
     filterData (req) {
         req = (Array.isArray(req)) ? req[0] : req;
+        if (req.data.type == 'user_balance') {
+            req.type = req.data.type;
+            req.data = req.data.params;
+            return req;
+        }
         if (req.data != 0) {
             let data = this.parseData(req.data);
             req.data = data.parameters;
             req.type = data.type;
+            req.data.from = req.from;
         } else
             req.data = undefined;
         return req;
@@ -142,6 +166,24 @@ class TransferPoint {
                 result: res.data.result
             };
         });
+    };
+
+    objToArray (obj, method) {
+        if (method == 'create_pool' || method == 'add_liquidity') {
+            return [obj.from, obj.asset_1, obj.amount_1, obj.asset_2, obj.amount_2];
+        } else if (method == 'swap') {
+            return [obj.from, obj.asset_in, obj.amount_in, obj.asset_out];
+        } else if (method == 'remove_liquidity') {
+            return [obj.from, obj.lt, obj.amount];
+        } else if (method == 'user_balance'){
+            return [obj.id]
+        } else if (method == 'create_token') {
+            return [obj.hash, obj.ticker, obj.emission];
+        } else if (method == 'fauset') {
+            return [obj.id, obj.hash, obj.amount];
+        } else {
+            return [];
+        }
     };
 };
 

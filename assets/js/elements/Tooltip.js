@@ -1,8 +1,6 @@
 import React from 'react';
-import Popover from 'react-bootstrap/Popover';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 import '../../css/tooltip.css';
-
 
 class Tooltip extends React.Component {
     constructor (props) {

@@ -18,7 +18,8 @@ const components = {
     TOAST               : 0x8,
     INDICATOR_PANEL     : 0x9,
     CONFIRM_SUPPLY      : 0xA,
-    WAITING_CONFIRMATION: 0xB
+    WAITING_CONFIRMATION: 0xB,
+    LIQUIDITY_TOKEN_ZONE: 0xC
 };
 
 function mapStoreToProps(component) {
@@ -113,15 +114,28 @@ function mapStoreToProps(component) {
                     exchange : state.swapCard.exchange,
                     liquidity : state.swapCard.liquidity,
                     menuItem : state.root.menuItem,
+                    pubkey : state.root.pubkey,
                     pairs : state.swapCard.pairs
                 };
             };
         case components.WAITING_CONFIRMATION:
             return function (state) {
                 return {
-                    langData : state.root.langData,
-                    visibility : state.swapCard.waitingConfirmation.visibility,
-                    txStateType : state.swapCard.waitingConfirmation.txStateType
+                    ...state.swapCard.waitingConfirmation,
+                    createPool : state.swapCard.createPool,
+                    exchange : state.swapCard.exchange,
+                    liquidity : state.swapCard.liquidity,
+                    menuItem : state.root.menuItem,
+                    langData : state.root.langData
+                };
+            };
+        case components.LIQUIDITY_TOKEN_ZONE:
+            return function (state) {
+                return {
+                    pubkey : state.root.pubkey,
+                    ltList : state.swapCard.ltList,
+                    menuItem : state.root.menuItem,
+                    tList  : state.tokenCard.tokens
                 };
             };
 
@@ -134,7 +148,10 @@ function mapDispatchToProps(component) {
     switch (component) {
         case components.ROOT:
             return function (dispatch) {
-                return bindActionCreators(rootCreator, dispatch);
+                return bindActionCreators({
+                    ...rootCreator,
+                    assignAllTokens : tokenCardCreator.assignAllTokens
+                }, dispatch);
             };
         case components.SWAP_CARD:
             return function (dispatch) {
@@ -200,13 +217,25 @@ function mapDispatchToProps(component) {
                     closeConfirmCard : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType : swapCardCreator.changeWaitingStateType,
-                    changePendingIndicatorVisibility : rootCreator.changePendingIndicatorVisibility
+                    showPendingIndicator : rootCreator.showPendingIndicator,
+                    hidePendingIndicator : rootCreator.hidePendingIndicator
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation
+                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation,
+                    changeWaitingStateType : swapCardCreator.changeWaitingStateType,
+                    changeCreatePoolState : swapCardCreator.changeCreatePoolState
+                }, dispatch);
+            };
+        case components.LIQUIDITY_TOKEN_ZONE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updltList : swapCardCreator.updltList,
+                    changeLiquidityMode : swapCardCreator.changeLiquidityMode,
+                    assignTokenValue : swapCardCreator.assignTokenValue,
+                    changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility
                 }, dispatch);
             };
 

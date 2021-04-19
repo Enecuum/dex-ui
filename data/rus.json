@@ -70,20 +70,35 @@
             "tokenName" : "Токены"
         },
         "confirmCard" : {
-            "header" : "You will receive",
-            "poolTokens" : "Pool Tokens",
-            "description" : "Output is estimated. If the price changes by more than 1% your transaction will revert.",
-            "deposited" : "Deposited",
-            "rates" : "Rates",
-            "shareOfPool" : "Share of pool",
-            "confirm" : "Confirm Supply",
-            "waitingForConfirmation" : "Waiting for confirmation",
-            "confirmInWallet" : "Confirm this transaction in your wallet"
+            "header" : "Вы получите",
+            "poolTokens" : "Токенов ликвидности",
+            "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
+            "deposited" : "Внесено",
+            "rates" : "Курс",
+            "shareOfPool" : "Доля в пуле",
+            "confirm" : "Подтверждение",
+            "waitingForConfirmation" : "Ожидание подтверждения",
+            "confirmInWallet" : "Подтвердите вашу транзакцию в кошельке",
+            "waitingForConfirmationInternals" : {
+                "swap" : {
+                    "header" : "Обмен",
+                    "to" : "на"
+                },
+                "addLiquidity" : {
+                    "header" : "Добавление ликвидности",
+                    "plus" : "+"
+                },
+                "createPool" : {
+                    "header" : "Создание пула",
+                    "and" : "и"
+                }
+            }
         }
     },
     "info" : "Инфо",
     "submit" : "Submit",
     "close" : "Закрыть",
-    "transactionSubmitted" : "Transaction submitted",
-    "waitingForConfirmation" : "Waiting for confirmation"
+    "transactionSubmitted" : "Транзакция подтверждена",
+    "waitingForConfirmation" : "Ожидайте подтверждения",
+    "transactionRejected" : "Транзакция была отклонена"
 }

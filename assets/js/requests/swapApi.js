@@ -22,6 +22,26 @@ class SwapApi {
             }
         );
     };
+    faucet (pubkey, hash, amount) {
+        return fetch(`${this.url}faucet`, {
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            body : JSON.stringify({
+                amount : amount,
+                hash   : hash,
+                id     : pubkey
+            })
+        });
+    };
+    getltData (pubkey) {
+        return fetch(`${this.url}lt_data?id=${pubkey}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
     getTokens () {
         return fetch(`${this.url}tokens`,
             {
@@ -51,7 +71,11 @@ class SwapApi {
         );
     };
 };
+
+// Temporary functional for tests
 let swApi = new SwapApi();
 window.myCustomFunctionCreateToken = swApi.createToken.bind(swApi);
+window.myCustomFunctionFaucet = swApi.faucet.bind(swApi);
+// --------------------
 
 export default SwapApi;

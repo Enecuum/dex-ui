@@ -18,7 +18,7 @@ class TestServer {
         try {
             res.write(JSON.stringify(result));
         } catch (err) {
-            console.log(err);
+            // console.log(err);
         }
         res.end();
     };
@@ -34,6 +34,42 @@ class TestServer {
         }
     };  
 
+    convertPools (pools) {
+        return pools.map(element => {
+            return {
+                token_0 : {
+                    hash : element.t1,
+                    volume : element.v1
+                },
+                token_1 : {
+                    hash :  element.t2,
+                    volume : element.v2
+                },
+                pool_fee : 0,
+                lt : element.lt
+            };
+        });
+    };
+
+    getBalanceBody (id) {
+        return {
+            data : {
+                type : 'user_balance',
+                params : {
+                    id : id
+                }
+            }
+        };
+    };
+
+    getltData (balances, pools) {
+        let filtered = [];
+        for (let pool of pools)
+            if (balances[pool.lt] !== undefined)
+                filtered.push(pool);
+        return { data : filtered};
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
@@ -47,30 +83,62 @@ class TestServer {
             );
         });
 
-        this.app.get(`/tokens|pools`, (req, res) => {
-            let urlArr = req.url.split('/');
-            let type = urlArr[urlArr.length - 1];
-            transferApi.straightRequest(type)
+        this.app.get(`/tokens`, (req, res) => {
+            transferApi.straightRequest('tokens')
             .then(
                 result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
-        this.app.get(`/balance`, (req, res) => {
-            let body = {
-                data : {
-                    type : 'user_balance',
-                    params : {
-                        id : req.query.id
-                    }
-                }
-            };
-            transferApi.transferRequest(body)
+        this.app.get(`/pools`, (req, res) => {
+            transferApi.straightRequest('pools')
             .then(
-                result => this.wrapJSONResponse(res, 200, result),
+                result => {
+                    let pools = this.convertPools(result);
+                    this.wrapJSONResponse(res, 200, pools)
+                },
                 error => this.wrapJSONResponse(res, 500, error)
             );
+        });
+
+        this.app.get(`/lt_data`, (req, res) => {  
+            transferApi.transferRequest(this.getBalanceBody(req.query.id))
+            .then(
+                balances => {
+                    if (balances.result !== undefined) {
+                        transferApi.straightRequest('pools')
+                        .then(
+                            pools => {
+                                this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
+                            },
+                            error => this.wrapJSONResponse(res, 500, error)
+                        );
+                    } else {
+                        this.wrapJSONResponse(res, 200, { data : []})
+                    }
+                },
+                error => this.wrapJSONResponse(res, 500, error)
+            );
+        });
+
+        this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
+            transferApi.transferRequest(this.getBalanceBody(req.query.id))
+            .then(
+                response => {
+                    let balance = response.result[req.query.token];
+                    if (balance !== undefined) {
+                        this.wrapJSONResponse(res, 200, { amount : balance });
+                    } else 
+                        this.wrapJSONResponse(res, 200, { amount : 0 });
+                },
+                error => this.wrapJSONResponse(res, 500, error)
+            );
+        });
+
+        this.app.post('/faucet', bodyParser, (req, res) => {
+            transferApi.faucet(req.body.id, req.body.hash, req.body.amount)
+            .finally(result => this.wrapJSONResponse(res, 200, result));
         });
 
         this.app.post('/create_token', bodyParser, (req, res) => {

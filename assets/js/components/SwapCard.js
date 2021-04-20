@@ -372,7 +372,7 @@ class SwapCard extends React.Component {
                 <div className="p-3 border-solid-2 c-border-radius2 border-color2">
                     <div className="d-flex justify-content-between">
                         <div>Amount</div>
-                        <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? this.props.langData.removeLiquidity.simple : this.props.langData.removeLiquidity.detailed }</div>
+                        <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? this.props.langData.removeLiquidity.detailed : this.props.langData.removeLiquidity.simple }</div>
                     </div>
                     <div className="h1 font-weight-bold my-3">{this.props.removeLiquidityAmount}%</div>
                     {this.props.removeLiquiditySimpleView &&

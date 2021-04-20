@@ -3,11 +3,9 @@ import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import ExtRequests from '../requests/extRequests';
-import SwapApi from '../requests/swapApi';
+import extRequests from '../requests/extRequests';
+import swapApi from '../requests/swapApi';
 
-const swapApi = new SwapApi();
-const extRequests = new ExtRequests();
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {

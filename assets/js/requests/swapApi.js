@@ -2,13 +2,18 @@
  *  @fileoverview Minimal amount of API methods.
  */
 
+import trafficController from './trafficController';
+
 class SwapApi {
     constructor () {
         this.url = location.href.replace('/#', '/');
-    }
+    };
 
+    updUrl (url) {
+        this.url = url;
+    };
     createToken (ticker, emission, pubkey) {
-        return fetch(`${this.url}create_token`,
+        return trafficController.simpleRequest(`${this.url}create_token`,
             {
                 method : 'POST',
                 headers: {
@@ -23,7 +28,7 @@ class SwapApi {
         );
     };
     faucet (pubkey, hash, amount) {
-        return fetch(`${this.url}faucet`, {
+        return trafficController.simpleRequest(`${this.url}faucet`, {
             method : 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -36,46 +41,47 @@ class SwapApi {
         });
     };
     getltData (pubkey) {
-        return fetch(`${this.url}lt_data?id=${pubkey}`,
+        return trafficController.simpleRequest(`${this.url}lt_data?id=${pubkey}`,
             {
                 method : 'GET'
             }
         );
     };
     getTokens () {
-        return fetch(`${this.url}tokens`,
+        return trafficController.simpleRequest(`${this.url}tokens`,
             {
                 method : 'GET'
             }
         );
     };
     getPairs () {
-        return fetch(`${this.url}pools`,
+        return trafficController.simpleRequest(`${this.url}pools`,
             {
                 method : 'GET'
             }
         );
     };
     getLanguage (language) {
-        return fetch(`${this.url}getLanguage/${language}`,
+        return trafficController.simpleRequest(`${this.url}getLanguage/${language}`,
             {
                 method : 'GET'
             }
         );
     };
     getEnqLib () {
-        return fetch(`${this.url}enqlib`,
+        return trafficController.simpleRequest(`${this.url}enqlib`,
             {
                 method : 'GET'
             }
         );
-    };
+    }
 };
 
+const swapApi = new SwapApi();
+
 // Temporary functional for tests
-let swApi = new SwapApi();
-window.myCustomFunctionCreateToken = swApi.createToken.bind(swApi);
-window.myCustomFunctionFaucet = swApi.faucet.bind(swApi);
+window.myCustomFunctionCreateToken = swapApi.createToken.bind(swapApi);
+window.myCustomFunctionFaucet = swapApi.faucet.bind(swapApi);
 // --------------------
 
-export default SwapApi;
+export default swapApi;

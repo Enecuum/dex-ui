@@ -17,13 +17,12 @@ import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, Wait
 import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
-import SwapApi from './requests/swapApi';
+import swapApi from './requests/swapApi';
 import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 import SwapAddon from './components/SwapAddon';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 
-const swapApi = new SwapApi();
 
 class Root extends React.Component {
     constructor (props) {

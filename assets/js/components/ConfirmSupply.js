@@ -8,13 +8,11 @@ import LogoToken from '../elements/LogoToken';
 
 import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
-import ExtRequests from '../requests/extRequests';
+import extRequests from '../requests/extRequests';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/confirm-supply.css';
-
-const extRequests = new ExtRequests();
 
 class ConfirmSupply extends React.Component {
     closeCard () {

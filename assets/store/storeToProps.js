@@ -103,7 +103,8 @@ function mapStoreToProps(component) {
                 return {
                     ...state.indicatorPanel,
                     pubkey : state.root.pubkey,
-                    pendingIndicator : state.root.pendingIndicator
+                    pendingIndicator : state.root.pendingIndicator,
+                    net : state.root.net
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -208,7 +209,8 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...indicatorPanelCreator,
-                    assignPubkey : rootCreator.assignPubkey
+                    assignPubkey : rootCreator.assignPubkey,
+                    changeNetwork : rootCreator.changeNetwork
                 }, dispatch);
             };
         case components.CONFIRM_SUPPLY:

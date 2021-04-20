@@ -3,9 +3,8 @@ import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import ExtRequests from '../requests/extRequests';
-
-const extRequests = new ExtRequests();
+import extRequests from '../requests/extRequests';
+import swapApi from '../requests/swapApi';
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
@@ -13,10 +12,16 @@ class IndicatorPanel extends React.Component {
         this.networks = {
             bit : {
                 name : 'BIT',
+                url : 'https://bit.enecuum.com/',
+                action : undefined
+            },
+            pdex : {
+                name : 'PDEX',
+                url : 'https://localhost:1234/',
                 action : undefined
             }
         };
-        this.netsOrder = ['bit'];
+        this.netsOrder = ['bit', 'pdex'];
         this.updData();
     };
 
@@ -34,6 +39,11 @@ class IndicatorPanel extends React.Component {
             );
     };
 
+    changeNet (net) {
+        swapApi.updUrl(net.url);
+        this.props.changeNetwork(net.name, net.url);
+    };
+
     renderWalletInfo() {
         return (
             <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
@@ -41,11 +51,11 @@ class IndicatorPanel extends React.Component {
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <Dropdown alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
-                            <span className='text-uppercase'>{this.networks[this.props.net.toLowerCase()].name}</span>
+                            <span className='text-uppercase'>{this.networks[this.props.net.name.toLowerCase()].name}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="wrapper-1">
                             {this.netsOrder.map((item, index) => (
-                                <Dropdown.Item className="text-center py-2 net-item" key={index} value={index}>{this.networks[item].name}</Dropdown.Item>
+                                <Dropdown.Item className="text-center py-2 net-item" key={index} value={index} onClick={this.changeNet.bind(this, this.networks[item])}>{this.networks[item].name}</Dropdown.Item>
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>

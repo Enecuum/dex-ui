@@ -74,7 +74,7 @@ class SwapCard extends React.Component {
     getInputField(props) {
         return (
             <div>
-                <div className="d-flex align-items-center justify-content-between mb-4">
+                <div className="d-flex align-items-center justify-content-between mb-3">
                     <div className='input-name'>
                         {props.fieldName}
                     </div>
@@ -369,32 +369,38 @@ class SwapCard extends React.Component {
     renderRemoveLiquidity() {
         return (
             <div className="p-4">
-                <div className="p-3">
+                <div className="p-3 border-solid-2 c-border-radius2 border-color2">
                     <div className="d-flex justify-content-between">
                         <div>Amount</div>
-                        <div onClick={this.toggleView.bind(this)} className="hover-pointer">{ this.props.removeLiquidityView ? this.props.langData.removeLiquidity.simple : this.props.langData.removeLiquidity.detailed }</div>
+                        <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? this.props.langData.removeLiquidity.simple : this.props.langData.removeLiquidity.detailed }</div>
                     </div>
                     <div className="h1 font-weight-bold my-3">{this.props.removeLiquidityAmount}%</div>
-                    <div id="removeLiquidityRange">
-                        <Form className="mb-4">
-                          <Form.Group controlId="formBasicRangeCustom">
-                            <Form.Control type="range"
-                                value= {this.props.removeLiquidityAmount}
-                                min="0"
-                                max="100"
-                                step="0.1"
-                                onChange = {e => this.setRemoveLiquidityValue(e.target.value)} />
-                          </Form.Group>
-                        </Form>
-                        <div className="d-flex align-items-center justify-content-between">
-                            {this.removeLiquidity.ranges.map((item, index) => (
-                                <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
-                            ))}
+                    {this.props.removeLiquiditySimpleView &&
+                        <div id="removeLiquidityRange" >
+                            <Form className="mb-4">
+                              <Form.Group controlId="formBasicRangeCustom">
+                                <Form.Control type="range"
+                                    value= {this.props.removeLiquidityAmount}
+                                    min="0"
+                                    max="100"
+                                    step="0.1"
+                                    onChange = {e => this.setRemoveLiquidityValue(e.target.value)} />
+                              </Form.Group>
+                            </Form>
+                            <div className="d-flex align-items-center justify-content-between">
+                                {this.removeLiquidity.ranges.map((item, index) => (
+                                    <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
+                                ))}
+                            </div>
                         </div>
+                    }                       
+                </div>
+                {this.props.removeLiquiditySimpleView &&
+                    <>
                         <div className="text-center my-3">
                             <span className="icon-Icon13" style={{color: "var(--color4)"}}></span>
                         </div>
-                        <div className="swap-input py-2 px-3 mb-4">
+                        <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>-</div>
                                 <div className="d-flex align-items-center justify-content-end">
@@ -411,18 +417,52 @@ class SwapCard extends React.Component {
                                 Receive WBNB
                             </div>
                         </div>
-                        <div className="d-flex align-items-start justify-content-between mb-3">
-                            <div>Price</div>
-                            <div>
-                                <div>1 ENQ = 0.00486145 BRY</div>
-                                <div>1 ENQ = 0.00486145 BRY</div>
-                            </div>
+                    </>
+                }
+                { !this.props.removeLiquiditySimpleView &&
+                    <div className="mt-2">
+                        <div className='swap-input py-2 px-3' id='idididid1'>
+                            {this.getInputField({
+                                fieldName: 'eee',
+                                id : 5,
+                                tokenName: 'dsf',
+                                value: 'dfsdf'
+                            })}
                         </div>
-                        <div className="d-flex align-items-center justify-content-between">
-                            <button className="btn btn-secondary flex-fill mr-2">Approve</button>
-                            <button className="btn btn-secondary flex-fill ml-2">Enter an amount</button>
-                        </div>                    
-                    </div>                     
+
+                        <span className="icon-Icon13 d-flex justify-content-center my-3 text-color4" />
+
+                        <div className='swap-input py-2 px-3' id='idididid1'>
+                            {this.getInputField({
+                                fieldName: 'eee',
+                                id : 5,
+                                tokenName: 'dsf',
+                                value: 'dfsdf'
+                            })}
+                        </div>
+
+                        <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-3 text-color4' />
+
+                        <div className='swap-input py-2 px-3' id='idididid1'>
+                            {this.getInputField({
+                                fieldName: 'eee',
+                                id : 5,
+                                tokenName: 'dsf',
+                                value: 'dfsdf'
+                            })}
+                        </div>                      
+                    </div>
+                }
+                <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
+                    <div>Price</div>
+                    <div>
+                        <div>1 ENQ = 0.00486145 BRY</div>
+                        <div>1 ENQ = 0.00486145 BRY</div>
+                    </div>
+                </div>
+                <div className="d-flex align-items-center justify-content-between">
+                    <button className="btn btn-secondary flex-fill mr-2">Approve</button>
+                    <button className="btn btn-secondary flex-fill ml-2">Enter an amount</button>
                 </div>
             </div>
         );    

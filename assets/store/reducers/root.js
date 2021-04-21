@@ -13,10 +13,8 @@ function rootStore (state, changingProperty) {
 export default function rootReducer (state = initialState.root, action) {
     switch (action.type) {
         case actions.TOGGLE_ASIDE: 
-            let leftOffset = (state.navOpened) ? '41%' : '45%';
             return rootStore(state, {
-                navOpened : !state.navOpened,
-                swapCardLeft : leftOffset
+                navOpened : !state.navOpened
             });
 
         case actions.CHANGE_NET:

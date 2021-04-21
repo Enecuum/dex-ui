@@ -99,7 +99,7 @@ class Aside extends React.Component {
     };
 
     render () {
-        let asideClasses = ('aside-' + (this.props.navOpened ? 'open' : 'closed')) + ' aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3';
+        let asideClasses = ('aside-' + (this.props.navOpened ? 'open' : 'closed')) + ' aside-left position-absolute d-flex flex-column justify-content-between pt-5 pb-4 px-3';
         return (
             <div id='aside' className={asideClasses}>
                 <div className='aside-menu'>

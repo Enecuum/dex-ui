@@ -49,9 +49,9 @@ class Root extends React.Component {
             case 'exchange':
             case 'liquidity':
                 return (
-                    <div className="swap-card-wrapper" style={{ left : this.props.swapCardLeft}}>
-                        <div className='swap-card'>
-                            <div id='switch' >
+                    <div className="swap-card-wrapper">
+                        <div className='swap-card position-relative'>
+                            <div id='switch'>
                                 <Switch />
                             </div>
                             <SwapCard />
@@ -106,8 +106,8 @@ class Root extends React.Component {
             <div className='h-100'>
                 <Navbar />
                 <main role='main' className='container-fluid h-100 px-0 position-relative'>
-                    <div className='row h-100'>
-                        <div className='col-12'>
+                    <div className='h-100'>
+                        <div className='d-flex align-items-center h-100 position-relative'>
                             <Aside />
                             {this.menuViewController()}
                             {this.connectionList()}

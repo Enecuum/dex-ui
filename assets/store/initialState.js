@@ -8,7 +8,6 @@ const initialState = {
         navOpened : true,
         connectionStatus : false,
         pending : true,
-        swapCardLeft : '45%',
         menuItem : 'exchange',
         pubkey : '',
         siteLocales : presets.langData.siteLocales,

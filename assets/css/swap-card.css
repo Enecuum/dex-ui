@@ -7,7 +7,7 @@
     padding-top: 100px;
     margin-left: auto;
     margin-right: auto;
-    max-width: 430px;
+    width: 430px;
     transition: var(--transition1);
     margin-top: 100px;
 }

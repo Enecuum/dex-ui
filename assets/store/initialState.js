@@ -5,7 +5,7 @@ const initialState = {
         net : presets.network.defaultNet,
         langData : presets.langData,
         connecionListOpened : false,
-        navOpened : true,
+        navOpened : window.innerWidth <= 757 ? false : true,
         connectionStatus : false,
         pending : true,
         menuItem : 'exchange',

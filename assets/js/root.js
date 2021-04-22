@@ -101,17 +101,15 @@ class Root extends React.Component {
             );
     };
 
-    render () {
+    render () {       
         return (
-            <div className='h-100'>
+            <div>
                 <Navbar />
-                <main role='main' className='container-fluid h-100 px-0 position-relative'>
-                    <div className='h-100'>
-                        <div className='d-flex align-items-center h-100 position-relative'>
-                            <Aside />
-                            {this.menuViewController()}
-                            {this.connectionList()}
-                        </div>
+                <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
+                    <div id="contentWrapper" className='d-flex pb-5'>
+                        <Aside />
+                        {this.menuViewController()}
+                        {this.connectionList()}
                     </div>
                     {/* <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast />

@@ -9,6 +9,7 @@
     margin-right: auto;
     max-width: 430px;
     transition: var(--transition1);
+    margin-top: 100px;
 }
 
 .swap-card {    

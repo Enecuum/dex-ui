@@ -32,6 +32,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard,
+                    navOpened: state.root.navOpened,
                     connectionStatus : state.root.connectionStatus,
                     langData: state.root.langData.trade.swapCard,
                     menuItem: state.root.menuItem,
@@ -62,7 +63,6 @@ function mapStoreToProps(component) {
                     ...state.aside,
                     menuItem: state.root.menuItem,
                     langData: state.root.langData.navbars.left,
-                    navOpened: state.root.navOpened,
                     siteLocales : state.root.siteLocales,
                     activeLocale : state.root.activeLocale,
                     langTitles : state.root.langTitles

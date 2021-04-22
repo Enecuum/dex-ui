@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import Socials from './Socials';
-import SwapApi from '../requests/swapApi';
+import swapApi from '../requests/swapApi';
 
 import img from '../../img/logo.png';
 import '../../css/font-style.css';
 import '../../css/aside.css';
 
 
-const swapApi = new SwapApi();
 const coinPriceUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=enq-enecuum&vs_currencies=USD';
 const sec = 1000; 
 

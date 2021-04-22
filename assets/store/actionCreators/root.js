@@ -9,10 +9,13 @@ const actionCreators = {
         };
     },
     
-    changeNetwork(netName) {
+    changeNetwork(netName, netUrl) {
         return {
             type : actions.CHANGE_NET,
-            value : netName
+            value : {
+                name : netName,
+                url : netUrl
+            }
         };
     },
     
@@ -73,6 +76,27 @@ const actionCreators = {
         return {
             type : actions.HIDE_PENDING_STATE
         };
+    },
+
+    updBalances (balances) {
+        return {
+            type : actions.UPD_BALANCES,
+            value : balances
+        };
+    },
+
+    updPairs (value) {
+        return {
+            type : actions.UPD_PAIRS,
+            value : value
+        };
+    },
+
+    assignAllTokens (list) {
+        return {
+            type : actions.ASSIGN_ALL_TOKENS,
+            value : list
+        }
     }
 };
 

@@ -6,7 +6,10 @@ const presets =  {
             hash: 'b07932c60f6499c7aff2ada0583ee157',
             fee: 100000000
         },
-        defaultNet: 'BIT'
+        defaultNet: {
+            name : 'BIT',
+            url : 'http://bit-dev.enecuum.com/'
+        }
     },
 
     swapTokens : {

@@ -1,7 +1,7 @@
 const actionPack =  {
     root : {
         TOGGLE_ASIDE            : 0x00,
-        // insert new action    : 0x01,
+        UPD_BALANCES            : 0x01,
         CHANGE_NET              : 0x02,
         CHANGE_LANG             : 0x03,
         OPEN_CONNECTION_LIST    : 0x04,
@@ -11,7 +11,9 @@ const actionPack =  {
         ASSIGN_PUBKEY           : 0x08,
         UPD_ACTIVE_LOCALE       : 0x09,
         SHOW_PENDING_STATE      : 0x0A,
-        HIDE_PENDING_STATE      : 0x0B
+        HIDE_PENDING_STATE      : 0x0B,
+        UPD_PAIRS               : 0x0C,
+        ASSIGN_ALL_TOKENS       : 0x0D
     },
     swapCard : {
         SWAP_FIELDS                         : 0x10,
@@ -23,7 +25,7 @@ const actionPack =  {
         CLOSE_CONFIRM_CARD                  : 0x17,
         ASSIGN_COIN_VALUE                   : 0x18,
         ASSIGN_TOKEN_VALUE                  : 0x19,
-        UPD_PAIRS                           : 0x1A,
+        //                                  : 0x1A,
         UPD_ACTIVE_FIELD                    : 0x1B,
         OPEN_WAITING_CONFIRMATION           : 0x1C,
         CLOSE_WAITING_CONFIRMATION          : 0x1D,
@@ -36,7 +38,7 @@ const actionPack =  {
     },
     tokenCard : {
         ASSIGN_TOKEN_LIST : 0x30,
-        ASSIGN_ALL_TOKENS : 0x31,
+        //                : 0x31,
         CHANGE_SORT_MODE  : 0x32
     },
     aside : {

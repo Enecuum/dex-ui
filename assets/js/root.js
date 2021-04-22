@@ -7,34 +7,76 @@ import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation } from './components/entry';
-// import Navbar from './components/Navbar';
-// import Aside from './components/Aside';
-// import SwapCard from './components/SwapCard';
-// import Switch from './components/Switch';
-// import ConnectionService from './components/ConnectionService';
-// import ConfirmSupply from './components/ConfirmSupply';
-// import WaitingConfirmation from './components/waitingConfirmation';
 import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
-import SwapApi from './requests/swapApi';
+import swapApi from './requests/swapApi';
 import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 import SwapAddon from './components/SwapAddon';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 
-const swapApi = new SwapApi();
 
 class Root extends React.Component {
     constructor (props) {
         super(props);
         this.updLanguage();
-        this.updTokens();
+        this.updDexData();
     };
 
-    async updTokens() {
-        this.props.assignAllTokens(await (await swapApi.getTokens()).json());
+    convertPools (pools) {
+        return pools.map(element => {
+            return {
+                token_0 : {
+                    hash : element.t1,
+                    volume : element.v1
+                },
+                token_1 : {
+                    hash :  element.t2,
+                    volume : element.v2
+                },
+                pool_fee : 0,
+                lt : element.lt
+            };
+        });
     };
+
+    // --------------------------------------- upd dex data
+
+    updDexData () {
+        setInterval(() => {
+            this.updTokens();
+            this.updPools();
+            this.updBalances();
+        }, 5000);
+    };
+    async updBalances () {
+        if(this.props.pubkey != '')
+            swapApi.getFullBalance(this.props.pubkey)
+            .then(res => {
+                if (!res.lock)
+                    res.json()
+                    .then(res => this.props.updBalances(res));
+            });
+    };
+    async updPools () {
+        swapApi.getPairs()
+        .then(res => {
+            if (!res.lock)
+                res.json()
+                .then(res => this.props.updPairs(this.convertPools(res)));
+        });
+    };
+    async updTokens() {
+        swapApi.getTokens()
+        .then(res => {
+            if (!res.lock)
+                res.json()
+                .then(res => this.props.assignAllTokens(res));
+        });
+    };
+
+    // ----------------------------------------------------
 
     async updLanguage () {
         let locale = this.props.activeLocale;

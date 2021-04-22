@@ -5,12 +5,6 @@ const actions = actionPack.tokenCard;
 
 export default function tokenCardReducer (state = initialState.tokenCard, action) {
     switch (action.type) {
-        case actions.ASSIGN_ALL_TOKENS:
-            return {
-                ...state,
-                tokens : action.value
-            };
-
         case actions.ASSIGN_TOKEN_LIST: 
             return {
                 ...state,

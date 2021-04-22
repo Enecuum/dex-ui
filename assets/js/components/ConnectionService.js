@@ -17,8 +17,8 @@ class ConnectionService extends React.Component {
 
     async connectToEnq () {
         if (!this.props.connectionStatus)
-            await Enecuum.connect();
-        await Enecuum.enable()
+            await ENQweb3lib.connect();
+        await ENQweb3lib.enable()
         .then(res => {
             this.props.assignPubkey(res.pubkey);
             this.props.setConStatus(true);

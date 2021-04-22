@@ -32,23 +32,6 @@ class TestServer {
             let pubkey = (argv.p) ? argv.p : '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d';
             transferApi.createToken(argv.t, emission, pubkey)
         }
-    };  
-
-    convertPools (pools) {
-        return pools.map(element => {
-            return {
-                token_0 : {
-                    hash : element.t1,
-                    volume : element.v1
-                },
-                token_1 : {
-                    hash :  element.t2,
-                    volume : element.v2
-                },
-                pool_fee : 0,
-                lt : element.lt
-            };
-        });
     };
 
     getBalanceBody (id) {
@@ -67,7 +50,23 @@ class TestServer {
         for (let pool of pools)
             if (balances[pool.lt] !== undefined)
                 filtered.push(pool);
-        return { data : filtered};
+        return { data : filtered };
+    };
+
+    getTokens (result, error) {
+        transferApi.straightRequest('tokens')
+        .then(
+            result,
+            error
+        );
+    };
+
+    getPools (result, error) {
+        transferApi.straightRequest('pools')
+        .then(
+            result,
+            error
+        );
     };
 
     constructor() {
@@ -84,43 +83,41 @@ class TestServer {
         });
 
         this.app.get(`/tokens`, (req, res) => {
-            transferApi.straightRequest('tokens')
-            .then(
+            this.getTokens(
                 result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
         this.app.get(`/pools`, (req, res) => {
-            transferApi.straightRequest('pools')
+            this.getPools()
             .then(
                 result => {
-                    let pools = this.convertPools(result);
-                    this.wrapJSONResponse(res, 200, pools)
+                    this.wrapJSONResponse(res, 200, result);
                 },
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
-        this.app.get(`/lt_data`, (req, res) => {  
-            transferApi.transferRequest(this.getBalanceBody(req.query.id))
-            .then(
-                balances => {
-                    if (balances.result !== undefined) {
-                        transferApi.straightRequest('pools')
-                        .then(
-                            pools => {
-                                this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
-                            },
-                            error => this.wrapJSONResponse(res, 500, error)
-                        );
-                    } else {
-                        this.wrapJSONResponse(res, 200, { data : []})
-                    }
-                },
-                error => this.wrapJSONResponse(res, 500, error)
-            );
-        });
+        // this.app.get(`/lt_data`, (req, res) => {                          // DEPRECATED
+        //     transferApi.transferRequest(this.getBalanceBody(req.query.id))
+        //     .then(
+        //         balances => {
+        //             if (balances.result !== undefined) {
+        //                 transferApi.straightRequest('pools')
+        //                 .then(
+        //                     pools => {
+        //                         this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
+        //                     },
+        //                     error => this.wrapJSONResponse(res, 500, error)
+        //                 );
+        //             } else {
+        //                 this.wrapJSONResponse(res, 200, { data : []})
+        //             }
+        //         },
+        //         error => this.wrapJSONResponse(res, 500, error)
+        //     );
+        // });
 
         this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
             transferApi.transferRequest(this.getBalanceBody(req.query.id))
@@ -178,7 +175,7 @@ class TestServer {
 
         // -------------------------------------------------- first time server API
 
-        // this.app.get('/getTokens', (req, res) => {
+        // this.app.get('/getTokens', (req, res) => {                      // DEPRECATED
         //     res.writeHead(200, {
         //         'Content-Type': 'application/json',
         //     });
@@ -213,21 +210,23 @@ class TestServer {
             res.writeHead(200, {
                 'Content-Type': 'text/html',
             });
-            let urlArr = req.url.split('/');
-            let data = fs.readFileSync(`../web-enq/prebuild/enqweb3.min.js`, { encoding: 'utf-8' });
+            let data = fs.readFileSync(`../web3-enq/dist/enqweb3lib.min.js`, { encoding: 'utf-8' });
             res.write(data);
             res.end();
         });
     };
 
     run () {
-        https.createServer({
-            key: fs.readFileSync('../https/key.pem', { encoding: 'utf8' }),
-            cert: fs.readFileSync('../https/server.crt', { encoding: 'utf8' })
-        }, this.app)
-        .listen(config.host_port);
+        // https.createServer({
+        //     key: fs.readFileSync('../https/key.pem', { encoding: 'utf8' }),
+        //     cert: fs.readFileSync('../https/server.crt', { encoding: 'utf8' })
+        // }, this.app)
+        this.app.listen(config.host_port);
     };
 };
 
 let server = new TestServer();
-server.run();
+if (argv.run)
+    server.run();
+
+module.exports = server;

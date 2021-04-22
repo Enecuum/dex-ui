@@ -3,12 +3,11 @@ import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import SwapApi from '../requests/swapApi';
+import swapApi from '../requests/swapApi';
 import Tooltip from '../elements/Tooltip';
 
 import '../../css/token-card.css';
 
-const swapApi = new SwapApi();
 
 class TokenCard extends React.Component {
     constructor(props) {
@@ -19,7 +18,6 @@ class TokenCard extends React.Component {
     };
 
     async updTokens() {
-        this.props.assignAllTokens(await (await swapApi.getTokens()).json());
         this.props.assignTokenList(this.makeList());
     };
 

@@ -3,6 +3,7 @@
  */
 
 import presets from '../../store/pageDataPresets';
+import trafficController from './trafficController';
 
 const requestType = {
     CREATE  : 'create_pool',
@@ -11,7 +12,7 @@ const requestType = {
     REMOVE  : 'remove_liquidity'
 };
 
-class ExtRequests {
+class ExtRequests { 
     /**
      * Get balance of the required token
      * @param {string} pubKey - users publick key (get it while connecting to the extention)
@@ -19,14 +20,10 @@ class ExtRequests {
      * @returns {Promise}
      */
     getBalance (pubKey, hash) {
-        try {
-            return Enecuum.balanceOf({
-                to : pubKey,
-                tokenHash : hash
-            });
-        } catch (err) {
-            return new Promise((resolve, reject) => { reject(err) });
-        }
+        return trafficController.getBalance({
+            to : pubKey,
+            tokenHash : hash
+        });
     };
 
     /**
@@ -87,8 +84,8 @@ class ExtRequests {
     };
 
     sendTx (pubKey, reqType, params) {
-        return Enecuum.sendTransaction({
-            amount:0,
+        return trafficController.sendTransaction({
+            amount : 0,
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,
@@ -102,4 +99,6 @@ class ExtRequests {
     };
 };
 
-export default ExtRequests;
+const extRequests = new ExtRequests();
+
+export default extRequests;

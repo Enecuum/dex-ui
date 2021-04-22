@@ -44,9 +44,18 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.SHOW_PENDING_STATE:
             return rootStore(state, { pendingIndicator : true });
 
-         case actions.HIDE_PENDING_STATE:
+        case actions.HIDE_PENDING_STATE:
             return rootStore(state, { pendingIndicator : false });
+        
+        case actions.UPD_BALANCES:
+            return rootStore (state, { balances : action.value });
 
+        case actions.UPD_PAIRS:
+            return rootStore(state, { pairs: action.value });
+
+        case actions.ASSIGN_ALL_TOKENS:
+            return rootStore(state, { tokens : action.value });
+            
         default:
             return state;
     }

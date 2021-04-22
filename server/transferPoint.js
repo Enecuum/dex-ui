@@ -2,7 +2,7 @@ const axios = require('axios');
 const config = require('../config.json');
 const tokenHashGen = require('./tokenHashGenerator');
 
-const ObjectFromData = require('../web-enq/packages/web-enq-utils/src/objectFromData');
+const ObjectFromData = require('../web3-enq/packages/web3-enq-utils/src/objectFromData');
 const objectFromData = new ObjectFromData();
 const { LogsCreator, filters } = require('./logsCreator');
 const logsCreator = new LogsCreator(config.dex_url, filters.FULL);

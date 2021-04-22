@@ -3,11 +3,9 @@ import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import ExtRequests from '../requests/extRequests';
-import SwapApi from '../requests/swapApi';
+import extRequests from '../requests/extRequests';
+import swapApi from '../requests/swapApi';
 
-const swapApi = new SwapApi();
-const extRequests = new ExtRequests();
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {
@@ -17,37 +15,32 @@ class LiquidityTokensZone extends React.Component {
         this.updltList();
     };
 
+    getltData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens 
+        let filtered = [];
+        for (let pool of this.props.pairs)
+            if (this.props.balances.find(el => el.token == pool.lt))
+                filtered.push(pool);
+        return filtered;
+    };
+
     updltList () {
         setInterval(() => {
-            swapApi.getltData(this.props.pubkey)
-            .then(async res => {
-                res = await res.json();
-                this.props.updltList(res.data ? res.data : [])
-            },
-            err => console.log(err));
-        }, 1000);
+            this.props.updltList(this.getltData());
+        }, 5000);
     };
 
     getTokenByHash (hash) {
-        if (this.props.tList.length == 0) {
-            return {
-                ticker : '-' // just for test
-            }
-        }
-        return this.props.tList.find(el => {
-            if (el.hash == hash)
-                return true;
-        });
+        if (this.props.tList.length == 0)
+            return { ticker : '-', hash : undefined };
+        else
+            return this.props.tList.find(el => {
+                if (el.hash == hash)
+                    return true;
+            });
     };
-
-    getPoolAmount (ltHash) {
-        extRequests.getBalance(this.props.pubkey, ltHash)
-        .then(res => {
-            this.poolAmount = (res.amount !== undefined) ? res.amount : '-';
-        },
-        () => {
-            this.poolAmount = '-';
-        });
+    
+    getPoolAmount (ltDataElement) {
+        return Number(ltDataElement.v1) + Number(ltDataElement.v2);
     };
 
     openAddLiquidityCard (fToken, sToken) {
@@ -71,7 +64,7 @@ class LiquidityTokensZone extends React.Component {
             );
         else 
             return this.props.ltList.map((el, index) => {
-                this.getPoolAmount(el.lt);
+                this.getPoolAmount(el);
                 let fToken = this.getTokenByHash(el.t1);
                 let sToken = this.getTokenByHash(el.t2);
                 return (
@@ -85,7 +78,8 @@ class LiquidityTokensZone extends React.Component {
                             <Card.Body>
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">Pooled {fToken.ticker}:</span>{el.v1}
+                                        <span className="mr-2">Pooled {fToken.ticker}:</span>
+                                        {el.v1}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
@@ -106,7 +100,7 @@ class LiquidityTokensZone extends React.Component {
                         </Accordion.Collapse>
                     </Card>
                 );
-            }); 
+            });
     };
 
     render () {

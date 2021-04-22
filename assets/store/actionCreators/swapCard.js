@@ -66,13 +66,6 @@ const actionCreators = {
             type : actions.CLOSE_CONFIRM_CARD
         };
     },
-    
-    updPairs (value) {
-        return {
-            type : actions.UPD_PAIRS,
-            value : value
-        };
-    },
 
     updActiveField (value) {
         return {

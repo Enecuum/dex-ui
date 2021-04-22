@@ -99,10 +99,15 @@ main.aside-closed #aside .icon-wrapper {
 }
 /*if aside closed end*/
 
+main.aside-open #aside .menu-item {
+    -ms-flex-pack: start!important;
+    justify-content: flex-start!important; 
+}
 
-
-
-
+main.aside-closed #aside .menu-item {
+    -ms-flex-pack: center!important;
+    justify-content: center!important;
+}
 
 /*menu in aside begin*/
 #aside .menu-item {

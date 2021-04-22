@@ -103,7 +103,7 @@ class Aside extends React.Component {
             <div id='aside' className='aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3'>
                 <div className='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
-                        <div className='menu-item d-flex align-items-center justify-content-start mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
+                        <div className='menu-item d-flex align-items-center mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
                             <span className='aside-menu-text'>{this.props.langData[item]}</span>
                         </div>

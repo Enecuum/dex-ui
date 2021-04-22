@@ -65,7 +65,11 @@ class Aside extends React.Component {
     };
 
     changeMenuItem (newItem) {
-        this.props.changeMenuItem(newItem)
+        this.props.changeMenuItem(newItem);
+        if (window.innerWidth <= 757) {            
+            if (this.props.navOpened === true)
+                this.props.toggleAside();           
+        }
     };
 
     monitorExchangeRate () {

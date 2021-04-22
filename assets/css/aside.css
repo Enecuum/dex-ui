@@ -12,6 +12,15 @@
     #aside {
         background-color: var(--menu-bg-non-transparent);
     }
+
+    main.aside-open #aside {
+        width: 100%!important;
+    }
+
+/*    main.aside-open #aside {
+        width: 100%!important;
+        position: static!important;
+    }*/
 }
 
 main.aside-open #aside {

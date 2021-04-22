@@ -62,6 +62,7 @@ function mapStoreToProps(component) {
                 return {
                     ...state.aside,
                     menuItem: state.root.menuItem,
+                    navOpened: state.root.navOpened,
                     langData: state.root.langData.navbars.left,
                     siteLocales : state.root.siteLocales,
                     activeLocale : state.root.activeLocale,

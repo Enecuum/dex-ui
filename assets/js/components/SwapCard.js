@@ -29,7 +29,6 @@ class SwapCard extends React.Component {
         this.pairExists = false;
         this.readyToSubmit = false;
         this.activePair = {};
-        this.updPairs();
 
         this.removeLiquidity= {
             ranges : [
@@ -51,12 +50,6 @@ class SwapCard extends React.Component {
                 }
             ]
         }
-    };
-
-    updPairs() {
-        setInterval(async () => {
-            this.props.updPairs(await (await swapApi.getPairs()).json());
-        }, 5000);
     };
 
     swapPair() {

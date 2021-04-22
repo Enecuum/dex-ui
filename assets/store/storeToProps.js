@@ -32,19 +32,20 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard,
-                    connectionStatus : state.root.connectionStatus,
-                    langData: state.root.langData.trade.swapCard,
-                    menuItem: state.root.menuItem,
-                    removeLiquidityView: state.swapCard.removeLiquidity.simpleView,
-                    removeLiquidityAmount: state.swapCard.removeLiquidity.amount
+                    connectionStatus        : state.root.connectionStatus,
+                    langData                : state.root.langData.trade.swapCard,
+                    menuItem                : state.root.menuItem,
+                    removeLiquidityView     : state.swapCard.removeLiquidity.simpleView,
+                    removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
+                    pairs                   : state.root.pairs
                 };
             };
         case components.SWITCH:
             return function (state) {
                 return {
-                    pubkey : state.root.pubkey,
-                    langData: state.root.langData.trade.switch,
-                    menuItem: state.root.menuItem
+                    pubkey      : state.root.pubkey,
+                    langData    : state.root.langData.trade.switch,
+                    menuItem    : state.root.menuItem
                 };
             };
         case components.TOKEN_CARD:
@@ -52,37 +53,38 @@ function mapStoreToProps(component) {
                 return {
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
-                    langData: state.root.langData.trade.tokenCard,
-                    menuItem: state.root.menuItem
+                    langData    : state.root.langData.trade.tokenCard,
+                    menuItem    : state.root.menuItem,
+                    tokens      : state.root.tokens
                 };
             };
         case components.ASIDE:
             return function (state) {
                 return {
                     ...state.aside,
-                    menuItem: state.root.menuItem,
-                    langData: state.root.langData.navbars.left,
-                    navOpened: state.root.navOpened,
-                    siteLocales : state.root.siteLocales,
-                    activeLocale : state.root.activeLocale,
-                    langTitles : state.root.langTitles
+                    menuItem        : state.root.menuItem,
+                    langData        : state.root.langData.navbars.left,
+                    navOpened       : state.root.navOpened,
+                    siteLocales     : state.root.siteLocales,
+                    activeLocale    : state.root.activeLocale,
+                    langTitles      : state.root.langTitles
                 };
             };
         case components.CONNECTION_SERVICE:
             return function (state) {
                 return {
-                    pubkey : state.root.pubkey,
-                    connectionStatus : state.root.connectionStatus,
+                    pubkey              : state.root.pubkey,
+                    connectionStatus    : state.root.connectionStatus,
                     connecionListOpened : state.root.connecionListOpened,
-                    langData : state.root.langData.navbars.top.connectionCard
+                    langData            : state.root.langData.navbars.top.connectionCard
                 };
             };
         case components.NAVBAR:
             return function (state) {
                 return {
-                    pending : state.root.pending,
-                    navOpened: state.root.navOpened,
-                    connectionStatus : state.root.connectionStatus
+                    pending             : state.root.pending,
+                    navOpened           : state.root.navOpened,
+                    connectionStatus    : state.root.connectionStatus
                 };
             };  
         case components.CONNECT:
@@ -102,41 +104,44 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.indicatorPanel,
-                    pubkey : state.root.pubkey,
-                    pendingIndicator : state.root.pendingIndicator,
-                    net : state.root.net
+                    pubkey              : state.root.pubkey,
+                    pendingIndicator    : state.root.pendingIndicator,
+                    net                 : state.root.net
                 };
             };
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
-                    langData : state.root.langData.trade.confirmCard,
+                    langData    : state.root.langData.trade.confirmCard,
                     confirmCardOpened : state.swapCard.confirmCardOpened,
-                    exchange : state.swapCard.exchange,
-                    liquidity : state.swapCard.liquidity,
-                    menuItem : state.root.menuItem,
-                    pubkey : state.root.pubkey,
-                    pairs : state.swapCard.pairs
+                    exchange    : state.swapCard.exchange,
+                    liquidity   : state.swapCard.liquidity,
+                    menuItem    : state.root.menuItem,
+                    pubkey      : state.root.pubkey,
+                    pairs       : state.root.pairs
                 };
             };
         case components.WAITING_CONFIRMATION:
             return function (state) {
                 return {
                     ...state.swapCard.waitingConfirmation,
-                    createPool : state.swapCard.createPool,
-                    exchange : state.swapCard.exchange,
-                    liquidity : state.swapCard.liquidity,
-                    menuItem : state.root.menuItem,
-                    langData : state.root.langData
+                    createPool  : state.swapCard.createPool,
+                    exchange    : state.swapCard.exchange,
+                    liquidity   : state.swapCard.liquidity,
+                    menuItem    : state.root.menuItem,
+                    langData    : state.root.langData
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (state) {
                 return {
-                    pubkey : state.root.pubkey,
-                    ltList : state.swapCard.ltList,
-                    menuItem : state.root.menuItem,
-                    tList  : state.tokenCard.tokens
+                    pubkey      : state.root.pubkey,
+                    ltList      : state.swapCard.ltList,
+                    menuItem    : state.root.menuItem,
+                    tList       : state.root.tokens,
+                    pairs       : state.root.pairs,
+                    tokens      : state.root.tokens,
+                    balances    : state.root.balances
                 };
             };
 
@@ -150,15 +155,13 @@ function mapDispatchToProps(component) {
         case components.ROOT:
             return function (dispatch) {
                 return bindActionCreators({
-                    ...rootCreator,
-                    assignAllTokens : tokenCardCreator.assignAllTokens
+                    ...rootCreator
                 }, dispatch);
             };
         case components.SWAP_CARD:
             return function (dispatch) {
                 return bindActionCreators({
-                    ...swapCardCreator,
-                    getBalance : rootCreator.getBalance
+                    ...swapCardCreator
                 }, dispatch);
             };
         case components.SWITCH:
@@ -171,8 +174,8 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...tokenCardCreator,
-                    assignTokenValue : swapCardCreator.assignTokenValue,
-                    closeTokenList : swapCardCreator.closeTokenList
+                    assignTokenValue    : swapCardCreator.assignTokenValue,
+                    closeTokenList      : swapCardCreator.closeTokenList
                 }, dispatch);
             };
         case components.ASIDE:
@@ -196,47 +199,47 @@ function mapDispatchToProps(component) {
         case components.NAVBAR:
             return function (dispatch) {
                 return bindActionCreators({
-                    toggleAside : rootCreator.toggleAside
+                    toggleAside     : rootCreator.toggleAside
                 }, dispatch);
             };
         case components.CONNECT:
             return function (dispatch) {
                 return bindActionCreators({
-                    openConList : rootCreator.openConList
+                    openConList     : rootCreator.openConList
                 }, dispatch);
             };
         case components.INDICATOR_PANEL:
             return function (dispatch) {
                 return bindActionCreators({
                     ...indicatorPanelCreator,
-                    assignPubkey : rootCreator.assignPubkey,
-                    changeNetwork : rootCreator.changeNetwork
+                    assignPubkey    : rootCreator.assignPubkey,
+                    changeNetwork   : rootCreator.changeNetwork
                 }, dispatch);
             };
         case components.CONFIRM_SUPPLY:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeConfirmCard : swapCardCreator.closeConfirmCard,
+                    closeConfirmCard        : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
-                    changeWaitingStateType : swapCardCreator.changeWaitingStateType,
-                    showPendingIndicator : rootCreator.showPendingIndicator,
-                    hidePendingIndicator : rootCreator.hidePendingIndicator
+                    changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
+                    showPendingIndicator    : rootCreator.showPendingIndicator,
+                    hidePendingIndicator    : rootCreator.hidePendingIndicator
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeWaitingConfirmation : swapCardCreator.closeWaitingConfirmation,
-                    changeWaitingStateType : swapCardCreator.changeWaitingStateType,
-                    changeCreatePoolState : swapCardCreator.changeCreatePoolState
+                    closeWaitingConfirmation    : swapCardCreator.closeWaitingConfirmation,
+                    changeWaitingStateType      : swapCardCreator.changeWaitingStateType,
+                    changeCreatePoolState       : swapCardCreator.changeCreatePoolState
                 }, dispatch);
             };
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (dispatch) {
                 return bindActionCreators({
-                    updltList : swapCardCreator.updltList,
-                    changeLiquidityMode : swapCardCreator.changeLiquidityMode,
-                    assignTokenValue : swapCardCreator.assignTokenValue,
+                    updltList                       : swapCardCreator.updltList,
+                    changeLiquidityMode             : swapCardCreator.changeLiquidityMode,
+                    assignTokenValue                : swapCardCreator.assignTokenValue,
                     changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility
                 }, dispatch);
             };

@@ -12,12 +12,12 @@ class IndicatorPanel extends React.Component {
         this.networks = {
             bit : {
                 name : 'BIT',
-                url : 'https://bit.enecuum.com/',
+                url : 'http://bit-dev.enecuum.com/',
                 action : undefined
             },
             pdex : {
                 name : 'PDEX',
-                url : 'https://localhost:1234/',
+                url :  location.href,
                 action : undefined
             }
         };

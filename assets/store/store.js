@@ -7,11 +7,11 @@ import asideReducer from './reducers/aside';
 import indicatorPanelReducer from './reducers/indicatorPanel';
 
 const totalReducer = combineReducers({
-    root : rootReducer,
-    swapCard : swapCardReducer,
-    tokenCard : tokenCardReducer,
-    aside : asideReducer,
-    indicatorPanel : indicatorPanelReducer
+    root            : rootReducer,
+    swapCard        : swapCardReducer,
+    tokenCard       : tokenCardReducer,
+    aside           : asideReducer,
+    indicatorPanel  : indicatorPanelReducer
 });
 
 const store = createStore(totalReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

@@ -7,10 +7,20 @@ import trafficController from './trafficController';
 class SwapApi {
     constructor () {
         this.url = location.href.replace('/#', '/');
+        this.hostUrl = this.url;
     };
 
     updUrl (url) {
         this.url = url;
+        console.log(this.url);
+    };
+
+    getFullBalance(pubkey) {
+        return trafficController.simpleRequest(`${this.url}balance_all?id=${pubkey}`,
+            {
+                method : 'GET'
+            }
+        );
     };
     createToken (ticker, emission, pubkey) {
         return trafficController.simpleRequest(`${this.url}create_token`,
@@ -40,13 +50,6 @@ class SwapApi {
             })
         });
     };
-    getltData (pubkey) {
-        return trafficController.simpleRequest(`${this.url}lt_data?id=${pubkey}`,
-            {
-                method : 'GET'
-            }
-        );
-    };
     getTokens () {
         return trafficController.simpleRequest(`${this.url}tokens`,
             {
@@ -61,15 +64,15 @@ class SwapApi {
             }
         );
     };
-    getLanguage (language) {
-        return trafficController.simpleRequest(`${this.url}getLanguage/${language}`,
+    getLanguage (language) {    // to the host
+        return trafficController.simpleRequest(`${this.hostUrl}getLanguage/${language}`,
             {
                 method : 'GET'
             }
         );
     };
-    getEnqLib () {
-        return trafficController.simpleRequest(`${this.url}enqlib`,
+    getEnqLib () {              // to the host
+        return trafficController.simpleRequest(`${this.hostUrl}enqlib`,
             {
                 method : 'GET'
             }

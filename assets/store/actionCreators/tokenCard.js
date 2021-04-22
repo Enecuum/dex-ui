@@ -10,13 +10,6 @@ const actionCreators = {
         };
     },
 
-    assignAllTokens (list) {
-        return {
-            type : actions.ASSIGN_ALL_TOKENS,
-            value : list
-        }
-    },
-
     changeSort (sort) {
         return {
             type : actions.CHANGE_SORT_MODE,

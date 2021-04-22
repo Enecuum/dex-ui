@@ -79,9 +79,6 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.ASSIGN_TOKEN_VALUE:
             return fieldStore(state, action.mode, action.field, { token: action.value });
 
-        case actions.UPD_PAIRS:
-            return swapCardStore(state, { pairs: action.value });
-
         case actions.UPD_ACTIVE_FIELD:
             return swapCardStore(state, { activeField: action.value });
 

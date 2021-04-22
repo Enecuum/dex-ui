@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const outPath = path.resolve(__dirname, 'public');
+const server = require('./server/server');
 
 module.exports = {
     entry : './assets/js/root.js',
@@ -27,7 +28,7 @@ module.exports = {
     mode : 'development',
     devServer : {
         contentBase : outPath,
-        port : 1235,
+        port : 1234,
         watchContentBase : true,
         before: (app) => {
             app.get('/getLanguage/*', (req, res) => {
@@ -35,15 +36,27 @@ module.exports = {
                 let language = urlArr[urlArr.length - 1];
                 res.json(JSON.parse(fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' })));
             });
+            app.get('/enqlib', (req, res) => {
+                res.send(fs.readFileSync(`./web3-enq/dist/enqweb3lib.min.js`, { encoding : 'utf-8' }));
+            });
             app.get('/pools', (req, res) => {
-                res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
+                server.getPools(
+                    result => res.json(result),
+                    error => res.json([])
+                );
             });
             app.get('/tokens', (req, res) => {
-                res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
+                server.getTokens(
+                    result => res.json(result),
+                    error => res.json([])
+                );
             });
-            app.get('/enqlib', (req, res) => {
-                res.send(fs.readFileSync(`./web-enq/prebuild/enqweb3.min.js`, { encoding : 'utf-8' }));
-            });
+            // app.get('/pools', (req, res) => {
+            //     res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
+            // });
+            // app.get('/tokens', (req, res) => {
+            //     res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
+            // });
         }
     }
 };

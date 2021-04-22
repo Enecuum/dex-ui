@@ -1,17 +1,31 @@
-// TODO create event listener for avoiding inactivity
-// TODO reduce requests
-
 class TrafficController {
     constructor () {
         this.permission = true;
+        this.timeout = 60 * 1000;
+        this.timeoutDescriptor = this.createTimeout();
+        this.establishListener();
+    };
+
+    establishListener () { // inactivity controller
+        document.addEventListener('mousemove', event => {
+            clearTimeout(this.timeoutDescriptor);
+            this.permission = true;
+            this.timeoutDescriptor = this.createTimeout();
+        });
+    };
+
+    createTimeout () {
+        return setTimeout(() => {
+            this.permission = false;
+        }, this.timeout);
     };
 
     getBalance (requestData) {
-        return this.control(Enecuum.balanceOf, requestData);
+        return this.control(ENQweb3lib.balanceOf, requestData);
     };
 
     sendTransaction (requestData) {
-        return this.control(Enecuum.sendTransaction, requestData);
+        return this.control(ENQweb3lib.sendTransaction, requestData);
     };
 
     simpleRequest (url, requestData) {
@@ -25,7 +39,7 @@ class TrafficController {
             else
                 return reqFunc(reqData);
         else
-            return new Promise((resolve) => resolve({lock : true}));    
+            return new Promise((resolve) => resolve({ lock : true }));  
     };
 };
 

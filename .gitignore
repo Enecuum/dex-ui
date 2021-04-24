@@ -1,2 +1,5 @@
 node_modules
 config.json
+logs
+public/*
+!public/index.html

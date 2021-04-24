@@ -51,14 +51,14 @@ class SwapApi {
         });
     };
     getTokens () {
-        return trafficController.simpleRequest(`${this.url}tokens`,
+        return trafficController.simpleRequest(`${this.url}get_tickers_all`,
             {
                 method : 'GET'
             }
         );
     };
     getPairs () {
-        return trafficController.simpleRequest(`${this.url}pools`,
+        return trafficController.simpleRequest(`${this.url}get_dex_pools`,
             {
                 method : 'GET'
             }

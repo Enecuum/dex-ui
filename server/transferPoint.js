@@ -5,7 +5,6 @@ const tokenHashGen = require('./tokenHashGenerator');
 const ObjectFromData = require('../web3-enq/packages/web3-enq-utils/src/objectFromData');
 const objectFromData = new ObjectFromData();
 const { LogsCreator, filters } = require('./logsCreator');
-const logsCreator = new LogsCreator(config.dex_url, filters.FULL);
 
 BigInt.prototype.toJSON = function () {
     return this.toString();
@@ -52,6 +51,7 @@ class IdManager {
 
 class TransferPoint {
     constructor (argv) {
+        this.logsCreator = new LogsCreator(config.dex_url, (argv.filter) ? argv.filter : filters.FULL);
         this.args = ['host_port', 'dex_url', 'dex_port']; 
         this.config = this.setConfig({ ...config }, argv);
         this.idManager = new IdManager();

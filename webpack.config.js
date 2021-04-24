@@ -4,7 +4,7 @@ const outPath = path.resolve(__dirname, 'public');
 const server = require('./server/server');
 
 module.exports = {
-    entry : './assets/js/root.js',
+    entry : path.resolve(__dirname, 'assets/js/root.js'),
     output : {
         path : outPath,
         filename : 'enex.webpack.js',
@@ -39,13 +39,13 @@ module.exports = {
             app.get('/enqlib', (req, res) => {
                 res.send(fs.readFileSync(`./web3-enq/dist/enqweb3lib.min.js`, { encoding : 'utf-8' }));
             });
-            app.get('/pools', (req, res) => {
+            app.get('/get_dex_pools', (req, res) => {
                 server.getPools(
                     result => res.json(result),
                     error => res.json([])
                 );
             });
-            app.get('/tokens', (req, res) => {
+            app.get('/get_tickers_all', (req, res) => {
                 server.getTokens(
                     result => res.json(result),
                     error => res.json([])

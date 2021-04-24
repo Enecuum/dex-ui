@@ -82,16 +82,15 @@ class TestServer {
             );
         });
 
-        this.app.get(`/tokens`, (req, res) => {
+        this.app.get(`/get_tickers_all`, (req, res) => {
             this.getTokens(
                 result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
-        this.app.get(`/pools`, (req, res) => {
-            this.getPools()
-            .then(
+        this.app.get(`/get_dex_pools`, (req, res) => {
+            this.getPools(
                 result => {
                     this.wrapJSONResponse(res, 200, result);
                 },
@@ -128,6 +127,16 @@ class TestServer {
                         this.wrapJSONResponse(res, 200, { amount : balance });
                     } else 
                         this.wrapJSONResponse(res, 200, { amount : 0 });
+                },
+                error => this.wrapJSONResponse(res, 500, error)
+            );
+        });
+
+        this.app.get(`/api/${config.api_version}/balance_all`, (req, res) => {
+            transferApi.transferRequest(this.getBalanceBody(req.query.id))
+            .then(
+                response => {
+                    this.wrapJSONResponse(res, 200, response);
                 },
                 error => this.wrapJSONResponse(res, 500, error)
             );

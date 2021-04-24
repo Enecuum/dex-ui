@@ -36,9 +36,17 @@ To learn more about web-enq API, visit - https://github.com/Enecuum/web-enq/blob
 ```
     npm run dev
 ```
-* build the application with webpack
+* build the application with webpack (check the mode inside [./webpack.config.js][2])
 ```
     npm run make
+```
+* perform debugging of the production server
+```
+    pm2 start .\ecosystem.config.js --only test_prod
+```
+* run production server
+```
+    pm2 start .\ecosystem.config.js --only prod
 ```
 After assembling all files are put inside [./public][1] directory, where index.html is the frontend entry point, and enex.webpack.js is the js bundle.
 

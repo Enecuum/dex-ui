@@ -42,11 +42,11 @@ To learn more about web-enq API, visit - https://github.com/Enecuum/web-enq/blob
 ```
 * perform debugging of the production server
 ```
-    pm2 start .\ecosystem.config.js --only test_prod
+    npm run test_prod
 ```
 * run production server
 ```
-    pm2 start .\ecosystem.config.js --only prod
+    npm run prod
 ```
 After assembling all files are put inside [./public][1] directory, where index.html is the frontend entry point, and enex.webpack.js is the js bundle.
 

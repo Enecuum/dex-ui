@@ -34,6 +34,7 @@ class ConfirmSupply extends React.Component {
             tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
         }
         tx.then(result => {
+            console.log(result);
             this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('submitted');
         },

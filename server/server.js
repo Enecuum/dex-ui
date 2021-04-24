@@ -69,6 +69,36 @@ class TestServer {
         );
     };
 
+    getBalances (id , result, error) {
+        transferApi.transferRequest(this.getBalanceBody(id))
+        .then(
+            result,
+            error
+        );
+    };
+
+    convertBalances (result) {
+        return new Promise((resolve) => {
+            let balances = [];
+            this.getTokens(
+                tokens => {
+                    for (let prop in result ) {
+                        balances.push({
+                            amount : result[prop],
+                            token : prop,
+                            ticker : tokens.find(el => el.hash == prop).ticker,
+                            decimals : 10,
+                            minable : 0,
+                            reissuable : 0
+                        });
+                    }
+                    resolve(balances);
+                },
+                error => resolve(balances)
+            );
+        });
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
@@ -82,41 +112,30 @@ class TestServer {
             );
         });
 
-        this.app.get(`/get_tickers_all`, (req, res) => {
+        this.app.get(`/api/${config.api_version}/get_tickers_all`, (req, res) => {
             this.getTokens(
                 result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
-        this.app.get(`/get_dex_pools`, (req, res) => {
+        this.app.get(`/api/${config.api_version}/get_dex_pools`, (req, res) => {
             this.getPools(
-                result => {
-                    this.wrapJSONResponse(res, 200, result);
-                },
+                result => this.wrapJSONResponse(res, 200, result),
                 error => this.wrapJSONResponse(res, 500, error)
             );
         });
 
-        // this.app.get(`/lt_data`, (req, res) => {                          // DEPRECATED
-        //     transferApi.transferRequest(this.getBalanceBody(req.query.id))
-        //     .then(
-        //         balances => {
-        //             if (balances.result !== undefined) {
-        //                 transferApi.straightRequest('pools')
-        //                 .then(
-        //                     pools => {
-        //                         this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
-        //                     },
-        //                     error => this.wrapJSONResponse(res, 500, error)
-        //                 );
-        //             } else {
-        //                 this.wrapJSONResponse(res, 200, { data : []})
-        //             }
-        //         },
-        //         error => this.wrapJSONResponse(res, 500, error)
-        //     );
-        // });
+        this.app.get(`/api/${config.api_version}/balance_all`, (req, res) => {
+            this.getBalances(req.query.id,
+                async result => {
+                    this.wrapJSONResponse(res, 200, await this.convertBalances(result.result))
+                },
+                error => {
+                    this.wrapJSONResponse(res, 500, error)
+                }
+            );
+        });
 
         this.app.get(`/api/${config.api_version}/balance`, (req, res) => {
             transferApi.transferRequest(this.getBalanceBody(req.query.id))
@@ -127,16 +146,6 @@ class TestServer {
                         this.wrapJSONResponse(res, 200, { amount : balance });
                     } else 
                         this.wrapJSONResponse(res, 200, { amount : 0 });
-                },
-                error => this.wrapJSONResponse(res, 500, error)
-            );
-        });
-
-        this.app.get(`/api/${config.api_version}/balance_all`, (req, res) => {
-            transferApi.transferRequest(this.getBalanceBody(req.query.id))
-            .then(
-                response => {
-                    this.wrapJSONResponse(res, 200, response);
                 },
                 error => this.wrapJSONResponse(res, 500, error)
             );
@@ -202,6 +211,27 @@ class TestServer {
         //     res.end();
         // });
 
+        // this.app.get(`/lt_data`, (req, res) => {                          // DEPRECATED
+        //     transferApi.transferRequest(this.getBalanceBody(req.query.id))
+        //     .then(
+        //         balances => {
+        //             if (balances.result !== undefined) {
+        //                 transferApi.straightRequest('pools')
+        //                 .then(
+        //                     pools => {
+        //                         this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
+        //                     },
+        //                     error => this.wrapJSONResponse(res, 500, error)
+        //                 );
+        //             } else {
+        //                 this.wrapJSONResponse(res, 200, { data : []})
+        //             }
+        //         },
+        //         error => this.wrapJSONResponse(res, 500, error)
+        //     );
+        // });
+
+
         this.app.get('/getLanguage/*', (req, res) => {
             let urlArr = req.url.split('/');
             let language = urlArr[urlArr.length - 1];
@@ -219,7 +249,7 @@ class TestServer {
             res.writeHead(200, {
                 'Content-Type': 'text/html',
             });
-            let data = fs.readFileSync(`../web3-enq/dist/enqweb3lib.min.js`, { encoding: 'utf-8' });
+            let data = fs.readFileSync(`../${config.web3_enq_path}`, { encoding: 'utf-8' });
             res.write(data);
             res.end();
         });

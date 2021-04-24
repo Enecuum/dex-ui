@@ -45,9 +45,11 @@ class Root extends React.Component {
 
     updDexData () {
         setInterval(() => {
-            this.updTokens();
-            this.updPools();
-            this.updBalances();
+            if (this.props.connectionStatus) {
+                this.updTokens();
+                this.updPools();
+                this.updBalances();
+            }
         }, 5000);
     };
     async updBalances () {

@@ -13,7 +13,7 @@ class Connect extends React.Component {
                 style={{
                     backgroundColor: 'var(--color3)'
                 }}>
-                { this.props.langData.connect}
+                { this.props.langData.connect }
             </button>
         );
     };

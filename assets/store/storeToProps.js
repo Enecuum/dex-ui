@@ -37,7 +37,8 @@ function mapStoreToProps(component) {
                     menuItem                : state.root.menuItem,
                     removeLiquidityView     : state.swapCard.removeLiquidity.simpleView,
                     removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
-                    pairs                   : state.root.pairs
+                    pairs                   : state.root.pairs,
+                    balances                : state.root.balances
                 };
             };
         case components.SWITCH:
@@ -106,7 +107,8 @@ function mapStoreToProps(component) {
                     ...state.indicatorPanel,
                     pubkey              : state.root.pubkey,
                     pendingIndicator    : state.root.pendingIndicator,
-                    net                 : state.root.net
+                    net                 : state.root.net,
+                    balances            : state.root.balances
                 };
             };
         case components.CONFIRM_SUPPLY:

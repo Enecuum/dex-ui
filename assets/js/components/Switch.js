@@ -12,7 +12,7 @@ class Switch extends React.Component {
     render () {
         let colors = (this.props.menuItem == 'exchange') ? ['var(--color3)', 'var(--color2)'] : ['var(--color2)', 'var(--color3)'];
         return (
-            <div>
+            <div className="d-flex align-items-center justify-content-center">
                 <div    className="switch-mode"
                         id="exchange-mode"
                         style={{

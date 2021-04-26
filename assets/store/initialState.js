@@ -5,16 +5,16 @@ const initialState = {
         net             : presets.network.defaultNet,
         langData        : presets.langData,
         connecionListOpened : false,
-        navOpened       : true,
+        navOpened : window.innerWidth <= 757 ? false : true,
         connectionStatus : false,
+        menuItem : 'exchange',
+        pubkey : '',
+        siteLocales : presets.langData.siteLocales,
+        activeLocale : presets.langData.preferredLocale,
+        langTitles : presets.langData.langTitles,
+        pendingIndicator : false,
         pending         : true,
         swapCardLeft    : '45%',
-        menuItem        : 'exchange',
-        pubkey          : '',
-        siteLocales     : presets.langData.siteLocales,
-        activeLocale    : presets.langData.preferredLocale,
-        langTitles      : presets.langData.langTitles,
-        pendingIndicator : false,
         balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
         pairs       : [],   // [{t1, t2, v1, v2, lt}] - all pairs from dex
         tokens      : [],   // [{ticker, hash}]

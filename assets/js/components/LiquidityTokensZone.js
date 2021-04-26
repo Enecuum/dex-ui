@@ -69,8 +69,8 @@ class LiquidityTokensZone extends React.Component {
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
-                            <Accordion.Toggle eventKey={index+''} as="div">
-                                {fToken.ticker}/{sToken.ticker}
+                            <Accordion.Toggle eventKey={index+''} as="div" className="d-flex align-items-center justify-content-between hover-pointer">
+                                <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
                             </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey={index+''}>
@@ -92,8 +92,8 @@ class LiquidityTokensZone extends React.Component {
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <Button className="mr-2 btn liquidity-btn" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
+                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>

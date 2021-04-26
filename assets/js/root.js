@@ -21,7 +21,7 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.updLanguage();
-        this.updDexData();
+        this.intervalUpdDexData();
     };
 
     convertPools (pools) {
@@ -43,18 +43,21 @@ class Root extends React.Component {
 
     // --------------------------------------- upd dex data
 
-    updDexData () {
+    updDexData (pubkey) {
+        this.updTokens();
+        this.updPools();
+        this.updBalances(pubkey);
+    };
+
+    intervalUpdDexData () {
         setInterval(() => {
-            if (this.props.connectionStatus) {
-                this.updTokens();
-                this.updPools();
-                this.updBalances();
-            }
+            if (this.props.connectionStatus)
+                this.updDexData(this.props.pubkey);
         }, 5000);
     };
-    async updBalances () {
-        if(this.props.pubkey != '')
-            swapApi.getFullBalance(this.props.pubkey)
+    async updBalances (pubkey) {
+        if(pubkey != '')
+            swapApi.getFullBalance(pubkey)
             .then(res => {
                 if (!res.lock)
                     res.json()
@@ -93,9 +96,9 @@ class Root extends React.Component {
             case 'exchange':
             case 'liquidity':
                 return (
-                    <div className="swap-card-wrapper" style={{ left : this.props.swapCardLeft}}>
-                        <div className='swap-card'>
-                            <div id='switch' >
+                    <div className="swap-card-wrapper">
+                        <div className='swap-card position-relative'>
+                            <div id='switch'>
                                 <Switch />
                             </div>
                             <SwapCard />
@@ -139,23 +142,21 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        <ConnectionService />
+                        <ConnectionService updDexData = {this.updDexData.bind(this)} />
                     </div>
                 </div>
             );
     };
 
-    render () {
+    render () {       
         return (
-            <div className='h-100'>
+            <div>
                 <Navbar />
-                <main role='main' className='container-fluid h-100 px-0 position-relative'>
-                    <div className='row h-100'>
-                        <div className='col-12'>
-                            <Aside />
-                            {this.menuViewController()}
-                            {this.connectionList()}
-                        </div>
+                <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
+                    <div id="contentWrapper" className='d-flex pb-5'>
+                        <Aside />
+                        {this.menuViewController()}
+                        {this.connectionList()}
                     </div>
                     {/* <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast />

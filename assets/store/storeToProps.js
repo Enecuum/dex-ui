@@ -38,7 +38,9 @@ function mapStoreToProps(component) {
                     removeLiquidityView     : state.swapCard.removeLiquidity.simpleView,
                     removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
                     pairs                   : state.root.pairs,
-                    balances                : state.root.balances
+                    balances                : state.root.balances,
+                    navOpened               : state.root.navOpened,
+                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
                 };
             };
         case components.SWITCH:
@@ -63,12 +65,12 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.aside,
-                    menuItem        : state.root.menuItem,
-                    langData        : state.root.langData.navbars.left,
-                    navOpened       : state.root.navOpened,
-                    siteLocales     : state.root.siteLocales,
-                    activeLocale    : state.root.activeLocale,
-                    langTitles      : state.root.langTitles
+                    menuItem: state.root.menuItem,
+                    navOpened: state.root.navOpened,
+                    langData: state.root.langData.navbars.left,
+                    siteLocales : state.root.siteLocales,
+                    activeLocale : state.root.activeLocale,
+                    langTitles : state.root.langTitles
                 };
             };
         case components.CONNECTION_SERVICE:

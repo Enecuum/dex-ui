@@ -59,8 +59,10 @@
                 "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
             },
             "removeLiquidity" : {
-                "simple" : "Simple",
-                "detailed" : "Detailed"
+                "simple" : "Простой вид",
+                "detailed" : "Детальный вид",
+                "header" : "Удалить Ликвидность",
+                "tooltipText" : "Удалите токены ликвидности для получения токенов пула"
             }
         },
         "tokenCard" : {

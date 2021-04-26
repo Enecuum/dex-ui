@@ -23,7 +23,7 @@ module.exports = {
         {
             name : "dev",
             script : "./node_modules/webpack/bin/webpack.js",
-            args : "serve --config webpack.config.js",
+            args : "serve --host 0.0.0.0 --config webpack.config.js",
             exec_mode : "fork",
             merge_logs: true,
             log_file : 'logs/dev.log',

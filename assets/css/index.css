@@ -25,6 +25,7 @@
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
     --menu-bg: rgba(26, 31, 46, 0.702); /*полупрозрачный синий - бэкграунд асайда*/
+    --menu-bg-non-transparent: rgb(26, 31, 46, 1);
     --transition1 : 0.1s;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
@@ -32,22 +33,63 @@
     --top-menu-height: 70px;
     --border-radius1: 5px;
     --border-radius2: 3px;
+    --aside-width-open: 320px;
+    --aside-width-closed: 70px;
+}
+
+body {
+    min-height: 100vh;
 }
 
 body, p, .btn {
     font-family: 'Ska Sans Regular', sans-serif;
 }
 
+main.aside-open #contentWrapper {
+    padding-left: var(--aside-width-open);
+}
+
+main.aside-closed #contentWrapper {
+    padding-left: var(--aside-width-closed);
+}
+
+.no-selectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .c-border {
     border-radius: var(--border-radius1);
+}
+
+.border-solid-2 {
+    border-style: solid;
+    border-width: 2px; 
+
+}
+
+.c-border-radius2 {
+    border-radius: var(--border-radius2);
+}
+
+.border-color2 {
+    border-color: var(--color2)!important;
+}
+
+.border-color4 {
+    border-color: var(--color4)!important;
 }
 
 body {    
     background-color: #202836;
     color: var(--color1);
-    overflow-x: hidden;
-    height: 100vh;
-    min-height: 600px;
+    height: 100%;
+/*    min-height: 1200px;*/
+/*    min-height: 600px;*/
     background-image: url(../img/background.png);
     background-size: cover;
     background-repeat: no-repeat;
@@ -256,8 +298,16 @@ body {
     color: var(--color3);
 }
 
+.text-color4 {
+    color: var(--color4);
+}
+
 .general-card {
     box-shadow: var(--box-shadow);
     background-color: var(--bg-swap-card);
     border-radius: var(--border-radius1);   
+}
+
+.hover-color3:hover {
+    color: var(--color3);
 }

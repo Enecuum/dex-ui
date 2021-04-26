@@ -4,18 +4,18 @@
 }
 
 .swap-card-wrapper {
-    position: fixed;
-    margin-top: 250px;
-    left: 40%;
+    padding-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 430px;
     transition: var(--transition1);
+    margin-top: 100px;
 }
 
 .swap-card {    
     box-shadow: var(--box-shadow);
     background-color: var(--bg-swap-card);    
     height: auto;
-    width: 430px;
-
     border-radius: var(--border-radius1);
 }
 

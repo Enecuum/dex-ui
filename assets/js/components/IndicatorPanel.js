@@ -63,7 +63,7 @@ class IndicatorPanel extends React.Component {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-3'>
+                <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-0 mr-sm-3'>
                     {this.props.enx} ENX
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>

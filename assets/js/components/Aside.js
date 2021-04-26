@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
@@ -61,14 +61,33 @@ class Aside extends React.Component {
         };
         this.exchRateUpdRate = 5 * sec;
         this.monitorExchangeRate();
+
+        this.state = {windowWidth: 0 };
     };
+
+    toggleNavOpen() {
+        if (window.innerWidth <= 767) {            
+            if (this.props.navOpened === true)
+                this.props.toggleAside();
+        }                
+    }
+
+    updateDimensions = () => {
+        this.setState({ windowWidth: window.innerWidth});
+        this.toggleNavOpen();
+    };
+
+    componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
 
     changeMenuItem (newItem) {
         this.props.changeMenuItem(newItem);
-        if (window.innerWidth <= 757) {            
-            if (this.props.navOpened === true)
-                this.props.toggleAside();           
-        }
+        this.toggleNavOpen();
     };
 
     monitorExchangeRate () {
@@ -103,7 +122,10 @@ class Aside extends React.Component {
 
     render () {
         return (
-            <div id='aside' className='aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3'>
+            <div 
+                id='aside'
+                className='aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3'
+                style = {{height : (this.props.connectionStatus && (this.state.windowWidth <= 1200)) ? 'calc(100% - var(--top-menu-height) - 50px)' : 'calc(100% - var(--top-menu-height))'}} >
                 <div className='aside-menu'>
                     {this.itemsOrder.map((item, index) => (
                         <div className='menu-item d-flex align-items-center mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>

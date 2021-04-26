@@ -27,7 +27,7 @@ class Navbar extends React.Component {
                         </a>                     
                     </div>                    
                     <div id='root-connect'>
-                        {(!this.props.connectionStatus) ? <Connect /> : <IndicatorPanel />}
+                        {(!this.props.connectionStatus) ? <Connect /> : <div className="d-none d-xl-block"><IndicatorPanel /></div>}
                     </div>
             </nav>
         );

@@ -66,9 +66,9 @@ class IndicatorPanel extends React.Component {
                 <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-3'>
                     {this.props.enx} ENX
                 </div>
-                <div className='wallet-info-boxes d-flex align-items-center justify-content-between'>
+                <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
-                    <div className='addr wallet-info-boxes d-flex align-items-center justify-content-center'>{this.packAdressString(this.props.pubkey)}</div>
+                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center'>{this.packAdressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );

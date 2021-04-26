@@ -12,12 +12,6 @@
     margin-top: 150px;
 }
 
-@media (max-width: 767px) {
-    .swap-card-wrapper {
-        width: auto!important;
-    }
-}
-
 .swap-card {    
     box-shadow: var(--box-shadow);
     background-color: var(--bg-swap-card);    

@@ -64,6 +64,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.aside,
+                    connectionStatus : state.root.connectionStatus,
                     menuItem: state.root.menuItem,
                     navOpened: state.root.navOpened,
                     langData: state.root.langData.navbars.left,

@@ -6,7 +6,7 @@ import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation } from './components/entry';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel } from './components/entry';
 import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
@@ -157,8 +157,14 @@ class Root extends React.Component {
                     </div>
                     {/* <div id="toastWrapper" className="position-absolute pt-4">
                         <CommonToast />
-                    </div> */}
+                    </div> */}    
+
                 </main>
+                {this.props.connectionStatus && 
+                    <div className="w-100 d-flex align-items-center justify-content-center d-xl-none" style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
+                        <IndicatorPanel />
+                    </div>                    
+                }
             </div>
         );
     };

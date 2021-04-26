@@ -21,11 +21,11 @@ class TrafficController {
     };
 
     getBalance (requestData) {
-        return this.control(ENQweb3lib.balanceOf, requestData);
+        return this.control(ENQweb3lib.balanceOf.bind(ENQweb3lib), requestData);
     };
 
     sendTransaction (requestData) {
-        return this.control(ENQweb3lib.sendTransaction, requestData);
+        return this.control(ENQweb3lib.sendTransaction.bind(ENQweb3lib), requestData);
     };
 
     simpleRequest (url, requestData) {

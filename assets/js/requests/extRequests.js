@@ -84,8 +84,7 @@ class ExtRequests {
     };
 
     sendTx (pubKey, reqType, params) {
-        return trafficController.sendTransaction({
-            amount : 0,
+        let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,
@@ -95,7 +94,9 @@ class ExtRequests {
                 type : reqType,
                 parameters : params
             }
-        });
+        };
+        console.log(data);
+        return trafficController.sendTransaction(data);
     };
 };
 

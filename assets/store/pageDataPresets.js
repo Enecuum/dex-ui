@@ -2,11 +2,12 @@ const presets =  {
     network : {
         genesisPubKey: '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
         nativeToken: {
-            ticker: 'ENQ',
-            hash: 'b07932c60f6499c7aff2ada0583ee157',
-            fee: 100000000
+            ticker: 'BIT',
+            hash: '1111111111111111111111111111111111111111111111111111111111111111',
+            fee: 1000000000
         },
         defaultNet: {
+            id : 'bit',
             name : 'BIT',
             url : 'http://bit-dev.enecuum.com/'
         }
@@ -16,10 +17,6 @@ const presets =  {
         emptyToken: {
             ticker: 'Select a token',
             hash: undefined
-        },
-        defaultToken: {
-            ticker: 'ENQ',
-            hash: '123'
         }
     },
 

@@ -55,9 +55,27 @@ function divide(input_0, input_1) {
     }
 };
 
+function getBalance(balances, hash, clear) {
+    let tokenObj = balances.find(el => el.token == hash);
+    if (tokenObj) {
+        if (clear)
+            return tokenObj;
+        tokenObj.amount *= Math.pow(10, -tokenObj.decimals);
+        tokenObj.decimals = 0;
+        return tokenObj;
+    } else
+        return {
+            amount : 0,
+            decimals : 0,
+            minable : 0, 
+            reissuable : 0
+        };
+};
+
 export default {
     countExchangeRate,
     countPoolShare,
+    getBalance,
     pairExists,
     searchSwap,
     divide

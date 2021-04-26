@@ -57,11 +57,8 @@ class SwapCard extends React.Component {
     };
 
     changeBalance(field, hash) {
-        extRequests.getBalance(this.props.pubkey, hash)
-        .then(res => {
-            this.props.assignWalletValue(this.props.menuItem, field, (res.amount !== undefined) ? `Balance: ${res.amount}` : '-');
-        });
-    };
+        this.props.assignWalletValue(this.props.menuItem, field, `Balance: ${utils.getBalance(this.props.balances, hash).amount} `);
+    }; 
 
     getInputField(props) {
         return (

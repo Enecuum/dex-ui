@@ -5,18 +5,21 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
+import utils from '../utils/swapUtils';
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
         this.networks = {
             bit : {
+                id : 'bit',
                 name : 'BIT',
                 url : 'http://bit-dev.enecuum.com/',
                 action : undefined
             },
             pdex : {
-                name : 'PDEX',
+                id : 'pdex',
+                name : 'πDEX',
                 url :  location.href,
                 action : undefined
             }
@@ -41,7 +44,7 @@ class IndicatorPanel extends React.Component {
 
     changeNet (net) {
         swapApi.updUrl(net.url);
-        this.props.changeNetwork(net.name, net.url);
+        this.props.changeNetwork(net.name, net.url, net.id);
     };
 
     renderWalletInfo() {
@@ -51,7 +54,7 @@ class IndicatorPanel extends React.Component {
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <Dropdown alignRight >
                         <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
-                            <span className='text-uppercase'>{this.networks[this.props.net.name.toLowerCase()].name}</span>
+                            <span /*className='text-uppercase'*/>{this.networks[this.props.net.id].name}</span>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="wrapper-1">
                             {this.netsOrder.map((item, index) => (
@@ -73,11 +76,7 @@ class IndicatorPanel extends React.Component {
 
     updData() {
         setInterval(() => {
-            extRequests.getBalance(this.props.pubkey, this.props.nativeToken)
-            .then(balance => {
-                if (balance !== undefined)
-                    this.props.updCoinAmount(balance.amount);
-            });
+            this.props.updCoinAmount(utils.getBalance(this.props.balances, this.props.nativeToken).amount);
         }, 5000);
     };
 

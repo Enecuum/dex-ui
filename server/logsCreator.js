@@ -14,8 +14,19 @@ class LogsCreator {
             bold : '\n============================================================\n',
             thin : '\n------------------------------------------------------------\n'
         };
-        this.mode = (mode) ? mode : filters.FULL;
+        this.mode = this.setMode(mode);
         this.startMessage();
+    };
+
+    setMode (mode) {
+        if (mode == 'full' || mode == 'f')
+            return filters.FULL;
+        else if (mode == 'nothing' || mode == 'n')
+            return filters.NOTHING;
+        else if (mode == 'error' || mode == 'e')
+            return filters.ERRORS;
+        else 
+            return filters.FULL;
     };
 
     // ------------------------------- utils

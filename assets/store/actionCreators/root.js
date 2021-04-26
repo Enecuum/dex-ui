@@ -9,12 +9,13 @@ const actionCreators = {
         };
     },
     
-    changeNetwork(netName, netUrl) {
+    changeNetwork(netName, netUrl, id) {
         return {
             type : actions.CHANGE_NET,
             value : {
                 name : netName,
-                url : netUrl
+                url : netUrl,
+                id : id
             }
         };
     },

@@ -33,12 +33,13 @@ function mapStoreToProps(component) {
                 return {
                     ...state.swapCard,
                     navOpened: state.root.navOpened,
-                    connectionStatus : state.root.connectionStatus,
-                    langData: state.root.langData.trade.swapCard,
-                    menuItem: state.root.menuItem,
-                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
-                    removeLiquidityAmount: state.swapCard.removeLiquidity.amount,
-                    pairs                   : state.root.pairs
+                    connectionStatus        : state.root.connectionStatus,
+                    langData                : state.root.langData.trade.swapCard,
+                    menuItem                : state.root.menuItem,
+                    removeLiquiditySimpleView     : state.swapCard.removeLiquidity.simpleView,
+                    removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
+                    pairs                   : state.root.pairs,
+                    balances                : state.root.balances
                 };
             };
         case components.SWITCH:
@@ -107,7 +108,8 @@ function mapStoreToProps(component) {
                     ...state.indicatorPanel,
                     pubkey              : state.root.pubkey,
                     pendingIndicator    : state.root.pendingIndicator,
-                    net                 : state.root.net
+                    net                 : state.root.net,
+                    balances            : state.root.balances
                 };
             };
         case components.CONFIRM_SUPPLY:

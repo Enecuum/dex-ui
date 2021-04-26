@@ -5,7 +5,6 @@ const tokenHashGen = require('./tokenHashGenerator');
 const ObjectFromData = require('../web3-enq/packages/web3-enq-utils/src/objectFromData');
 const objectFromData = new ObjectFromData();
 const { LogsCreator, filters } = require('./logsCreator');
-const logsCreator = new LogsCreator(config.dex_url, filters.FULL);
 
 BigInt.prototype.toJSON = function () {
     return this.toString();
@@ -15,7 +14,7 @@ class IdManager {
     constructor() {
         this.idBorder = 2 ** 32;
         this.timeBorder = 60 * 60 * 1000;
-        this.lastId = config.lat_request_id;
+        this.lastId = config.last_request_id;
         this.type = {
             REQUEST: 'request',
             DONE: 'done'
@@ -52,6 +51,7 @@ class IdManager {
 
 class TransferPoint {
     constructor (argv) {
+        this.logsCreator = new LogsCreator(config.dex_url, (argv.filter) ? argv.filter : filters.FULL);
         this.args = ['host_port', 'dex_url', 'dex_port']; 
         this.config = this.setConfig({ ...config }, argv);
         this.idManager = new IdManager();
@@ -75,7 +75,7 @@ class TransferPoint {
         };
         if (data)
             txData.params = this.objToArray(data, method);
-        logsCreator.msg(JSON.stringify(txData));
+        this.logsCreator.msg(JSON.stringify(txData));
         return axios.post(`${this.config.dex_url}:${this.config.dex_port}/${this.config.api_version}`, txData);
     };
 
@@ -87,11 +87,11 @@ class TransferPoint {
                 emission : (emission) ? emission : 0
             })
             .then(res => {
-                logsCreator.msg(JSON.stringify(res.data));
+                this.logsCreator.msg(JSON.stringify(res.data));
                 resolve(res);
             },
             err => {
-                logsCreator.err(err);
+                this.logsCreator.err(err);
                 reject(err);
             })
         });
@@ -105,11 +105,11 @@ class TransferPoint {
                 amount : amount
             })
             .then(res => {
-                logsCreator.msg(JSON.stringify(res.data));
+                this.logsCreator.msg(JSON.stringify(res.data));
                 resolve(res);
             },
             err => {
-                logsCreator.err(err);
+                this.logsCreator.err(err);
                 reject(err);
             })
         });
@@ -122,10 +122,10 @@ class TransferPoint {
             .then(res => {
                 resolve(responseRule(res));
                 this.idManager.completeRequestId(res.data.id);
-                logsCreator.msg(JSON.stringify(res.data));
+                this.logsCreator.msg(JSON.stringify(res.data));
             },
             error => {
-                logsCreator.err(error);
+                this.logsCreator.err(error);
                 reject({ error: `Internal server error: ${error}` });
             });
         });

@@ -8,7 +8,7 @@ class LPTokensWalletInfo extends React.Component {
         this.logo2 = props.data.logo2;
         this.token1 = props.data.token1;
         this.token2 = props.data.token2;
-    }
+    };
 
     render () {
         return (

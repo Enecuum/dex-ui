@@ -6,6 +6,8 @@ import ConfirmSupply from './ConfirmSupply';
 import WaitingConfirmation from './waitingConfirmation';
 import Switch from './Switch';
 import CommonToast from './CommonToast';
+import Connect from './Connect';
+import IndicatorPanel from './IndicatorPanel';
 
 export {
     Navbar,
@@ -15,5 +17,7 @@ export {
     ConfirmSupply,
     WaitingConfirmation,
     Switch,
-    CommonToast
+    CommonToast,
+    Connect,
+    IndicatorPanel
 };

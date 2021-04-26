@@ -1,38 +1,13 @@
 .navbar {
     height: var(--top-menu-height);
     background-color: var(--menu-bg);
-
-/*    position: fixed;
-    width: 100%;
-    height: 67px;
-    box-shadow: var(--box-shadow);*/
 }
 
-
-
-/*
-.navbar.new-color {
-    background-color: var(--color1);
+@media (max-width: 767px) {
+    .navbar {
+        background-color: var(--menu-bg-non-transparent);
+    }
 }
-
-.navbar-brand {
-    cursor: pointer;
-    margin-left: 0.5%;
-    margin-bottom: 0.2%;
-    margin-top: 0.2%;
-}
-
-.navbar-custom {
-    cursor: pointer;
-    margin-left: 0.5%;
-    margin-bottom: 0.3%;
-    margin-top: 0.3%;
-    color: var(--color1);
-}
-
-.navbar-light .navbar-brand {
-    color: var(--color1);
-}*/
 
 .wallet-info-wrapper {
     height: 28px;
@@ -67,12 +42,6 @@
     box-shadow: none;
     text-decoration: none;
 }
-
-/* .btn-secondary {
-    border-color: #00000000;
-} */
-
-
 
 .wallet-info-boxes {
     border : 1px solid var(--color5);

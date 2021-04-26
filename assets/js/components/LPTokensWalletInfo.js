@@ -19,7 +19,7 @@ class LPTokensWalletInfo extends React.Component {
                         {this.token1}/{this.token2}
                     </div>
                 </div>
-                <div className="d-flex align-items-center justify-content-between py-2">
+                <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         {this.token1}
                     </div>
@@ -27,7 +27,7 @@ class LPTokensWalletInfo extends React.Component {
                         0
                     </div>
                 </div>
-                <div className="d-flex align-items-center justify-content-between py-2">
+                <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         {this.token2}
                     </div>

@@ -1,14 +1,13 @@
 #aside {
     background-color: var(--menu-bg);
     top: var(--top-menu-height);
-    height: calc(100% - var(--top-menu-height));
     top: var(--top-menu-height);
     bottom: 0px;
     z-index: 900;
     left: 0px;    
 }
 
-@media (max-width: 757px) {
+@media (max-width: 767px) {
     #aside {
         background-color: var(--menu-bg-non-transparent);
     }
@@ -16,11 +15,14 @@
     main.aside-open #aside {
         width: 100%!important;
     }
+}
 
-/*    main.aside-open #aside {
-        width: 100%!important;
-        position: static!important;
-    }*/
+@media (max-height: 800px) {
+    #aside {
+        position: absolute!important;
+        -ms-flex-pack: start!important;
+        justify-content: flex-start!important;
+    }
 }
 
 main.aside-open #aside {

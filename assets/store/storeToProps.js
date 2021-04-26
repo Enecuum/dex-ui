@@ -35,7 +35,7 @@ function mapStoreToProps(component) {
                     connectionStatus        : state.root.connectionStatus,
                     langData                : state.root.langData.trade.swapCard,
                     menuItem                : state.root.menuItem,
-                    removeLiquidityView     : state.swapCard.removeLiquidity.simpleView,
+                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
                     removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
                     pairs                   : state.root.pairs,
                     balances                : state.root.balances,
@@ -65,6 +65,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.aside,
+                    connectionStatus : state.root.connectionStatus,
                     menuItem: state.root.menuItem,
                     navOpened: state.root.navOpened,
                     langData: state.root.langData.navbars.left,

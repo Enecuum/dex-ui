@@ -8,7 +8,7 @@
     left: 0px;    
 }
 
-@media (max-width: 757px) {
+@media (max-width: 767px) {
     #aside {
         background-color: var(--menu-bg-non-transparent);
     }

@@ -8,7 +8,12 @@
     box-shadow: var(--box-shadow);*/
 }
 
-
+@media (max-width: 767px) {
+    .navbar {
+        background-color: var(--menu-bg-non-transparent);
+        border-bottom: 1px solid var(--color2);
+    }
+}
 
 /*
 .navbar.new-color {

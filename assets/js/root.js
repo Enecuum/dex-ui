@@ -28,15 +28,15 @@ class Root extends React.Component {
         return pools.map(element => {
             return {
                 token_0 : {
-                    hash : element.t1,
-                    volume : element.v1
+                    hash : element.asset_1,
+                    volume : element.volume_1
                 },
                 token_1 : {
-                    hash :  element.t2,
-                    volume : element.v2
+                    hash :  element.asset_2,
+                    volume : element.volume_2
                 },
-                pool_fee : 0,
-                lt : element.lt
+                pool_fee : element.pool_fee,
+                lt : element.token_hash
             };
         });
     };

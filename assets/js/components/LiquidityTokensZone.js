@@ -40,7 +40,7 @@ class LiquidityTokensZone extends React.Component {
     };
     
     getPoolAmount (ltDataElement) {
-        return Number(ltDataElement.v1) + Number(ltDataElement.v2);
+        return Number(ltDataElement.token_0.volume) + Number(ltDataElement.token_1.volume);
     };
 
     openAddLiquidityCard (fToken, sToken) {
@@ -62,11 +62,10 @@ class LiquidityTokensZone extends React.Component {
                     <div className="d-flex justify-content-center">empty</div>
                 </div>
             );
-        else 
+        else {
             return this.props.ltList.map((el, index) => {
-                this.getPoolAmount(el);
-                let fToken = this.getTokenByHash(el.t1);
-                let sToken = this.getTokenByHash(el.t2);
+                let fToken = this.getTokenByHash(el.token_0.hash);
+                let sToken = this.getTokenByHash(el.token_1.hash);
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
@@ -79,11 +78,11 @@ class LiquidityTokensZone extends React.Component {
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {fToken.ticker}:</span>
-                                        {el.v1}
+                                        {el.token_0.volume}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
-                                        {el.v2}
+                                        {el.token_1.volume}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
@@ -101,6 +100,7 @@ class LiquidityTokensZone extends React.Component {
                     </Card>
                 );
             });
+        }
     };
 
     render () {

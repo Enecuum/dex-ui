@@ -37,13 +37,11 @@ class ExtRequests {
      * @returns {Promise}
      */
     createPool (pubkey, modeStruct) {
-        let v1 = BigInt(modeStruct.field0.value);
-        let v2 = BigInt(modeStruct.field1.value)
         return this.sendTx(pubkey, requestType.CREATE, {
             asset_1  : modeStruct.field0.token.hash,
-            amount_1 : v1,
+            amount_1 : BigInt(modeStruct.field0.value),
             asset_2  : modeStruct.field1.token.hash,
-            amount_2 : v2
+            amount_2 : BigInt(modeStruct.field1.value)
         });
     };
 
@@ -56,7 +54,7 @@ class ExtRequests {
     swap (pubkey, exchangeMode) {
         return this.sendTx(pubkey, requestType.SWAP, {
             asset_in  : exchangeMode.field0.token.hash,
-            amount_in : exchangeMode.field0.value,
+            amount_in : BigInt(exchangeMode.field0.value),
             asset_out : exchangeMode.field1.token.hash
         });
     };
@@ -70,9 +68,9 @@ class ExtRequests {
     addLiquidity (pubkey, liquidityMode) {
         return this.sendTx(pubkey, requestType.ADD, {
             asset_1  : liquidityMode.field0.token.hash,
-            amount_1 : liquidityMode.field0.value,
+            amount_1 : BigInt(liquidityMode.field0.value),
             asset_2  : liquidityMode.field1.token.hash,
-            amount_2 : liquidityMode.field1.value
+            amount_2 : BigInt(liquidityMode.field1.value)
         });
     };
 
@@ -85,23 +83,24 @@ class ExtRequests {
     removeLiquidity (pubkey, removeMode) {
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : removeMode.lt,
-            amount : removeMode.amount
+            amount : BigInt(removeMode.amount)
         });
     };
 
     sendTx (pubKey, reqType, params) {
+        console.log(data);
+        console.log(params);
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,
             tokenHash : presets.network.nativeToken.hash,
             nonce : Math.floor(Math.random() * 1e10),
-            data : {
+            data : ENQweb3lib.serialize({
                 type : reqType,
                 parameters : params
-            }
+            })
         };
-        // console.log(data);
         return trafficController.sendTransaction(data);
     };
 };

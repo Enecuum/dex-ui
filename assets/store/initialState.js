@@ -51,8 +51,24 @@ const initialState = {
         },
         removeLiquidity : {
             simpleView : true,
-            lt         : undefined,
-            amount     : 50
+            ltfield : {
+                id          : 4,
+                walletValue : '-',
+                value       : '',
+                token       : presets.swapTokens.emptyToken
+            },
+            field0  : {
+                id          : 5,
+                walletValue : '-',
+                value       : '',
+                token       : presets.swapTokens.emptyToken
+            },
+            field1  : {
+                id          : 6,
+                walletValue : '-',
+                value       : '',
+                token       : presets.swapTokens.emptyToken
+            }
         },
         activeField     : 0,
         tokenListStatus : false,

@@ -1,18 +1,16 @@
 import React from 'react';
 import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { util } from 'webpack';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import utils from '../utils/swapUtils';
-
+import testFormulas from '../utils/testFormulas';
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {
         super(props);
         this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
-        this.openRmLiquidityCard = this.props.openRmLiquidityCard;
         this.updltList();
     };
 
@@ -22,6 +20,36 @@ class LiquidityTokensZone extends React.Component {
             if (this.props.balances.find(el => el.token == pool.lt))
                 filtered.push(pool);
         return filtered;
+    };
+
+    assignDataForRemoveLiquidity (field, data) {
+        let mode = 'removeLiquidity';
+        this.props.assignTokenValue(mode, field, data.token);
+        this.props.assignCoinValue(mode, field, data.coinValue);
+        this.props.assignWalletValue(mode, field, data.walletValue);
+    };
+
+    openRmLiquidityCard (pool, fToken, sToken) {
+        let ltData = utils.getBalance(this.balances, pool.lt);
+        this.assignDataForRemoveLiquidity('ltfield', {
+            token : this.getTokenByHash(pool.lt),
+            coinValue : utils.getByPercents(ltData.amount, 50),
+            walletValue : ltData.amount
+        });
+        let fTData = utils.getBalance(this.balances, fToken.hash);
+        let amounts = testFormulas.ltDestruction(pool, utils.getByPercents(ltData.amount, 50), 'insert here'); // TODO bind total token emission
+        this.assignDataForRemoveLiquidity('field0', {
+            token : fToken,
+            coinValue : amounts.amount_1,
+            walletValue : fTData.amount
+        });
+        let sTData = utils.getBalance(this.balances, sToken.hash);
+        this.assignDataForRemoveLiquidity('field0', {
+            token : sToken,
+            coinValue : amounts.amount_2,
+            walletValue : sTData.amount
+        });
+        this.props.changeRemoveLiquidityVisibility();
     };
 
     updltList () {
@@ -91,7 +119,7 @@ class LiquidityTokensZone extends React.Component {
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
                                     <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this, el, fToken, sToken)}>Remove</Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRmLiquidityCard.bind(this, el)}>Remove</Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -99,10 +127,6 @@ class LiquidityTokensZone extends React.Component {
                 );
             });
         }
-    };
-
-    openRemoveLiquidityCard (el, fToken, sToken) {
-        this.openRmLiquidityCard(el, this.userPoolToken, fToken, sToken);
     };
 
     render () {

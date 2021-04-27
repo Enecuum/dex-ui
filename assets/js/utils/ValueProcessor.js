@@ -20,6 +20,27 @@ class ValueProcessor {
             value: BigInt(integerPart) * BigInt(multiplier) + BigInt(fractionalPart)
         };
     }
+    usCommasBigIntDecimals (input, decimals=10, fixed=10) {
+        if(typeof input === 'bigint' || !isNaN(input)) {
+            if (decimals === undefined || decimals === null || isNaN(decimals) || input === null)
+                return '---';          
+            let str = BigInt(input).toString();
+            let integerPart = '0';
+            let fractionalPart = '0';
+            let delimiter = decimals !== 0 ? (fixed !== 0 ? '.' : '') : '';
+            if (str.length > decimals) {
+                integerPart = BigInt(str.substring(0, str.length - decimals)).toLocaleString('en-us');
+                fractionalPart = str.substring(str.length - decimals);
+            } else {
+                fractionalPart = str.substring(str.length - decimals);
+                for (let i=0; i < (decimals - str.length); i++) {
+                    fractionalPart = '0' + fractionalPart;
+                }                      
+            }
+            return integerPart + delimiter + fractionalPart.substring(0, fixed);
+        } else
+            return input;
+    }
     getMaxValue (decimals) {    	
         return this.maxBigInt/BigInt(10 ** decimals)
     }	

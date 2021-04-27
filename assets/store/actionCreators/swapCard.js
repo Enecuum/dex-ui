@@ -28,11 +28,11 @@ const actionCreators = {
         };
     },
 
-    assignTokenValue (mode, field, value) {
+    assignTokenValue (mode, field, tokenObj) {
         return {
             type : actions.ASSIGN_TOKEN_VALUE,
             field : field,
-            value : value,
+            value : tokenObj,
             mode : mode
         };
     },

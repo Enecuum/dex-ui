@@ -6,6 +6,9 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
+import ValueProcessor from '../utils/ValueProcessor';
+
+const valueProcessor = new ValueProcessor();
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
@@ -76,7 +79,8 @@ class IndicatorPanel extends React.Component {
 
     updData() {
         setInterval(() => {
-            this.props.updCoinAmount(utils.getBalance(this.props.balances, this.props.nativeToken).amount);
+            let tokenObj = utils.getBalance(this.props.balances, this.props.nativeToken);
+            this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals));
         }, 5000);
     };
 

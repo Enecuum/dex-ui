@@ -31,7 +31,7 @@ class ConfirmSupply extends React.Component {
                 tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
             }
         } else {
-            tx = extRequests.createPool(this.props.pubkey, this.props.exchange);
+            tx = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem]);
         }
         tx.then(result => {
             console.log(result);

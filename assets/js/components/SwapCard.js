@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import presets from '../../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
@@ -185,8 +186,9 @@ class SwapCard extends React.Component {
         if (this.props.tokenListStatus)
             return (
                 <>
-                    <TokenCard  changeBalance={this.changeBalance.bind(this)}
-                    />
+                    <TokenCard
+                        changeBalance={this.changeBalance.bind(this)}
+                        useSuspense={false} />
                 </>
             );
     };

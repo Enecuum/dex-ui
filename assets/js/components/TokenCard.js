@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import swapApi from '../requests/swapApi';
 import Tooltip from '../elements/Tooltip';
@@ -100,6 +101,7 @@ class TokenCard extends React.Component {
     };
 
     render() {
+        const t = this.props.t;
         return (
             <>
               <Modal
@@ -112,9 +114,9 @@ class TokenCard extends React.Component {
                   <Modal.Title id="example-custom-modal-styling-title">
                     <div className="d-flex align-items-center justify-content-start">
                         <span className="mr-3">
-                            {this.props.langData.header}
+                            {t('trade.tokenCard.header')}
                         </span>
-                        <Tooltip text={this.props.langData.tooltipText}/>
+                        <Tooltip text={t('trade.tokenCard.tooltipText')}/>
                     </div>
                   </Modal.Title>
                 </Modal.Header>
@@ -124,11 +126,11 @@ class TokenCard extends React.Component {
                                 onChange={this.changeList.bind(this)}
                                 className='text-input-1 form-control'
                                 type='text'
-                                placeholder={this.props.langData.search} />
+                                placeholder={t('trade.tokenCard.search')} />
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between mb-4">
-                        <span>{this.props.langData.tokenName}</span>
+                        <span>{t('trade.tokenCard.tokenName')}</span>
                         <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
                             <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
                         </span>                    
@@ -144,6 +146,6 @@ class TokenCard extends React.Component {
     };
 };
 
-const WTokenCard = connect(mapStoreToProps(components.TOKEN_CARD), mapDispatchToProps(components.TOKEN_CARD))(TokenCard);
+const WTokenCard = connect(mapStoreToProps(components.TOKEN_CARD), mapDispatchToProps(components.TOKEN_CARD))(withTranslation()(TokenCard));
 
 export default WTokenCard;

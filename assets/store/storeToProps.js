@@ -54,7 +54,6 @@ function mapStoreToProps(component) {
                 return {
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
-                    langData    : state.root.langData.trade.tokenCard,
                     menuItem    : state.root.menuItem,
                     tokens      : state.root.tokens
                 };
@@ -75,8 +74,7 @@ function mapStoreToProps(component) {
                 return {
                     pubkey              : state.root.pubkey,
                     connectionStatus    : state.root.connectionStatus,
-                    connecionListOpened : state.root.connecionListOpened,
-                    langData            : state.root.langData.navbars.top.connectionCard
+                    connecionListOpened : state.root.connecionListOpened
                 };
             };
         case components.NAVBAR:

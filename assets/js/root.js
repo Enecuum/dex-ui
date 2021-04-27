@@ -140,7 +140,7 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        <ConnectionService />
+                        <ConnectionService useSuspense={false} />
                     </div>
                 </div>
             );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import '../../css/switch.css';
 
@@ -10,6 +11,7 @@ class Switch extends React.Component {
     };
 
     render () {
+        const t = this.props.t;
         let colors = (this.props.menuItem == 'exchange') ? ['var(--color3)', 'var(--color2)'] : ['var(--color2)', 'var(--color3)'];
         return (
             <div className="d-flex align-items-center justify-content-center">
@@ -19,7 +21,7 @@ class Switch extends React.Component {
                             backgroundColor : colors[0]
                         }}
                         onClick={this.switchMode.bind(this, 'exchange')}>
-                    {this.props.langData.mode0}
+                    {t('trade.switch.mode0')}
                 </div>
                 <div    className="switch-mode"
                         id="liquidity-mode"
@@ -27,13 +29,13 @@ class Switch extends React.Component {
                             backgroundColor : colors[1]
                         }}
                         onClick={this.switchMode.bind(this, 'liquidity')}>
-                    {this.props.langData.mode1}
+                    {t('trade.switch.mode1')}
                 </div>
             </div>
         );
     }
 };
 
-const WSwitch = connect(mapStoreToProps(components.SWITCH), mapDispatchToProps(components.SWITCH))(Switch);
+const WSwitch = connect(mapStoreToProps(components.SWITCH), mapDispatchToProps(components.SWITCH))(withTranslation()(Switch));
 
 export default WSwitch;

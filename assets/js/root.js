@@ -5,6 +5,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeT
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./utils/i18n";
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel } from './components/entry';
 import BlankPage from './pages/blankPage';
@@ -96,7 +97,7 @@ class Root extends React.Component {
                     <div className="swap-card-wrapper">
                         <div className='swap-card position-relative'>
                             <div id='switch'>
-                                <Switch />
+                                <Switch useSuspense={false}/>
                             </div>
                             <SwapCard />
                             <ConfirmSupply />
@@ -151,7 +152,7 @@ class Root extends React.Component {
                 <Navbar />
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>
-                        <Aside />
+                        <Aside useSuspense={false} />
                         {this.menuViewController()}
                         {this.connectionList()}
                     </div>

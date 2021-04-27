@@ -46,7 +46,6 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     pubkey      : state.root.pubkey,
-                    langData    : state.root.langData.trade.switch,
                     menuItem    : state.root.menuItem
                 };
             };
@@ -67,9 +66,7 @@ function mapStoreToProps(component) {
                     connectionStatus : state.root.connectionStatus,
                     menuItem: state.root.menuItem,
                     navOpened: state.root.navOpened,
-                    langData: state.root.langData.navbars.left,
                     siteLocales : state.root.siteLocales,
-                    activeLocale : state.root.activeLocale,
                     langTitles : state.root.langTitles
                 };
             };

@@ -31,8 +31,18 @@ function countEnxAmount (pair, uiPair, mode) {
     return 'wrong mode';
 };
 
+function ltDestruction (pair, rm, total) {
+    if (total == 0)
+        return '-';
+    return {
+        amount_1 : pair.token_0.volume * (rm / total),
+        amount_2 : pair.token_1.volume * (rm / total)
+    };
+};
+
 export default {
     getAddLiquidityPrice,
+    ltDestruction,
     countEnxAmount,
     countLiqudity,
     getSwapPrice

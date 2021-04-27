@@ -60,6 +60,7 @@
                 "lackOfLiquidity" : "Insufficient liquidity for this trade"
             },
             "removeLiquidity" : {
+                "input" : "input",
                 "simple" : "Simple",
                 "detailed" : "Detailed",
                 "header" : "Remove Liquidity",

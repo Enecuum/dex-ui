@@ -16,6 +16,13 @@ class SwapApi {
         console.log('new network: ' + this.url);
     };
 
+    getTokenInfo(hash) {
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/token_info?hash=${hash}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
     getFullBalance(pubkey) {
         return trafficController.simpleRequest(`${this.url}api/${config.api_version}/balance_all?id=${pubkey}`,
             {

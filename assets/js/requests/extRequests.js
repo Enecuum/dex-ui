@@ -39,28 +39,12 @@ class ExtRequests {
     createPool (pubkey, modeStruct) {
         let v1 = BigInt(modeStruct.field0.value);
         let v2 = BigInt(modeStruct.field1.value)
-        return ENQweb3lib.sendTransaction({
-            from : pubkey,
-            to : presets.network.genesisPubKey,
-            value : presets.network.nativeToken.fee,
-            tokenHash : presets.network.nativeToken.hash,
-            nonce : Math.floor(Math.random() * 1e10),
-            data : {
-                type : 'create_pool',
-                parameters : {
-                    asset_1  : modeStruct.field0.token.hash,
-                    amount_1 : v1,
-                    asset_2  : modeStruct.field1.token.hash,
-                    amount_2 : v2
-                }
-            }
+        return this.sendTx(pubkey, requestType.CREATE, {
+            asset_1  : modeStruct.field0.token.hash,
+            amount_1 : v1,
+            asset_2  : modeStruct.field1.token.hash,
+            amount_2 : v2
         });
-        // return this.sendTx(pubkey, requestType.CREATE, {
-        //     asset_1  : modeStruct.field0.token.hash,
-        //     amount_1 : v1,
-        //     asset_2  : modeStruct.field1.token.hash,
-        //     amount_2 : v2
-        // });
     };
 
     /**
@@ -117,7 +101,7 @@ class ExtRequests {
                 parameters : params
             }
         };
-        console.log(data);
+        // console.log(data);
         return trafficController.sendTransaction(data);
     };
 };

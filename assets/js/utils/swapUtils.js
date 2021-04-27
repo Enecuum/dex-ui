@@ -72,7 +72,12 @@ function getBalance(balances, hash, clear) {
         };
 };
 
+function countUserLtByPercentage(userLt, percent) {
+    return userLt * (percent / 100);
+};
+
 export default {
+    countUserLtByPercentage,
     countExchangeRate,
     countPoolShare,
     getBalance,

@@ -14,9 +14,6 @@ import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
 
-import extRequests from '../requests/extRequests';
-import swapApi from '../requests/swapApi';
-
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/swap-card.css';
@@ -29,6 +26,7 @@ class SwapCard extends React.Component {
         this.pairExists = false;
         this.readyToSubmit = false;
         this.activePair = {};
+        this.rmLtData = {};
 
         this.removeLiquidity= {
             ranges : [
@@ -123,6 +121,7 @@ class SwapCard extends React.Component {
         } else if (['deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             value = document.getElementById(fieldId).value;
         } else { }
+        
         let fieldObj = this.props[this.props.menuItem][field];
         fieldObj.value = value;
         this.props.assignCoinValue(this.props.menuItem, field, value);
@@ -282,7 +281,7 @@ class SwapCard extends React.Component {
                         <Tooltip text='text'/> {/*this.props.langData.trade.tokenCard.tooltipText*/}
                     </div>
                     <div className='your-liquidity-field my-3'>
-                        <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
+                        <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)} openRmLiquidityCard = {this.openRmLiquidityCard.bind(this)}/>
                     </div>
                     <div className='your-liquidity-header'>
                         {this.props.langData[this.props.menuItem].additionInfo}
@@ -355,7 +354,24 @@ class SwapCard extends React.Component {
         );
     };
 
+    openRmLiquidityCard (pair, lt, fToken, sToken) { // lt - {value, hash}
+        this.activePair = pair;
+        this.rmLtData = lt;
+        this.rmLtData.token_0.ticker = fToken.ticker;
+        this.rmLtData.token_1.ticker = sToken.ticker;
+        this.props.changeRemoveLiquidityVisibility();
+    };
+
+    getPercents (userLtAmount, rmAmount) {
+        return (rmAmount / userLtAmount * 100).toFixed(1);
+    };
+
+    getNumber (userLtAmount, rmAmountPercents) {
+        return userLtAmount * (rmAmountPercents / 100);
+    };
+
     renderRemoveLiquidity() {
+        utils.ltDestruction(this.activePair, rm, this.props.removeLiquidityAmount);
         return (
             <div className="p-4">
                 <div className='d-flex justify-content-between align-items-center mb-4'>
@@ -370,22 +386,22 @@ class SwapCard extends React.Component {
                         <div>Amount</div>
                         <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? this.props.langData.removeLiquidity.detailed : this.props.langData.removeLiquidity.simple }</div>
                     </div>
-                    <div className="h1 font-weight-bold my-3">{this.props.removeLiquidityAmount}%</div>
+                    <div className="h1 font-weight-bold my-3">{this.getPercents(this.rmLtData.amount, this.props.removeLiquidityAmount)}%</div>
                     {this.props.removeLiquiditySimpleView &&
                         <div id="removeLiquidityRange" >
                             <Form className="mb-4">
                               <Form.Group controlId="formBasicRangeCustom">
                                 <Form.Control type="range"
-                                    value= {this.props.removeLiquidityAmount}
+                                    value= {this.getPercents(this.rmLtData.amount, this.props.removeLiquidityAmount)}
                                     min="0"
                                     max="100"
                                     step="0.1"
-                                    onChange = {e => this.setRemoveLiquidityValue(e.target.value)} />
+                                    onChange = {e => this.setRemoveLiquidityValue(this.getNumber(e.target.value))} />
                               </Form.Group>
                             </Form>
                             <div className="d-flex align-items-center justify-content-between">
                                 {this.removeLiquidity.ranges.map((item, index) => (
-                                    <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
+                                    <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, this.getNumber(item.value))}>{item.alias}</button>
                                 ))}
                             </div>
                         </div>
@@ -410,7 +426,7 @@ class SwapCard extends React.Component {
                                 </div>
                             </div>
                             <div className="text-right">
-                                Receive WBNB
+                                Receive
                             </div>
                         </div>
                     </>
@@ -419,10 +435,10 @@ class SwapCard extends React.Component {
                     <div className="mt-2">
                         <div className='swap-input py-2 px-3' id='idididid1'>
                             {this.getInputField({
-                                fieldName: 'eee',
+                                fieldName: this.props.langData.removeLiquidity.input,
                                 id : 5,
-                                tokenName: 'dsf',
-                                value: 'dfsdf'
+                                tokenName: this.rmLtData.ticker,
+                                value: this.props.removeLiquidityAmount
                             })}
                         </div>
 
@@ -430,10 +446,10 @@ class SwapCard extends React.Component {
 
                         <div className='swap-input py-2 px-3' id='idididid1'>
                             {this.getInputField({
-                                fieldName: 'eee',
-                                id : 5,
-                                tokenName: 'dsf',
-                                value: 'dfsdf'
+                                fieldName: this.props.langData.removeLiquidity.input,
+                                id : 6,
+                                tokenName:  this.rmLtData.token_0.ticker,
+                                value: 'dfsdf'// TODO
                             })}
                         </div>
 
@@ -441,10 +457,10 @@ class SwapCard extends React.Component {
 
                         <div className='swap-input py-2 px-3' id='idididid1'>
                             {this.getInputField({
-                                fieldName: 'eee',
-                                id : 5,
-                                tokenName: 'dsf',
-                                value: 'dfsdf'
+                                fieldName: this.props.langData.removeLiquidity.input,
+                                id : 7,
+                                tokenName:  this.rmLtData.token_1.ticker,
+                                value: 'dfsdf'// TODO
                             })}
                         </div>                      
                     </div>

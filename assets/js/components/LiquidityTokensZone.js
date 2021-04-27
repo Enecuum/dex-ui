@@ -1,17 +1,18 @@
 import React from 'react';
 import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { util } from 'webpack';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import extRequests from '../requests/extRequests';
-import swapApi from '../requests/swapApi';
+import utils from '../utils/swapUtils';
 
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {
         super(props);
-        this.poolAmount = '-';
+        this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
+        this.openRmLiquidityCard = this.props.openRmLiquidityCard;
         this.updltList();
     };
 
@@ -39,8 +40,8 @@ class LiquidityTokensZone extends React.Component {
             });
     };
     
-    getPoolAmount (ltDataElement) {
-        return Number(ltDataElement.token_0.volume) + Number(ltDataElement.token_1.volume);
+    getYourPoolToken (ltHash) {
+        return utils.getBalance(this.props.balances, ltHash);
     };
 
     openAddLiquidityCard (fToken, sToken) {
@@ -49,10 +50,6 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance('field0', fToken.hash);
         this.props.assignTokenValue(this.props.menuItem, 'field1', sToken);
         this.changeBalance('field1', sToken.hash);
-    };
-
-    openRemoveLiquidityCard () {
-        this.props.changeRemoveLiquidityVisibility();
     };
 
     renderltList () {
@@ -66,6 +63,7 @@ class LiquidityTokensZone extends React.Component {
             return this.props.ltList.map((el, index) => {
                 let fToken = this.getTokenByHash(el.token_0.hash);
                 let sToken = this.getTokenByHash(el.token_1.hash);
+                this.userPoolToken = this.getYourPoolToken(el.lt);
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
@@ -86,14 +84,14 @@ class LiquidityTokensZone extends React.Component {
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
-                                        {this.poolAmount}
-                                    </div>                                
+                                        {this.userPoolToken.amount}
+                                    </div>      
                                 </div>
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
                                     <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this, el, fToken, sToken)}>Remove</Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -101,6 +99,10 @@ class LiquidityTokensZone extends React.Component {
                 );
             });
         }
+    };
+
+    openRemoveLiquidityCard (el, fToken, sToken) {
+        this.openRmLiquidityCard(el, this.userPoolToken, fToken, sToken);
     };
 
     render () {

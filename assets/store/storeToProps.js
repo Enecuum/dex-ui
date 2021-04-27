@@ -85,13 +85,13 @@ function mapStoreToProps(component) {
                     connectionStatus    : state.root.connectionStatus
                 };
             };  
-        case components.CONNECT:
-            return function (state) {
-                return {
-                    langData : state.root.langData.navbars.top,
+        // case components.CONNECT:
+        //     return function (state) {
+        //         return {
+        //             langData : state.root.langData.navbars.top,
 
-                };
-            };  
+        //         };
+        //     };  
         case components.TOAST:
             return function (state) {
                 return {

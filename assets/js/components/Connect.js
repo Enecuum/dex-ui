@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import '../../css/index.css';
 
 class Connect extends React.Component {
     renderConnectionButton() {
+        const t = this.props.t;
         return (
             <button onClick={this.props.openConList.bind(this.props)}
                 className='btn btn-secondary my-2 my-sm-0 c-co connect-btn d-flex align-items-center justify-content-center'
@@ -13,7 +15,7 @@ class Connect extends React.Component {
                 style={{
                     backgroundColor: 'var(--color3)'
                 }}>
-                { this.props.langData.connect }
+                { t('navbars.top.connect') }
             </button>
         );
     };
@@ -23,6 +25,6 @@ class Connect extends React.Component {
     }
 };
 
-const WConnect = connect(mapStoreToProps(components.CONNECT), mapDispatchToProps(components.CONNECT))(Connect);
+const WConnect = connect(mapStoreToProps(components.CONNECT), mapDispatchToProps(components.CONNECT))(withTranslation()(Connect));
 
 export default WConnect;

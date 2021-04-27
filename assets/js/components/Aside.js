@@ -63,7 +63,7 @@ class Aside extends React.Component {
         this.exchRateUpdRate = 5 * sec;
         this.monitorExchangeRate();
 
-        this.state = {windowWidth: 0 };
+        this.state = {windowWidth: window.innerWidth};
     };
 
 
@@ -128,6 +128,7 @@ class Aside extends React.Component {
 
     render () {
         const t = this.props.t;
+        console.log('ddddddddddddddddddddddd', this.props.connectionStatus, this.state.windowWidth)
         return (
             <div 
                 id='aside'

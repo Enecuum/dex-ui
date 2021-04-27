@@ -149,7 +149,7 @@ class Root extends React.Component {
     render () {       
         return (
             <div>
-                <Navbar />
+                <Navbar useSuspense={false}/>
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>
                         <Aside useSuspense={false} />

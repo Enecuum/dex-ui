@@ -2,13 +2,15 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import '../../css/confirm-supply.css';
 
 class WaitingConfirmation extends React.Component {
     constructor(props) {
         super(props);
-        this.explorer_href = '#BLANK-LINK-TO-EXPLORER'; //ссылка для View on pulse.enecuum.com
+        this.explorer_href = '#BLANK-LINK-TO-EXPLORER'; //ссылка для View on pulse.enecuum.com - должно быть нечто вроде 'https://pulse.enecuum.com/линк_с_хэшем_транзакции_ИЛИ_аккаунта'
+        this.explorer_href_alias = 'pulse.enecuum.com'; //"Красивая"ссылка для View on pulse.enecuum.com
     };
 
     getHeaderPropNameByType() {
@@ -23,45 +25,45 @@ class WaitingConfirmation extends React.Component {
     }
 
     getDescription () {
-        let lang = this.props.langData.trade.confirmCard.waitingForConfirmationInternals;
-        let mode, middleWord;
+        let descriptionPhrase = '';
+        let interpolateParams = {
+            value0 : this.props[this.props.menuItem].field0.value,
+            ticker0 : this.props[this.props.menuItem].field0.token.ticker,
+            value1 : this.props[this.props.menuItem].field1.value,
+            ticker1 : this.props[this.props.menuItem].field1.token.ticker
+        }
+
         if (!this.props.createPool) {
             if (this.props.menuItem == 'exchange') {
-                mode = lang.swap.header;
-                middleWord = lang.swap.to;
+                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.swap.completePhrase';
             } else if (this.props.menuItem == 'liquidity') {
-                mode = lang.addLiquidity.header;
-                middleWord = lang.addLiquidity.plus;
+                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.addLiquidity.completePhrase';
             }
         } else {
-            mode = lang.createPool.header;
-            middleWord = lang.createPool.and;
+            descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.createPool.completePhrase';
         }
-        let field0 = this.props[this.props.menuItem].field0;
-        let field1 = this.props[this.props.menuItem].field1;
-        return `${mode} ${field0.value} ${field0.token.ticker} ${middleWord} ${field1.value} ${field1.token.ticker}`;
+
+        return this.props.t(descriptionPhrase, interpolateParams);
     };
 
     getContentByType() {
-
-        // TODO Использовать интерполируемые параметры в i18 для Swapping 20.6172 BRY for 0.100203 ENQ после добавления соответствующего функционала
-        // TODO Использовать интерполируемые параметры в i18 для View on pulse.enecuum.com после добавления соответствующего функционала
-
         if (this.props.txStateType === 'submitted') {
             return  (
                         <>
                             <div className="tx-state-icon-wrapper bordered d-flex align-items-center justify-content-center mx-auto">
                                 <span className="tx-state-icon icon-Icon13"/>                                
                             </div>
-                            <a className="View-in-explorer d-block hover-pointer mt-4"
+                            <a className="view-in-explorer d-block hover-pointer mt-4"
                                 href = { this.explorer_href }
                                 target = "_blank" >
-                                <span className="mr-3">View on pulse.enecuum.com</span>
+                                <span className="mr-3">{ this.props.t('viewOnSite', {'site' : this.explorer_href_alias})}</span>
                                 <span className="icon-Icon11"></span>
                             </a>
-                            <Button className='btn-secondary mx-auto mt-3'
-                                    onClick={this.closeWaitingConfirmation.bind(this)}
-                                >{ this.props.langData.close }</Button>
+                            <Button
+                                className='btn-secondary mx-auto mt-3'
+                                onClick={this.closeWaitingConfirmation.bind(this)} >
+                                    { this.props.t('close') }
+                            </Button>
 
                         </>
                     );    
@@ -71,7 +73,7 @@ class WaitingConfirmation extends React.Component {
                             <div className="tx-state-icon-waiting spinner d-flex align-items-center justify-content-center mx-auto" />
                             <div>                                
                                 <div className="mt-4">{ this.getDescription() }</div>
-                                <div className="small mt-2">{ this.props.langData.trade.confirmCard.confirmInWallet }</div>
+                                <div className="small mt-2">{ this.props.t('trade.confirmCard.confirmInWallet') }</div>
                             </div>                     
                         </>
                     );    
@@ -85,7 +87,7 @@ class WaitingConfirmation extends React.Component {
         }, 1000);
     };
 
-    render() {
+    render() {        
         return (
             <>
                 <Modal
@@ -98,7 +100,7 @@ class WaitingConfirmation extends React.Component {
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
                                 <span>
-                                    { this.props.langData[this.getHeaderPropNameByType()] }
+                                    { this.props.t([this.getHeaderPropNameByType()]) }
                                 </span>
                             </div>
                         </Modal.Title>
@@ -114,6 +116,6 @@ class WaitingConfirmation extends React.Component {
     };
 };
 
-const WWaitingConfirmation = connect(mapStoreToProps(components.WAITING_CONFIRMATION), mapDispatchToProps(components.WAITING_CONFIRMATION))(WaitingConfirmation);
+const WWaitingConfirmation = connect(mapStoreToProps(components.WAITING_CONFIRMATION), mapDispatchToProps(components.WAITING_CONFIRMATION))(withTranslation()(WaitingConfirmation));
 
 export default WWaitingConfirmation;

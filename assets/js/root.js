@@ -101,7 +101,7 @@ class Root extends React.Component {
                             </div>
                             <SwapCard useSuspense={false}/>
                             <ConfirmSupply useSuspense={false}/>
-                            <WaitingConfirmation />
+                            <WaitingConfirmation useSuspense={false}/>
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             <SwapAddon />

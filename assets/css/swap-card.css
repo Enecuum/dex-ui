@@ -220,3 +220,13 @@
     border-radius: var(--border-radius2);
     height: 100px;
 }
+
+a.view-in-explorer, a.view-in-explorer:visited {
+    color: var(--color4);
+}
+
+a.view-in-explorer:hover {
+    color: var(--color3);
+    text-decoration: none!important;
+}
+

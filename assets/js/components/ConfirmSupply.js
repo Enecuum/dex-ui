@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import PairLogos from '../components/PairLogos';
 import LogoToken from '../elements/LogoToken';
@@ -45,7 +46,7 @@ class ConfirmSupply extends React.Component {
     };
 
     render() {
-        let langData = this.props.langData;
+        const t = this.props.t;        
         let modeStruct = this.props[this.props.menuItem];
         let firstToken = modeStruct.field0.token;
         let secondToken = modeStruct.field1.token;
@@ -62,7 +63,7 @@ class ConfirmSupply extends React.Component {
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
                                 <span>
-                                    {langData.header}
+                                    {t('trade.confirmCard.header')}
                                 </span>
                             </div>
                         </Modal.Title>
@@ -76,24 +77,24 @@ class ConfirmSupply extends React.Component {
                             {firstToken.ticker}/{secondToken.ticker} Pool Tokens
                         </div>                        
                         <div className='confirm-supply-description'>
-                            {langData.description}
+                            {t('trade.confirmCard.description')}
                         </div>
                         <div className="my-5">
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {firstToken.ticker} {langData.deposited}
+                                    {firstToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
                                 <LogoToken data={{url : img1, value : modeStruct.field0.value}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
-                                    {secondToken.ticker} {langData.deposited}
+                                    {secondToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
                                 <LogoToken data={{url : img2, value : modeStruct.field1.value}} />
                             </div>
                             <div className='d-flex align-items-start justify-content-between mb-2'>
                                 <div>
-                                    {langData.rates}
+                                    {t('trade.confirmCard.rates')}
                                 </div>
                                 <div className='text-right'>
                                     <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
@@ -102,7 +103,7 @@ class ConfirmSupply extends React.Component {
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
                                 <div>
-                                    {langData.shareOfPool}
+                                    {t('trade.confirmCard.shareOfPool')}
                                 </div>
                                 <div>
                                     {utils.countPoolShare(pair, modeStruct)}%
@@ -111,7 +112,7 @@ class ConfirmSupply extends React.Component {
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.sendTransaction.bind(this, pair)}>
-                            {langData.confirm}
+                            {t('trade.confirmCard.confirm')}
                         </Button>
                     </Modal.Body>
                 </Modal>
@@ -120,6 +121,6 @@ class ConfirmSupply extends React.Component {
     };
 };
 
-const WConfirmSupply = connect(mapStoreToProps(components.CONFIRM_SUPPLY), mapDispatchToProps(components.CONFIRM_SUPPLY))(ConfirmSupply);
+const WConfirmSupply = connect(mapStoreToProps(components.CONFIRM_SUPPLY), mapDispatchToProps(components.CONFIRM_SUPPLY))(withTranslation()(ConfirmSupply));
 
 export default WConfirmSupply;

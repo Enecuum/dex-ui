@@ -99,8 +99,8 @@ class Root extends React.Component {
                             <div id='switch'>
                                 <Switch useSuspense={false}/>
                             </div>
-                            <SwapCard />
-                            <ConfirmSupply />
+                            <SwapCard useSuspense={false}/>
+                            <ConfirmSupply useSuspense={false}/>
                             <WaitingConfirmation />
                         </div>
                         <div className="addon-card-wrapper mt-4">

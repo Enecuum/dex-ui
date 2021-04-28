@@ -128,7 +128,6 @@ class Aside extends React.Component {
 
     render () {
         const t = this.props.t;
-        console.log('ddddddddddddddddddddddd', this.props.connectionStatus, this.state.windowWidth)
         return (
             <div 
                 id='aside'

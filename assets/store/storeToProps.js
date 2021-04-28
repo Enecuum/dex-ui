@@ -92,10 +92,10 @@ function mapStoreToProps(component) {
 
         //         };
         //     };  
-        case components.TOAST:
+        case components.TOAST: //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             return function (state) {
                 return {
-                    info : state.root.langData.info  
+                    info : state.root.langData.info  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 };
             }
         case components.INDICATOR_PANEL:
@@ -111,7 +111,6 @@ function mapStoreToProps(component) {
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
-                    langData    : state.root.langData.trade.confirmCard,
                     confirmCardOpened : state.swapCard.confirmCardOpened,
                     exchange    : state.swapCard.exchange,
                     liquidity   : state.swapCard.liquidity,

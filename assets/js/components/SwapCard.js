@@ -563,12 +563,12 @@ class SwapCard extends React.Component {
             <div>
                 { (this.props.menuItem == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard()}
                 { this.renderTokenCard() }
-                <ConfirmSupply />
+                <ConfirmSupply useSuspense={false}/>
             </div>
         );
     };
 };
 
-const WSwapCard = connect(mapStoreToProps(components.SWAP_CARD), mapDispatchToProps(components.SWAP_CARD))(SwapCard);
+const WSwapCard = connect(mapStoreToProps(components.SWAP_CARD), mapDispatchToProps(components.SWAP_CARD))(withTranslation()(SwapCard));
 
 export default WSwapCard;

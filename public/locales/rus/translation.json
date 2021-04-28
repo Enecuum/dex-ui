@@ -1,0 +1,114 @@
+{
+    "langTitles": {
+        "full": "Русский",
+        "short": "Ру"
+    },    
+    "navbars" : {
+        "left" : {
+            "home" : "Домой",
+            "exchange" : "Обмен",
+            "liquidity" : "Ликвидность",
+            "ido" : "IDO",
+            "farms" : "Farms",
+            "pools" : "Пулы",
+            "etm" : "ETM",
+            "info" : "Информация",
+            "docs" : "Документация"
+        },
+        "top" : {
+            "header" : "Enecuum",
+            "connect" : "Подключение",
+            "connectionCard" : {
+                "header" : "Подключить кошелёк",
+                "clue" : "Узнайте как подключиться"
+            }
+        }
+    },
+    "trade" : {
+        "switch" : {
+            "mode0" : "Обмен",
+            "mode1" : "Ликвидность"
+        },
+        "swapCard" : {
+            "exchange" : {
+                "header" : "Обмен",
+                "description" : "Торговля токенами в одно мгновение",
+                "input0" : "Из",
+                "input1" : "В"
+            },
+            "liquidity" : {
+                "header" : "Ликвидность",
+                "secondHeader" : "Добавить Ликвидность",
+                "description" : "Добавить ликвидность для получения LP токенов",
+                "addButton" : "Добавить",
+                "yourLiquidity" : "Ваша ликвидность",
+                "additionInfo" : "Если вы вложили токены ENX в ферму, верните их, и они появятся тут.",
+                "priceAndPoolShare" : "Цена и доля в пуле",
+                "per" : "на",
+                "shareOfPool" : "Доля в пуле",
+                "input0" : "Ввод",
+                "input1" : "Ввод",
+                "tooltipText" : "Когда вы добавляете ликвидность, вам выдаются токены пула, которые представляют вашу долю."
+            },
+            "submitButton" : {
+                "beforeConnection" : "Подключите кошелёк",
+                "afterConnection" : "Отправить",
+                "addLiquidity" : "Добавить ликвидность",
+                "fillAllFields" : "Заполните все поля",
+                "swap" : "Обменять",
+                "createPair" : "Создать пару"
+            },
+            "aboutButtonInfo" : {
+                "withoutPair" : "Такой пары не существует",
+                "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
+            },
+            "removeLiquidity" : {
+                "simple" : "Simple",
+                "detailed" : "Detailed"
+            }
+        },
+        "tokenCard" : {
+            "header" : "Выберите токен",
+            "search" : "Поиск по имени",
+            "tooltipText" : "Когда вы добавляете ликвидность, вам выдаются токены пула, которые представляют вашу долю.",
+            "tokenName" : "Токены"
+        },
+        "confirmCard" : {
+            "header" : "Вы получите",
+            "poolTokens" : "Токенов ликвидности",
+            "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
+            "deposited" : "Внесено",
+            "rates" : "Курс",
+            "shareOfPool" : "Доля в пуле",
+            "confirm" : "Подтверждение",
+            "waitingForConfirmation" : "Ожидание подтверждения",
+            "confirmInWallet" : "Подтвердите вашу транзакцию в кошельке",
+            "waitingForConfirmationInternals" : {
+                "swap" : {
+                    "completePhrase" : "Обмен {{value0}}{{ticker0}} на {{value1}}{{ticker1}}",
+                    "header" : "Обмен",
+                    "to" : "на"
+                },
+                "addLiquidity" : {
+                    "completePhrase" : "Добавление ликвидности {{value0}}{{ticker0}} + {{value1}}{{ticker1}}",
+                    "header" : "Добавление ликвидности",
+                    "plus" : "+"
+                },
+                "createPool" : {
+                    "completePhrase" : "Создание пула {{value0}}{{ticker0}} и {{value1}}{{ticker1}}",
+                    "header" : "Создание пула",
+                    "and" : "и"
+                }
+            }
+        }
+    },
+    "info" : "Инфо",
+    "submit" : "Отправить",
+    "close" : "Закрыть",
+    "transactionSubmitted" : "Транзакция подтверждена",
+    "waitingForConfirmation" : "Ожидайте подтверждения",
+    "transactionRejected" : "Транзакция отклонена",
+    "tokenWallet" : "{{token}} кошелёк",
+    "viewOnSite" :  "Смотреть на {{site}}",
+    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens"
+}

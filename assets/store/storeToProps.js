@@ -127,8 +127,7 @@ function mapStoreToProps(component) {
                     createPool  : state.swapCard.createPool,
                     exchange    : state.swapCard.exchange,
                     liquidity   : state.swapCard.liquidity,
-                    menuItem    : state.root.menuItem,
-                    langData    : state.root.langData
+                    menuItem    : state.root.menuItem
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:

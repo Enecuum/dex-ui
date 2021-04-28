@@ -3,3 +3,5 @@ config.json
 logs
 public/*
 !public/index.html
+!public/locales/eng/translation.json
+!public/locales/rus/translation.json

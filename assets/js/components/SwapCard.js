@@ -501,7 +501,7 @@ class SwapCard extends React.Component {
                 return (
                     <div>
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
-                            { this.props.langData.aboutButtonInfo.withoutPair }
+                            { this.props.t('trade.swapCard.aboutButtonInfo.withoutPair') }
                         </div>
                         <button
                             className='btn btn-secondary alt-submit w-100 py-2'

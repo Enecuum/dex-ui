@@ -74,7 +74,7 @@ class ConfirmSupply extends React.Component {
                         </div>
                         <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>
-                            {firstToken.ticker}/{secondToken.ticker} Pool Tokens
+                            {t('pairPoolTokens', {token0 : firstToken.ticker, token1 : secondToken.ticker})}
                         </div>                        
                         <div className='confirm-supply-description'>
                             {t('trade.confirmCard.description')}

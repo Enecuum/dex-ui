@@ -3,6 +3,7 @@ import Connect from './Connect';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import IndicatorPanel from './IndicatorPanel';
 
@@ -27,13 +28,13 @@ class Navbar extends React.Component {
                         </a>                     
                     </div>                    
                     <div id='root-connect'>
-                        {(!this.props.connectionStatus) ? <Connect /> : <div className="d-none d-xl-block"><IndicatorPanel /></div>}
+                        {(!this.props.connectionStatus) ? <Connect useSuspense={false} /> : <div className="d-none d-xl-block"><IndicatorPanel /></div>}
                     </div>
             </nav>
         );
     };
 };
 
-const WNavbar = connect(mapStoreToProps(components.NAVBAR), mapDispatchToProps(components.NAVBAR))(Navbar);
+const WNavbar = connect(mapStoreToProps(components.NAVBAR), mapDispatchToProps(components.NAVBAR))(withTranslation()(Navbar));
 
 export default WNavbar;

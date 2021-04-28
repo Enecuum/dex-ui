@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import presets from '../../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
@@ -185,8 +186,9 @@ class SwapCard extends React.Component {
         if (this.props.tokenListStatus)
             return (
                 <>
-                    <TokenCard  changeBalance={this.changeBalance.bind(this)}
-                    />
+                    <TokenCard
+                        changeBalance={this.changeBalance.bind(this)}
+                        useSuspense={false} />
                 </>
             );
     };
@@ -569,12 +571,12 @@ class SwapCard extends React.Component {
             <div>
                 { (this.props.menuItem == 'exchange') ? this.renderExchangeCard() : this.renderLiquidityCard()}
                 { this.renderTokenCard() }
-                <ConfirmSupply />
+                <ConfirmSupply useSuspense={false}/>
             </div>
         );
     };
 };
 
-const WSwapCard = connect(mapStoreToProps(components.SWAP_CARD), mapDispatchToProps(components.SWAP_CARD))(SwapCard);
+const WSwapCard = connect(mapStoreToProps(components.SWAP_CARD), mapDispatchToProps(components.SWAP_CARD))(withTranslation()(SwapCard));
 
 export default WSwapCard;

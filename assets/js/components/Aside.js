@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import Socials from './Socials';
 import swapApi from '../requests/swapApi';
@@ -62,8 +63,9 @@ class Aside extends React.Component {
         this.exchRateUpdRate = 5 * sec;
         this.monitorExchangeRate();
 
-        this.state = {windowWidth: 0 };
+        this.state = {windowWidth: window.innerWidth};
     };
+
 
     toggleNavOpen() {
         if (window.innerWidth <= 767) {            
@@ -108,19 +110,24 @@ class Aside extends React.Component {
         });
     };
 
-    async updLanguage (locale) {
-        await (await swapApi.getLanguage(locale)).json()
-        .then(langData => {
-            this.props.changeLanguage(langData);
-        });
-    };
+    // async updLanguage (locale) {
+    //     await (await swapApi.getLanguage(locale)).json()
+    //     .then(langData => {
+    //         this.props.changeLanguage(langData);
+    //     });
+    // };
 
-    updLanguageProp (item) {
-        this.props.updActiveLocale(item);
-        this.updLanguage(item);
+    // updLanguageProp (item) {
+    //     this.props.updActiveLocale(item);
+    //     // this.updLanguage(item);
+    // };
+
+    changeLanguage = lng => {
+        this.props.i18n.changeLanguage(lng);
     };
 
     render () {
+        const t = this.props.t;
         return (
             <div 
                 id='aside'
@@ -130,12 +137,12 @@ class Aside extends React.Component {
                     {this.itemsOrder.map((item, index) => (
                         <div className='menu-item d-flex align-items-center mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
-                            <span className='aside-menu-text'>{this.props.langData[item]}</span>
+                            <span className='aside-menu-text'>{t(`navbars.left.${item}`)}</span>
                         </div>
                     ))}
                     <a className='menu-item d-flex align-items-center justify-content-start mb-4' href="https://enex.gitbook.io/enex-space/" target="_blank">
                         <span className='icon-Icon19 icon-wrapper'/>
-                        <span className='aside-menu-text'>{this.props.langData.docs}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
+                        <span className='aside-menu-text'>{t('navbars.left.docs')}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
                     </a>
                 </div>
 
@@ -151,11 +158,11 @@ class Aside extends React.Component {
                             <Dropdown>
                                 <Dropdown.Toggle variant="link" id="dropdown-basic" className="btn btn-link">
                                     <span className='icon-Icon6 mr-2'/>
-                                    <span className='text-uppercase'>{ this.props.langTitles[this.props.activeLocale].short }</span> 
+                                    <span className='text-uppercase'>{ t('langTitles.short')  }</span> 
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu alignRight className="wrapper-1">
                                     {this.props.siteLocales.map((item, index) => (
-                                        <Dropdown.Item className="text-center py-2" key={index} value={index} onClick={this.updLanguageProp.bind(this, item)}>{ this.props.langTitles[item].full }</Dropdown.Item>
+                                        <Dropdown.Item className="text-center py-2" key={index} value={index} onClick={() => this.changeLanguage(item)}>{this.props.langTitles[item].full }</Dropdown.Item>
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -171,6 +178,6 @@ class Aside extends React.Component {
     };
 };
 
-const WAside = connect(mapStoreToProps(components.ASIDE), mapDispatchToProps(components.ASIDE))(Aside);
+const WAside = connect(mapStoreToProps(components.ASIDE), mapDispatchToProps(components.ASIDE))(withTranslation()(Aside));
 
 export default WAside;

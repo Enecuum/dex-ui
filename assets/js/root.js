@@ -5,6 +5,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeT
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "./utils/i18n";
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel } from './components/entry';
 import BlankPage from './pages/blankPage';
@@ -99,11 +100,11 @@ class Root extends React.Component {
                     <div className="swap-card-wrapper">
                         <div className='swap-card position-relative'>
                             <div id='switch'>
-                                <Switch />
+                                <Switch useSuspense={false}/>
                             </div>
-                            <SwapCard />
-                            <ConfirmSupply />
-                            <WaitingConfirmation />
+                            <SwapCard useSuspense={false}/>
+                            <ConfirmSupply useSuspense={false}/>
+                            <WaitingConfirmation useSuspense={false}/>
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             <SwapAddon />
@@ -142,7 +143,7 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        <ConnectionService updDexData = {this.updDexData.bind(this)} />
+                        <ConnectionService updDexData = {this.updDexData.bind(this)} useSuspense={false}/>
                     </div>
                 </div>
             );
@@ -151,10 +152,10 @@ class Root extends React.Component {
     render () {       
         return (
             <div>
-                <Navbar />
+                <Navbar useSuspense={false}/>
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>
-                        <Aside />
+                        <Aside useSuspense={false} />
                         {this.menuViewController()}
                         {this.connectionList()}
                     </div>

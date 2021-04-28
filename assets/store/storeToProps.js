@@ -47,7 +47,6 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     pubkey      : state.root.pubkey,
-                    langData    : state.root.langData.trade.switch,
                     menuItem    : state.root.menuItem
                 };
             };
@@ -56,7 +55,6 @@ function mapStoreToProps(component) {
                 return {
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
-                    langData    : state.root.langData.trade.tokenCard,
                     menuItem    : state.root.menuItem,
                     tokens      : state.root.tokens
                 };
@@ -68,9 +66,7 @@ function mapStoreToProps(component) {
                     connectionStatus : state.root.connectionStatus,
                     menuItem: state.root.menuItem,
                     navOpened: state.root.navOpened,
-                    langData: state.root.langData.navbars.left,
                     siteLocales : state.root.siteLocales,
-                    activeLocale : state.root.activeLocale,
                     langTitles : state.root.langTitles
                 };
             };
@@ -79,8 +75,7 @@ function mapStoreToProps(component) {
                 return {
                     pubkey              : state.root.pubkey,
                     connectionStatus    : state.root.connectionStatus,
-                    connecionListOpened : state.root.connecionListOpened,
-                    langData            : state.root.langData.navbars.top.connectionCard
+                    connecionListOpened : state.root.connecionListOpened
                 };
             };
         case components.NAVBAR:
@@ -91,17 +86,17 @@ function mapStoreToProps(component) {
                     connectionStatus    : state.root.connectionStatus
                 };
             };  
-        case components.CONNECT:
-            return function (state) {
-                return {
-                    langData : state.root.langData.navbars.top,
+        // case components.CONNECT:
+        //     return function (state) {
+        //         return {
+        //             langData : state.root.langData.navbars.top,
 
-                };
-            };  
-        case components.TOAST:
+        //         };
+        //     };  
+        case components.TOAST: //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             return function (state) {
                 return {
-                    info : state.root.langData.info  
+                    info : state.root.langData.info  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 };
             }
         case components.INDICATOR_PANEL:
@@ -117,7 +112,6 @@ function mapStoreToProps(component) {
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
-                    langData    : state.root.langData.trade.confirmCard,
                     confirmCardOpened : state.swapCard.confirmCardOpened,
                     exchange    : state.swapCard.exchange,
                     liquidity   : state.swapCard.liquidity,

@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import img from '../../img/logo.png';
 import '../../css/close-button.css';
@@ -31,6 +32,7 @@ class ConnectionService extends React.Component {
     };
 
     render () {
+        const t = this.props.t;
         return (
             <>
               <Modal
@@ -41,12 +43,12 @@ class ConnectionService extends React.Component {
               >
                 <Modal.Header closeButton>
                   <Modal.Title id="custom-modal-styling-title">
-                    {this.props.langData.header}
+                    {t('navbars.top.connectionCard.header')}
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div onClick={this.connectToEnq.bind(this)} className='enq-wallet d-flex align-items-center'>
-                        <p className='col-6'>ENQ Wallet</p>
+                        <p className='col-6 text-nowrap'>{t('tokenWallet', {'token' : 'ENQ'})}</p>
                         <div className='col-6 d-flex justify-content-end align-items-center' >
                             <div className='c-circle'></div>
                             <img src={img}></img>
@@ -54,7 +56,7 @@ class ConnectionService extends React.Component {
                     </div>
                     <div href='#' className='d-flex justify-content-center c-clue'>
                         <span className='icon-Icon4'></span>
-                        {this.props.langData.clue}
+                        {t('navbars.top.connectionCard.clue')}
                     </div>
                 </Modal.Body>
               </Modal>
@@ -63,6 +65,6 @@ class ConnectionService extends React.Component {
     }
 };
 
-const WConnectionService = connect(mapStoreToProps(components.CONNECTION_SERVICE), mapDispatchToProps(components.CONNECTION_SERVICE))(ConnectionService);
+const WConnectionService = connect(mapStoreToProps(components.CONNECTION_SERVICE), mapDispatchToProps(components.CONNECTION_SERVICE))(withTranslation()(ConnectionService));
 
 export default WConnectionService;

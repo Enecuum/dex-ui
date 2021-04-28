@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
 
-import swapApi from '../requests/swapApi';
+import utils from '../utils/swapUtils';
 import Tooltip from '../elements/Tooltip';
 
 import '../../css/token-card.css';
@@ -13,7 +13,6 @@ import '../../css/token-card.css';
 class TokenCard extends React.Component {
     constructor(props) {
         super(props);
-        this.changeBalance = this.props.changeBalance;
         this.tokenFilter = '';
         this.updTokens();
     };
@@ -29,9 +28,9 @@ class TokenCard extends React.Component {
     };
 
     assignToken(token) {
-        this.props.assignTokenValue(this.props.menuItem, this.props.activeField, token);
+        this.props.assignTokenValue(this.props.menuItem, this.props.activeField, utils.getTokenObj(this.props.tokens, token.hash));
         this.props.closeTokenList();
-        this.changeBalance(this.props.activeField, token.hash);
+        this.props.changeBalance(this.props.activeField, token.hash);
     };
 
     toggleSortList() {

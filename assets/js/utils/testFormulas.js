@@ -1,17 +1,22 @@
 import utils from './swapUtils';
+import ValueProcessor from './ValueProcessor';
+
+const vp = new ValueProcessor();
 
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
-    return utils.divide(input_0, input_1) * coinValue;
+    let res = vp.mul(vp.div(input_0, input_1) , coinValue);
+    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
 };
 
 function countLiqudity (pair) {
     return pair.token_0.volume * pair.token_1.volume;
 };
 
-function getSwapPrice (volume0, volume1, amountIn) {
+function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigInt
     if (amountIn == 0) // use 'if' instead of try/catch in order to check empty string
         return 0;
-    return volume1 - (volume0 * volume1) / (volume0 + amountIn);
+    let res = vp.sub(volume1, (vp.div(vp.mul(volume0, volume1), vp.add(volume0, amountIn))));
+    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
 };
 
 function countEnxAmount (pair, uiPair, mode) {

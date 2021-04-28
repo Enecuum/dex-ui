@@ -26,28 +26,24 @@ class LiquidityTokensZone extends React.Component {
         let mode = 'removeLiquidity';
         this.props.assignTokenValue(mode, field, data.token);
         this.props.assignCoinValue(mode, field, data.coinValue);
-        this.props.assignWalletValue(mode, field, data.walletValue);
     };
 
     openRmLiquidityCard (pool, fToken, sToken) {
-        let ltData = utils.getBalance(this.balances, pool.lt);
+        let ltData = utils.getBalanceObj(this.balances, pool.lt);
         this.assignDataForRemoveLiquidity('ltfield', {
             token : this.getTokenByHash(pool.lt),
-            coinValue : utils.getByPercents(ltData.amount, 50),
-            walletValue : ltData.amount
+            coinValue : utils.getByPercents(ltData.amount, 50)
         });
-        let fTData = utils.getBalance(this.balances, fToken.hash);
+        let fTData = utils.getBalanceObj(this.balances, fToken.hash);
         let amounts = testFormulas.ltDestruction(pool, utils.getByPercents(ltData.amount, 50), 'insert here'); // TODO bind total token emission
         this.assignDataForRemoveLiquidity('field0', {
             token : fToken,
-            coinValue : amounts.amount_1,
-            walletValue : fTData.amount
+            coinValue : amounts.amount_1
         });
-        let sTData = utils.getBalance(this.balances, sToken.hash);
+        let sTData = utils.getBalanceObj(this.balances, sToken.hash);
         this.assignDataForRemoveLiquidity('field0', {
             token : sToken,
-            coinValue : amounts.amount_2,
-            walletValue : sTData.amount
+            coinValue : amounts.amount_2
         });
         this.props.changeRemoveLiquidityVisibility();
     };
@@ -69,7 +65,7 @@ class LiquidityTokensZone extends React.Component {
     };
     
     getYourPoolToken (ltHash) {
-        return utils.getBalance(this.props.balances, ltHash);
+        return utils.getBalanceObj(this.props.balances, ltHash);
     };
 
     openAddLiquidityCard (fToken, sToken) {

@@ -107,7 +107,7 @@ class Root extends React.Component {
                             <WaitingConfirmation useSuspense={false}/>
                         </div>
                         <div className="addon-card-wrapper mt-4">
-                            <SwapAddon />
+                            {/* <SwapAddon /> */}
                             <LPTokensWalletInfo data={{token1 : 'ENQ', token2 : 'BRY', logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         </div>
                     </div>    

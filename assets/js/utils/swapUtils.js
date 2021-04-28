@@ -55,16 +55,28 @@ function divide(input_0, input_1) {
     }
 };
 
-function getBalance(balances, hash) {
-    let tokenObj = balances.find(el => el.token == hash);
-    if (tokenObj) {
-        return tokenObj;
+function getBalanceObj(balances, hash) {
+    let balanceObj = balances.find(el => el.token == hash);
+    if (balanceObj) {
+        return balanceObj;
     } else
         return {
             amount : 0,
             decimals : 0,
             minable : 0, 
             reissuable : 0
+        };
+};
+
+function getTokenObj(tokens, hash) {
+    let tokenObj = tokens.find(el => el.hash == hash);
+    if (tokenObj) {
+        return tokenObj;
+    } else
+        return {
+            hash : undefined,
+            ticker : '-',
+            caption : ''
         };
 };
 
@@ -76,7 +88,8 @@ export default {
     countExchangeRate,
     countPoolShare,
     getByPercents,
-    getBalance,
+    getBalanceObj,
+    getTokenObj,
     pairExists,
     searchSwap,
     divide

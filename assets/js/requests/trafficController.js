@@ -24,6 +24,10 @@ class TrafficController {
         return this.control(ENQweb3lib.balanceOf.bind(ENQweb3lib), requestData);
     };
 
+    getProvider (requestData) {
+        return this.control(ENQweb3lib.net.getProvider.bind(ENQweb3lib), requestData);
+    };
+
     sendTransaction (requestData) {
         return this.control(ENQweb3lib.sendTransaction.bind(ENQweb3lib), requestData);
     };

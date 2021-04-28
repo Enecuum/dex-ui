@@ -56,7 +56,7 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
             return swapFields(state, action.mode);
 
         case actions.ASSIGN_WALLET_VALUE:
-            return fieldStore(state, action.mode, action.field, { walletValue: action.value });
+            return fieldStore(state, action.mode, action.field, { balance: action.value });
 
         case actions.OPEN_TOKEN_LIST:
             return swapCardStore(state, { tokenListStatus: true });

@@ -10,11 +10,11 @@ const actionCreators = {
         };
     },
 
-    assignWalletValue (mode, field, walletValue) {
+    assignBalanceObj (mode, field, balanceObj) {
         return {
             type : actions.ASSIGN_WALLET_VALUE,
             field : field,
-            value : walletValue,
+            value : balanceObj,
             mode : mode
         };
     },

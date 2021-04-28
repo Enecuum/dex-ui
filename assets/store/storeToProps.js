@@ -56,7 +56,8 @@ function mapStoreToProps(component) {
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
                     menuItem    : state.root.menuItem,
-                    tokens      : state.root.tokens
+                    tokens      : state.root.tokens,
+                    balances    : state.root.balances,
                 };
             };
         case components.ASIDE:
@@ -127,7 +128,8 @@ function mapStoreToProps(component) {
                     createPool  : state.swapCard.createPool,
                     exchange    : state.swapCard.exchange,
                     liquidity   : state.swapCard.liquidity,
-                    menuItem    : state.root.menuItem
+                    menuItem    : state.root.menuItem,
+                    net         : state.root.net
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:

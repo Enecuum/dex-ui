@@ -9,8 +9,8 @@ import '../../css/confirm-supply.css';
 class WaitingConfirmation extends React.Component {
     constructor(props) {
         super(props);
-        this.explorer_href = '#BLANK-LINK-TO-EXPLORER'; //ссылка для View on pulse.enecuum.com - должно быть нечто вроде 'https://pulse.enecuum.com/линк_с_хэшем_транзакции_ИЛИ_аккаунта'
-        this.explorer_href_alias = 'pulse.enecuum.com'; //"Красивая"ссылка для View on pulse.enecuum.com
+        this.explorer_href = this.props.net.url; //ссылка для View on pulse.enecuum.com - должно быть нечто вроде 'https://pulse.enecuum.com/линк_с_хэшем_транзакции_ИЛИ_аккаунта'
+        this.explorer_href_alias = this.props.net.url.replace(/https?:\/\//, '').replace(/\/*$/, ''); //"Красивая"ссылка для View on pulse.enecuum.com
     };
 
     getHeaderPropNameByType() {

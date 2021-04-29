@@ -3,15 +3,19 @@ import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import extRequests from '../requests/extRequests';
+import ValueProcessor from '../utils/ValueProcessor';
+import utils from '../utils/swapUtils';
+import testFormulas from '../utils/testFormulas';
 import swapApi from '../requests/swapApi';
 
+const valueProcessor = new ValueProcessor();
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {
         super(props);
-        this.poolAmount = '-';
+        this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
+        this.pooled = {};
         this.updltList();
     };
 
@@ -23,10 +27,36 @@ class LiquidityTokensZone extends React.Component {
         return filtered;
     };
 
+    assignDataForRemoveLiquidity (field, data) {
+        let mode = 'removeLiquidity';
+        this.props.assignTokenValue(mode, field, data.token);
+        this.props.assignCoinValue(mode, field, data.coinValue);
+    };
+
+    openRmLiquidityCard (pool, fToken, sToken) {
+        let ltData = utils.getBalanceObj(this.balances, pool.lt);
+        this.assignDataForRemoveLiquidity('ltfield', {
+            token : this.getTokenByHash(pool.lt),
+            coinValue : utils.getByPercents(ltData.amount, 50)
+        });
+        let fTData = utils.getBalanceObj(this.balances, fToken.hash);
+        let amounts = testFormulas.ltDestruction(pool, utils.getByPercents(ltData.amount, 50), 'insert here'); // TODO bind total token emission
+        this.assignDataForRemoveLiquidity('field0', {
+            token : fToken,
+            coinValue : amounts.amount_1
+        });
+        let sTData = utils.getBalanceObj(this.balances, sToken.hash);
+        this.assignDataForRemoveLiquidity('field0', {
+            token : sToken,
+            coinValue : amounts.amount_2
+        });
+        this.props.changeRemoveLiquidityVisibility();
+    };
+
     updltList () {
         setInterval(() => {
             this.props.updltList(this.getltData());
-        }, 5000);
+        }, 1000);
     };
 
     getTokenByHash (hash) {
@@ -39,8 +69,8 @@ class LiquidityTokensZone extends React.Component {
             });
     };
     
-    getPoolAmount (ltDataElement) {
-        return Number(ltDataElement.v1) + Number(ltDataElement.v2);
+    getYourPoolToken (ltHash) {
+        return utils.getBalanceObj(this.props.balances, ltHash);
     };
 
     openAddLiquidityCard (fToken, sToken) {
@@ -51,8 +81,20 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance('field1', sToken.hash);
     };
 
-    openRemoveLiquidityCard () {
-        this.props.changeRemoveLiquidityVisibility();
+    countPooledAmount (pair, index) {
+        if (!this.pooled[index])
+            this.pooled[index] = {
+                amount_1 : 0,
+                amount_2 : 0
+            };
+        swapApi.getTokenInfo(pair.lt)
+        .then(res => {
+            res.json()
+            .then(total => {
+                this.total = total[0].total_supply;
+                this.pooled[index] = testFormulas.ltDestruction(pair, utils.getBalanceObj(this.props.balances, pair.lt).amount, total[0].total_supply);
+            })
+        })
     };
 
     renderltList () {
@@ -62,11 +104,12 @@ class LiquidityTokensZone extends React.Component {
                     <div className="d-flex justify-content-center">empty</div>
                 </div>
             );
-        else 
+        else {
             return this.props.ltList.map((el, index) => {
-                this.getPoolAmount(el);
-                let fToken = this.getTokenByHash(el.t1);
-                let sToken = this.getTokenByHash(el.t2);
+                this.countPooledAmount(el, index);
+                let fToken = this.getTokenByHash(el.token_0.hash);
+                let sToken = this.getTokenByHash(el.token_1.hash);
+                this.userPoolToken = this.getYourPoolToken(el.lt);
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
@@ -79,28 +122,36 @@ class LiquidityTokensZone extends React.Component {
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {fToken.ticker}:</span>
-                                        {el.v1}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_1)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
-                                        {el.v2}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_2)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
-                                        {this.poolAmount}
-                                    </div>                                
+                                        {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, el.lt).amount)}
+                                    </div>  
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span className="mr-2">Pool share:</span>
+                                        {utils.countPoolShare(el, {
+                                            field0 : { value : this.pooled[index].amount_1 },
+                                            field1 : { value : this.pooled[index].amount_2 }
+                                        })}%
+                                    </div>      
                                 </div>
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
                                     <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRemoveLiquidityCard.bind(this)}>Remove</Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRmLiquidityCard.bind(this, el)}>Remove</Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>
                     </Card>
                 );
             });
+        }
     };
 
     render () {

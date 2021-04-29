@@ -9,13 +9,12 @@ const actionCreators = {
         };
     },
     
-    changeNetwork(netName, netUrl, id) {
+    changeNetwork(netName, netUrl) {
         return {
             type : actions.CHANGE_NET,
             value : {
                 name : netName,
-                url : netUrl,
-                id : id
+                url : netUrl
             }
         };
     },
@@ -97,7 +96,7 @@ const actionCreators = {
         return {
             type : actions.ASSIGN_ALL_TOKENS,
             value : list
-        }
+        };
     }
 };
 

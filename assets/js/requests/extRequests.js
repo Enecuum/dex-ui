@@ -4,6 +4,13 @@
 
 import presets from '../../store/pageDataPresets';
 import trafficController from './trafficController';
+import ValueProcessor from '../utils/ValueProcessor';
+
+const valueProcessor = new ValueProcessor();
+
+BigInt.prototype.toJSON = function () {
+    return this.toString();
+};
 
 const requestType = {
     CREATE  : 'create_pool',
@@ -13,6 +20,20 @@ const requestType = {
 };
 
 class ExtRequests { 
+
+    getBigIntAmount (field) { // utility
+        return valueProcessor.valueToBigInt(field.value, field.balance.decimals).value;
+    };
+
+    /**
+     * Get network url or name
+     * @param {boollean} full - flag for getting (true - full url) (false - name of network)
+     * @returns {string}
+     */
+    getProvider (full) {
+        return trafficController.getProvider(full);
+    };
+
     /**
      * Get balance of the required token
      * @param {string} pubKey - users publick key (get it while connecting to the extention)
@@ -35,9 +56,9 @@ class ExtRequests {
     createPool (pubkey, modeStruct) {
         return this.sendTx(pubkey, requestType.CREATE, {
             asset_1  : modeStruct.field0.token.hash,
-            amount_1 : modeStruct.field0.value,
+            amount_1 : this.getBigIntAmount(modeStruct.field0),
             asset_2  : modeStruct.field1.token.hash,
-            amount_2 : modeStruct.field1.value
+            amount_2 : this.getBigIntAmount(modeStruct.field1)
         });
     };
 
@@ -50,7 +71,7 @@ class ExtRequests {
     swap (pubkey, exchangeMode) {
         return this.sendTx(pubkey, requestType.SWAP, {
             asset_in  : exchangeMode.field0.token.hash,
-            amount_in : exchangeMode.field0.value,
+            amount_in : this.getBigIntAmount(exchangeMode.field0),
             asset_out : exchangeMode.field1.token.hash
         });
     };
@@ -64,9 +85,9 @@ class ExtRequests {
     addLiquidity (pubkey, liquidityMode) {
         return this.sendTx(pubkey, requestType.ADD, {
             asset_1  : liquidityMode.field0.token.hash,
-            amount_1 : liquidityMode.field0.value,
+            amount_1 : this.getBigIntAmount(liquidityMode.field0),
             asset_2  : liquidityMode.field1.token.hash,
-            amount_2 : liquidityMode.field1.value
+            amount_2 : this.getBigIntAmount(liquidityMode.field1)
         });
     };
 
@@ -76,10 +97,10 @@ class ExtRequests {
      * @param {object} liquidityMode - data structure from initialState.js
      * @returns {Promise}
      */
-    removeLiquidity (pubkey, removeMode) {
+    removeLiquidity (pubkey, removeMode) { // TODO - проверить bigint конвертацию монет
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : removeMode.lt,
-            amount : removeMode.amount
+            amount : BigInt(removeMode.amount)
         });
     };
 
@@ -90,12 +111,13 @@ class ExtRequests {
             value : presets.network.nativeToken.fee,
             tokenHash : presets.network.nativeToken.hash,
             nonce : Math.floor(Math.random() * 1e10),
-            data : {
+            data : ENQweb3lib.serialize({
                 type : reqType,
                 parameters : params
-            }
+            })
         };
-        console.log(data);
+        console.log(data);      // TODO - remove for production
+        console.log(params);    // TODO - remove for production
         return trafficController.sendTransaction(data);
     };
 };

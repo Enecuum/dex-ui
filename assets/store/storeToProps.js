@@ -19,27 +19,34 @@ const components = {
     INDICATOR_PANEL     : 0x9,
     CONFIRM_SUPPLY      : 0xA,
     WAITING_CONFIRMATION: 0xB,
-    LIQUIDITY_TOKEN_ZONE: 0xC
+    LIQUIDITY_TOKEN_ZONE: 0xC,
+    LP_WALLET_INFO      : 0xD
 };
 
 function mapStoreToProps(component) {
     switch (component) {
         case components.ROOT:
             return function (state) {
-                return state.root;
+                return {
+                    ...state.root,
+                    exchange        : state.swapCard.exchange,
+                    liquidity       : state.swapCard.liquidity,
+                    removeLiquidity : state.swapCard.removeLiquidity
+                }
             };
         case components.SWAP_CARD:
             return function (state) {
                 return {
                     ...state.swapCard,
-                    navOpened: state.root.navOpened,
                     connectionStatus        : state.root.connectionStatus,
                     langData                : state.root.langData.trade.swapCard,
                     menuItem                : state.root.menuItem,
-                    removeLiquiditySimpleView     : state.swapCard.removeLiquidity.simpleView,
+                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
                     removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
                     pairs                   : state.root.pairs,
-                    balances                : state.root.balances
+                    balances                : state.root.balances,
+                    navOpened               : state.root.navOpened,
+                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
                 };
             };
         case components.SWITCH:
@@ -55,18 +62,19 @@ function mapStoreToProps(component) {
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
                     menuItem    : state.root.menuItem,
-                    tokens      : state.root.tokens
+                    tokens      : state.root.tokens,
+                    balances    : state.root.balances,
                 };
             };
         case components.ASIDE:
             return function (state) {
                 return {
                     ...state.aside,
-                    connectionStatus : state.root.connectionStatus,
-                    menuItem: state.root.menuItem,
-                    navOpened: state.root.navOpened,
-                    siteLocales : state.root.siteLocales,
-                    langTitles : state.root.langTitles
+                    connectionStatus: state.root.connectionStatus,
+                    menuItem        : state.root.menuItem,
+                    navOpened       : state.root.navOpened,
+                    siteLocales     : state.root.siteLocales,
+                    langTitles      : state.root.langTitles
                 };
             };
         case components.CONNECTION_SERVICE:
@@ -126,7 +134,8 @@ function mapStoreToProps(component) {
                     createPool  : state.swapCard.createPool,
                     exchange    : state.swapCard.exchange,
                     liquidity   : state.swapCard.liquidity,
-                    menuItem    : state.root.menuItem
+                    menuItem    : state.root.menuItem,
+                    net         : state.root.net
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:
@@ -141,7 +150,20 @@ function mapStoreToProps(component) {
                     balances    : state.root.balances
                 };
             };
-
+        case components.LP_WALLET_INFO:
+            return function (state) {
+                return {
+                    menuItem        : state.root.menuItem,
+                    liquidityRemove : state.swapCard.liquidityRemove,
+                    exchange        : state.swapCard.exchange,
+                    liquidity       : state.swapCard.liquidity,
+                    removeLiquidity : state.swapCard.removeLiquidity,
+                    pairs           : state.root.pairs,
+                    tokens          : state.root.tokens,
+                    balances        : state.root.balances,
+                    liquidityMain   : state.swapCard.liquidityMain
+                };
+            };
         default:
             return undefined;
     }
@@ -152,7 +174,8 @@ function mapDispatchToProps(component) {
         case components.ROOT:
             return function (dispatch) {
                 return bindActionCreators({
-                    ...rootCreator
+                    ...rootCreator,
+                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch)
                 }, dispatch);
             };
         case components.SWAP_CARD:

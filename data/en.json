@@ -60,8 +60,11 @@
                 "lackOfLiquidity" : "Insufficient liquidity for this trade"
             },
             "removeLiquidity" : {
+                "input" : "input",
                 "simple" : "Simple",
-                "detailed" : "Detailed"
+                "detailed" : "Detailed",
+                "header" : "Remove Liquidity",
+                "tooltipText" : "Remove your liquidity tokens in order to get pool tokens"
             }
         },
         "tokenCard" : {

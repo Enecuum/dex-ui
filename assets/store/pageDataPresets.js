@@ -7,7 +7,6 @@ const presets =  {
             fee: 1000000000
         },
         defaultNet: {
-            id : 'bit',
             name : 'BIT',
             url : 'http://bit-dev.enecuum.com/'
         }
@@ -16,7 +15,16 @@ const presets =  {
     swapTokens : {
         emptyToken: {
             ticker: 'Select a token',
-            hash: undefined
+            hash: undefined,
+            caption: ''
+        },
+        emptyBalance: {
+            amount: '-',
+            token : undefined,
+            ticker: 'Select a token',
+            decimals: 0,
+            minable: 0,
+            reissuables: 0
         }
     },
 

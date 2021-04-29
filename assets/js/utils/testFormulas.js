@@ -1,20 +1,25 @@
 import utils from './swapUtils';
+import ValueProcessor from './ValueProcessor';
+
+const vp = new ValueProcessor();
 
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
-    return utils.divide(input_0, input_1) * coinValue;
+    let res = vp.mul(vp.div(input_0, input_1) , coinValue);
+    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
 };
 
 function countLiqudity (pair) {
     return pair.token_0.volume * pair.token_1.volume;
 };
 
-function getSwapPrice (volume0, volume1, amountIn) {
+function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigInt
     if (amountIn == 0) // use 'if' instead of try/catch in order to check empty string
         return 0;
-    return volume1 - (volume0 * volume1) / (volume0 + amountIn);
+    let res = vp.sub(volume1, (vp.div(vp.mul(volume0, volume1), vp.add(volume0, amountIn))));
+    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
 };
 
-function countEnxAmount (pair, uiPair, mode) {
+function countLTAmount (pair, uiPair, mode) {
     // create pool case
     if (!utils.pairExists(pair)) {
         return Math.sqrt(uiPair.field0.value * uiPair.field1.value);
@@ -31,9 +36,19 @@ function countEnxAmount (pair, uiPair, mode) {
     return 'wrong mode';
 };
 
+function ltDestruction (pair, rm, total) {
+    if (total == 0)
+        return '-';
+    return {
+        amount_1 : Number(pair.token_0.volume) * utils.divide(rm, total),
+        amount_2 : Number(pair.token_1.volume) * utils.divide(rm, total)
+    };
+};
+
 export default {
     getAddLiquidityPrice,
-    countEnxAmount,
+    ltDestruction,
+    countLTAmount,
     countLiqudity,
     getSwapPrice
 };

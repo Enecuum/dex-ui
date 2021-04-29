@@ -13,6 +13,7 @@ import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
 import swapApi from './requests/swapApi';
+import utils from './utils/swapUtils';
 import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 import SwapAddon from './components/SwapAddon';
@@ -23,47 +24,51 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.updLanguage();
-        this.updDexData();
+        this.intervalUpdDexData();
+        this.circleBalanceUpd();
     };
 
     convertPools (pools) {
         return pools.map(element => {
             return {
                 token_0 : {
-                    hash : element.t1,
-                    volume : element.v1
+                    hash : element.asset_1,
+                    volume : element.volume_1
                 },
                 token_1 : {
-                    hash :  element.t2,
-                    volume : element.v2
+                    hash :  element.asset_2,
+                    volume : element.volume_2
                 },
-                pool_fee : 0,
-                lt : element.lt
+                pool_fee : element.pool_fee,
+                lt : element.token_hash
             };
         });
     };
 
     // --------------------------------------- upd dex data
 
-    updDexData () {
+    updDexData (pubkey) {
+        this.updTokens();
+        this.updPools();
+        this.updBalances(pubkey);
+    };
+
+    intervalUpdDexData () {
         setInterval(() => {
-            if (this.props.connectionStatus) {
-                this.updTokens();
-                this.updPools();
-                this.updBalances();
-            }
+            if (this.props.connectionStatus)
+                this.updDexData(this.props.pubkey);
         }, 5000);
     };
-    async updBalances () {
-        if(this.props.pubkey != '')
-            swapApi.getFullBalance(this.props.pubkey)
+    updBalances (pubkey) {
+        if(pubkey != '')
+            swapApi.getFullBalance(pubkey)
             .then(res => {
                 if (!res.lock)
                     res.json()
                     .then(res => this.props.updBalances(res));
             });
     };
-    async updPools () {
+    updPools () {
         swapApi.getPairs()
         .then(res => {
             if (!res.lock)
@@ -71,7 +76,7 @@ class Root extends React.Component {
                 .then(res => this.props.updPairs(this.convertPools(res)));
         });
     };
-    async updTokens() {
+    updTokens() {
         swapApi.getTokens()
         .then(res => {
             if (!res.lock)
@@ -82,12 +87,40 @@ class Root extends React.Component {
 
     // ----------------------------------------------------
 
-    async updLanguage () {
+    circleBalanceUpd () {
+        this.updBalanceForms();
+        setInterval(() => {
+            this.updBalanceForms();
+        }, 2000);
+    }
+
+    updBalanceObj (menuItem, field) {
+        this.props.assignBalanceObj(menuItem, field, utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash));
+    };
+
+    updBalanceForms () {
+        if (this.props.menuItem == 'exchange') {
+            this.updBalanceObj('exchange', 'field0');
+            this.updBalanceObj('exchange', 'field1');
+        } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityMain) {
+            this.updBalanceObj('liquidity', 'field0');
+            this.updBalanceObj('liquidity', 'field1');
+        } else if (this.props.menuItem == 'liquidity' && this.props.liquidityRemove) {
+            this.updBalanceObj('removeLiquidity', 'field0');
+            this.updBalanceObj('removeLiquidity', 'field1');
+            this.updBalanceObj('removeLiquidity', 'ltfield');
+        }
+    };
+
+    updLanguage () {
         let locale = this.props.activeLocale;
-        await (await swapApi.getLanguage(locale)).json()
-        .then(langData => {
-            this.props.changeLanguage(langData);
-        });
+        swapApi.getLanguage(locale)
+        .then(res => {
+            res.json()
+            .then(langData => {
+                this.props.changeLanguage(langData);
+            });
+        })
     };
 
     menuViewController () {
@@ -113,8 +146,8 @@ class Root extends React.Component {
                             </Suspense>    
                         </div>
                         <div className="addon-card-wrapper mt-4">
-                            <SwapAddon />
-                            <LPTokensWalletInfo data={{token1 : 'ENQ', token2 : 'BRY', logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
+                            {/* <SwapAddon /> */}
+                            <LPTokensWalletInfo />
                         </div>
                     </div>    
                 );
@@ -149,7 +182,9 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        <ConnectionService useSuspense={true} />
+                        <Suspense fallback={<div>---</div>}>
+                            <ConnectionService updDexData = {this.updDexData.bind(this)} useSuspense={true}/>
+                        </Suspense>
                     </div>
                 </div>
             );
@@ -163,8 +198,8 @@ class Root extends React.Component {
                 </Suspense>
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>
-                    <Suspense fallback={<div>---</div>}>
-                        <Aside useSuspense={true} />
+                        <Suspense fallback={<div>---</div>}>
+                            <Aside useSuspense={true} />
                         </Suspense>
                         {this.menuViewController()}
                         {this.connectionList()}

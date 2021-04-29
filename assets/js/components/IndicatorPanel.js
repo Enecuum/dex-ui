@@ -6,26 +6,15 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
+import ValueProcessor from '../utils/ValueProcessor';
+
+const valueProcessor = new ValueProcessor();
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
-        this.networks = {
-            bit : {
-                id : 'bit',
-                name : 'BIT',
-                url : 'http://bit-dev.enecuum.com/',
-                action : undefined
-            },
-            pdex : {
-                id : 'pdex',
-                name : 'πDEX',
-                url :  location.href,
-                action : undefined
-            }
-        };
-        this.netsOrder = ['bit', 'pdex'];
         this.updData();
+        this.circleUpd();
     };
 
     renderPendingIndicator () {
@@ -42,9 +31,9 @@ class IndicatorPanel extends React.Component {
             );
     };
 
-    changeNet (net) {
-        swapApi.updUrl(net.url);
-        this.props.changeNetwork(net.name, net.url, net.id);
+    changeNet (name, url) {
+        swapApi.updUrl(url);
+        this.props.changeNetwork(name, url);
     };
 
     renderWalletInfo() {
@@ -52,16 +41,7 @@ class IndicatorPanel extends React.Component {
             <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
                 {this.renderPendingIndicator()}
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
-                    <Dropdown alignRight >
-                        <Dropdown.Toggle variant="link" id="dropdown-basic" className="choose-net">
-                            <span /*className='text-uppercase'*/>{this.networks[this.props.net.id].name}</span>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="wrapper-1">
-                            {this.netsOrder.map((item, index) => (
-                                <Dropdown.Item className="text-center py-2 net-item" key={index} value={index} onClick={this.changeNet.bind(this, this.networks[item])}>{this.networks[item].name}</Dropdown.Item>
-                            ))}
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <span className='text-uppercase mx-2'>{this.props.net.name}</span>
                 </div>
                 <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-0 mr-sm-3'>
                     {this.props.enx} ENX
@@ -75,9 +55,23 @@ class IndicatorPanel extends React.Component {
     };
 
     updData() {
+        this.updNetwork();
+        let tokenObj = utils.getBalanceObj(this.props.balances, this.props.nativeToken);
+        this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals));
+    };
+
+    circleUpd () {
         setInterval(() => {
-            this.props.updCoinAmount(utils.getBalance(this.props.balances, this.props.nativeToken).amount);
-        }, 5000);
+            this.updData();
+        }, 2000);
+    };
+
+    updNetwork () {
+        extRequests.getProvider(true)
+        .then(res => {
+            this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
+        },
+        err => console.log('cannot make getProvider request'));
     };
 
     packAdressString(addr) {

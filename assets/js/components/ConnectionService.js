@@ -22,6 +22,7 @@ class ConnectionService extends React.Component {
         await ENQweb3lib.enable()
         .then(res => {
             this.props.assignPubkey(res.pubkey);
+            this.props.updDexData(res.pubkey);
             this.props.setConStatus(true);
         },
         () => {

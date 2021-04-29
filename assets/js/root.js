@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "./utils/i18n";
+import i18n from "./utils/i18n";
+import { withTranslation,I18nextProvider } from "react-i18next";
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel } from './components/entry';
 import BlankPage from './pages/blankPage';
@@ -97,11 +98,19 @@ class Root extends React.Component {
                     <div className="swap-card-wrapper">
                         <div className='swap-card position-relative'>
                             <div id='switch'>
-                                <Switch useSuspense={false}/>
+                                <Suspense fallback={<div>---</div>}>
+                                    <Switch />
+                                </Suspense>    
                             </div>
-                            <SwapCard useSuspense={false}/>
-                            <ConfirmSupply useSuspense={false}/>
-                            <WaitingConfirmation useSuspense={false}/>
+                            <Suspense fallback={<div>---</div>}>
+                                <SwapCard />
+                            </Suspense>
+                            <Suspense fallback={<div>---</div>}>
+                                <ConfirmSupply />
+                            </Suspense>
+                            <Suspense fallback={<div>---</div>}>
+                                <WaitingConfirmation />
+                            </Suspense>    
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             <SwapAddon />
@@ -140,7 +149,7 @@ class Root extends React.Component {
             return (
                 <div>
                     <div id='connection-services'>
-                        <ConnectionService useSuspense={false} />
+                        <ConnectionService useSuspense={true} />
                     </div>
                 </div>
             );
@@ -149,10 +158,14 @@ class Root extends React.Component {
     render () {       
         return (
             <div>
-                <Navbar useSuspense={false}/>
+            <Suspense fallback={<div>---</div>}>
+                <Navbar useSuspense={true}/>
+                </Suspense>
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>
-                        <Aside useSuspense={false} />
+                    <Suspense fallback={<div>---</div>}>
+                        <Aside useSuspense={true} />
+                        </Suspense>
                         {this.menuViewController()}
                         {this.connectionList()}
                     </div>
@@ -171,11 +184,15 @@ class Root extends React.Component {
     };
 };
 
-const WRoot = connect(mapStoreToProps(components.ROOT), mapDispatchToProps(components.ROOT))(Root);
+const WRoot = connect(mapStoreToProps(components.ROOT), mapDispatchToProps(components.ROOT))(withTranslation()(Root));
 
 ReactDOM.render(
-    <Provider store={ store }>
-        <WRoot />
-    </Provider>,
+    <I18nextProvider i18n={i18n}>
+        <Provider store={ store } >
+            <Suspense fallback={<div>---</div>}>
+                <WRoot />
+            </Suspense>
+        </Provider>
+    </I18nextProvider>,
     document.getElementById('root')
 );

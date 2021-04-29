@@ -19,7 +19,7 @@ function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigIn
     return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
 };
 
-function countEnxAmount (pair, uiPair, mode) {
+function countLTAmount (pair, uiPair, mode) {
     // create pool case
     if (!utils.pairExists(pair)) {
         return Math.sqrt(uiPair.field0.value * uiPair.field1.value);
@@ -40,15 +40,15 @@ function ltDestruction (pair, rm, total) {
     if (total == 0)
         return '-';
     return {
-        amount_1 : pair.token_0.volume * (rm / total),
-        amount_2 : pair.token_1.volume * (rm / total)
+        amount_1 : Number(pair.token_0.volume) * utils.divide(rm, total),
+        amount_2 : Number(pair.token_1.volume) * utils.divide(rm, total)
     };
 };
 
 export default {
     getAddLiquidityPrice,
     ltDestruction,
-    countEnxAmount,
+    countLTAmount,
     countLiqudity,
     getSwapPrice
 };

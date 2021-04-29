@@ -12,6 +12,7 @@ import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
 import swapApi from './requests/swapApi';
+import utils from './utils/swapUtils';
 import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 import SwapAddon from './components/SwapAddon';
@@ -23,6 +24,7 @@ class Root extends React.Component {
         super(props);
         this.updLanguage();
         this.intervalUpdDexData();
+        this.circleBalanceUpd();
     };
 
     convertPools (pools) {
@@ -56,7 +58,7 @@ class Root extends React.Component {
                 this.updDexData(this.props.pubkey);
         }, 5000);
     };
-    async updBalances (pubkey) {
+    updBalances (pubkey) {
         if(pubkey != '')
             swapApi.getFullBalance(pubkey)
             .then(res => {
@@ -65,7 +67,7 @@ class Root extends React.Component {
                     .then(res => this.props.updBalances(res));
             });
     };
-    async updPools () {
+    updPools () {
         swapApi.getPairs()
         .then(res => {
             if (!res.lock)
@@ -73,7 +75,7 @@ class Root extends React.Component {
                 .then(res => this.props.updPairs(this.convertPools(res)));
         });
     };
-    async updTokens() {
+    updTokens() {
         swapApi.getTokens()
         .then(res => {
             if (!res.lock)
@@ -84,12 +86,40 @@ class Root extends React.Component {
 
     // ----------------------------------------------------
 
-    async updLanguage () {
+    circleBalanceUpd () {
+        this.updBalanceForms();
+        setInterval(() => {
+            this.updBalanceForms();
+        }, 2000);
+    }
+
+    updBalanceObj (menuItem, field) {
+        this.props.assignBalanceObj(menuItem, field, utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash));
+    };
+
+    updBalanceForms () {
+        if (this.props.menuItem == 'exchange') {
+            this.updBalanceObj('exchange', 'field0');
+            this.updBalanceObj('exchange', 'field1');
+        } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityMain) {
+            this.updBalanceObj('liquidity', 'field0');
+            this.updBalanceObj('liquidity', 'field1');
+        } else if (this.props.menuItem == 'liquidity' && this.props.liquidityRemove) {
+            this.updBalanceObj('removeLiquidity', 'field0');
+            this.updBalanceObj('removeLiquidity', 'field1');
+            this.updBalanceObj('removeLiquidity', 'ltfield');
+        }
+    };
+
+    updLanguage () {
         let locale = this.props.activeLocale;
-        await (await swapApi.getLanguage(locale)).json()
-        .then(langData => {
-            this.props.changeLanguage(langData);
-        });
+        swapApi.getLanguage(locale)
+        .then(res => {
+            res.json()
+            .then(langData => {
+                this.props.changeLanguage(langData);
+            });
+        })
     };
 
     menuViewController () {
@@ -108,7 +138,7 @@ class Root extends React.Component {
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             {/* <SwapAddon /> */}
-                            <LPTokensWalletInfo data={{token1 : 'ENQ', token2 : 'BRY', logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
+                            <LPTokensWalletInfo />
                         </div>
                     </div>    
                 );

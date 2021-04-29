@@ -96,7 +96,7 @@ class SwapCard extends React.Component {
     };
 
     getFieldName(fieldId, counter) {
-        if (fieldId == 0 || fieldId == 2)
+        if (fieldId % 2 == 0)
             return (counter) ? 'field1' : 'field0';
         else
             return (counter) ? 'field0' : 'field1';

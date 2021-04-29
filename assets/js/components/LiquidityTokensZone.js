@@ -3,14 +3,19 @@ import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
+import ValueProcessor from '../utils/ValueProcessor';
 import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
+import swapApi from '../requests/swapApi';
+
+const valueProcessor = new ValueProcessor();
 
 class LiquidityTokensZone extends React.Component {
     constructor (props) {
         super(props);
         this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
+        this.pooled = {};
         this.updltList();
     };
 
@@ -51,7 +56,7 @@ class LiquidityTokensZone extends React.Component {
     updltList () {
         setInterval(() => {
             this.props.updltList(this.getltData());
-        }, 5000);
+        }, 1000);
     };
 
     getTokenByHash (hash) {
@@ -76,6 +81,22 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance('field1', sToken.hash);
     };
 
+    countPooledAmount (pair, index) {
+        if (!this.pooled[index])
+            this.pooled[index] = {
+                amount_1 : 0,
+                amount_2 : 0
+            };
+        swapApi.getTokenInfo(pair.lt)
+        .then(res => {
+            res.json()
+            .then(total => {
+                this.total = total[0].total_supply;
+                this.pooled[index] = testFormulas.ltDestruction(pair, utils.getBalanceObj(this.props.balances, pair.lt).amount, total[0].total_supply);
+            })
+        })
+    };
+
     renderltList () {
         if (this.props.ltList.length == 0)
             return (
@@ -85,6 +106,7 @@ class LiquidityTokensZone extends React.Component {
             );
         else {
             return this.props.ltList.map((el, index) => {
+                this.countPooledAmount(el, index);
                 let fToken = this.getTokenByHash(el.token_0.hash);
                 let sToken = this.getTokenByHash(el.token_1.hash);
                 this.userPoolToken = this.getYourPoolToken(el.lt);
@@ -100,15 +122,22 @@ class LiquidityTokensZone extends React.Component {
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {fToken.ticker}:</span>
-                                        {el.token_0.volume}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_1)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
-                                        {el.token_1.volume}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_2)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
-                                        {this.userPoolToken.amount}
+                                        {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, el.lt).amount)}
+                                    </div>  
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span className="mr-2">Pool share:</span>
+                                        {utils.countPoolShare(el, {
+                                            field0 : { value : this.pooled[index].amount_1 },
+                                            field1 : { value : this.pooled[index].amount_2 }
+                                        })}%
                                     </div>      
                                 </div>
 

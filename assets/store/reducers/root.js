@@ -55,7 +55,7 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.ASSIGN_ALL_TOKENS:
             return rootStore(state, { tokens : action.value });
-            
+
         default:
             return state;
     }

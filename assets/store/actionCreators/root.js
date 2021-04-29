@@ -96,7 +96,7 @@ const actionCreators = {
         return {
             type : actions.ASSIGN_ALL_TOKENS,
             value : list
-        }
+        };
     }
 };
 

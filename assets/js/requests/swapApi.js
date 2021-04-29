@@ -13,7 +13,6 @@ class SwapApi {
 
     updUrl (url) {
         this.url = url;
-        console.log('new network: ' + this.url);
     };
 
     getTokenInfo(hash) {

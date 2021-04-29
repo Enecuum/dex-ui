@@ -11,7 +11,7 @@ class PairLogos extends React.Component {
     render () {
         return (
             <div className="d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3">
-                <div
+                {/* <div
                     className={`logo-wrapper-${this.logoSize}`}
                     style = {{ 
                         backgroundImage: `url(${this.logo1})`
@@ -20,7 +20,7 @@ class PairLogos extends React.Component {
                     className={`logo-wrapper-${this.logoSize}`}
                     style = {{
                         backgroundImage: `url(${this.logo2})`
-                    }} />
+                    }} /> */}
             </div>
         );
     }

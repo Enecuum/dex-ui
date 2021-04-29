@@ -29,18 +29,18 @@ const presets =  {
     },
 
     langData : {
-        siteLocales: ['rus', 'eng'],
+        siteLocales: ['ru', 'en'],
         langTitles: {
-            eng: {
+            en: {
                 full: 'English',
                 short: 'En'
             },
-            rus: {
+            ru: {
                 full: 'Русский',
                 short: 'Ru'
             }
         },
-        preferredLocale: ['eng'],
+        preferredLocale: ['en'],
         navbars: {
             left: [],
             top: {

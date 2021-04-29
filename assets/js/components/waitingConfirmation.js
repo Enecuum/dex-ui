@@ -18,7 +18,7 @@ class WaitingConfirmation extends React.Component {
         if (this.props.txStateType === 'submitted')
             modalHeaderPropName = "transactionSubmitted";
         else if (this.props.txStateType === 'waiting')
-            modalHeaderPropName = "waitingForConfirmation"; 
+            modalHeaderPropName = "waitingForConfirmation";
         else if (this.props.txStateType === 'rejected')
             modalHeaderPropName = "transactionRejected"; 
         return modalHeaderPropName;

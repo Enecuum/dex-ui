@@ -10,10 +10,13 @@ import LogoToken from '../elements/LogoToken';
 import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
 import extRequests from '../requests/extRequests';
+import ValueProcessor from '../utils/ValueProcessor';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/confirm-supply.css';
+
+const valueProcessor = new ValueProcessor();
 
 class ConfirmSupply extends React.Component {
     closeCard () {
@@ -23,7 +26,7 @@ class ConfirmSupply extends React.Component {
     sendTransaction (pair) {
         this.closeCard();
         this.props.openWaitingConfirmation();
-        this.props.showPendingIndicator();
+        // this.props.showPendingIndicator();
         let tx;
         if (utils.pairExists(pair)) {
             if (this.props.menuItem == 'exchange') {
@@ -36,13 +39,18 @@ class ConfirmSupply extends React.Component {
         }
         tx.then(result => {
             console.log(result);
-            this.props.hidePendingIndicator();
+            // this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('submitted');
         },
         error => {
-            this.props.hidePendingIndicator();
+            // this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('rejected');
         });
+    };
+
+    getBigIntValue (num) { 
+        if (num && num !== Infinity) 
+            return valueProcessor.valueToBigInt(num.toFixed(10)).value;
     };
 
     render() {
@@ -51,6 +59,8 @@ class ConfirmSupply extends React.Component {
         let firstToken = modeStruct.field0.token;
         let secondToken = modeStruct.field1.token;
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token]);
+        if (utils.pairExists(pair) && this.props.menuItem == 'exchange' && this.props.confirmCardOpened)
+            this.sendTransaction(pair);
         return (
             <>
                 <Modal
@@ -70,7 +80,7 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            { testFormulas.countEnxAmount(pair, modeStruct, this.props.menuItem) }
+                            { valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(testFormulas.countLTAmount(pair, modeStruct, this.props.menuItem)), 10, 10) }
                         </div>
                         <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>
@@ -97,8 +107,8 @@ class ConfirmSupply extends React.Component {
                                     {t('trade.confirmCard.rates')}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
+                                    <div>1 {firstToken.ticker} = {valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(utils.countExchangeRate(pair, true, modeStruct)), 10, 3)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(utils.countExchangeRate(pair, false, modeStruct)), 10, 3)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>

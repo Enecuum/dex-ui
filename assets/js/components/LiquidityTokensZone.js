@@ -115,6 +115,7 @@ class LiquidityTokensZone extends React.Component {
                         <Card.Header>
                             <Accordion.Toggle eventKey={index+''} as="div" className="d-flex align-items-center justify-content-between hover-pointer">
                                 <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
+                                <i class="fas fa-chevron-down"></i>
                             </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey={index+''}>

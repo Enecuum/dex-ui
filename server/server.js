@@ -113,11 +113,10 @@ class TestServer {
         });
 
         this.app.get(`/locales/*/translation.json`, bodyParser, (req, res) => {
-            let urlArr = req.url.split('/');
             res.writeHead(200, {
                 'Content-Type': 'text/html',
             });
-            let data = fs.readFileSync(path.join(wconf.output.path, urlArr[urlArr.length - 2]));
+            let data = fs.readFileSync(path.join(wconf.output.path, req.url));
             res.write(data);
             res.end();
         });

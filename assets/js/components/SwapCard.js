@@ -15,6 +15,7 @@ import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
 import ValueProcessor from '../utils/ValueProcessor';
+import swapApi from '../requests/swapApi'
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -31,6 +32,10 @@ class SwapCard extends React.Component {
         this.activePair = {};
         this.rmLtData = {};
         this.rmPersents = 50;
+        this.pooled = {
+            amount_1 : 0,
+            amount_2 : 0
+        };
 
         this.removeLiquidity= {
             ranges : [
@@ -64,6 +69,17 @@ class SwapCard extends React.Component {
 
     renderBalance (balance) {
         return (balance == '-') ? balance : `Balance: ${balance}`;
+    };
+
+    getModeStruct () {
+        let item = this.props.menuItem;
+        if (item == 'exchange') 
+            return 'exchange';
+        else if (item == 'liquidity' && !this.props.liquidityRemove)
+            return 'liquidity';
+        else {
+            return 'removeLiquidity';
+        }
     };
 
     getInputField(props) {
@@ -114,7 +130,7 @@ class SwapCard extends React.Component {
 
     changeField(fieldId) {
         let field = this.getFieldName(fieldId);
-        let value = this.props[this.props.menuItem][field].value;
+        let value = this.props[this.getModeStruct()][field].value;
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
                 // nothing to do. this.updCardInternals() will save you previous number
@@ -129,7 +145,7 @@ class SwapCard extends React.Component {
             value = document.getElementById(fieldId).value;
         } else { }
         value = value.replace(/,/g,"");
-        let fieldObj = this.props[this.props.menuItem][field];
+        let fieldObj = this.props[this.getModeStruct()][field];
         fieldObj.value = value;
         this.props.assignCoinValue(this.props.menuItem, field, value);
         this.establishReadiness();
@@ -144,10 +160,11 @@ class SwapCard extends React.Component {
     };
 
     isReadyToSubmit() {
-        if (this.props[this.props.menuItem].field0.value != 0 &&
-            this.props[this.props.menuItem].field1.value != 0 &&
-            this.props[this.props.menuItem].field0.token.hash != undefined &&
-            this.props[this.props.menuItem].field1.token.hash != undefined) {
+        let mode = this.getModeStruct();
+        if (this.props[mode].field0.value != 0 &&
+            this.props[mode].field1.value != 0 &&
+            this.props[mode].field0.token.hash != undefined &&
+            this.props[mode].field1.token.hash != undefined) {
             return true;
         }
         return false;
@@ -181,7 +198,7 @@ class SwapCard extends React.Component {
             this.props.assignCoinValue(this.props.menuItem, cField, activeField.value);
             return;
         }
-        let counterField = this.props[this.props.menuItem][cField];
+        let counterField = this.props[this.getModeStruct()][cField];
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
                 return;
@@ -205,16 +222,17 @@ class SwapCard extends React.Component {
     };
 
     renderExchangeCard() {
+        let mode = this.getModeStruct();
         return (
             <>
                 <div className="p-4 bottom-line-1">
                     <div className='d-flex justify-content-between align-items-center'>
                         <div className="mr-3">
                             <div className='h4' id='swap-mode-header'>
-                                {this.props.langData[this.props.menuItem].header}
+                                {this.props.langData[mode].header}
                             </div>
                             <div id='under-header'>
-                                {this.props.langData[this.props.menuItem].description}
+                                {this.props.langData[mode].description}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center align-items-center'>
@@ -232,9 +250,9 @@ class SwapCard extends React.Component {
                 <div className="p-4">
                     <div className='swap-input py-2 px-3' id='from'>
                         {this.getInputField({
-                            fieldName: this.props.langData[this.props.menuItem].input0,
+                            fieldName: this.props.langData[mode].input0,
                             id : 0,
-                            fieldData : this.props[this.props.menuItem].field0
+                            fieldData : this.props[mode].field0
                         })}
                     </div>
                     <div id='exch' className="d-flex justify-content-center align-items-center mx-auto my-3" onClick={this.swapPair.bind(this)}>
@@ -242,9 +260,9 @@ class SwapCard extends React.Component {
                     </div>
                     <div className='swap-input py-2 px-3' id='to'>
                         {this.getInputField({
-                            fieldName: this.props.langData[this.props.menuItem].input1,
+                            fieldName: this.props.langData[mode].input1,
                             id : 1,
-                            fieldData : this.props[this.props.menuItem].field1
+                            fieldData : this.props[mode].field1
                         })}
                     </div>
                     <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
@@ -258,16 +276,17 @@ class SwapCard extends React.Component {
     };
 
     renderMainLiquidityCard() {
+        let mode = this.getModeStruct();
         return (
             <>
                 <div className="p-4 bottom-line-1">
                     <div className='d-flex justify-content-between align-items-center mb-4'>
                         <div className="mr-3">
                             <div className='h4' id='swap-mode-header'>
-                                {this.props.langData[this.props.menuItem].header}
+                                {this.props.langData[mode].header}
                             </div>
                             <div id='under-header'>
-                                {this.props.langData[this.props.menuItem].description}
+                                {this.props.langData[mode].description}
                             </div>
                         </div>
                         <div className='d-flex justify-content-center align-items-center'>
@@ -282,13 +301,13 @@ class SwapCard extends React.Component {
                         </div>
                     </div>
                     <button className='btn btn-secondary liquidity-btn py-3 px-5' type='submit' onClick={this.changeLiquidityCard.bind(this)}>
-                        {this.props.langData[this.props.menuItem].addButton}
+                        {this.props.langData[mode].addButton}
                     </button>                    
                 </div>
                 <div className="p-4">    
                     <div className='your-liquidity-header d-flex justify-content-between align-items-center mb-2'>
                         <div>
-                            {this.props.langData[this.props.menuItem].yourLiquidity}
+                            {this.props.langData[mode].yourLiquidity}
                         </div>
                         <Tooltip text='text'/> {/*this.props.langData.trade.tokenCard.tooltipText*/}
                     </div>
@@ -296,7 +315,7 @@ class SwapCard extends React.Component {
                         <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
                     </div>
                     <div className='your-liquidity-header'>
-                        {this.props.langData[this.props.menuItem].additionInfo}
+                        {this.props.langData[mode].additionInfo}
                     </div>
                 </div>
             </>
@@ -318,33 +337,34 @@ class SwapCard extends React.Component {
     };
 
     renderAddLiquidityCard() {
+        let mode = this.getModeStruct();
         let langData = this.props.langData;
-        let langProp_Per_ = langData[this.props.menuItem].per;
+        let langProp_Per_ = langData[mode].per;
         return (
             <div className="p-4">
                 <div className='d-flex justify-content-between align-items-center mb-4'>
                     <span className='icon-Icon13 back-button hover-pointer' onClick={this.changeLiquidityCard.bind(this)}></span>
                     <h4 className='add-liquidity-header' id='swap-mode-header'>
-                        {this.props.langData[this.props.menuItem].secondHeader}
+                        {this.props.langData[mode].secondHeader}
                     </h4>
                     <Tooltip text={this.props.langData.liquidity.tooltipText} />
                 </div>
                 <div className='swap-input py-2 px-3' id='from'>
                     {this.getInputField({
-                        fieldName: langData[this.props.menuItem].input0,
+                        fieldName: langData[mode].input0,
                         id : 2,
-                        fieldData : this.props[this.props.menuItem].field0
+                        fieldData : this.props[mode].field0
                     })}
                 </div>
                 <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-4' />
                 <div className='swap-input py-2 px-3' id='to'>
                     {this.getInputField({
-                        fieldName: langData[this.props.menuItem].input1,
+                        fieldName: langData[mode].input1,
                         id : 3,
-                        fieldData : this.props[this.props.menuItem].field1
+                        fieldData : this.props[mode].field1
                     })}
                 </div>
-                <div className='pool-prices my-3'>{this.props.langData[this.props.menuItem].priceAndPoolShare}</div>
+                <div className='pool-prices my-3'>{this.props.langData[mode].priceAndPoolShare}</div>
                 <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                     <div>
                         <div className='d-flex justify-content-center'>{this.showExchRate(false)}</div>
@@ -356,7 +376,7 @@ class SwapCard extends React.Component {
                     </div>
                     <div>
                         <div className='d-flex justify-content-center'>{this.showPullShare()}</div>
-                        <div className='d-flex justify-content-center'>{langData[this.props.menuItem].shareOfPool}</div>
+                        <div className='d-flex justify-content-center'>{langData[mode].shareOfPool}</div>
                     </div>
                 </div>
                 { this.getSubmitButton() }
@@ -364,7 +384,23 @@ class SwapCard extends React.Component {
         );
     };
 
+    countPooledAmount (pair) {
+        swapApi.getTokenInfo(pair.lt)
+        .then(res => {
+            res.json()
+            .then(total => {
+                if (Array.isArray(total) && total.length)
+                    this.pooled = testFormulas.ltDestruction(pair, this.props.removeLiquidity.ltfield.value, total[0].total_supply);
+                    console.log(this.pooled);
+            })
+        })
+    };
+
     renderRemoveLiquidity() {
+        this.countPooledAmount(this.activePair);
+        let modeStruct = this.props.removeLiquidity;
+        let firstToken = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
+        let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
         return (
             <div className="p-4">
                 <div className='d-flex justify-content-between align-items-center mb-4'>
@@ -394,7 +430,7 @@ class SwapCard extends React.Component {
                             </Form>
                             <div className="d-flex align-items-center justify-content-between">
                                 {this.removeLiquidity.ranges.map((item, index) => (
-                                    <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, this.getNumber(item.value))}>{item.alias}</button>
+                                    <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
                                 ))}
                             </div>
                         </div>
@@ -407,15 +443,15 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>-</div>
+                                <div>{this.pooled.amount_1}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : img1, value : 'ENQ'}}/>
+                                    <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>-</div>
+                                <div>{this.pooled.amount_1}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : img2, value : 'BRY'}}/>
+                                    <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -461,8 +497,8 @@ class SwapCard extends React.Component {
                 <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
                     <div>Price</div>
                     <div>
-                        <div>1 ENQ = 0.00486145 BRY</div>
-                        <div>1 ENQ = 0.00486145 BRY</div>
+                        <div>1 {firstToken.ticker} = {utils.countExchangeRate(this.activePair, false, this.props.removeLiquidity)} {secondToken.ticker}</div>
+                        <div>1 {secondToken.ticker} = {utils.countExchangeRate(this.activePair, true, this.props.removeLiquidity)} {firstToken.ticker}</div>
                     </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-between">
@@ -474,8 +510,8 @@ class SwapCard extends React.Component {
     }
 
     establishPairExistence() {
-        let token0 = this.props[this.props.menuItem].field0.token;
-        let token1 = this.props[this.props.menuItem].field1.token;
+        let token0 = this.props[this.getModeStruct()].field0.token;
+        let token1 = this.props[this.getModeStruct()].field1.token;
         this.activePair = utils.searchSwap(this.props.pairs, [token0, token1]);
         if (token0.hash == presets.swapTokens.emptyToken.hash || token1.hash == presets.swapTokens.emptyToken.hash) {
             this.pairExists = true; // make an exclusion for first page render
@@ -563,12 +599,12 @@ class SwapCard extends React.Component {
     };
 
     toggleView() {
-        this.props.toggleRemoveLiquidityView();
+        // this.props.toggleRemoveLiquidityView();
     }
 
     setRemoveLiquidityValue(value) {
         this.rmPersents = value;
-        this.props.setRemoveLiquidityValue(percentsToNumber(value));
+        this.props.assignCoinValue('removeLiquidity', 'ltfield', utils.countPortion(this.props.removeLiquidity.ltfield.balance.amount, value));
     }
 
     render() {

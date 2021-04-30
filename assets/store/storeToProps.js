@@ -29,6 +29,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
+                    liquidityRemove : state.swapCard.liquidityRemove,
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
                     removeLiquidity : state.swapCard.removeLiquidity
@@ -46,7 +47,7 @@ function mapStoreToProps(component) {
                     pairs                   : state.root.pairs,
                     balances                : state.root.balances,
                     navOpened               : state.root.navOpened,
-                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
+                    tokens                  : state.root.tokens
                 };
             };
         case components.SWITCH:
@@ -147,7 +148,7 @@ function mapStoreToProps(component) {
                     tList       : state.root.tokens,
                     pairs       : state.root.pairs,
                     tokens      : state.root.tokens,
-                    balances    : state.root.balances
+                    balances    : state.root.balances,
                 };
             };
         case components.LP_WALLET_INFO:
@@ -260,7 +261,8 @@ function mapDispatchToProps(component) {
                     updltList                       : swapCardCreator.updltList,
                     changeLiquidityMode             : swapCardCreator.changeLiquidityMode,
                     assignTokenValue                : swapCardCreator.assignTokenValue,
-                    changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility
+                    changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility,
+                    assignCoinValue                 : swapCardCreator.assignCoinValue 
                 }, dispatch);
             };
 

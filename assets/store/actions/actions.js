@@ -1,51 +1,48 @@
 const actionPack =  {
     root : {
-        TOGGLE_ASIDE            : 0x00,
-        UPD_BALANCES            : 0x01,
-        CHANGE_NET              : 0x02,
-        CHANGE_LANG             : 0x03,
-        OPEN_CONNECTION_LIST    : 0x04,
-        CLOSE_CONNECTION_LIST   : 0x05,
-        CHANGE_CONN_STATUS      : 0x06,
-        CHANGE_MENU_ITEM        : 0x07,
-        ASSIGN_PUBKEY           : 0x08,
-        UPD_ACTIVE_LOCALE       : 0x09,
-        SHOW_PENDING_STATE      : 0x0A,
-        HIDE_PENDING_STATE      : 0x0B,
-        UPD_PAIRS               : 0x0C,
-        ASSIGN_ALL_TOKENS       : 0x0D
+        TOGGLE_ASIDE            : 'TOGGLE_ASIDE',
+        UPD_BALANCES            : 'UPD_BALANCES',
+        CHANGE_NET              : 'CHANGE_NET',
+        CHANGE_LANG             : 'CHANGE_LANG',
+        OPEN_CONNECTION_LIST    : 'OPEN_CONNECTION_LIST',
+        CLOSE_CONNECTION_LIST   : 'CLOSE_CONNECTION_LIST',
+        CHANGE_CONN_STATUS      : 'CHANGE_CONN_STATUS',
+        CHANGE_MENU_ITEM        : 'CHANGE_MENU_ITEM',
+        ASSIGN_PUBKEY           : 'ASSIGN_PUBKEY',
+        UPD_ACTIVE_LOCALE       : 'UPD_ACTIVE_LOCALE',
+        SHOW_PENDING_STATE      : 'SHOW_PENDING_STATE',
+        HIDE_PENDING_STATE      : 'HIDE_PENDING_STATE',
+        UPD_PAIRS               : 'UPD_PAIRS',
+        ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS'
     },
     swapCard : {
-        SWAP_FIELDS                         : 0x10,
-        ASSIGN_WALLET_VALUE                 : 0x11,
-        OPEN_TOKEN_LIST                     : 0x13,
-        CLOSE_TOKEN_LIST                    : 0x14,
-        CHANGE_LIQUIDITY_MODE               : 0x15,
-        OPEN_CONFIRM_CARD                   : 0x16,
-        CLOSE_CONFIRM_CARD                  : 0x17,
-        ASSIGN_COIN_VALUE                   : 0x18,
-        ASSIGN_TOKEN_VALUE                  : 0x19,
-        //                                  : 0x1A,
-        UPD_ACTIVE_FIELD                    : 0x1B,
-        OPEN_WAITING_CONFIRMATION           : 0x1C,
-        CLOSE_WAITING_CONFIRMATION          : 0x1D,
-        CHANGE_WAITING_STATE_TYPE           : 0x1E,
-        TOGGLE_REMOVE_LIQUIDITY_VIEW        : 0x1F,
-        SET_REMOVE_LIQUIDITY_AMOUNT         : 0x20,
-        CHANGE_CREATE_POOL_STATE            : 0x21,
-        UPD_LT_LIST                         : 0x22,
-        CHANGE_REMOVE_LIQUDITY_VISIBILITY   : 0x23
+        SWAP_FIELDS                         : 'SWAP_FIELDS',
+        ASSIGN_WALLET_VALUE                 : 'ASSIGN_WALLET_VALUE',
+        OPEN_TOKEN_LIST                     : 'OPEN_TOKEN_LIST',
+        CLOSE_TOKEN_LIST                    : 'CLOSE_TOKEN_LIST',
+        CHANGE_LIQUIDITY_MODE               : 'CHANGE_LIQUIDITY_MODE',
+        OPEN_CONFIRM_CARD                   : 'OPEN_CONFIRM_CARD',
+        CLOSE_CONFIRM_CARD                  : 'CLOSE_CONFIRM_CARD',
+        ASSIGN_COIN_VALUE                   : 'ASSIGN_COIN_VALUE',
+        ASSIGN_TOKEN_VALUE                  : 'ASSIGN_TOKEN_VALUE',
+        UPD_ACTIVE_FIELD                    : 'UPD_ACTIVE_FIELD',
+        OPEN_WAITING_CONFIRMATION           : 'OPEN_WAITING_CONFIRMATION',
+        CLOSE_WAITING_CONFIRMATION          : 'CLOSE_WAITING_CONFIRMATION',
+        CHANGE_WAITING_STATE_TYPE           : 'CHANGE_WAITING_STATE_TYPE',
+        TOGGLE_REMOVE_LIQUIDITY_VIEW        : 'TOGGLE_REMOVE_LIQUIDITY_VIEW',
+        CHANGE_CREATE_POOL_STATE            : 'CHANGE_CREATE_POOL_STATE',
+        UPD_LT_LIST                         : 'UPD_LT_LIST',
+        CHANGE_REMOVE_LIQUDITY_VISIBILITY   : 'CHANGE_REMOVE_LIQUDITY_VISIBILITY'
     },
     tokenCard : {
-        ASSIGN_TOKEN_LIST : 0x30,
-        //                : 0x31,
-        CHANGE_SORT_MODE  : 0x32
+        ASSIGN_TOKEN_LIST : 'ASSIGN_TOKEN_LIST',
+        CHANGE_SORT_MODE  : 'CHANGE_SORT_MODE'
     },
     aside : {
-        UPD_EXCH_RATE : 0x40
+        UPD_EXCH_RATE : 'UPD_EXCH_RATE'
     },
     indicatorPanel : {
-        UPD_COIN_AMOUNT : 0x50
+        UPD_COIN_AMOUNT : 'UPD_COIN_AMOUNT'
     }
 };
 

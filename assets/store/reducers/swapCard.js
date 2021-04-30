@@ -13,15 +13,19 @@ function swapCardStore(state, changingProperty) {
 function convertIntoMode(mode, packed) {
     if (mode == 'exchange')
         return { exchange: packed };
-    else
+    else if (mode == 'liquidity')
         return { liquidity: packed };
+    else 
+        return { removeLiquidity: packed };
 };
 
 function convertIntoField(field, packed) {
     if (field == 'field0')
         return { field0: packed };
-    else
+    else if (field == 'field1')
         return { field1: packed };
+    else
+        return { ltfield: packed };
 };
 
 function fieldStore(state, mode, field, changingProperty) {
@@ -112,15 +116,7 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
                     ...state.removeLiquidity,
                     simpleView : !state.removeLiquidity.simpleView
                 }
-            });
-
-        case actions.SET_REMOVE_LIQUIDITY_AMOUNT:
-            return swapCardStore(state, {
-                removeLiquidity : {
-                    ...state.removeLiquidity,
-                    amount : action.value
-                }
-            });                 
+            });              
             
         case actions.CHANGE_CREATE_POOL_STATE:
             return swapCardStore(state, { createPool : action.value });

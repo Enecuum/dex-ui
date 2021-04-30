@@ -2,10 +2,10 @@ import presets from './pageDataPresets';
 
 function getDefaultField(id) {
     return {
-        id          : id,
-        balance     : presets.swapTokens.emptyBalance, // balance of the token from 'token' property
-        value       : '',
-        token       : presets.swapTokens.emptyToken
+        id      : id,
+        balance : presets.swapTokens.emptyBalance, // balance of the token from 'token' property
+        value   : '',
+        token   : presets.swapTokens.emptyToken
     };
 };
 

@@ -101,7 +101,7 @@ class Root extends React.Component {
         if (this.props.menuItem == 'exchange') {
             this.updBalanceObj('exchange', 'field0');
             this.updBalanceObj('exchange', 'field1');
-        } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityMain) {
+        } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityMain && !this.props.liquidityRemove) {
             this.updBalanceObj('liquidity', 'field0');
             this.updBalanceObj('liquidity', 'field1');
         } else if (this.props.menuItem == 'liquidity' && this.props.liquidityRemove) {

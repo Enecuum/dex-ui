@@ -91,14 +91,14 @@ function getTokenObj(tokens, hash) {
         };
 };
 
-function getByPercents (fullAmount, percent) {
+function countPortion (fullAmount, percent) {
     return fullAmount * (percent / 100);
 };
 
 export default {
     countExchangeRate,
     countPoolShare,
-    getByPercents,
+    countPortion,
     getBalanceObj,
     getTokenObj,
     pairExists,

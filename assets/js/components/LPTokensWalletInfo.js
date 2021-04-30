@@ -42,8 +42,8 @@ class LPTokensWalletInfo extends React.Component {
         .then(res => {
             res.json()
             .then(total => {
-                this.total = total[0].total_supply;
-                this.pooled = testFormulas.ltDestruction(this.pair, utils.getBalanceObj(this.props.balances, this.pair.lt).amount, total[0].total_supply);
+                if (Array.isArray(total) && total.length)
+                    this.pooled = testFormulas.ltDestruction(this.pair, utils.getBalanceObj(this.props.balances, this.pair.lt).amount, total[0].total_supply);
             })
         })
     };

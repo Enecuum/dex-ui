@@ -106,13 +106,6 @@ const actionCreators = {
         }
     },
     
-    setRemoveLiquidityValue (value) {
-        return {
-            type : actions.SET_REMOVE_LIQUIDITY_AMOUNT,
-            value : value
-        };
-    },
-    
     updltList (list) {
         return {
             type : actions.UPD_LT_LIST,

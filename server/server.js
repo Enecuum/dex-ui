@@ -112,6 +112,16 @@ class TestServer {
             );
         });
 
+        this.app.get(`/locales/*/translation.json`, bodyParser, (req, res) => {
+            let urlArr = req.url.split('/');
+            res.writeHead(200, {
+                'Content-Type': 'text/html',
+            });
+            let data = fs.readFileSync(path.join(wconf.output.path, urlArr[urlArr.length - 2]));
+            res.write(data);
+            res.end();
+        });
+
         this.app.get(`/api/${config.api_version}/get_tickers_all`, (req, res) => {
             this.getTokens(
                 result => this.wrapJSONResponse(res, 200, result),

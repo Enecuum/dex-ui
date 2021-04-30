@@ -67,13 +67,13 @@ class LogsCreator {
     // ------------------------------- messages
 
     startMessage () {
-        let netProps = this.getNetProps();
-        this.log(this.getDivisor(true));
-        this.log(`Run transfer point`, true);
-        this.log(`IP - ${netProps.address}`, true);
-        this.log(`MAC - ${netProps.mac}`, true);
-        this.log(`Remote server: ${this.url}`, true);
-        this.log(`Message filter: ${this.mode}`, true);
+        // let netProps = this.getNetProps();
+        // this.log(this.getDivisor(true));
+        // this.log(`Run transfer point`, true);
+        // this.log(`IP - ${netProps.address}`, true);
+        // this.log(`MAC - ${netProps.mac}`, true);
+        // this.log(`Remote server: ${this.url}`, true);
+        // this.log(`Message filter: ${this.mode}`, true);
         this.log(this.getDivisor(true));
     };
 

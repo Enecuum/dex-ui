@@ -1,6 +1,6 @@
 node_modules
 config.json
 logs
-# public/*
+public/*
 !public/index.html
 !public/locales/*

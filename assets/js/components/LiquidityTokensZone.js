@@ -91,7 +91,9 @@ class LiquidityTokensZone extends React.Component {
             res.json()
             .then(total => {
                 this.total = total[0].total_supply;
-                this.pooled[index] = testFormulas.ltDestruction(pair, utils.getBalanceObj(this.props.balances, pair.lt).amount, total[0].total_supply);
+                this.pooled[index] = testFormulas.ltDestruction(pair, total[0].total_supply, {
+                    amount_lt : utils.getBalanceObj(this.props.balances, pair.lt).amount
+                }, 'ltfield');
             })
         })
     };

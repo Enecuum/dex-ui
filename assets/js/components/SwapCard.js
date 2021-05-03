@@ -30,14 +30,9 @@ class SwapCard extends React.Component {
         this.pairExists = false;
         this.readyToSubmit = false;
         this.activePair = {};
-        this.rmLtData = {};
         this.rmPersents = 50;
-        this.pooled = {
-            amount_1 : 0,
-            amount_2 : 0
-        };
-
-        this.removeLiquidity= {
+        this.total_supply = 0;
+        this.removeLiquidity = {
             ranges : [
                 {
                     value : 25,
@@ -56,7 +51,8 @@ class SwapCard extends React.Component {
                     alias : 'MAX'
                 }
             ]
-        }
+        };
+        this.updPooledAmount();
     };
 
     swapPair() {
@@ -64,14 +60,14 @@ class SwapCard extends React.Component {
     };
 
     changeBalance(field, hash) {
-        this.props.assignBalanceObj(this.props.menuItem, field, utils.getBalanceObj(this.props.balances, hash));
+        this.props.assignBalanceObj(this.getMode(), field, utils.getBalanceObj(this.props.balances, hash));
     };
 
     renderBalance (balance) {
         return (balance == '-') ? balance : `Balance: ${balance}`;
     };
 
-    getModeStruct () {
+    getMode () {
         let item = this.props.menuItem;
         if (item == 'exchange') 
             return 'exchange';
@@ -112,6 +108,8 @@ class SwapCard extends React.Component {
     };
 
     getFieldName(fieldId, counter) {
+        if (fieldId == 6)
+            return 'ltfield';
         if (fieldId % 2 == 0)
             return (counter) ? 'field1' : 'field0';
         else
@@ -129,8 +127,9 @@ class SwapCard extends React.Component {
     }
 
     changeField(fieldId) {
+        let mode = this.getMode();
         let field = this.getFieldName(fieldId);
-        let value = this.props[this.getModeStruct()][field].value;
+        let value = this.props[mode][field].value;
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
                 // nothing to do. this.updCardInternals() will save you previous number
@@ -145,11 +144,11 @@ class SwapCard extends React.Component {
             value = document.getElementById(fieldId).value;
         } else { }
         value = value.replace(/,/g,"");
-        let fieldObj = this.props[this.getModeStruct()][field];
+        let fieldObj = this.props[mode][field];
         fieldObj.value = value;
-        this.props.assignCoinValue(this.props.menuItem, field, value);
+        this.props.assignCoinValue(mode, field, value);
         this.establishReadiness();
-        this.countCounterField(fieldObj, this.getFieldName(fieldId, true));
+        this.countCounterField(fieldObj, field, (mode == 'removeLiquidity') ? true : false);
     };
 
     establishReadiness() {
@@ -160,7 +159,7 @@ class SwapCard extends React.Component {
     };
 
     isReadyToSubmit() {
-        let mode = this.getModeStruct();
+        let mode = this.getMode();
         if (this.props[mode].field0.value != 0 &&
             this.props[mode].field1.value != 0 &&
             this.props[mode].field0.token.hash != undefined &&
@@ -191,22 +190,27 @@ class SwapCard extends React.Component {
         }
     };
 
-    countCounterField(activeField, cField) {
+    countCounterField(activeField, cField, removeLiquidity) {
+        let mode = this.getMode();
         if (!this.pairExists)
             return;
         if (activeField.value == '') {
-            this.props.assignCoinValue(this.props.menuItem, cField, activeField.value);
+            this.props.assignCoinValue(mode, cField, activeField.value);
             return;
         }
-        let counterField = this.props[this.getModeStruct()][cField];
+        let counterField = this.props[this.getMode()][cField];
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
                 return;
             }
-            let counterFieldPrice = this.countPrice(activeField, counterField, this.activePair);
-            if (!counterFieldPrice)
-                counterFieldPrice = '';
-                this.props.assignCoinValue(this.props.menuItem, cField, counterFieldPrice);
+            if (removeLiquidity) 
+                this.countRemoveLiquidity(mode, cField);
+            else {
+                let counterFieldPrice = this.countPrice(activeField, counterField, this.activePair);
+                if (!counterFieldPrice)
+                    counterFieldPrice = '';
+                this.props.assignCoinValue(mode, cField, counterFieldPrice);
+            }
         }
     };
 
@@ -222,7 +226,7 @@ class SwapCard extends React.Component {
     };
 
     renderExchangeCard() {
-        let mode = this.getModeStruct();
+        let mode = this.getMode();
         return (
             <>
                 <div className="p-4 bottom-line-1">
@@ -276,7 +280,7 @@ class SwapCard extends React.Component {
     };
 
     renderMainLiquidityCard() {
-        let mode = this.getModeStruct();
+        let mode = this.getMode();
         return (
             <>
                 <div className="p-4 bottom-line-1">
@@ -337,7 +341,7 @@ class SwapCard extends React.Component {
     };
 
     renderAddLiquidityCard() {
-        let mode = this.getModeStruct();
+        let mode = this.getMode();
         let langData = this.props.langData;
         let langProp_Per_ = langData[mode].per;
         return (
@@ -384,22 +388,40 @@ class SwapCard extends React.Component {
         );
     };
 
+    countRemoveLiquidity (mode, cField) {
+        let counted = testFormulas.ltDestruction(this.activePair, this.total_supply, {
+            amount_1  : this.props.removeLiquidity.field0.value,
+            amount_2  : this.props.removeLiquidity.field1.value,
+            amount_lt : this.props.removeLiquidity.ltfield.value
+        }, cField);
+        this.props.assignCoinValue(mode, 'field0',  counted.amount_1);
+        this.props.assignCoinValue(mode, 'field1',  counted.amount_2);
+        this.props.assignCoinValue(mode, 'ltfield', counted.amount_lt);
+    };
+
+    updPooledAmount () {
+        setInterval(() => {
+            this.countPooledAmount(this.activePair);
+        }, 1000);
+    };
+
     countPooledAmount (pair) {
+        let mode = this.getMode();
         swapApi.getTokenInfo(pair.lt)
         .then(res => {
             res.json()
             .then(total => {
-                if (Array.isArray(total) && total.length)
-                    this.pooled = testFormulas.ltDestruction(pair, this.props.removeLiquidity.ltfield.value, total[0].total_supply);
-                    console.log(this.pooled);
+                if (Array.isArray(total) && total.length) {
+                    this.total_supply = total[0].total_supply;
+                    this.countRemoveLiquidity(mode, 'ltfield');
+                }
             })
         })
     };
 
     renderRemoveLiquidity() {
-        this.countPooledAmount(this.activePair);
-        let modeStruct = this.props.removeLiquidity;
-        let firstToken = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
+        let modeStruct  = this.props.removeLiquidity;
+        let firstToken  = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
         let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
         return (
             <div className="p-4">
@@ -436,20 +458,20 @@ class SwapCard extends React.Component {
                         </div>
                     }                       
                 </div>
-                {this.props.removeLiquiditySimpleView &&
+                { this.props.removeLiquiditySimpleView &&
                     <>
                         <div className="text-center my-3">
                             <span className="icon-Icon13" style={{color: "var(--color4)"}}></span>
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{this.pooled.amount_1}</div>
+                                <div>{modeStruct.field0.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{this.pooled.amount_1}</div>
+                                <div>{modeStruct.field1.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
@@ -462,34 +484,31 @@ class SwapCard extends React.Component {
                 }
                 { !this.props.removeLiquiditySimpleView &&
                     <div className="mt-2">
-                        <div className='swap-input py-2 px-3' id='idididid1'>
+                        <div className='swap-input py-2 px-3'>
                             {this.getInputField({
                                 fieldName: this.props.langData.removeLiquidity.input,
-                                id : 4,
-                                tokenName: this.rmLtData.ticker,
-                                value: this.props.removeLiquidityAmount
+                                id : 6,
+                                fieldData : modeStruct.ltfield
                             })}
                         </div>
 
                         <span className="icon-Icon13 d-flex justify-content-center my-3 text-color4" />
 
-                        <div className='swap-input py-2 px-3' id='idididid1'>
+                        <div className='swap-input py-2 px-3'>
                             {this.getInputField({
                                 fieldName: this.props.langData.removeLiquidity.input,
-                                id : 5,
-                                tokenName:  this.rmLtData.token_0.ticker,
-                                value: 'dfsdf'// TODO
+                                id : 4,
+                                fieldData : modeStruct.field0
                             })}
                         </div>
 
                         <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-3 text-color4' />
 
-                        <div className='swap-input py-2 px-3' id='idididid1'>
+                        <div className='swap-input py-2 px-3'>
                             {this.getInputField({
                                 fieldName: this.props.langData.removeLiquidity.input,
-                                id : 6,
-                                tokenName:  this.rmLtData.token_1.ticker,
-                                value: 'dfsdf'// TODO
+                                id : 5,
+                                fieldData :  modeStruct.field1
                             })}
                         </div>                      
                     </div>
@@ -510,8 +529,8 @@ class SwapCard extends React.Component {
     }
 
     establishPairExistence() {
-        let token0 = this.props[this.getModeStruct()].field0.token;
-        let token1 = this.props[this.getModeStruct()].field1.token;
+        let token0 = this.props[this.getMode()].field0.token;
+        let token1 = this.props[this.getMode()].field1.token;
         this.activePair = utils.searchSwap(this.props.pairs, [token0, token1]);
         if (token0.hash == presets.swapTokens.emptyToken.hash || token1.hash == presets.swapTokens.emptyToken.hash) {
             this.pairExists = true; // make an exclusion for first page render
@@ -599,7 +618,7 @@ class SwapCard extends React.Component {
     };
 
     toggleView() {
-        // this.props.toggleRemoveLiquidityView();
+        this.props.toggleRemoveLiquidityView();
     }
 
     setRemoveLiquidityValue(value) {

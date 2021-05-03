@@ -36,13 +36,40 @@ function countLTAmount (pair, uiPair, mode) {
     return 'wrong mode';
 };
 
-function ltDestruction (pair, rm, total) {
+function ltDestruction (pair, total, trio, chField) { // trio = {amount_lt, amount_1, amount_2}
+    console.log(chField);
     if (total == 0)
-        return '-';
-    return {
-        amount_1 : Number(pair.token_0.volume) * utils.divide(rm, total),
-        amount_2 : Number(pair.token_1.volume) * utils.divide(rm, total)
-    };
+        return {
+            amount_lt : 0,
+            amount_1  : 0,
+            amount_2  : 0
+        };
+    if (chField == 'ltfield') {
+        return {
+            amount_lt : trio.amount_lt,
+            amount_1  : Number(pair.token_0.volume) * utils.divide(trio.amount_lt, total),
+            amount_2  : Number(pair.token_1.volume) * utils.divide(trio.amount_lt, total)
+        };
+    } else if (chField == 'field0') {
+        let lt = Number(trio.amount_1) / Number(pair.token_0.volume) * Number(total);
+        console.log({
+            amount_1  : trio.amount_1,
+            amount_2  : Number(pair.token_1.volume) * lt / Number(total),
+            amount_lt : lt
+        });
+        return {
+            amount_1  : trio.amount_1,
+            amount_2  : Number(pair.token_1.volume) * lt / Number(total),
+            amount_lt : lt
+        };
+    } else if (chField == 'field1') {
+        let lt = Number(trio.amount_2) / Number(pair.token_1.volume) * Number(total);
+        return {
+            amount_2  : trio.amount_2,
+            amount_1  : Number(pair.token_0.volume) * lt / Number(total),
+            amount_lt : lt
+        };
+    }
 };
 
 export default {

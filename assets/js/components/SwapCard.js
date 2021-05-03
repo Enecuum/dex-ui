@@ -239,8 +239,8 @@ class SwapCard extends React.Component {
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
                                 <div>Price</div>
                                 <div>
-                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(this.activePair, false, this.props.removeLiquidity)} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(this.activePair, true, this.props.removeLiquidity)} {firstToken.ticker}</div>
+                                    <div>1 {firstToken.ticker} = {this.showExchRate(true)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {this.showExchRate(false)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between">
@@ -255,6 +255,8 @@ class SwapCard extends React.Component {
     };
 
     renderRemoveLiquidity(modeStruct, firstToken, secondToken) {
+        let amount_1 = Number(modeStruct.field0.value);
+        let amount_2 = Number(modeStruct.field1.value);
         return (
             <>
                 { this.props.removeLiquiditySimpleView &&
@@ -264,13 +266,13 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field0.value}</div>
+                                <div>{valueProcessor.usCommasBigIntDecimals(amount_1.toFixed(), 10)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field1.value}</div>
+                                <div>{valueProcessor.usCommasBigIntDecimals(amount_2.toFixed(), 10)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
@@ -418,7 +420,7 @@ class SwapCard extends React.Component {
     };
 
     showExchRate (firstToken) {
-        let res = utils.countExchangeRate(this.activePair, firstToken, this.props.liquidity) + '';
+        let res = utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]) + '';
         return res.substring(0, 6);
     };
 

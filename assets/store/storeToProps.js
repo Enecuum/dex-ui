@@ -32,7 +32,8 @@ function mapStoreToProps(component) {
                     liquidityRemove : state.swapCard.liquidityRemove,
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
-                    removeLiquidity : state.swapCard.removeLiquidity
+                    removeLiquidity : state.swapCard.removeLiquidity,
+                    topPairs        : state.topPairs
                 }
             };
         case components.SWAP_CARD:

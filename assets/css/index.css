@@ -21,6 +21,7 @@
     --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
     --color4 : #61c2d0; /*активный пункт меню в асайде    rgb(97, 194, 208)*/
     --color5 : #435163; /*темный текст в инпуте карточки выбора токена rgb(67, 81, 99)*/
+    --color6 : #242D3C; /*граница строк в таблице топ пар rgb(36, 45, 60)*/
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
@@ -309,4 +310,9 @@ body {
 
 .hover-color3:hover {
     color: var(--color3);
+}
+
+.regular-page {
+    margin-top: var(--top-menu-height);
+    width: 100%;
 }

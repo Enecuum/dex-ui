@@ -112,6 +112,11 @@
     "tokenWallet" : "{{token}} кошелёк",
     "viewOnSite" :  "Смотреть на {{site}}",
     "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "numberSign" : "#",
+    "name" : "Наименование",
+    "liquidity" : "Ликвидность",
+    "volume" : "Объем",
+    "fee" : "Комиссия",
     "topPairs" : {
         "title" : "Топ торговых пар"
     }

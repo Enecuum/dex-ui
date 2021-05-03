@@ -107,6 +107,11 @@
     "tokenWallet" : "{{token}} wallet",
     "viewOnSite" :  "View on {{site}}",
     "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "numberSign" : "#",
+    "name" : "Name",
+    "liquidity" : "Liquidity",
+    "volume" : "Volume",
+    "fee" : "Fee",
     "topPairs" : {
         "title" : "Top Pairs"
     }

@@ -4,12 +4,103 @@ import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
+import ValueProcessor from '../utils/ValueProcessor';
 import '../../css/top-pairs.css';
+
+const valueProcessor = new ValueProcessor();
 
 class TopPairs extends React.Component {
     constructor(props) {
         super(props);
+        this.pairsArr = this.populateTable();        
     };
+
+    populateTable() {
+		let pairs = this.props.pairs;
+		let tokens = this.props.tokens;
+    	let result = [];
+    	let uniquePairsTokensList = {};
+    	if (pairs !== undefined && Array.isArray(pairs) && pairs.length > 0 && tokens !== undefined && Array.isArray(tokens) && tokens.length > 0) {
+			pairs.forEach(function(pair, i, pairsArr) {
+				[0,1].forEach(function(tokenIndex, i, tokenIndexArr) {
+					if (!uniquePairsTokensList.hasOwnProperty(pair['token_' + tokenIndex].hash))
+						uniquePairsTokensList[pair['token_' + tokenIndex].hash] = {
+							ticker : '',
+							inWhiteList : false
+						}
+				});
+			});
+			tokens.forEach(function(tokenInNetwork, i, tokensInNetworkArr) {
+				if (uniquePairsTokensList.hasOwnProperty(tokenInNetwork.hash)) {
+					uniquePairsTokensList[tokenInNetwork.hash].ticker = tokenInNetwork.ticker;
+					uniquePairsTokensList[tokenInNetwork.hash].inWhiteList = true;
+				}
+			});
+
+			pairs.forEach(function(pair, i, pairsArr) {
+				if ((uniquePairsTokensList[pair.token_0.hash].inWhiteList === true) && (uniquePairsTokensList[pair.token_1.hash].inWhiteList === true)) {
+					result.push({
+						token_0 : {
+							hash : pair.token_0.hash,
+							ticker : uniquePairsTokensList[pair.token_0.hash].ticker,
+							volume : pair.token_0.volume
+							
+						},
+						token_1 : {
+							hash : pair.token_1.hash,
+							ticker : uniquePairsTokensList[pair.token_1.hash].ticker,
+							volume : pair.token_1.volume
+						},
+						pool_fee : pair.pool_fee,
+						liquidity : BigInt(pair.token_0.volume) * BigInt(pair.token_1.volume)
+					})
+				}
+			})	
+    	} else {
+    		return result;
+    	}
+    	return result;    	
+    }
+
+    getTmpErrorElement() {
+    	return (
+	    	<div>
+	    		НЕВОЗМОЖНО ОТОБРАЗИТЬ ПАРЫ!!!
+	    	</div>
+	    )	
+    } 
+
+    getPairsTable() {
+    	const t = this.props.t;
+    	return (
+	    	<div className="pairs-table-wrapper">	
+				<Table hover variant="dark">
+				  <thead>
+				    <tr>
+				      <th>{t('numberSign')}</th>
+				      <th>{t('name')}</th>
+				      <th>{t('liquidity')}</th>
+				      <th>{t('volume')}</th>
+				      <th>{t('fee')}</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+			        {this.pairsArr.map(( pair, index ) => {
+			          return (
+			            <tr key={index}>
+			              <td>{index}</td>
+			              <td>{pair.token_0.ticker}-{pair.token_1.ticker}</td>
+			              <td>{valueProcessor.usCommasBigIntDecimals(pair.liquidity)}</td>
+			              <td>volume</td>
+			              <td>{valueProcessor.usCommasBigIntDecimals(pair.pool_fee)}</td>
+			            </tr>
+			          );
+			        })}
+				  </tbody>
+				</Table>
+			</div>	
+    	)
+    }
 
     render() {
 		const t = this.props.t;
@@ -22,44 +113,12 @@ class TopPairs extends React.Component {
 					    	<div className="h4 py-3">{t('topPairs.title')}</div>
 					    </Card.Title>
 					    <Card.Text as="div">
-					    	<div className="pairs-table-wrapper">
-							    <Table hover variant="dark">
-								  <thead>
-								    <tr>
-								      <th>#</th>
-								      <th>First Name</th>
-								      <th>Last Name</th>
-								      <th>Username</th>
-								    </tr>
-								  </thead>
-								  <tbody>
-								    <tr>
-								      <td>1</td>
-								      <td>Mark</td>
-								      <td>Otto</td>
-								      <td>@mdo</td>
-								    </tr>
-								    <tr>
-								      <td>2</td>
-								      <td>Jacob</td>
-								      <td>Thornton</td>
-								      <td>@fat</td>
-								    </tr>
-								    <tr>
-								      <td>3</td>
-								      <td>Larry the Bird</td>
-								      <td>Thornton</td>
-								      <td>@fat</td>
-								    </tr>
-								  </tbody>
-								</Table>			    	
-					    	</div>
+					    	{this.pairsArr.length > 0 ? this.getPairsTable() : this.getTmpErrorElement()}
 					    </Card.Text>
 					  </Card.Body>
 					</Card>    			
     			</div>
     		</div>
-
         )
     }        
 };

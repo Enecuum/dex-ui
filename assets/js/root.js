@@ -138,7 +138,7 @@ class Root extends React.Component {
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             {/* <SwapAddon /> */}
-                            <LPTokensWalletInfo />
+                            <LPTokensWalletInfo useSuspense={false}/>
                         </div>
                     </div>    
                 );
@@ -152,7 +152,7 @@ class Root extends React.Component {
             case 'topPairs':
                 return (
                     <div className="regular-page p-2 p-md-5 px-lg-0">
-                        <TopPairs />
+                        <TopPairs  useSuspense={false}/>
                     </div>                    
                 );    
             default:

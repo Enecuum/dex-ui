@@ -13,6 +13,7 @@
             "pools" : "Pools",
             "etm" : "ETM",
             "info" : "Info",
+            "topPairs" : "Top Pairs",
             "docs" : "Docs"
         },
         "top" : {
@@ -105,5 +106,13 @@
     "transactionRejected" : "Transaction was rejected",
     "tokenWallet" : "{{token}} wallet",
     "viewOnSite" :  "View on {{site}}",
-    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens"
+    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "numberSign" : "#",
+    "name" : "Name",
+    "liquidity" : "Liquidity",
+    "volume" : "Volume",
+    "fee" : "Fee",
+    "topPairs" : {
+        "title" : "Top Pairs"
+    }
 }

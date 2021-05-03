@@ -20,7 +20,8 @@ const components = {
     CONFIRM_SUPPLY      : 0xA,
     WAITING_CONFIRMATION: 0xB,
     LIQUIDITY_TOKEN_ZONE: 0xC,
-    LP_WALLET_INFO      : 0xD
+    LP_WALLET_INFO      : 0xD,
+    TOP_PAIRS           : 0xF
 };
 
 function mapStoreToProps(component) {
@@ -32,7 +33,8 @@ function mapStoreToProps(component) {
                     liquidityRemove : state.swapCard.liquidityRemove,
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
-                    removeLiquidity : state.swapCard.removeLiquidity
+                    removeLiquidity : state.swapCard.removeLiquidity,
+                    topPairs        : state.topPairs
                 }
             };
         case components.SWAP_CARD:
@@ -165,6 +167,14 @@ function mapStoreToProps(component) {
                     liquidityMain   : state.swapCard.liquidityMain
                 };
             };
+        case components.TOP_PAIRS:
+            return function (state) {
+                return {
+                    pairs                   : state.root.pairs,
+                    balances                : state.root.balances,
+                    tokens                  : state.root.tokens
+                };
+            };            
         default:
             return undefined;
     }

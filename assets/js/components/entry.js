@@ -8,6 +8,7 @@ import Switch from './Switch';
 import CommonToast from './CommonToast';
 import Connect from './Connect';
 import IndicatorPanel from './IndicatorPanel';
+import TopPairs from './TopPairs';
 
 export {
     Navbar,
@@ -19,5 +20,6 @@ export {
     Switch,
     CommonToast,
     Connect,
-    IndicatorPanel
+    IndicatorPanel,
+    TopPairs
 };

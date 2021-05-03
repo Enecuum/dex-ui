@@ -13,6 +13,7 @@
             "pools" : "Пулы",
             "etm" : "ETM",
             "info" : "Информация",
+            "topPairs" : "Торговые пары",
             "docs" : "Документация"
         },
         "top" : {
@@ -110,5 +111,13 @@
     "transactionRejected" : "Транзакция отклонена",
     "tokenWallet" : "{{token}} кошелёк",
     "viewOnSite" :  "Смотреть на {{site}}",
-    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens"
+    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "numberSign" : "#",
+    "name" : "Наименование",
+    "liquidity" : "Ликвидность",
+    "volume" : "Объем",
+    "fee" : "Комиссия",
+    "topPairs" : {
+        "title" : "Топ торговых пар"
+    }
 }

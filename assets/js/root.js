@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./utils/i18n";
 
-import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel } from './components/entry';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel, TopPairs } from './components/entry';
 import BlankPage from './pages/blankPage';
 import Etm from './pages/Etm';
 
@@ -138,7 +138,7 @@ class Root extends React.Component {
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             {/* <SwapAddon /> */}
-                            <LPTokensWalletInfo />
+                            <LPTokensWalletInfo useSuspense={false}/>
                         </div>
                     </div>    
                 );
@@ -148,7 +148,13 @@ class Root extends React.Component {
                     // <div id="ETMPage" style={{paddingLeft : (this.state.navOpened ? '330px' : '70px')}}>
                     //     <Etm root={ this } />
                     // </div>
-                );                
+                );
+            case 'topPairs':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0">
+                        <TopPairs  useSuspense={false}/>
+                    </div>                    
+                );    
             default:
                 return (
                     <BlankPage text="Coming soon"/>

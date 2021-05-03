@@ -22,8 +22,9 @@ class LiquidityTokensZone extends React.Component {
     getltData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens 
         let filtered = [];
         for (let pool of this.props.pairs)
-            if (this.props.balances.find(el => el.token == pool.lt))
-                filtered.push(pool);
+            for (let balance of this.props.balances)
+                if (balance.token == pool.lt)
+                    filtered.push(pool);
         return filtered;
     };
 
@@ -59,13 +60,16 @@ class LiquidityTokensZone extends React.Component {
     };
 
     getTokenByHash (hash) {
+        let empty = { ticker : '-', hash : undefined };
         if (this.props.tList.length == 0)
-            return { ticker : '-', hash : undefined };
-        else
-            return this.props.tList.find(el => {
+            return empty;
+        else {
+            let found = this.props.tList.find(el => {
                 if (el.hash == hash)
                     return true;
             });
+            return (found) ? found : empty;
+        }
     };
     
     getYourPoolToken (ltHash) {

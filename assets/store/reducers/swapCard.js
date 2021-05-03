@@ -29,7 +29,6 @@ function convertIntoField(field, packed) {
 };
 
 function fieldStore(state, mode, field, changingProperty) {
-    console.log(field, changingProperty);
     return swapCardStore(state, {
         ...convertIntoMode(mode, {
             ...state[mode],

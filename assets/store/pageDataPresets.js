@@ -8,7 +8,7 @@ const presets =  {
         },
         defaultNet: {
             name : 'BIT',
-            url : 'http://bit-dev.enecuum.com/'
+            url : 'http://bit.enecuum.com/'
         }
     },
 

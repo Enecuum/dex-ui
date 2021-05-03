@@ -92,10 +92,15 @@ function getTokenObj(tokens, hash) {
 };
 
 function countPortion (fullAmount, percent) {
-    return fullAmount * (percent / 100);
+    return Number(fullAmount) * (Number(percent) / 100);
+};
+
+function countPercentsByPortion (fullAmount, portion) {
+    return (Number(portion) / Number(fullAmount)) * 100;
 };
 
 export default {
+    countPercentsByPortion,
     countExchangeRate,
     countPoolShare,
     countPortion,

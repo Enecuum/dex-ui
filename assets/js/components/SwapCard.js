@@ -30,7 +30,7 @@ class SwapCard extends React.Component {
         this.pairExists = false;
         this.readyToSubmit = false;
         this.activePair = {};
-        this.rmPersents = 50;
+        this.rmPercents = 50;
         this.total_supply = 0;
         this.removeLiquidity = {
             ranges : [
@@ -52,6 +52,7 @@ class SwapCard extends React.Component {
                 }
             ]
         };
+        this.updPooledAmount();
     };
 
     updPooledAmount () {
@@ -69,15 +70,16 @@ class SwapCard extends React.Component {
     };
 
     setRemoveLiquidityValue(value) {
-        this.rmPersents = value;
+        this.rmPercents = value;
         this.props.assignCoinValue('removeLiquidity', 'ltfield', utils.countPortion(this.props.removeLiquidity.ltfield.balance.amount, value));
+        this.countRemoveLiquidity(this.getMode(), 'ltfield');
     };
 
     /* ================================ cards rendering functions ================================== */
 
     renderSwapCard () {
-        let mode = this.getMode();
-        let langData = this.props.langData;
+        let mode        = this.getMode();
+        let langData    = this.props.langData;
         let modeStruct  = this.props[mode];
         let firstToken  = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
         let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
@@ -88,7 +90,7 @@ class SwapCard extends React.Component {
                         {/* ---------------------------------------- add-liquidity and remove-liquidity header ---------------------------------------- */}
                         { ((!this.props.liquidityMain && mode == 'liquidity') || mode == 'removeLiquidity') && 
                             <>
-                                <span className='icon-Icon13 back-button hover-pointer' onClick={this.changeLiquidityCard.bind(this)}></span>
+                                <span className='icon-Icon13 back-button hover-pointer' onClick={this.changeAddRemoveCards.bind(this, mode)}></span>
                                 <h4 className='add-liquidity-header' id='swap-mode-header'>
                                     {langData[mode].secondHeader}
                                 </h4>
@@ -122,11 +124,9 @@ class SwapCard extends React.Component {
                     </div>
                     {/* ---------------------------------------- liquidity-main header-button ---------------------------------------- */}
                     { this.props.liquidityMain && mode == 'liquidity' &&
-                        <>
-                            <button className='btn btn-secondary liquidity-btn py-3 px-5' type='submit' onClick={this.changeLiquidityCard.bind(this)}>
-                                {langData[mode].addButton}
-                            </button>  
-                        </>
+                        <button className='btn btn-secondary liquidity-btn py-3 px-5 mt-4' type='submit' onClick={this.changeAddRemoveCards.bind(this, mode)}>
+                            {langData[mode].addButton}
+                        </button>
                     }
                 </div>
                 <div className="p-4">
@@ -140,9 +140,14 @@ class SwapCard extends React.Component {
                                     fieldData : modeStruct.field0
                                 })}
                             </div>
-                            <div id='exch' className="d-flex justify-content-center align-items-center mx-auto my-3" onClick={this.swapPair.bind(this)}>
-                                <span className='icon-Icon13 exch-button hover-pointer' />
-                            </div>
+                            
+                            { mode == 'exchange' && 
+                                <div id='exch' className="d-flex justify-content-center align-items-center mx-auto my-3" onClick={this.swapPair.bind(this)}>
+                                    <span className='icon-Icon13 exch-button hover-pointer' />
+                                </div> ||
+                                <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-4' />
+                            }
+
                             <div className='swap-input py-2 px-3' id='to'>
                                 {this.getInputField({
                                     fieldName: langData[mode].input1,
@@ -203,13 +208,13 @@ class SwapCard extends React.Component {
                                     <div>Amount</div>
                                     <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? this.props.langData.removeLiquidity.detailed : this.props.langData.removeLiquidity.simple }</div>
                                 </div>
-                                <div className="h1 font-weight-bold my-3">{this.rmPersents}%</div>
+                                <div className="h1 font-weight-bold my-3">{this.showPercents()}%</div>
                                 {this.props.removeLiquiditySimpleView &&
                                     <div id="removeLiquidityRange" >
                                         <Form className="mb-4">
                                         <Form.Group controlId="formBasicRangeCustom">
                                             <Form.Control type="range"
-                                                value= {this.rmPersents}
+                                                value= {this.rmPercents}
                                                 min="0"
                                                 max="100"
                                                 step="0.1"
@@ -218,20 +223,18 @@ class SwapCard extends React.Component {
                                         </Form>
                                         <div className="d-flex align-items-center justify-content-between">
                                             {this.removeLiquidity.ranges.map((item, index) => (
-                                                <button className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
+                                                <button key={index+''} className="btn btn-secondary px-3 py-1" onClick={this.setRemoveLiquidityValue.bind(this, item.value)}>{item.alias}</button>
                                             ))}
                                         </div>
                                     </div>
                                 }
                             </div>
-                            { this.props.removeLiquiditySimpleView &&
-                                this.renderRemoveLiquidity(modeStruct, firstToken, secondToken)
-                            }
+                            { this.renderRemoveLiquidity(modeStruct, firstToken, secondToken) }
                         </>
                     }
                     
                     {/* ---------------------------------------- remove-liquidity: bottom info and buttons ---------------------------------------- */}
-                    { this.props.liquidityRemove &&
+                    { this.props.liquidityRemove && mode != 'exchange' &&
                         <>
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
                                 <div>Price</div>
@@ -279,35 +282,37 @@ class SwapCard extends React.Component {
                     </>
                 }
                 { !this.props.removeLiquiditySimpleView &&
-                    <div className="mt-2">
-                        <div className='swap-input py-2 px-3'>
-                            {this.getInputField({
-                                fieldName: this.props.langData.removeLiquidity.input,
-                                id : 6,
-                                fieldData : modeStruct.ltfield
-                            })}
+                    <>
+                        <div className="mt-2">
+                            <div className='swap-input py-2 px-3'>
+                                {this.getInputField({
+                                    fieldName: this.props.langData.removeLiquidity.input,
+                                    id : 6,
+                                    fieldData : modeStruct.ltfield
+                                })}
+                            </div>
+
+                            <span className="icon-Icon13 d-flex justify-content-center my-3 text-color4" />
+
+                            <div className='swap-input py-2 px-3'>
+                                {this.getInputField({
+                                    fieldName: this.props.langData.removeLiquidity.input,
+                                    id : 4,
+                                    fieldData : modeStruct.field0
+                                })}
+                            </div>
+
+                            <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-3 text-color4' />
+
+                            <div className='swap-input py-2 px-3'>
+                                {this.getInputField({
+                                    fieldName: this.props.langData.removeLiquidity.input,
+                                    id : 5,
+                                    fieldData :  modeStruct.field1
+                                })}
+                            </div>                      
                         </div>
-
-                        <span className="icon-Icon13 d-flex justify-content-center my-3 text-color4" />
-
-                        <div className='swap-input py-2 px-3'>
-                            {this.getInputField({
-                                fieldName: this.props.langData.removeLiquidity.input,
-                                id : 4,
-                                fieldData : modeStruct.field0
-                            })}
-                        </div>
-
-                        <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-3 text-color4' />
-
-                        <div className='swap-input py-2 px-3'>
-                            {this.getInputField({
-                                fieldName: this.props.langData.removeLiquidity.input,
-                                id : 5,
-                                fieldData :  modeStruct.field1
-                            })}
-                        </div>                      
-                    </div>
+                    </>
                 }
             </>
         );    
@@ -391,6 +396,7 @@ class SwapCard extends React.Component {
                 <>
                     <TokenCard
                         changeBalance={this.changeBalance.bind(this)}
+                        getMode={this.getMode.bind(this)}
                         useSuspense={false} />
                 </>
             );
@@ -457,8 +463,22 @@ class SwapCard extends React.Component {
         let fieldObj = this.props[mode][field];
         fieldObj.value = value;
         this.props.assignCoinValue(mode, field, value);
+        this.countCounterField(fieldObj, this.getFieldName(fieldId, true), (mode == 'removeLiquidity') ? true : false, field);
         this.establishReadiness();
-        this.countCounterField(fieldObj, this.getFieldName(fieldId, true), (mode == 'removeLiquidity') ? true : false);
+    };
+
+    showPercents () {
+        let fixedLength = 1;
+        let result = Number(this.rmPercents).toFixed(fixedLength);
+        if (result == 0)
+            return `< 0.${'0'.repeat(fixedLength - 1)}1`;
+        return result;
+    };
+
+    isValidPercent (rmPercent) {
+        if (rmPercent > 100)
+            return false;
+        return true;
     };
 
     countPrice(activeField, counterField, pair) {
@@ -482,7 +502,7 @@ class SwapCard extends React.Component {
         }
     };
 
-    countCounterField(activeField, cField, removeLiquidity) {
+    countCounterField(activeField, cField, removeLiquidity, aField) {
         let mode = this.getMode();
         if (!this.pairExists)
             return;
@@ -495,9 +515,9 @@ class SwapCard extends React.Component {
             if (this.activePair === undefined) {
                 return;
             }
-            if (removeLiquidity) 
-                this.countRemoveLiquidity(mode, cField);
-            else {
+            if (removeLiquidity) {
+                this.countRemoveLiquidity(mode, aField);
+            } else {
                 let counterFieldPrice = this.countPrice(activeField, counterField, this.activePair);
                 if (!counterFieldPrice)
                     counterFieldPrice = '';
@@ -509,24 +529,37 @@ class SwapCard extends React.Component {
     countPooledAmount (pair) {
         swapApi.getTokenInfo(pair.lt)
         .then(res => {
-            res.json()
-            .then(total => {
-                if (Array.isArray(total) && total.length) {
-                    this.total_supply = total[0].total_supply;
-                }
-            })
+            if (!res.lock) {
+                res.json()
+                .then(total => {
+                    if (Array.isArray(total) && total.length) {
+                        this.total_supply = total[0].total_supply;
+                    }
+                })
+            }
         })
     };
 
-    countRemoveLiquidity (mode, cField) {
+    countRemoveLiquidity (mode, cField, forcedLt) {
         let counted = testFormulas.ltDestruction(this.activePair, this.total_supply, {
             amount_1  : this.props.removeLiquidity.field0.value,
             amount_2  : this.props.removeLiquidity.field1.value,
-            amount_lt : this.props.removeLiquidity.ltfield.value
+            amount_lt : (forcedLt) ? forcedLt : this.props.removeLiquidity.ltfield.value
         }, cField);
-        this.props.assignCoinValue(mode, 'field0',  counted.amount_1);
-        this.props.assignCoinValue(mode, 'field1',  counted.amount_2);
-        this.props.assignCoinValue(mode, 'ltfield', counted.amount_lt);
+        let rmPercent = utils.countPercentsByPortion(this.props.removeLiquidity.ltfield.balance.amount, counted.amount_lt).toFixed(1);
+        if (!this.isValidPercent(rmPercent)) {
+            let full = this.props.removeLiquidity.ltfield.balance.amount;
+            this.rmPercents = 100;
+            this.props.assignCoinValue(mode, 'ltfield', full);
+            this.countRemoveLiquidity(mode, 'ltfield', full);
+        } else {
+            if (cField != 'field0')
+                this.props.assignCoinValue(mode, 'field0',  counted.amount_1);
+            if (cField != 'field1')
+                this.props.assignCoinValue(mode, 'field1',  counted.amount_2);
+            if (cField != 'ltfield')
+                this.props.assignCoinValue(mode, 'ltfield', counted.amount_lt);
+        }
     };
 
     getExchTokenName(name) {
@@ -553,8 +586,11 @@ class SwapCard extends React.Component {
         this.establishReadiness();
     }
 
-    changeLiquidityCard() {
-        this.props.changeLiquidityMode();
+    changeAddRemoveCards(mode) {
+        if (mode == 'liquidity')
+            this.props.changeLiquidityMode();
+        else if (mode == 'removeLiquidity')
+            this.props.changeRemoveLiquidityVisibility();
     };
 
     openConfirmCard() {

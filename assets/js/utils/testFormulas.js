@@ -37,7 +37,6 @@ function countLTAmount (pair, uiPair, mode) {
 };
 
 function ltDestruction (pair, total, trio, chField) { // trio = {amount_lt, amount_1, amount_2}
-    console.log(chField);
     if (total == 0)
         return {
             amount_lt : 0,
@@ -52,11 +51,6 @@ function ltDestruction (pair, total, trio, chField) { // trio = {amount_lt, amou
         };
     } else if (chField == 'field0') {
         let lt = Number(trio.amount_1) / Number(pair.token_0.volume) * Number(total);
-        console.log({
-            amount_1  : trio.amount_1,
-            amount_2  : Number(pair.token_1.volume) * lt / Number(total),
-            amount_lt : lt
-        });
         return {
             amount_1  : trio.amount_1,
             amount_2  : Number(pair.token_1.volume) * lt / Number(total),

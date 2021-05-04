@@ -40,13 +40,14 @@ class LPTokensWalletInfo extends React.Component {
     countPooledAmount () {
         swapApi.getTokenInfo(this.pair.lt)
         .then(res => {
-            res.json()
-            .then(total => {
-                if (Array.isArray(total) && total.length)
-                    this.pooled = testFormulas.ltDestruction(this.pair, total[0].total_supply, {
-                        amount_lt : utils.getBalanceObj(this.props.balances, this.pair.lt).amount
-                    }, 'ltfield');
-            })
+            if (!res.lock)
+                res.json()
+                .then(total => {
+                    if (Array.isArray(total) && total.length)
+                        this.pooled = testFormulas.ltDestruction(this.pair, total[0].total_supply, {
+                            amount_lt : utils.getBalanceObj(this.props.balances, this.pair.lt).amount
+                        }, 'ltfield');
+                });
         })
     };
 

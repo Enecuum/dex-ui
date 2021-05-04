@@ -16,7 +16,6 @@ class LiquidityTokensZone extends React.Component {
         this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
         this.pooled = {};
-        this.updltList();
     };
 
     getltData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens 
@@ -53,12 +52,6 @@ class LiquidityTokensZone extends React.Component {
         this.props.changeRemoveLiquidityVisibility();
     };
 
-    updltList () {
-        setInterval(() => {
-            this.props.updltList(this.getltData());
-        }, 1000);
-    };
-
     getTokenByHash (hash) {
         let empty = { ticker : '-', hash : undefined };
         if (this.props.tList.length == 0)
@@ -92,27 +85,29 @@ class LiquidityTokensZone extends React.Component {
             };
         swapApi.getTokenInfo(pair.lt)
         .then(res => {
-            res.json()
-            .then(total => {
-                if (Array.isArray(total) && total.length) {
-                    this.total = total[0].total_supply;
-                    this.pooled[index] = testFormulas.ltDestruction(pair, total[0].total_supply, {
-                        amount_lt : utils.getBalanceObj(this.props.balances, pair.lt).amount
-                    }, 'ltfield');
-                }
-            })
+            if (!res.lock)
+                res.json()
+                .then(total => {
+                    if (Array.isArray(total) && total.length) {
+                        this.total = total[0].total_supply;
+                        this.pooled[index] = testFormulas.ltDestruction(pair, total[0].total_supply, {
+                            amount_lt : utils.getBalanceObj(this.props.balances, pair.lt).amount
+                        }, 'ltfield');
+                    }
+                })
         })
     };
 
     renderltList () {
-        if (this.props.ltList.length == 0)
+        let ltList = this.getltData();
+        if (ltList.length == 0)
             return (
                 <div className="liquidity-tokens-empty-zone"> 
                     <div className="d-flex justify-content-center">empty</div>
                 </div>
             );
         else {
-            return this.props.ltList.map((el, index) => {
+            return ltList.map((el, index) => {
                 this.countPooledAmount(el, index);
                 let fToken = this.getTokenByHash(el.token_0.hash);
                 let sToken = this.getTokenByHash(el.token_1.hash);

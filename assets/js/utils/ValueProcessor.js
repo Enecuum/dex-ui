@@ -68,23 +68,25 @@ class ValueProcessor {
     }
     bigIntMathOperation (operation, op0, op1) {
         let decimals = (op0.decimals > op1.decimals) ? op0.decimals : op1.decimals;
-        let value = this.mathOperation(operation, Number(op0.value) / op0.decimals , Number(op1.value) / op1.decimals);
+        let numOp0 = BigInt(op0.value);
+        let numOp1 = BigInt(op1.value);
+        let value = this.mathOperation(operation, numOp0, numOp1);
         return {
-            value: BigInt(Math.round(value * decimals)),
+            value: value,
             decimals : decimals
         };
     }
     mathOperation (operation, op0, op1) {
         if (operation == this.operations.ADD)
-            return String(op0 + op1);
+            return op0 + op1;
         else if (operation == this.operations.SUB)
-            return String(op0 - op1);
+            return op0 - op1;
         else if (operation == this.operations.MUL)
-            return String(op0 * op1);
+            return op0 * op1;
         else if (operation == this.operations.DIV) {
             if (op1 == 0)
                 return 0;
-            return String(op0 / op1);
+            return op0 / op1;
         }
     } 
     // ============================= temporary math =============================

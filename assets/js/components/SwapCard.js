@@ -487,8 +487,14 @@ class SwapCard extends React.Component {
         let decimals = [activeField.balance.decimals, counterField.balance.decimals];
         if (activeField.token.hash != pair.token_0.hash) 
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
-        let volume0  = valueProcessor.valueToBigInt(pair.token_0.volume, decimals[0]);
-        let volume1  = valueProcessor.valueToBigInt(pair.token_1.volume, decimals[1]);
+        let volume0  = {
+            value : BigInt(pair.token_0.volume),
+            decimals : decimals[0]
+        };
+        let volume1  = {
+            value : BigInt(pair.token_1.volume),
+            decimals : decimals[1]
+        };;
         let amountIn = valueProcessor.valueToBigInt(activeField.value,   activeField.balance.decimals);
 
         if (this.props.menuItem == 'exchange') {

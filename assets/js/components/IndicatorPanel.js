@@ -69,7 +69,8 @@ class IndicatorPanel extends React.Component {
     updNetwork () {
         extRequests.getProvider(true)
         .then(res => {
-            this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
+            if (!res.lock)
+                this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
         },
         err => console.log('cannot make getProvider request'));
     };

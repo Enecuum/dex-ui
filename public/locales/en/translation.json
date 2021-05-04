@@ -21,7 +21,7 @@
             "connect" : "Connect",
             "connectionCard" : {
                 "header" : "Connect to a wallet",
-                "clue" : "Learn how to connect"
+                "clue" : "Download Enecuum Wallet extention"
             }
         }
     },
@@ -94,6 +94,9 @@
                 },
                 "createPool" : {
                     "completePhrase" : "Creating pool {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
+                },
+                "removeLiquidity" : {
+                    "completePhrase" : "Remove liquidity"
                 }
             }
         }

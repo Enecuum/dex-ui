@@ -1,3 +1,7 @@
+import ValueProcessor from './ValueProcessor';
+
+const vp = new ValueProcessor();
+
 function countExchangeRate(pair, firstPerSecond, modeStruct) {
     pair = { ...pair };
     if (!pairExists(pair)) {
@@ -48,13 +52,31 @@ function searchSwap(pairs, tokens) {
     return (validPair) ? validPair : emptyPair;
 };
 
-function countPoolShare(pair, modeStruct) {
+function countPoolShare(pair, modeStruct, addition) {
     if (!pairExists(pair)) {
         return '100';
     }
-    let inputVolume = Number(modeStruct.field0.value) * Number(modeStruct.field1.value);
-    let poolVolume = Number(pair.token_0.volume) * Number(pair.token_1.volume);
-    let res = divide(inputVolume, poolVolume) * 100;
+    if (modeStruct.field0 == undefined) {
+        modeStruct = {
+            field0 : {
+                value : modeStruct.value0
+            },
+            field0 : {
+                value : modeStruct.value1
+            },
+        }
+    }
+    let value1  = Number((typeof(modeStruct.field0.value) === 'string') ? modeStruct.field0.value.replace(',', '') : modeStruct.field0.value);
+    let value2  = Number((typeof(modeStruct.field1.value) === 'string') ? modeStruct.field1.value.replace(',', '') : modeStruct.field1.value);
+    let volume1 = Number(pair.token_0.volume) / 10**10;
+    let volume2 = Number(pair.token_1.volume) / 10**10;
+    if (addition) {
+        volume1 += value1;
+        volume2 += value2;
+    }
+    let inputVolume = value1 * value2;
+    let poolVolume = volume1 * volume2;
+    let res = inputVolume * 100 / poolVolume;
     return (res > 100) ? 100 : res;
 };
 

@@ -54,10 +54,10 @@ class ConnectionService extends React.Component {
                             <img src={img}></img>
                         </div>
                     </div>
-                    <div href='#' className='d-flex justify-content-center c-clue'>
+                    <a href='https://chrome.google.com/webstore/detail/enecuum/oendodccclbjedifljnlkapjejklgekf' className='d-flex justify-content-center c-clue'>
                         <span className='icon-Icon4'></span>
                         {t('navbars.top.connectionCard.clue')}
-                    </div>
+                    </a>
                 </Modal.Body>
               </Modal>
             </>

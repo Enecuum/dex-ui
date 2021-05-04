@@ -36,8 +36,10 @@ class WaitingConfirmation extends React.Component {
         if (!this.props.createPool) {
             if (this.props.menuItem == 'exchange') {
                 descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.swap.completePhrase';
-            } else if (this.props.menuItem == 'liquidity') {
+            } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityRemove) {
                 descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.addLiquidity.completePhrase';
+            } else if (this.props.menuItem == 'liquidity') {
+                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.removeLiquidity.completePhrase';
             }
         } else {
             descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.createPool.completePhrase';

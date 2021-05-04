@@ -15,7 +15,8 @@ import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
 import ValueProcessor from '../utils/ValueProcessor';
-import swapApi from '../requests/swapApi'
+import swapApi from '../requests/swapApi';
+import extRequests from '../requests/extRequests';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -73,6 +74,17 @@ class SwapCard extends React.Component {
         this.rmPercents = value;
         this.props.assignCoinValue('removeLiquidity', 'ltfield', utils.countPortion(this.props.removeLiquidity.ltfield.balance.amount, value));
         this.countRemoveLiquidity(this.getMode(), 'ltfield');
+    };
+
+    removeRequest() {
+        this.props.openWaitingConfirmation();
+        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, this.props.removeLiquidity.ltfield.value)
+        .then(result => {
+            this.props.changeWaitingStateType('submitted');
+        },
+        error => {
+            this.props.changeWaitingStateType('rejected');
+        });
     };
 
     /* ================================ cards rendering functions ================================== */
@@ -243,9 +255,15 @@ class SwapCard extends React.Component {
                                     <div>1 {secondToken.ticker} = {this.showExchRate(false)} {firstToken.ticker}</div>
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center justify-content-between">
-                                <button className="btn btn-secondary flex-fill mr-2">Approve</button>
-                                <button className="btn btn-secondary flex-fill ml-2">Enter an amount</button>
+                            <div className="d-flex align-items-center justify-content-center">
+                                <button
+                                    className='btn btn-secondary w-100 py-2'
+                                    type='submit'
+                                    id='submit'
+                                    onClick={this.removeRequest.bind(this)}
+                                    style={{backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'}}>
+                                    Remove liquidity
+                                </button>
                             </div>
                         </>
                     }
@@ -296,7 +314,7 @@ class SwapCard extends React.Component {
 
                             <span className="icon-Icon13 d-flex justify-content-center my-3 text-color4" />
 
-                            <div className='swap-input py-2 px-3'>
+                            <div className='swap-input py-2 px-3 unclickable'>
                                 {this.getInputField({
                                     fieldName: this.props.langData.removeLiquidity.input,
                                     id : 4,
@@ -306,7 +324,7 @@ class SwapCard extends React.Component {
 
                             <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-3 text-color4' />
 
-                            <div className='swap-input py-2 px-3'>
+                            <div className='swap-input py-2 px-3 unclickable'>
                                 {this.getInputField({
                                     fieldName: this.props.langData.removeLiquidity.input,
                                     id : 5,
@@ -407,7 +425,7 @@ class SwapCard extends React.Component {
     /* ============================ data calculation and filtration ============================= */
 
     showPoolShare () {
-        let res =  utils.countPoolShare(this.activePair, this.props.liquidity) + '';
+        let res =  utils.countPoolShare(this.activePair, this.props.liquidity, true) + ''; //
         if (res < 0.001 && res != '-')
             res = '< 0.001';
         if (res == Infinity)
@@ -621,7 +639,7 @@ class SwapCard extends React.Component {
     };
 
     toggleView() {
-        this.props.toggleRemoveLiquidityView();
+        // this.props.toggleRemoveLiquidityView();
     }
 
     /* =========================== rules checking for ConfirmCard opening ========================== */

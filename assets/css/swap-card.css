@@ -230,3 +230,6 @@ a.view-in-explorer:hover {
     text-decoration: none!important;
 }
 
+.unclickable {
+    pointer-events: none;
+}

@@ -16,7 +16,7 @@
             "connect" : "Connect",
             "connectionCard" : {
                 "header" : "Connect to a wallet",
-                "clue" : "Learn how to connect"
+                "clue" : "Download Enecuum Wallet extention"
             }
         }
     },

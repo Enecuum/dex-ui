@@ -4,3 +4,4 @@ logs
 public/*
 !public/index.html
 !public/locales/*
+package-lock.json

@@ -97,10 +97,10 @@ class ExtRequests {
      * @param {object} liquidityMode - data structure from initialState.js
      * @returns {Promise}
      */
-    removeLiquidity (pubkey, removeMode) { // TODO - проверить bigint конвертацию монет
+    removeLiquidity (pubkey, lt, amount) {
         return this.sendTx(pubkey, requestType.REMOVE, {
-            lt : removeMode.lt,
-            amount : BigInt(removeMode.amount)
+            lt : lt,
+            amount : BigInt(Number(amount).toFixed())
         });
     };
 
@@ -116,8 +116,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        console.log(data);      // TODO - remove for production
-        console.log(params);    // TODO - remove for production
+        // console.log(data);      // TODO - remove for production
+        // console.log(params);    // TODO - remove for production
         return trafficController.sendTransaction(data);
     };
 };

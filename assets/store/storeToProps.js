@@ -41,6 +41,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard,
+                    pubkey                  : state.root.pubkey,
                     connectionStatus        : state.root.connectionStatus,
                     langData                : state.root.langData.trade.swapCard,
                     menuItem                : state.root.menuItem,
@@ -134,11 +135,12 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard.waitingConfirmation,
-                    createPool  : state.swapCard.createPool,
-                    exchange    : state.swapCard.exchange,
-                    liquidity   : state.swapCard.liquidity,
-                    menuItem    : state.root.menuItem,
-                    net         : state.root.net
+                    createPool      : state.swapCard.createPool,
+                    exchange        : state.swapCard.exchange,
+                    liquidity       : state.swapCard.liquidity,
+                    menuItem        : state.root.menuItem,
+                    net             : state.root.net,
+                    liquidityRemove : state.swapCard.liquidityRemove
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:

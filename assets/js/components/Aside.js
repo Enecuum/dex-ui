@@ -21,7 +21,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['home', 'exchange', 'liquidity', 'ido', 'farms', 'pools', 'etm', 'info', 'topPairs'];
+        this.itemsOrder = ['home', 'exchange', 'liquidity', 'topPairs', 'ido', 'farms', 'pools', 'etm', 'info'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',

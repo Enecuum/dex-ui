@@ -67,7 +67,7 @@ class TopPairs extends React.Component {
     getTmpErrorElement() {
     	return (
 	    	<div>
-	    		НЕВОЗМОЖНО ОТОБРАЗИТЬ ПАРЫ!!!
+	    		No data
 	    	</div>
 	    )	
     } 
@@ -77,7 +77,7 @@ class TopPairs extends React.Component {
     	return (
     		
 		    	<div className="pairs-table-wrapper">
-		    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}}>	
+		    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	
 					<Table hover variant="dark" style={{tableLayout : 'auto'}}>
 					  <thead>
 					    <tr>
@@ -93,7 +93,7 @@ class TopPairs extends React.Component {
 				          return (
 				            <tr key={index}>
 				              <td>{index}</td>
-				              <td>{pair.token_0.ticker}-{pair.token_1.ticker}</td>
+				              <td className="text-nowrap">{pair.token_0.ticker}-{pair.token_1.ticker}</td>
 				              <td>{valueProcessor.usCommasBigIntDecimals(pair.liquidity)}</td>
 				              <td>volume</td>
 				              <td>{valueProcessor.usCommasBigIntDecimals(pair.pool_fee)}</td>

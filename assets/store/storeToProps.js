@@ -145,7 +145,6 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     pubkey      : state.root.pubkey,
-                    ltList      : state.swapCard.ltList,
                     menuItem    : state.root.menuItem,
                     tList       : state.root.tokens,
                     pairs       : state.root.pairs,
@@ -268,7 +267,6 @@ function mapDispatchToProps(component) {
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (dispatch) {
                 return bindActionCreators({
-                    updltList                       : swapCardCreator.updltList,
                     changeLiquidityMode             : swapCardCreator.changeLiquidityMode,
                     assignTokenValue                : swapCardCreator.assignTokenValue,
                     changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility,

@@ -29,7 +29,6 @@ const initialState = {
         tokens      : [],   // [{ticker, hash, caption}] - all tokens from dex
     },
     swapCard : {
-        ltList  : [],       // [{token_0 : {volume, hash}, token_2 : {volume, hash}, pool_fee, lt}] - only pairs that contain user's liquidity tokens 
         exchange: {
             field0  : getDefaultField(0),
             field1  : getDefaultField(1)

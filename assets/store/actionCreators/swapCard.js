@@ -105,13 +105,6 @@ const actionCreators = {
             value : booleanVar
         }
     },
-    
-    updltList (list) {
-        return {
-            type : actions.UPD_LT_LIST,
-            value : list
-        };
-    },
 
     changeRemoveLiquidityVisibility () {
         return {

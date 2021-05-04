@@ -4,10 +4,6 @@ import ValueProcessor from './ValueProcessor';
 const vp = new ValueProcessor();
 
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
-    console.log(input_0);
-    console.log(input_1);
-    console.log(coinValue);
-
     let mul = vp.mul(input_0, coinValue);
     let res = vp.div(mul ,    input_1);
     return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');

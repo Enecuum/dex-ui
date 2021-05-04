@@ -25,3 +25,16 @@
 	border: 1px solid var(--color5);
 	border-radius: var(--border-radius1);
 }
+
+#topPairsCard .simplebar-track.simplebar-horizontal {
+	padding-top: 7px;
+	padding-bottom: 7px;
+}
+
+#topPairsCard .simplebar-track.simplebar-horizontal  .simplebar-scrollbar:before {
+    background: var(--color4);
+}
+
+#topPairsCard .simplebar-track.simplebar-horizontal  .simplebar-scrollbar.simplebar-visible:before {
+	opacity: 1;
+}

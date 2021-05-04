@@ -1,0 +1,9 @@
+[data-active-accordion-elem = "active"] .accordion-chevron {
+	transition: transform 0.2s ease-out 0.1s;
+    transform: scale(1, -1);
+}
+
+[data-active-accordion-elem = "inactive"] .accordion-chevron {
+	transition: transform 0.2s ease-out 0.1s;
+    transform: scale(1, 1);
+}

@@ -171,6 +171,7 @@ function mapStoreToProps(component) {
         case components.TOP_PAIRS:
             return function (state) {
                 return {
+                    ...state.root,
                     pairs                   : state.root.pairs,
                     balances                : state.root.balances,
                     tokens                  : state.root.tokens

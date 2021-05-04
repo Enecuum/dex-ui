@@ -424,6 +424,25 @@ class SwapCard extends React.Component {
         return res.substring(0, 6);
     };
 
+    removeEndZeros (value) {
+        if (value == 0)
+            return '';
+        if ((/\.[0-9]*0+$/).test(value)) {
+            value = value.replace(/0*$/, '');
+            if (value[value.length-1] == '.')
+                value = value.slice(0, value.length-1);
+        }
+        return value;
+    };
+
+    showPercents () {
+        let fixedLength = 1;
+        let result = Number(this.rmPercents).toFixed(fixedLength);
+        if (result == 0)
+            return `< 0.${'0'.repeat(fixedLength - 1)}1`;
+        return result;
+    };
+
     getMode () {
         let item = this.props.menuItem;
         if (item == 'exchange') 
@@ -449,32 +468,29 @@ class SwapCard extends React.Component {
         let field = this.getFieldName(fieldId);
         let value = this.props[mode][field].value;
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
-            if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.]+')).test(event.data)) {
+            if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.|\\,]+')).test(event.data)) {
                 // nothing to do. this.updCardInternals() will save you previous number
             } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
                 value = document.getElementById(fieldId).value;
             } else {
                 let newVal = document.getElementById(fieldId).value;
-                if ((new RegExp('^[0-9]+\\.?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal))
-                    value = newVal;
+                if ((new RegExp('^[0-9|,]+\\.?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal)) {
+                    if ((/.*\..*/).test(newVal)) {
+                        value = newVal;
+                    } else {
+                        value = this.removeEndZeros(valueProcessor.usCommasBigIntDecimals(valueProcessor.valueToBigInt(newVal.replace(/,/g,"")).value));
+                    }
+                }
             }
         } else if (['deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             value = document.getElementById(fieldId).value;
         } else { }
+        this.props.assignCoinValue(mode, field, value);
         value = value.replace(/,/g,"");
         let fieldObj = this.props[mode][field];
         fieldObj.value = value;
-        this.props.assignCoinValue(mode, field, value);
         this.countCounterField(fieldObj, this.getFieldName(fieldId, true), (mode == 'removeLiquidity') ? true : false, field);
         this.establishReadiness();
-    };
-
-    showPercents () {
-        let fixedLength = 1;
-        let result = Number(this.rmPercents).toFixed(fixedLength);
-        if (result == 0)
-            return `< 0.${'0'.repeat(fixedLength - 1)}1`;
-        return result;
     };
 
     isValidPercent (rmPercent) {
@@ -494,8 +510,8 @@ class SwapCard extends React.Component {
         let volume1  = {
             value : BigInt(pair.token_1.volume),
             decimals : decimals[1]
-        };;
-        let amountIn = valueProcessor.valueToBigInt(activeField.value,   activeField.balance.decimals);
+        };
+        let amountIn = valueProcessor.valueToBigInt(activeField.value, activeField.balance.decimals);
 
         if (this.props.menuItem == 'exchange') {
             if (activeField.token.hash == pair.token_0.hash)
@@ -514,10 +530,8 @@ class SwapCard extends React.Component {
         let mode = this.getMode();
         if (!this.pairExists)
             return;
-        if (activeField.value == '') {
-            this.props.assignCoinValue(mode, cField, activeField.value);
-            return;
-        }
+        if (activeField.value == '')
+            this.props.assignCoinValue(mode, cField, 0);
         let counterField = this.props[this.getMode()][cField];
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
@@ -527,8 +541,8 @@ class SwapCard extends React.Component {
                 this.countRemoveLiquidity(mode, aField);
             } else {
                 let counterFieldPrice = this.countPrice(activeField, counterField, this.activePair);
-                if (!counterFieldPrice)
-                    counterFieldPrice = '';
+                counterFieldPrice = valueProcessor.usCommasBigIntDecimals(counterFieldPrice.value, counterFieldPrice.decimals);
+                counterFieldPrice = this.removeEndZeros(counterFieldPrice);
                 this.props.assignCoinValue(mode, cField, counterFieldPrice);
             }
         }

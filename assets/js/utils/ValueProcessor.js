@@ -52,8 +52,7 @@ class ValueProcessor {
         return this.maxBigInt/BigInt(10 ** decimals)
     }
 
-    // ============================= temporary math =============================
-    // TODO - resolve custom BigInt math cases 
+    // ============================= temporary math ============================= 
     add (op0, op1) {
         return this.bigIntMathOperation(this.operations.ADD, op0, op1);
     }

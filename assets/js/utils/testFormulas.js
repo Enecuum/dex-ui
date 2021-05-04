@@ -6,7 +6,7 @@ const vp = new ValueProcessor();
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
     let mul = vp.mul(input_0, coinValue);
     let res = vp.div(mul ,    input_1);
-    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
+    return res;
 };
 
 function countLiqudity (pair) {
@@ -20,7 +20,7 @@ function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigIn
     let add = vp.add(volume0, amountIn);
     let div = vp.div(mul,     add);
     let res = vp.sub(volume1, div);
-    return vp.usCommasBigIntDecimals(res.value, res.decimals).replace(/\.0*$/,'.0');
+    return res;
 };
 
 function countLTAmount (pair, uiPair, mode) {

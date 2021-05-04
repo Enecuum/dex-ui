@@ -60,7 +60,7 @@ function countPoolShare(pair, modeStruct) {
 
 function divide(input_0, input_1) {
     try {
-        return Number(input_0) / (input_1);
+        return Number(input_0) / Number(input_1);
     } catch (e) {
         return 0;
     }

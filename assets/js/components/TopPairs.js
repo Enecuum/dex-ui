@@ -6,13 +6,15 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 import { withTranslation } from "react-i18next";
 import ValueProcessor from '../utils/ValueProcessor';
 import '../../css/top-pairs.css';
+import SimpleBar from 'simplebar-react';
+import 'simplebar/dist/simplebar.min.css';
 
 const valueProcessor = new ValueProcessor();
 
 class TopPairs extends React.Component {
     constructor(props) {
         super(props);
-        this.pairsArr = this.populateTable();        
+        this.pairsArr = '';        
     };
 
     populateTable() {
@@ -73,47 +75,52 @@ class TopPairs extends React.Component {
     getPairsTable() {
     	const t = this.props.t;
     	return (
-	    	<div className="pairs-table-wrapper">	
-				<Table hover variant="dark">
-				  <thead>
-				    <tr>
-				      <th>{t('numberSign')}</th>
-				      <th>{t('name')}</th>
-				      <th>{t('liquidity')}</th>
-				      <th>{t('volume')}</th>
-				      <th>{t('fee')}</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-			        {this.pairsArr.map(( pair, index ) => {
-			          return (
-			            <tr key={index}>
-			              <td>{index}</td>
-			              <td>{pair.token_0.ticker}-{pair.token_1.ticker}</td>
-			              <td>{valueProcessor.usCommasBigIntDecimals(pair.liquidity)}</td>
-			              <td>volume</td>
-			              <td>{valueProcessor.usCommasBigIntDecimals(pair.pool_fee)}</td>
-			            </tr>
-			          );
-			        })}
-				  </tbody>
-				</Table>
-			</div>	
+    		
+		    	<div className="pairs-table-wrapper">
+		    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}}>	
+					<Table hover variant="dark" style={{tableLayout : 'auto'}}>
+					  <thead>
+					    <tr>
+					      <th>{t('numberSign')}</th>
+					      <th>{t('name')}</th>
+					      <th>{t('liquidity')}</th>
+					      <th>{t('volume')}</th>
+					      <th>{t('fee')}</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+				        {this.pairsArr.map(( pair, index ) => {
+				          return (
+				            <tr key={index}>
+				              <td>{index}</td>
+				              <td>{pair.token_0.ticker}-{pair.token_1.ticker}</td>
+				              <td>{valueProcessor.usCommasBigIntDecimals(pair.liquidity)}</td>
+				              <td>volume</td>
+				              <td>{valueProcessor.usCommasBigIntDecimals(pair.pool_fee)}</td>
+				            </tr>
+				          );
+				        })}
+					  </tbody>
+					</Table>
+					</SimpleBar>
+				</div>
+				
     	)
     }
 
     render() {
 		const t = this.props.t;
+		this.pairsArr = this.populateTable();
     	return (
     		<div className="row">
-    			<div className="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+    			<div className="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">    			
 					<Card className="c-card-1" id="topPairsCard">
 					  <Card.Body>
 					    <Card.Title>
 					    	<div className="h4 py-3">{t('topPairs.title')}</div>
 					    </Card.Title>
 					    <Card.Text as="div">
-					    	{this.pairsArr.length > 0 ? this.getPairsTable() : this.getTmpErrorElement()}
+						    {this.pairsArr.length > 0 ? this.getPairsTable() : this.getTmpErrorElement()}						    
 					    </Card.Text>
 					  </Card.Body>
 					</Card>    			

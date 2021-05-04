@@ -7,6 +7,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
 import swapApi from '../requests/swapApi';
+import '../../css/accordion.css';
 
 const valueProcessor = new ValueProcessor();
 
@@ -16,6 +17,8 @@ class LiquidityTokensZone extends React.Component {
         this.userPoolToken = {amount : '-'};
         this.changeBalance = this.props.changeBalance;
         this.pooled = {};
+        this.state = {activeId: ''};
+
     };
 
     getltData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens 
@@ -115,9 +118,14 @@ class LiquidityTokensZone extends React.Component {
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
-                            <Accordion.Toggle eventKey={index+''} as="div" className="d-flex align-items-center justify-content-between hover-pointer">
-                                <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
-                                <i class="fas fa-chevron-down"></i>
+                            <Accordion.Toggle
+                                eventKey={index+''}
+                                as="div"
+                                className="d-flex align-items-center justify-content-between hover-pointer"
+                                onClick={() => this.setState({ activeId: this.state.activeId !== index ? index : '' })}
+                                data-active-accordion-elem = {index === this.state.activeId ? 'active' : 'inactive'} >
+                                    <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
+                                    <i className="fas fa-chevron-down accordion-chevron"></i>
                             </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey={index+''}>

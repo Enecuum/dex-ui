@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
@@ -654,7 +654,9 @@ class SwapCard extends React.Component {
             <div>
                 { this.renderSwapCard()  }
                 { this.renderTokenCard() }
-                <ConfirmSupply useSuspense={false}/>
+                <Suspense fallback={<div>---</div>}>
+                    <ConfirmSupply />
+                </Suspense>    
             </div>
         );
     };

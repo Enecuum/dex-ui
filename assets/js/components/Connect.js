@@ -1,7 +1,8 @@
+import i18n from "../utils/i18n";
+import { withTranslation } from "react-i18next";
 import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
-import { withTranslation } from "react-i18next";
 
 import '../../css/index.css';
 

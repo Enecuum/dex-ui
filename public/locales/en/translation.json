@@ -98,7 +98,7 @@
             }
         }
     },
-    "info" : "Info ",
+    "info" : "Info",
     "submit" : "Submit",
     "close" : "Close",
     "transactionSubmitted" : "Transaction was submitted",

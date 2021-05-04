@@ -8,11 +8,23 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    backend: {
+      loadPath: "./locales/{{lng}}/translation.json"
+    },
+    load: 'currentOnly',
     fallbackLng: "en",
-    debug: false,
+    debug: true,
+    ns: ['translation'],
+    defaultNS: 'translation',
     keySeparator: ".",
     interpolation: {
       escapeValue: false
+    },
+
+    react: {
+      wait: true,
+      bindI18n: 'loaded languageChanged ',
+      useSuspense: true
     }
   });
 

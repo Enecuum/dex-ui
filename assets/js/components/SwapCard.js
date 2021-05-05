@@ -567,6 +567,8 @@ class SwapCard extends React.Component {
     };
 
     countPooledAmount (pair) {
+        if (pair.lt == undefined)
+            return;
         swapApi.getTokenInfo(pair.lt)
         .then(res => {
             if (!res.lock) {

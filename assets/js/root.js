@@ -81,9 +81,49 @@ class Root extends React.Component {
         .then(res => {
             if (!res.lock)
                 res.json()
-                .then(res => this.props.assignAllTokens(res));
+                .then(tokens => {
+                    this.addOptionalTokenInfo(tokens);
+                });
         });
     };
+    addOptionalTokenInfo (tokens) {
+        let promises = [];
+        for (let i in tokens) {
+            if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
+                tokens[i].decimals = this.props.tokens[i].decimals;
+                tokens[i].total_supply = this.props.tokens[i].total_supply;
+                continue;
+            }
+            swapApi.getTokenInfo(tokens[i].hash)
+            .then(res => {
+                promises.push(res.json()
+                    .then(info => {
+                        if (!info.length)
+                            return;
+                        info = info[0];
+                        tokens[i].decimals = info.decimals;
+                        tokens[i].total_supply = info.total_supply;
+                    })
+                );                
+            })
+        }
+        Promise.all(promises)
+        .then(() => {
+            this.props.assignAllTokens(tokens);
+        });
+    };
+
+    // swapApi.getTokenInfo(pair.lt)
+    //     .then(res => {
+    //         if (!res.lock) {
+    //             res.json()
+    //             .then(total => {
+    //                 if (Array.isArray(total) && total.length) {
+    //                     this.total_supply = total[0].total_supply;
+    //                 }
+    //             })
+    //         }
+    //     })
 
     // ----------------------------------------------------
 

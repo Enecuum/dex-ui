@@ -61,7 +61,7 @@ function countPoolShare(pair, modeStruct, addition) {
             field0 : {
                 value : modeStruct.value0
             },
-            field0 : {
+            field1 : {
                 value : modeStruct.value1
             },
         }

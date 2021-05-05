@@ -118,6 +118,10 @@
     "volume" : "Объем",
     "fee" : "Комиссия",
     "topPairs" : {
-        "title" : "Топ торговых пар"
+        "title" : "Топ торговых пар",
+        "ltTotalSupply" : "LP Total Supply",
+        "volumeInPair"  : "Объем {{indexInPair}}",
+        "yourTokensInPair" : "Мой токен_{{indexInPair}}",
+        "yourPoolShare" : "Доля в Пуле"
     }
 }

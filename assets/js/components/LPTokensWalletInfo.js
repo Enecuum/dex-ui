@@ -73,7 +73,7 @@ class LPTokensWalletInfo extends React.Component {
                             {firstToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_1)}
+                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_1.toFixed())}
                         </div>
                     </div>
                     <div className="d-block d-md-flex align-items-center justify-content-between py-2">
@@ -81,7 +81,7 @@ class LPTokensWalletInfo extends React.Component {
                             {secondToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_2)}
+                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_2.toFixed())}
                         </div>
                     </div>                                
                 </div>

@@ -7,12 +7,12 @@ import { withTranslation } from "react-i18next";
 import Socials from './Socials';
 import swapApi from '../requests/swapApi';
 
-import img from '../../img/logo.png';
+import img from '../../img/ENEXlogo.png';
 import '../../css/font-style.css';
 import '../../css/aside.css';
 
-
-const coinPriceUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=enq-enecuum&vs_currencies=USD';
+const coinName = 'enex';
+const coinPriceUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coinName}&vs_currencies=USD`;
 const sec = 1000; 
 
 class Aside extends React.Component {
@@ -21,11 +21,11 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['home', 'exchange', 'liquidity', 'topPairs', 'ido', 'farms', 'pools', 'etm', 'info'];
+        this.itemsOrder = ['exchange', 'liquidity', 'topPairs'/*, 'ido', 'farms', 'pools', 'etm', 'info'*/];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
-                action: this.changeMenuItem.bind(this, 'home')
+                action: undefined
             },
             exchange : {
                 iconClasses: 'icon-Icon10',
@@ -61,7 +61,7 @@ class Aside extends React.Component {
             },
             docs : {
                 iconClasses: 'icon-Icon19',
-                action: this.changeMenuItem.bind(this, 'docs')
+                action: undefined
             }
         };
         this.exchRateUpdRate = 5 * sec;
@@ -105,7 +105,7 @@ class Aside extends React.Component {
         fetch(coinPriceUrl)
         .then(async res => {
             res = await res.json();
-            res = res['enq-enecuum'].usd;
+            res = res[coinName].usd;
             this.props.updExchangeRate(res.toFixed(3));
         },
         err => {
@@ -138,6 +138,10 @@ class Aside extends React.Component {
                 className='aside-left position-fixed d-flex flex-column justify-content-between pt-5 pb-4 px-3'
                 style = {{height : (this.props.connectionStatus && (this.state.windowWidth <= 1200)) ? 'calc(100% - var(--top-menu-height) - 50px)' : 'calc(100% - var(--top-menu-height))'}} >
                 <div className='aside-menu'>
+                    <a className='menu-item d-flex align-items-center mb-4' href="https://enex.space/" target="_blank">
+                        <span className={this.menuItems.home.iconClasses + ' icon-wrapper'}/>
+                        <span className='aside-menu-text'>{t('navbars.left.home')}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
+                    </a>
                     {this.itemsOrder.map((item, index) => (
                         <div className='menu-item d-flex align-items-center mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>

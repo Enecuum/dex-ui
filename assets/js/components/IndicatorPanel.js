@@ -3,6 +3,7 @@ import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
+
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
@@ -36,7 +37,7 @@ class IndicatorPanel extends React.Component {
         this.props.changeNetwork(name, url);
     };
 
-    renderWalletInfo() {
+    renderWalletInfo () {
         return (
             <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
                 {this.renderPendingIndicator()}
@@ -48,13 +49,17 @@ class IndicatorPanel extends React.Component {
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
-                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center'>{this.packAdressString(this.props.pubkey)}</div>
+                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer' onClick={this.openInExplorer.bind(this)}>{this.packAdressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );
     };
 
-    updData() {
+    openInExplorer () {
+        window.open(this.props.net.url + '#!/account/' + this.props.pubkey, '_blank').focus();
+    };
+
+    updData () {
         this.updNetwork();
         let tokenObj = utils.getBalanceObj(this.props.balances, this.props.nativeToken);
         this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals));

@@ -149,7 +149,7 @@ class LiquidityTokensZone extends React.Component {
                                             field0 : { value : this.pooled[index].amount_1 },
                                             field1 : { value : this.pooled[index].amount_2 }
                                         })}%
-                                    </div>      
+                                    </div>
                                 </div>
 
                                 {/* Your pool share is absent because of lack of data. */}

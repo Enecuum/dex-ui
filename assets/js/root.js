@@ -200,7 +200,7 @@ class Root extends React.Component {
                 );
             case 'topPairs':
                 return (
-                    <div className="regular-page p-2 p-md-5 px-lg-0">
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <TopPairs  useSuspense={false}/>
                     </div>                    
                 );    

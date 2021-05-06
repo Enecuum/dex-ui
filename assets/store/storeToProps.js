@@ -117,7 +117,8 @@ function mapStoreToProps(component) {
                     pubkey              : state.root.pubkey,
                     pendingIndicator    : state.root.pendingIndicator,
                     net                 : state.root.net,
-                    balances            : state.root.balances
+                    balances            : state.root.balances,
+                    net                 : state.root.net
                 };
             };
         case components.CONFIRM_SUPPLY:

@@ -316,3 +316,11 @@ body {
     margin-top: var(--top-menu-height);
     width: 100%;
 }
+
+.open-in-explorer {
+    cursor: pointer;
+}
+
+.open-in-explorer:hover {
+    background-color: var(--color2);
+}

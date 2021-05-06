@@ -133,15 +133,15 @@ class LiquidityTokensZone extends React.Component {
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {fToken.ticker}:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_1)}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_1.toFixed())}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_2)}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_2.toFixed())}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, el.lt).amount)}
+                                        {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, el.lt).amount.toFixed())}
                                     </div>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pool share:</span>
@@ -149,7 +149,7 @@ class LiquidityTokensZone extends React.Component {
                                             field0 : { value : this.pooled[index].amount_1 },
                                             field1 : { value : this.pooled[index].amount_2 }
                                         })}%
-                                    </div>      
+                                    </div>
                                 </div>
 
                                 {/* Your pool share is absent because of lack of data. */}

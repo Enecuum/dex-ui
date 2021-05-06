@@ -21,7 +21,7 @@
             "connect" : "Подключение",
             "connectionCard" : {
                 "header" : "Подключить кошелёк",
-                "clue" : "Скачать расширение Enecuum Wallet"
+                "clue" : "Получить расширение Enecuum"
             }
         }
     },

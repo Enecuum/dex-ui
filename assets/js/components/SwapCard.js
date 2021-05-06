@@ -444,7 +444,7 @@ class SwapCard extends React.Component {
 
     removeEndZeros (value) {
         if (value == 0)
-            return '';
+            return '0';
         if ((/\.[0-9]*0+$/).test(value)) {
             value = value.replace(/0*$/, '');
             if (value[value.length-1] == '.')
@@ -486,6 +486,8 @@ class SwapCard extends React.Component {
         let field = this.getFieldName(fieldId);
         let value = this.props[mode][field].value;
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
+            if (document.getElementById(fieldId).value == '.')
+                value = '0.';
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.|\\,]+')).test(event.data)) {
                 // nothing to do. this.updCardInternals() will save you previous number
             } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
@@ -548,8 +550,10 @@ class SwapCard extends React.Component {
         let mode = this.getMode();
         if (!this.pairExists)
             return;
-        if (activeField.value == '')
-            this.props.assignCoinValue(mode, cField, 0);
+        if (activeField.value == '') {
+            this.props.assignCoinValue(mode, cField, '');
+            return;
+        }
         let counterField = this.props[this.getMode()][cField];
         if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {

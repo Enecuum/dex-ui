@@ -36,19 +36,22 @@ class TopPairs extends React.Component {
 
 					if (!uniquePairsTokensList.hasOwnProperty(pair[tokenAlias].hash))
 						uniquePairsTokensList[hash] = {
-							ticker : '',
+							ticker : undefined,
 							inWhiteList : false,
-							decimals : undefined
+							decimals : undefined,
+							total_supply : undefined
 						}
 				});
 			});
 	
 			tokens.forEach(function(tokenInNetwork, i, tokensInNetworkArr) {
 				if (uniquePairsTokensList.hasOwnProperty(tokenInNetwork.hash)) {
-					uniquePairsTokensList[tokenInNetwork.hash].ticker = tokenInNetwork.ticker;
-					uniquePairsTokensList[tokenInNetwork.hash].inWhiteList = true;
-					uniquePairsTokensList[tokenInNetwork.hash].decimals = tokenInNetwork.decimals;
-					uniquePairsTokensList[tokenInNetwork.hash].total_supply = tokenInNetwork.total_supply;
+					uniquePairsTokensList[tokenInNetwork.hash] = {
+						ticker : tokenInNetwork.ticker,
+						inWhiteList : true,
+						decimals : tokenInNetwork.decimals,
+						total_supply : tokenInNetwork.total_supply
+					}
 				}
 			});
 
@@ -60,7 +63,6 @@ class TopPairs extends React.Component {
 						amountLT = ltInBalance.amount;
 
 					let ltDestructionResult = testFormulas.ltDestruction(pair, uniquePairsTokensList[pair.lt].total_supply, {amount_lt : amountLT}, 'ltfield');
-					console.log('ltDestructionResult', ltDestructionResult)
 
 					result.push({
 						token_0 : {
@@ -90,7 +92,6 @@ class TopPairs extends React.Component {
     	} else {
     		return result;
     	}
-    	console.log(result)
     	return result;    	
     }
 
@@ -126,11 +127,11 @@ class TopPairs extends React.Component {
 					            <tr key={index}>
 									<td>{index + 1}</td>
 									<td className="text-nowrap">{pair.token_0.ticker}-{pair.token_1.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals(pair.lt.total_supply, pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals(pair.token_0.volume, pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals(pair.token_1.volume, pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
-									<td>{pair.your_lp_tokens.amount_1} {pair.token_0.ticker}</td>
-									<td>{pair.your_lp_tokens.amount_2} {pair.token_1.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.amount_1 !== undefined ? pair.your_lp_tokens.amount_1 : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.amount_2 !== undefined ? pair.your_lp_tokens.amount_2 : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
 									<td>{pair.your_pool_share}%</td>
 					            </tr>
 					          );

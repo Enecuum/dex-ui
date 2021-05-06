@@ -71,7 +71,7 @@ class SwapCard extends React.Component {
 
     removeRequest() {
         this.props.openWaitingConfirmation();
-        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, this.props.removeLiquidity.ltfield.value)
+        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, valueProcessor.valueToBigInt(this.props.removeLiquidity.ltfield.value, this.props.removeLiquidity.ltfield.token.decimals).value)
         .then(result => {
             this.props.changeWaitingStateType('submitted');
         },

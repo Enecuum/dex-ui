@@ -94,13 +94,14 @@ class ExtRequests {
     /**
      * Get coins at the cost of 'liquidity tokens'
      * @param {string} pubkey - users publick key (get it while connecting to the extention)
-     * @param {object} liquidityMode - data structure from initialState.js
+     * @param {string} lt - lp token hash
+     * @param {BigInt} amount - lt amount for removing 
      * @returns {Promise}
      */
     removeLiquidity (pubkey, lt, amount) {
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : lt,
-            amount : BigInt(Number(amount).toFixed())
+            amount : amount
         });
     };
 

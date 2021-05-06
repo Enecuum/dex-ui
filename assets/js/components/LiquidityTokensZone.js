@@ -31,26 +31,39 @@ class LiquidityTokensZone extends React.Component {
     };
 
     assignDataForRemoveLiquidity (field, data) {
+        try {
+            data.coinValue = data.coinValue.toFixed();
+        } catch (e) {}
         let mode = 'removeLiquidity';
         this.props.assignTokenValue(mode, field, data.token);
-        this.props.assignCoinValue(mode, field, data.coinValue);
+        this.props.assignCoinValue(mode, field, valueProcessor.usCommasBigIntDecimals(data.coinValue, data.decimals));
     };
 
     openRmLiquidityCard (pool) {
         let ltData = utils.getBalanceObj(this.props.balances, pool.lt);
+        let coinValue = utils.countPortion(ltData.amount, 50);
         this.assignDataForRemoveLiquidity('ltfield', {
             token : this.getTokenByHash(pool.lt),
-            coinValue : utils.countPortion(ltData.amount, 50)
+            coinValue : coinValue,
+            decimals : ltData.decimals
         });
-        let firstTokenData = utils.getBalanceObj(this.props.balances, pool.token_0.hash);
+        let counted = testFormulas.ltDestruction(this.props.tokens, pool, {
+            lt : {
+                value : coinValue.toFixed(),
+                decimals : ltData.decimals,
+                total_supply : utils.getTokenObj(this.props.tokens, pool.lt).total_supply
+            }
+        }, 'ltfield');
+        
         this.assignDataForRemoveLiquidity('field0', {
             token : this.getTokenByHash(pool.token_0.hash),
-            coinValue : firstTokenData.amount
+            coinValue : counted.t0.value,
+            decimals : counted.t0.decimals
         });
-        let secondTokenData = utils.getBalanceObj(this.props.balances, pool.token_1.hash);
         this.assignDataForRemoveLiquidity('field1', {
             token : this.getTokenByHash(pool.token_1.hash),
-            coinValue : secondTokenData.amount
+            coinValue : counted.t1.value,
+            decimals : counted.t1.decimals
         });
         this.props.changeRemoveLiquidityVisibility();
     };
@@ -83,22 +96,15 @@ class LiquidityTokensZone extends React.Component {
     countPooledAmount (pair, index) {
         if (!this.pooled[index])
             this.pooled[index] = {
-                amount_1 : 0,
-                amount_2 : 0
+                t0 : 0,
+                t1 : 0
             };
-        swapApi.getTokenInfo(pair.lt)
-        .then(res => {
-            if (!res.lock)
-                res.json()
-                .then(total => {
-                    if (Array.isArray(total) && total.length) {
-                        this.total = total[0].total_supply;
-                        this.pooled[index] = testFormulas.ltDestruction(pair, total[0].total_supply, {
-                            amount_lt : utils.getBalanceObj(this.props.balances, pair.lt).amount
-                        }, 'ltfield');
-                    }
-                })
-        })
+        this.pooled[index] = testFormulas.ltDestruction(this.props.tokens, pair, {
+            lt : {
+                value : utils.getBalanceObj(this.props.balances, pair.lt).amount, 
+                ...utils.getTokenObj(this.props.tokens, pair.lt)
+            }
+        }, 'ltfield');
     };
 
     renderltList () {
@@ -112,8 +118,9 @@ class LiquidityTokensZone extends React.Component {
         else {
             return ltList.map((el, index) => {
                 this.countPooledAmount(el, index);
-                let fToken = this.getTokenByHash(el.token_0.hash);
-                let sToken = this.getTokenByHash(el.token_1.hash);
+                let fToken  = this.getTokenByHash(el.token_0.hash);
+                let sToken  = this.getTokenByHash(el.token_1.hash);
+                let balance = utils.getBalanceObj(this.props.balances, el.lt)
                 this.userPoolToken = this.getYourPoolToken(el.lt);
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
@@ -133,21 +140,21 @@ class LiquidityTokensZone extends React.Component {
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {fToken.ticker}:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_1.toFixed())}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].t0.value, this.pooled[index].t0.decimals)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pooled {sToken.ticker}:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].amount_2.toFixed())}
+                                        {valueProcessor.usCommasBigIntDecimals(this.pooled[index].t1.value, this.pooled[index].t1.decimals)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Your pool tokens:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, el.lt).amount.toFixed())}
+                                        {valueProcessor.usCommasBigIntDecimals(balance.amount, balance.decimals)}
                                     </div>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pool share:</span>
                                         {utils.countPoolShare(el, {
-                                            field0 : { value : this.pooled[index].amount_1 },
-                                            field1 : { value : this.pooled[index].amount_2 }
+                                            value0 : this.pooled[index].t0.value / BigInt(Math.pow(10, this.pooled[index].t0.addition)),
+                                            value1 : this.pooled[index].t1.value / BigInt(Math.pow(10, this.pooled[index].t0.addition))
                                         })}%
                                     </div>
                                 </div>

@@ -62,7 +62,14 @@ class TopPairs extends React.Component {
 					if (ltInBalance !== undefined)						
 						amountLT = ltInBalance.amount;
 
-					let ltDestructionResult = testFormulas.ltDestruction(pair, uniquePairsTokensList[pair.lt].total_supply, {amount_lt : amountLT}, 'ltfield');
+                    let ltDestructionResult = testFormulas.ltDestruction(tokens, pair, {
+                        lt : {
+                            value : amountLT,
+                            ...swapUtils.getTokenObj(tokens, pair.lt)
+                        }
+                    }, 'ltfield');
+
+					// !!! DEPRECATED !!! let ltDestructionResult = testFormulas.ltDestruction(pair, uniquePairsTokensList[pair.lt].total_supply, {amount_lt : amountLT}, 'ltfield'); !!! DEPRECATED !!!
 
 					result.push({
 						token_0 : {
@@ -85,7 +92,10 @@ class TopPairs extends React.Component {
 							total_supply : uniquePairsTokensList[pair.lt].total_supply
 						},
 						your_lp_tokens : ltDestructionResult,
-						your_pool_share : swapUtils.countPoolShare(pair, {value0 : ltDestructionResult.amount_1, value1 : ltDestructionResult.amount_2}, null)
+						your_pool_share : swapUtils.countPoolShare(pair, {
+                            value0 : ltDestructionResult.t0.value / BigInt(Math.pow(10, ltDestructionResult.t0.addition)), 
+                            value1 : ltDestructionResult.t1.value / BigInt(Math.pow(10, ltDestructionResult.t1.addition))
+                        })
 					})
 				}
 			})	
@@ -130,8 +140,8 @@ class TopPairs extends React.Component {
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.amount_1 !== undefined ? pair.your_lp_tokens.amount_1 : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.amount_2 !== undefined ? pair.your_lp_tokens.amount_2 : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t0.value !== undefined ? pair.your_lp_tokens.t0.value : '---'), pair.your_lp_tokens.t0.decimals)} {pair.token_0.ticker}</td>
+									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t1.value !== undefined ? pair.your_lp_tokens.t1.value : '---'), pair.your_lp_tokens.t1.decimals)} {pair.token_1.ticker}</td>
 									<td>{pair.your_pool_share}%</td>
 					            </tr>
 					          );

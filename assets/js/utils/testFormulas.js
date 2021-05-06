@@ -5,12 +5,8 @@ const vp = new ValueProcessor();
 
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
     let mul = vp.mul(input_0, coinValue);
-    let res = vp.div(mul ,    input_1);
+    let res = vp.div(mul    , input_1);
     return res;
-};
-
-function countLiqudity (pair) {
-    return pair.token_0.volume * pair.token_1.volume;
 };
 
 function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigInt
@@ -18,9 +14,51 @@ function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigIn
         return 0;
     let mul = vp.mul(volume0, volume1);
     let add = vp.add(volume0, amountIn);
-    let div = vp.div(mul,     add);
+    let div = vp.div(mul    , add);
     let res = vp.sub(volume1, div);
     return res;
+};
+
+/**
+ * 
+ * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
+ * @param {object} tokenTrio - tree objects {t0, t1, lt} with internal structure like {value, decimals} 
+ * @param {string} chField - name of changed field
+ * @returns {object} - tokenTrio
+ */
+function ltDestruction (tokens, pair, tokenTrio, chField) {
+    if (tokenTrio.lt.total_supply == -1)
+        return {
+            lt : {value : 0n, decimals : 0, addition : 0},
+            t0 : {value : 0n, decimals : 0, addition : 0},
+            t1 : {value : 0n, decimals : 0, addition : 0}
+        };
+    let token0 = { value : pair.token_0.volume, decimals : utils.getTokenObj(tokens, pair.token_0.hash).decimals };
+    let token1 = { value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals };
+    // -------
+    let total = { value : tokenTrio.lt.total_supply, decimals : tokenTrio.lt.decimals };
+    if (chField == 'ltfield') {
+        let div = vp.div(tokenTrio.lt, total);
+        return {
+            lt : tokenTrio.lt,
+            t0 : vp.mul(token0, div),
+            t1 : vp.mul(token1, div)
+        };
+    } else if (chField == 'field0') {
+        let lt = vp.mul(vp.div(tokenTrio.t0, token0), total);
+        return {
+            t0 : tokenTrio.t0,
+            t1 : vp.div(vp.mul(token1, lt), total),
+            lt : lt
+        };
+    } else if (chField == 'field1') {
+        let lt = vp.mul(vp.div(tokenTrio.t1, token1), total);
+        return {
+            t1 : tokenTrio.t1,
+            t0 : vp.div(vp.mul(token0, lt), total),
+            lt : lt
+        };
+    }
 };
 
 function countLTAmount (pair, uiPair, mode) {
@@ -40,40 +78,9 @@ function countLTAmount (pair, uiPair, mode) {
     return 'wrong mode';
 };
 
-function ltDestruction (pair, total, trio, chField) { // trio = {amount_lt, amount_1, amount_2}
-    if (total == 0)
-        return {
-            amount_lt : 0,
-            amount_1  : 0,
-            amount_2  : 0
-        };
-    if (chField == 'ltfield') {
-        return {
-            amount_lt : trio.amount_lt,
-            amount_1  : Number(pair.token_0.volume) * utils.divide(trio.amount_lt, total),
-            amount_2  : Number(pair.token_1.volume) * utils.divide(trio.amount_lt, total)
-        };
-    } else if (chField == 'field0') {
-        let lt = Number(trio.amount_1) / Number(pair.token_0.volume) * Number(total);
-        return {
-            amount_1  : trio.amount_1,
-            amount_2  : Number(pair.token_1.volume) * lt / Number(total),
-            amount_lt : lt
-        };
-    } else if (chField == 'field1') {
-        let lt = Number(trio.amount_2) / Number(pair.token_1.volume) * Number(total);
-        return {
-            amount_2  : trio.amount_2,
-            amount_1  : Number(pair.token_0.volume) * lt / Number(total),
-            amount_lt : lt
-        };
-    }
-};
-
 export default {
     getAddLiquidityPrice,
     ltDestruction,
     countLTAmount,
-    countLiqudity,
     getSwapPrice
 };

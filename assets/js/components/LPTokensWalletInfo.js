@@ -15,8 +15,8 @@ class LPTokensWalletInfo extends React.Component {
         super(props);
         this.pair = {};
         this.pooled = {
-            amount_1 : 0,
-            amount_2 : 0
+            t0 : 0,
+            t1 : 0
         };
     };
 
@@ -38,17 +38,12 @@ class LPTokensWalletInfo extends React.Component {
     };
 
     countPooledAmount () {
-        swapApi.getTokenInfo(this.pair.lt)
-        .then(res => {
-            if (!res.lock)
-                res.json()
-                .then(total => {
-                    if (Array.isArray(total) && total.length)
-                        this.pooled = testFormulas.ltDestruction(this.pair, total[0].total_supply, {
-                            amount_lt : utils.getBalanceObj(this.props.balances, this.pair.lt).amount
-                        }, 'ltfield');
-                });
-        })
+        this.pooled = testFormulas.ltDestruction(this.props.tokens, this.pair, {
+            lt : { 
+                value : utils.getBalanceObj(this.props.balances, this.pair.lt).amount, 
+                ...utils.getTokenObj(this.props.tokens, this.pair.lt)
+            }
+        }, 'ltfield');
     };
 
     render () {
@@ -73,7 +68,7 @@ class LPTokensWalletInfo extends React.Component {
                             {firstToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_1.toFixed())}
+                            {valueProcessor.usCommasBigIntDecimals(this.pooled.t0.value, this.pooled.t0.decimals)}
                         </div>
                     </div>
                     <div className="d-block d-md-flex align-items-center justify-content-between py-2">
@@ -81,7 +76,7 @@ class LPTokensWalletInfo extends React.Component {
                             {secondToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.amount_2.toFixed())}
+                            {valueProcessor.usCommasBigIntDecimals(this.pooled.t1.value, this.pooled.t0.decimals)}
                         </div>
                     </div>                                
                 </div>

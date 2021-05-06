@@ -2,21 +2,70 @@ import ValueProcessor from './ValueProcessor';
 
 const vp = new ValueProcessor();
 
+/* =================================== micro-utils =================================== */
+
+function pairExists (pair) {
+    if (pair.lt === undefined || pair.pool_fee === undefined) 
+        return false;
+    return true;
+};
+
+function removeEndZeros (value) {
+    if (value == 0)
+        return '0';
+    if ((/\.[0-9]*0+$/).test(value)) {
+        value = value.replace(/0*$/, '');
+        if (value[value.length-1] == '.')
+            value = value.slice(0, value.length-1);
+    }
+    return value;
+};
+
+function divide(input_0, input_1) { // TODO - remove after checking
+    try {
+        return Number(input_0) / Number(input_1);
+    } catch (e) {
+        return 0;
+    }
+};
+
+function countPortion (fullAmount, percent) {
+    return Number(fullAmount) * (Number(percent) / 100);
+};
+
+function countPercentsByPortion (fullAmount, portion) {
+    return (Number(portion) / Number(fullAmount)) * 100;
+};
+
+/* =============================== BigInt calculations =============================== */
+
+/**
+ * Get exchange rate of two tokens. Все value и volume передавать в "копейках".
+ * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
+ * @param {boolean} firstPerSecond - flag for changing divisible with divisor
+ * @param {object} modeStruct - field from swapCard redux store like (liquidity, exchange, removeLiquidity)
+ * @returns {string} - us commas
+ */
 function countExchangeRate(pair, firstPerSecond, modeStruct) {
     pair = { ...pair };
     if (!pairExists(pair)) {
         pair = {
             token_0 : {
                 hash : modeStruct.field0.token.hash,
-                volume : modeStruct.field0.value
+                volume : modeStruct.field0.value,
+                decimals : modeStruct.field0.token.decimals
             },
             token_1 : {
                 hash : modeStruct.field1.token.hash,
-                volume : modeStruct.field1.value
+                volume : modeStruct.field1.value,
+                decimals : modeStruct.field1.token.decimals
             },
             pool_fee : 0,
             lt : undefined
         };
+    } else {
+        pair.token_0.decimals = modeStruct.field0.token.decimals;
+        pair.token_1.decimals = modeStruct.field1.token.decimals;
     }
     if (pair.token_0.hash !== modeStruct.field0.token.hash) {
         if (!firstPerSecond)
@@ -25,14 +74,68 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
         if (firstPerSecond)
             pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
     }
-    return divide(pair.token_0.volume, pair.token_1.volume);
+    if (pairExists(pair)) {
+        let res = vp.div({
+            value : pair.token_0.volume,
+            decimals : pair.token_0.decimals
+        }, {
+            value : pair.token_1.volume,
+            decimals : pair.token_1.decimals
+        });
+        return vp.usCommasBigIntDecimals(res.value, res.addition, 10);
+    } else {
+        return '-';
+    }
 };
 
-function pairExists (pair) {
-    if (pair.pool_fee === undefined) 
-        return false;
-    return true;
+/**
+ * Get pool share in percents. Все value и volume передавать в "копейках".
+ * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
+ * @param {object} values - {value0, value1}
+ * @param {boolean} addition - if it's true, then sum up pool volume and user value 
+ * @returns {string} - percents
+ */
+function countPoolShare(pair, values, addition) {
+    if (!pairExists(pair)) {
+        return '100';
+    }
+    let value0  = BigInt(values.value0);
+    let value1  = BigInt(values.value1);
+    let volume0 = BigInt(pair.token_0.volume);
+    let volume1 = BigInt(pair.token_1.volume);
+    if (addition) {
+        volume0 += value0;
+        volume1 += value1;
+    }
+    let inputVolume = vp.mul({
+        value : value0,
+        decimals : 0
+    }, {
+        value : value1,
+        decimals : 0
+    });
+    let poolVolume  = vp.mul({
+        value : volume0,
+        decimals : 0
+    }, {
+        value : volume1,
+        decimals : 0
+    });
+    let res = vp.div(inputVolume, poolVolume);
+
+    return vp.usCommasBigIntDecimals(res.value * 100n, res.addition, 10);
 };
+
+function convertFieldValueintoBigInt (field) {
+    if (field.token.decimals == undefined || field.value == NaN)
+        return 0n;
+    let str = String(field.value).replace(',','');
+    if (str !== NaN || field.token.decimals !== NaN)
+        return vp.valueToBigInt(str, field.token.decimals).value;
+    return 0n;
+};
+
+/* ================================= search functions ================================ */
 
 function searchSwap(pairs, tokens) {
     const emptyPair = {
@@ -52,42 +155,6 @@ function searchSwap(pairs, tokens) {
     return (validPair) ? validPair : emptyPair;
 };
 
-function countPoolShare(pair, modeStruct, addition) {
-    if (!pairExists(pair)) {
-        return '100';
-    }
-    if (modeStruct.field0 == undefined) {
-        modeStruct = {
-            field0 : {
-                value : modeStruct.value0
-            },
-            field1 : {
-                value : modeStruct.value1
-            },
-        }
-    }
-    let value1  = Number((typeof(modeStruct.field0.value) === 'string') ? modeStruct.field0.value.replace(',', '') : modeStruct.field0.value);
-    let value2  = Number((typeof(modeStruct.field1.value) === 'string') ? modeStruct.field1.value.replace(',', '') : modeStruct.field1.value);
-    let volume1 = Number(pair.token_0.volume) / 10**10;
-    let volume2 = Number(pair.token_1.volume) / 10**10;
-    if (addition) {
-        volume1 += value1;
-        volume2 += value2;
-    }
-    let inputVolume = value1 * value2;
-    let poolVolume = volume1 * volume2;
-    let res = inputVolume * 100 / poolVolume;
-    return (res > 100) ? 100 : res;
-};
-
-function divide(input_0, input_1) {
-    try {
-        return Number(input_0) / Number(input_1);
-    } catch (e) {
-        return 0;
-    }
-};
-
 function getBalanceObj(balances, hash) {
     let balanceObj = balances.find(el => el.token == hash);
     if (balanceObj) {
@@ -104,27 +171,29 @@ function getBalanceObj(balances, hash) {
 function getTokenObj(tokens, hash) {
     let tokenObj = tokens.find(el => el.hash == hash);
     if (tokenObj) {
+        if (tokenObj.decimals == undefined) {
+            tokenObj.decimals = 0;
+            tokenObj.total_supply = -1;
+        }
         return tokenObj;
     } else
         return {
             hash : undefined,
             ticker : '-',
-            caption : ''
+            caption : '',
+            decimals : 0,
+            total_supply : 0
         };
 };
 
-function countPortion (fullAmount, percent) {
-    return Number(fullAmount) * (Number(percent) / 100);
-};
-
-function countPercentsByPortion (fullAmount, portion) {
-    return (Number(portion) / Number(fullAmount)) * 100;
-};
+/* =================================================================================== */
 
 export default {
+    convertFieldValueintoBigInt,
     countPercentsByPortion,
     countExchangeRate,
     countPoolShare,
+    removeEndZeros,
     countPortion,
     getBalanceObj,
     getTokenObj,

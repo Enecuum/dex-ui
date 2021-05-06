@@ -107,8 +107,8 @@ class ConfirmSupply extends React.Component {
                                     {t('trade.confirmCard.rates')}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.ticker} = {valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(utils.countExchangeRate(pair, true, modeStruct)), 10, 3)} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(utils.countExchangeRate(pair, false, modeStruct)), 10, 3)} {firstToken.ticker}</div>
+                                    <div>1 {firstToken.ticker} = {utils.removeEndZeros(utils.countExchangeRate(pair, true, modeStruct))} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {utils.removeEndZeros(utils.countExchangeRate(pair, false, modeStruct))} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>
@@ -116,7 +116,10 @@ class ConfirmSupply extends React.Component {
                                     {t('trade.confirmCard.shareOfPool')}
                                 </div>
                                 <div>
-                                    {utils.countPoolShare(pair, modeStruct)}%
+                                    {utils.countPoolShare(pair, {
+                                        value0 : utils.convertFieldValueintoBigInt(modeStruct.field0),
+                                        value1 : utils.convertFieldValueintoBigInt(modeStruct.field1)
+                                    }, true)}%
                                 </div>
                             </div>                  
                         </div>

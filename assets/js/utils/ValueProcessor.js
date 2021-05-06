@@ -1,6 +1,7 @@
 class ValueProcessor {
 	constructor() {
 		this.maxBigInt = BigInt(Math.pow(2,64))-BigInt(1);
+        this.nativeDecimals = 10;
         this.operations = {
             ADD : 0x0,
             SUB : 0x1,
@@ -48,11 +49,11 @@ class ValueProcessor {
         } else
             return input;
     }
-    getMaxValue (decimals) {    	
+    getMaxValue (decimals) {
         return this.maxBigInt/BigInt(10 ** decimals)
     }
 
-    // ============================= temporary math ============================= 
+    // ============================= math ============================= 
     add (op0, op1) {
         return this.bigIntMathOperation(this.operations.ADD, op0, op1);
     }
@@ -66,29 +67,78 @@ class ValueProcessor {
         return this.bigIntMathOperation(this.operations.DIV, op0, op1);
     }
     bigIntMathOperation (operation, op0, op1) {
-        let decimals = (op0.decimals > op1.decimals) ? op0.decimals : op1.decimals;
-        let numOp0 = BigInt(op0.value);
-        let numOp1 = BigInt(op1.value);
-        let value = this.mathOperation(operation, numOp0, numOp1);
-        return {
-            value: value,
-            decimals : decimals
-        };
+        if (op0.value == undefined || op1.value == undefined) {
+            op0.value = 0;
+            op1.value = 0;
+        }
+        op0.value = BigInt(op0.value);
+        op1.value = BigInt(op1.value);
+
+        if (op0.addition == undefined)
+            op0.addition = 0;
+        if (op1.addition == undefined)
+            op1.addition = 0;
+        let addition = Math.abs(op1.addition - op0.addition);
+        if (op0.addition > op1.addition) {
+            op1.addition += addition;
+            op1.decimals += addition;
+            // op1.value *= BigInt(Math.pow(10, addition));
+        } else {
+            op0.addition += addition;
+            op0.decimals += addition;
+            // op0.value *= BigInt(Math.pow(10, addition));
+        }
+
+        let decimalsAddition = Math.abs(op1.decimals - op0.decimals);
+        if (op0.decimals > op1.decimals) {
+            op1.decimals += decimalsAddition;
+            op1.value *= BigInt(Math.pow(10, decimalsAddition));
+        } else {
+            op0.decimals += decimalsAddition;
+            op0.value *= BigInt(Math.pow(10, decimalsAddition));
+        }
+        let res = this.mathOperation(operation, op0, op1);
+
+        return res;
     }
     mathOperation (operation, op0, op1) {
-        if (operation == this.operations.ADD)
-            return op0 + op1;
-        else if (operation == this.operations.SUB)
-            return op0 - op1;
-        else if (operation == this.operations.MUL)
-            return op0 * op1;
-        else if (operation == this.operations.DIV) {
-            if (op1 == 0)
+        if (operation == this.operations.ADD) {
+            return {
+                value    : op0.value + op1.value,
+                decimals : op0.decimals,
+                addition : op0.addition
+            };
+        } else if (operation == this.operations.SUB) {
+            return {
+                value    : op0.value - op1.value,
+                decimals : op0.decimals,
+                addition : op0.addition
+            };
+        } else if (operation == this.operations.MUL) {
+            return {
+                value    : op0.value * op1.value,
+                decimals : op0.decimals,
+                addition : op0.addition
+            };
+        } else if (operation == this.operations.DIV) {
+            if (op1.value == 0n) {
+                console.log('zero division!');
                 return 0;
-            return op0 / op1;
+            }
+            let freeZeros = 4;
+            let addition = String(op1.value).length - String(op0.value).length + freeZeros;
+            if (addition < 0)
+                addition = freeZeros;
+            op0.value *= BigInt(Math.pow(10, addition));
+            op0.addition += addition;
+            op0.decimals += addition;
+            return {
+                value    : op0.value / op1.value,
+                decimals : op0.decimals,                     // decimals + addition
+                addition : (op0.addition) ? op0.addition : 0 // addition to decimals
+            };
         }
-    } 
-    // ============================= temporary math =============================
+    };
 }
 
 export default ValueProcessor;

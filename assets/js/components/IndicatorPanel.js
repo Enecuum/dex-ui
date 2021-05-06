@@ -49,7 +49,7 @@ class IndicatorPanel extends React.Component {
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
-                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer' onClick={this.openInExplorer.bind(this)}>{this.packAdressString(this.props.pubkey)}</div>
+                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer hover-pointer' onClick={this.openInExplorer.bind(this)}>{this.packAdressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );

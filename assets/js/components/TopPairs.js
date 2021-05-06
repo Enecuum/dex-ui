@@ -157,7 +157,7 @@ class TopPairs extends React.Component {
 		this.pairsArr = this.populateTable();
     	return (
     		<div className="row">
-    			<div className="col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1">    			
+    			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			
 					<Card className="c-card-1" id="topPairsCard">
 					  <Card.Body>
 					    <Card.Title>

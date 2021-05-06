@@ -168,7 +168,7 @@ class Root extends React.Component {
             case 'exchange':
             case 'liquidity':
                 return (
-                    <div className="swap-card-wrapper">
+                    <div className="swap-card-wrapper px-2">
                         <div className='swap-card position-relative'>
                             <div id='switch'>
                                 <Suspense fallback={<div>---</div>}>

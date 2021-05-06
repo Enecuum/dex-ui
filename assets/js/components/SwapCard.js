@@ -540,9 +540,9 @@ class SwapCard extends React.Component {
                 return testFormulas.getSwapPrice(volume1, volume0, amountIn);
         } else {
             if (activeField.token.hash == pair.token_0.hash)
-                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn);
-            else
                 return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn);
+            else
+                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn);
         }
     };
 

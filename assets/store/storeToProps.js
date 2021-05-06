@@ -173,6 +173,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
+                    connectionStatus        : state.root.connectionStatus,
                     pairs                   : state.root.pairs,
                     balances                : state.root.balances,
                     tokens                  : state.root.tokens

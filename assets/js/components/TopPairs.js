@@ -96,9 +96,18 @@ class TopPairs extends React.Component {
     }
 
     getTmpErrorElement() {
+    	const t = this.props.t;
     	return (
 	    	<div>
-	    		No data
+	    		{!this.props.connectionStatus &&
+	    			<>
+	    				<div className="mb-3 h5">{t('noConnection')}</div>
+	    				<div className="mb-3 h6">{t('clickConnect')}</div>
+	    			</>
+	    		}
+				{this.props.connectionStatus &&
+					<div className="mb-3">{t('noData')}</div>
+	    		}	    		 
 	    	</div>
 	    )	
     } 

@@ -123,5 +123,8 @@
         "volumeInPair"  : "Объем {{indexInPair}}",
         "yourTokensInPair" : "Мой Токен {{indexInPair}}",
         "yourPoolShare" : "Доля в Пуле"
-    }
+    },
+    "noData" : "Нет данных",
+    "noConnection" : "Отсутствует соединение.",
+    "clickConnect" : "Пожалуйста, нажмите кнопку \"Подключение\" в навигационном меню"
 }

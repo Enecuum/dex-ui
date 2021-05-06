@@ -121,5 +121,8 @@
         "volumeInPair"  : "Volume {{indexInPair}}",
         "yourTokensInPair" : "My token {{indexInPair}}",
         "yourPoolShare" : "Your Pool share"
-    }
+    },
+    "noData" : "No data",
+    "noConnection" : "No connection.",
+    "clickConnect" : "Please click the \"Connect\" button in the navigation menu"
 }

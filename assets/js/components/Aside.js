@@ -156,7 +156,7 @@ class Aside extends React.Component {
 
                 <div className='aside-footer d-flex flex-column justify-content-between'>
                     <div className='rate-langswitcher-wrapper d-flex align-items-center justify-content-between mb-4'>
-                        <div className='exchange-rate d-flex align-items-center justify-content-between'>
+                        <div className='exchange-rate d-flex justify-content-between'>
                             <img src={img} width='30px' height='30px'/>
                             <div>
                                 ${this.props.exchangeRate}
@@ -164,7 +164,7 @@ class Aside extends React.Component {
                         </div>
                         <div className="dropup lang-switcher d-flex align-items-center justify-content-between">
                             <Dropdown>
-                                <Dropdown.Toggle variant="link" id="dropdown-basic" className="btn btn-link">
+                                <Dropdown.Toggle variant="link" id="dropdown-basic" className="btn btn-link d-flex align-items-center">
                                     <span className='icon-Icon6 mr-2'/>
                                     <span className='text-uppercase'>{ t('langTitles.short')  }</span> 
                                 </Dropdown.Toggle>

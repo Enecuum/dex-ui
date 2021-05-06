@@ -131,7 +131,7 @@ class TopPairs extends React.Component {
 									<td>{valueProcessor.usCommasBigIntDecimals(pair.token_1.volume, pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
 									<td>{pair.your_lp_tokens.amount_1} {pair.token_0.ticker}</td>
 									<td>{pair.your_lp_tokens.amount_2} {pair.token_1.ticker}</td>
-									<td>{pair.your_pool_share}</td>
+									<td>{pair.your_pool_share}%</td>
 					            </tr>
 					          );
 					        })}

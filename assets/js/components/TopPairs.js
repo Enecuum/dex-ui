@@ -60,7 +60,6 @@ class TopPairs extends React.Component {
 						amountLT = ltInBalance.amount;
 
 					let ltDestructionResult = testFormulas.ltDestruction(pair, uniquePairsTokensList[pair.lt].total_supply, {amount_lt : amountLT}, 'ltfield');
-					console.log('ltDestructionResult', ltDestructionResult)
 
 					result.push({
 						token_0 : {
@@ -81,9 +80,7 @@ class TopPairs extends React.Component {
 							ticker : uniquePairsTokensList[pair.lt].ticker,
 							decimals : uniquePairsTokensList[pair.lt].decimals,
 							total_supply : uniquePairsTokensList[pair.lt].total_supply
-						},
-						your_lp_tokens : ltDestructionResult,
-						your_pool_share : swapUtils.countPoolShare(pair, {value0 : ltDestructionResult.amount_1, value1 : ltDestructionResult.amount_2}, null)
+						}
 					})
 				}
 			})	
@@ -114,10 +111,7 @@ class TopPairs extends React.Component {
 								<th>{t('name')}</th>
 								<th>{t('topPairs.ltTotalSupply')}</th>
 								<th>{t('topPairs.volumeInPair', {indexInPair : 1})}</th>
-								<th>{t('topPairs.volumeInPair', {indexInPair : 2})}</th>
-								<th>{t('topPairs.yourTokensInPair', {indexInPair : 1})}</th>
-								<th>{t('topPairs.yourTokensInPair', {indexInPair : 2})}</th>
-								<th>{t('topPairs.yourPoolShare')}</th>								
+								<th>{t('topPairs.volumeInPair', {indexInPair : 2})}</th>						
 					    	</tr>
 					  	</thead>
 						<tbody>
@@ -129,9 +123,6 @@ class TopPairs extends React.Component {
 									<td>{valueProcessor.usCommasBigIntDecimals(pair.lt.total_supply, pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals(pair.token_0.volume, pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals(pair.token_1.volume, pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
-									<td>{pair.your_lp_tokens.amount_1} {pair.token_0.ticker}</td>
-									<td>{pair.your_lp_tokens.amount_2} {pair.token_1.ticker}</td>
-									<td>{pair.your_pool_share}</td>
 					            </tr>
 					          );
 					        })}

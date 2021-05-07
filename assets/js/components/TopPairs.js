@@ -46,6 +46,7 @@ class TopPairs extends React.Component {
 	
 			tokens.forEach(function(tokenInNetwork, i, tokensInNetworkArr) {
 				if (uniquePairsTokensList.hasOwnProperty(tokenInNetwork.hash)) {
+					// console.log(tokenInNetwork.ticker, tokenInNetwork.hash, tokenInNetwork.total_supply);
 					uniquePairsTokensList[tokenInNetwork.hash] = {
 						ticker : tokenInNetwork.ticker,
 						inWhiteList : true,
@@ -54,11 +55,13 @@ class TopPairs extends React.Component {
 					}
 				}
 			});
+			// console.log('_____________________________________________________________________')
 
 			pairs.forEach(function(pair, i, pairsArr) {
 				if ((uniquePairsTokensList[pair.token_0.hash].inWhiteList === true) && (uniquePairsTokensList[pair.token_1.hash].inWhiteList === true) && (uniquePairsTokensList[pair.lt].inWhiteList === true)) {
 					let ltInBalance = balances.find(tokenBalance => tokenBalance.token === pair.lt);
 					let amountLT = 0;
+
 					if (ltInBalance !== undefined)						
 						amountLT = ltInBalance.amount;
 
@@ -97,6 +100,8 @@ class TopPairs extends React.Component {
                             value1 : ltDestructionResult.t1.value
                         })
 					})
+				} else {
+					console.log('Чёрный список!!!')
 				}
 			})	
     	} else {

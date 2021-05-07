@@ -88,11 +88,11 @@ class Root extends React.Component {
     };
     addOptionalTokenInfo (tokens) {
         let promises = [];
-        for (let i in tokens) {
-            if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
-                tokens[i].decimals = this.props.tokens[i].decimals;
-                tokens[i].total_supply = this.props.tokens[i].total_supply;
-                continue;
+        let that = this;
+        tokens.forEach(function(token, i, tokensArr) {
+            if (that.props.tokens[i] !== undefined && that.props.tokens[i].decimals !== undefined) {
+                tokens[i].decimals = that.props.tokens[i].decimals;
+                tokens[i].total_supply = that.props.tokens[i].total_supply;
             }
             swapApi.getTokenInfo(tokens[i].hash)
             .then(res => {
@@ -106,7 +106,7 @@ class Root extends React.Component {
                     })
                 );                
             })
-        }
+        });
         Promise.all(promises)
         .then(() => {
             this.props.assignAllTokens(tokens);

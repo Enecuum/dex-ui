@@ -74,7 +74,10 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
         if (firstPerSecond)
             pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
     }
-    if (pairExists(pair)) {
+    if (pair.token_0.volume   !== undefined && 
+        pair.token_1.volume   !== undefined &&  
+        pair.token_1.decimals !== undefined &&  
+        pair.token_0.decimals !== undefined) {
         let res = vp.div({
             value : pair.token_0.volume,
             decimals : pair.token_0.decimals
@@ -82,7 +85,7 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
             value : pair.token_1.volume,
             decimals : pair.token_1.decimals
         });
-        return vp.usCommasBigIntDecimals(res.value, res.addition, 10);
+        return vp.usCommasBigIntDecimals(res.value, res.decimals, 10);
     } else {
         return '-';
     }
@@ -123,7 +126,7 @@ function countPoolShare(pair, values, addition) {
     });
     let res = vp.div(inputVolume, poolVolume);
 
-    return vp.usCommasBigIntDecimals(res.value * 100n, res.addition, 10);
+    return vp.usCommasBigIntDecimals(res.value * 100n, 24, 10);
 };
 
 function convertFieldValueintoBigInt (field) {

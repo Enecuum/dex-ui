@@ -68,26 +68,12 @@ class ValueProcessor {
     }
     bigIntMathOperation (operation, op0, op1) {
         if (op0.value == undefined || op1.value == undefined) {
+            console.log('bigint_math_operation: without value');
             op0.value = 0;
             op1.value = 0;
         }
         op0.value = BigInt(op0.value);
         op1.value = BigInt(op1.value);
-
-        if (op0.addition == undefined)
-            op0.addition = 0;
-        if (op1.addition == undefined)
-            op1.addition = 0;
-        let addition = Math.abs(op1.addition - op0.addition);
-        if (op0.addition > op1.addition) {
-            op1.addition += addition;
-            op1.decimals += addition;
-            // op1.value *= BigInt(Math.pow(10, addition));
-        } else {
-            op0.addition += addition;
-            op0.decimals += addition;
-            // op0.value *= BigInt(Math.pow(10, addition));
-        }
 
         let decimalsAddition = Math.abs(op1.decimals - op0.decimals);
         if (op0.decimals > op1.decimals) {
@@ -106,21 +92,19 @@ class ValueProcessor {
             return {
                 value    : op0.value + op1.value,
                 decimals : op0.decimals,
-                addition : op0.addition
             };
         } else if (operation == this.operations.SUB) {
             return {
                 value    : op0.value - op1.value,
                 decimals : op0.decimals,
-                addition : op0.addition
             };
         } else if (operation == this.operations.MUL) {
             return {
                 value    : op0.value * op1.value,
-                decimals : op0.decimals,
-                addition : op0.addition
+                decimals : op0.decimals + op1.decimals,
             };
         } else if (operation == this.operations.DIV) {
+            op0.decimals = 0;
             if (op1.value == 0n) {
                 console.log('zero division!');
                 return 0;
@@ -130,12 +114,10 @@ class ValueProcessor {
             if (addition < 0)
                 addition = freeZeros;
             op0.value *= BigInt(Math.pow(10, addition));
-            op0.addition += addition;
             op0.decimals += addition;
             return {
                 value    : op0.value / op1.value,
-                decimals : op0.decimals,                     // decimals + addition
-                addition : (op0.addition) ? op0.addition : 0 // addition to decimals
+                decimals : op0.decimals,
             };
         }
     };

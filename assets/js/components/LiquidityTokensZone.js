@@ -153,8 +153,8 @@ class LiquidityTokensZone extends React.Component {
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pool share:</span>
                                         {utils.countPoolShare(el, {
-                                            value0 : this.pooled[index].t0.value / BigInt(Math.pow(10, this.pooled[index].t0.addition)),
-                                            value1 : this.pooled[index].t1.value / BigInt(Math.pow(10, this.pooled[index].t0.addition))
+                                            value0 : this.pooled[index].t0.value,
+                                            value1 : this.pooled[index].t1.value
                                         })}%
                                     </div>
                                 </div>

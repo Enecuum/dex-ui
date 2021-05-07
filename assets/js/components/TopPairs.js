@@ -93,8 +93,8 @@ class TopPairs extends React.Component {
 						},
 						your_lp_tokens : ltDestructionResult,
 						your_pool_share : swapUtils.countPoolShare(pair, {
-                            value0 : ltDestructionResult.t0.value / BigInt(Math.pow(10, ltDestructionResult.t0.addition)), 
-                            value1 : ltDestructionResult.t1.value / BigInt(Math.pow(10, ltDestructionResult.t1.addition))
+                            value0 : ltDestructionResult.t0.value, 
+                            value1 : ltDestructionResult.t1.value
                         })
 					})
 				}

@@ -99,6 +99,18 @@ class TestServer {
         });
     };
 
+    filterLocale (locale) {
+        if (locale == 'en-US' || locale == 'en')
+            locale = 'en';
+        else if (locale == 'ru-RU' || locale == 'ru')
+            locale = 'ru';
+        
+        let files = fs.readdirSync(path.resolve('../public/locales'));
+        if (files.indexOf(locale) == -1)
+            return undefined;
+        return locale;
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
@@ -123,16 +135,18 @@ class TestServer {
 
         this.app.get(`/locales/*/translation.json`, bodyParser, (req, res) => {
             let urlArr = req.url.split('/');
-            res.writeHead(200, {
-                'Content-Type': 'text/html',
-            });
             let lang = urlArr[urlArr.length - 2];
-            if (lang == 'en-US')
-                lang = 'en';
-            if (lang == 'ru-RU')
-                lang = 'ru';
-            let data = fs.readFileSync(path.join(wconf.output.path, '/locales/'+lang+'/translation.json'));
-            res.write(data);
+            let language = this.filterLocale(lang);
+            if (language) {
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                });
+                res.write(fs.readFileSync(path.join(wconf.output.path, '/locales/' + language + '/translation.json')));
+            } else {
+                res.writeHead(404, {
+                    'Content-Type': 'text/html',
+                });
+            }
             res.end();
         });
 

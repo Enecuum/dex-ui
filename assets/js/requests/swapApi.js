@@ -15,14 +15,28 @@ class SwapApi {
         this.url = url;
     };
 
-    getTokenInfo(hash) {
+    tx (hash) {
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/tx?hash=${hash}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+    pendingTxAccount (pubkey) {
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/pending_tx_account?id=${pubkey}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+    getTokenInfo (hash) {
         return trafficController.simpleRequest(`${this.url}api/${config.api_version}/token_info?hash=${hash}`,
             {
                 method : 'GET'
             }
         );
     };
-    getFullBalance(pubkey) {
+    getFullBalance (pubkey) {
         return trafficController.simpleRequest(`${this.url}api/${config.api_version}/balance_all?id=${pubkey}`,
             {
                 method : 'GET'

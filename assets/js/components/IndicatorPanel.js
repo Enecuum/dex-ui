@@ -3,7 +3,6 @@ import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';

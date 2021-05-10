@@ -56,6 +56,9 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.ASSIGN_ALL_TOKENS:
             return rootStore(state, { tokens : action.value });
 
+        case actions.UPD_CURRENT_TX_HASH:
+            return rootStore(state, { currentTxHash : action.value });
+
         default:
             return state;
     }

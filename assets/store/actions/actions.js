@@ -13,7 +13,8 @@ const actionPack =  {
         SHOW_PENDING_STATE      : 'SHOW_PENDING_STATE',
         HIDE_PENDING_STATE      : 'HIDE_PENDING_STATE',
         UPD_PAIRS               : 'UPD_PAIRS',
-        ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS'
+        ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
+        UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH'
     },
     swapCard : {
         SWAP_FIELDS                         : 'SWAP_FIELDS',
@@ -38,7 +39,7 @@ const actionPack =  {
         CHANGE_SORT_MODE  : 'CHANGE_SORT_MODE'
     },
     aside : {
-        UPD_EXCH_RATE : 'UPD_EXCH_RATE'
+        UPD_EXCH_RATE   : 'UPD_EXCH_RATE'
     },
     indicatorPanel : {
         UPD_COIN_AMOUNT : 'UPD_COIN_AMOUNT'

@@ -97,6 +97,13 @@ const actionCreators = {
             type : actions.ASSIGN_ALL_TOKENS,
             value : list
         };
+    },
+
+    updCurrentTxHash (hash) {
+        return {
+            type : actions.UPD_CURRENT_TX_HASH,
+            value : hash
+        }
     }
 };
 

@@ -18,7 +18,10 @@ import img1 from '../img/logo.png';
 import img2 from '../img/bry-logo.png';
 import SwapAddon from './components/SwapAddon';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
+import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
 
+
+const objectFromData = new ObjectFromData();
 
 class Root extends React.Component {
     constructor (props) {
@@ -26,6 +29,7 @@ class Root extends React.Component {
         this.updLanguage();
         this.intervalUpdDexData();
         this.circleBalanceUpd();
+        this.updPendingSpinner();
     };
 
     convertPools (pools) {
@@ -88,42 +92,96 @@ class Root extends React.Component {
     };
     addOptionalTokenInfo (tokens) {
         let promises = [];
+        let indexes = [];
+        let iCounter = 0;
         for (let i in tokens) {
             if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
                 tokens[i].decimals = this.props.tokens[i].decimals;
                 tokens[i].total_supply = this.props.tokens[i].total_supply;
                 continue;
             }
-            swapApi.getTokenInfo(tokens[i].hash)
-            .then(res => {
-                promises.push(res.json()
+            indexes[iCounter++] = i;
+            promises.push(swapApi.getTokenInfo(tokens[i].hash));
+        }
+        Promise.allSettled(promises)
+        .then(results => {
+            promises = [];
+            for (let i in results) {
+                promises.push(
+                    results[i].value.json()
                     .then(info => {
                         if (!info.length)
                             return;
                         info = info[0];
-                        tokens[i].decimals = info.decimals;
-                        tokens[i].total_supply = info.total_supply;
+                        tokens[indexes[i]].decimals = info.decimals;
+                        tokens[indexes[i]].total_supply = info.total_supply;
                     })
-                );                
-            })
-        }
-        Promise.all(promises)
-        .then(() => {
-            this.props.assignAllTokens(tokens);
+                );
+            }
+            Promise.all(promises)
+            .then(() => {
+                this.props.assignAllTokens(tokens);
+            });
+        });
+    };
+    controlPendingSpinnerVisibility (pendingArray) {
+        let promises = [];
+        for (let pendingRequest of pendingArray)
+            promises.push(swapApi.tx(pendingRequest.hash));
+
+        Promise.allSettled(promises)
+        .then(results => {
+            let allDone = true;
+            promises = [];
+            for (let res of results) {
+                promises.push(
+                    res.value.json()
+                    .then(res => {
+                        if (res.status != 3 && res.status != 2)
+                            allDone = false;
+                    })
+                    .catch(() => allDone = false)
+                );
+            }
+            Promise.all(promises)
+            .then(() => {
+                if (allDone)
+                    this.props.hidePendingIndicator();
+                else
+                    this.props.showPendingIndicator();
+            });
         });
     };
 
-    // swapApi.getTokenInfo(pair.lt)
-    //     .then(res => {
-    //         if (!res.lock) {
-    //             res.json()
-    //             .then(total => {
-    //                 if (Array.isArray(total) && total.length) {
-    //                     this.total_supply = total[0].total_supply;
-    //                 }
-    //             })
-    //         }
-    //     })
+    filterEnexTxs (pendingArray) {
+        let enexTypes = ['create_pool', 'swap', 'add_liquidity', 'remove_liquidity'];
+        for (let i in pendingArray) {
+            let data = objectFromData.parse(pendingArray[i].data);
+            if (enexTypes.indexOf(data.type) == -1)
+                pendingArray.splice(i, 1);
+        }
+        return pendingArray;
+    };
+
+    updPendingSpinner () {
+        setInterval(() => {
+            if (this.props.pubkey) {
+                swapApi.pendingTxAccount(this.props.pubkey)
+                .then(res => {
+                    if (!res.lock)
+                        res.json()
+                        .then(pendingArray => {
+                            if (Array.isArray(pendingArray) && pendingArray.length != 0) {
+                                pendingArray = this.filterEnexTxs(pendingArray);
+                                this.controlPendingSpinnerVisibility(pendingArray);
+                            } else {
+                                this.props.hidePendingIndicator();
+                            }
+                        });
+                });
+            }
+        }, 1000);
+    };
 
     // ----------------------------------------------------
 
@@ -165,7 +223,7 @@ class Root extends React.Component {
 
     menuViewController () {
         switch (this.props.menuItem) {
-            case 'exchange':
+            case 'exchange' :
             case 'liquidity':
                 return (
                     <div className="swap-card-wrapper px-2">

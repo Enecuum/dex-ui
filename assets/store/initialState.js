@@ -22,8 +22,8 @@ const initialState = {
         activeLocale            : presets.langData.preferredLocale,
         langTitles              : presets.langData.langTitles,
         pendingIndicator        : false,
-        pending                 : true,
         swapCardLeft            : '45%',
+        currentTxHash           : undefined,
         balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
         pairs       : [],   // [{token_0 : {volume, hash}, token_2 : {volume, hash}, pool_fee, lt}] - all pairs from dex
         tokens      : [],   // [{ticker, hash, caption}] - all tokens from dex

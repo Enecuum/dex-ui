@@ -73,6 +73,7 @@ class ValueProcessor {
             op1.value = 0;
         }
         if (op0.decimals == undefined || op1.decimals == undefined) {
+            console.log('bigint_math_operation: without decimals');
             op0.decimals = 0;
             op1.decimals = 0;
         }
@@ -113,10 +114,10 @@ class ValueProcessor {
                 console.log('zero division!');
                 return {};
             }
-            let freeZeros = 4;
-            let addition = String(op1.value).length - String(op0.value).length + freeZeros;
+            let signsAfterComma = 4;
+            let addition = String(op1.value).length - String(op0.value).length + signsAfterComma;
             if (addition < 0)
-                addition = freeZeros;
+                addition = signsAfterComma;
             op0.value *= BigInt(Math.pow(10, addition));
             op0.decimals += addition;
             return {

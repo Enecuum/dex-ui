@@ -22,7 +22,8 @@ const requestType = {
 class ExtRequests { 
 
     getBigIntAmount (field) { // utility
-        return valueProcessor.valueToBigInt(field.value, field.balance.decimals).value;
+        let value = field.value.replace(',', '');
+        return valueProcessor.valueToBigInt(value, field.balance.decimals).value;
     };
 
     /**

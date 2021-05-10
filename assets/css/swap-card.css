@@ -132,7 +132,7 @@
 }
 
 .your-liquidity-field {
-    background-color: var(--color5);
+    background-color: var(--color2);
     border-radius: var(--border-radius2);
 }
 
@@ -232,4 +232,13 @@ a.view-in-explorer:hover {
 
 .unclickable {
     pointer-events: none;
+}
+
+.card-header {
+    border-bottom: 0;
+    background-color: rgba(0,0,0, 0);
+}
+
+.card-body {
+    padding-top: 0;
 }

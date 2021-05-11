@@ -27,7 +27,7 @@ module.exports = {
                 use : ['style-loader', 'css-loader']
             },
             {
-                test : /\.(png|jpg|svg|jpeg|woff|ttf|eot|otf)$/,
+                test : /\.(png|jpg|ico|svg|jpeg|woff|ttf|eot|otf)$/,
                 use : 'file-loader'
             }
         ]
@@ -64,12 +64,10 @@ module.exports = {
                     error => res.json([])
                 );
             });
-            // app.get('/pools', (req, res) => {
-            //     res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
-            // });
-            // app.get('/tokens', (req, res) => {
-            //     res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
-            // });
+            app.get('/favicon', (req, res) => {
+                let data = fs.readFileSync(path.resolve('./public/favicon.ico'));
+                res.send(data);
+            });
         }
     }
 };

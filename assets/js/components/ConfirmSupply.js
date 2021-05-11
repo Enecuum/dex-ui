@@ -26,7 +26,6 @@ class ConfirmSupply extends React.Component {
     sendTransaction (pair) {
         this.closeCard();
         this.props.openWaitingConfirmation();
-        // this.props.showPendingIndicator();
         let tx;
         if (utils.pairExists(pair)) {
             if (this.props.menuItem == 'exchange') {
@@ -39,11 +38,10 @@ class ConfirmSupply extends React.Component {
         }
         tx.then(result => {
             console.log(result);
-            // this.props.hidePendingIndicator();
+            this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
         },
         error => {
-            // this.props.hidePendingIndicator();
             this.props.changeWaitingStateType('rejected');
         });
     };
@@ -107,8 +105,8 @@ class ConfirmSupply extends React.Component {
                                     {t('trade.confirmCard.rates')}
                                 </div>
                                 <div className='text-right'>
-                                    <div>1 {firstToken.ticker} = {utils.removeEndZeros(utils.countExchangeRate(pair, true, modeStruct))} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {utils.removeEndZeros(utils.countExchangeRate(pair, false, modeStruct))} {firstToken.ticker}</div>
+                                    <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
+                                    <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
                                 </div>
                             </div>
                             <div className='d-flex align-items-start justify-content-between'>

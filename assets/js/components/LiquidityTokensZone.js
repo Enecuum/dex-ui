@@ -112,7 +112,6 @@ class LiquidityTokensZone extends React.Component {
         if (ltList.length == 0)
             return (
                 <div className="liquidity-tokens-empty-zone"> 
-                    <div className="d-flex justify-content-center">empty</div>
                 </div>
             );
         else {
@@ -128,7 +127,7 @@ class LiquidityTokensZone extends React.Component {
                             <Accordion.Toggle
                                 eventKey={index+''}
                                 as="div"
-                                className="d-flex align-items-center justify-content-between hover-pointer"
+                                className="d-flex align-items-center justify-content-between hover-pointer py-2"
                                 onClick={() => this.setState({ activeId: this.state.activeId !== index ? index : '' })}
                                 data-active-accordion-elem = {index === this.state.activeId ? 'active' : 'inactive'} >
                                     <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
@@ -152,17 +151,17 @@ class LiquidityTokensZone extends React.Component {
                                     </div>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pool share:</span>
-                                        {utils.countPoolShare(el, {
+                                        {utils.removeEndZeros(utils.countPoolShare(el, {
                                             value0 : this.pooled[index].t0.value,
                                             value1 : this.pooled[index].t1.value
-                                        })}%
+                                        }))}%
                                     </div>
                                 </div>
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50" variant="secondary" onClick={this.openRmLiquidityCard.bind(this, el)}>Remove</Button>
+                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50 py-2" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50 py-2" variant="secondary" onClick={this.openRmLiquidityCard.bind(this, el)}>Remove</Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>

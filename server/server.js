@@ -1,10 +1,10 @@
+const path = require('path');
 const config = require('../config.json');
 const wconf = require('../webpack.config');
 const argv = require('yargs').argv;
 const express = require('express');
 const bodyParser = express.json();
 const https = require('https');
-const path = require('path');
 const fs = require('fs');
 
 const TransferPoint = require('./transferPoint');
@@ -99,10 +99,31 @@ class TestServer {
         });
     };
 
+    filterLocale (locale) {
+        if (locale == 'en-US' || locale == 'en')
+            locale = 'en';
+        else if (locale == 'ru-RU' || locale == 'ru')
+            locale = 'ru';
+        
+        let files = fs.readdirSync(path.resolve('../public/locales'));
+        if (files.indexOf(locale) == -1)
+            return undefined;
+        return locale;
+    };
+
     constructor() {
         this.app = express();
         this.handleArgs(argv);
+        this.app.use(express.static(path.resolve('../public')));
+        
         // -------------------------------------------------- transfer point
+
+        this.app.get('/favicon', (req, res) => {
+            let data = fs.readFileSync(path.resolve('../public/favicon.ico'));
+            res.writeHead(200, {'Content-Type': 'image/x-icon'});
+            res.write(data);
+            res.end();
+        });
 
         this.app.post(`/api/${config.api_version}/tx`, bodyParser, (req, res) => {
             transferApi.transferRequest(req.body)
@@ -114,16 +135,18 @@ class TestServer {
 
         this.app.get(`/locales/*/translation.json`, bodyParser, (req, res) => {
             let urlArr = req.url.split('/');
-            res.writeHead(200, {
-                'Content-Type': 'text/html',
-            });
             let lang = urlArr[urlArr.length - 2];
-            if (lang == 'en-US')
-                lang = 'en';
-            if (lang == 'ru-RU')
-                lang = 'ru';
-            let data = fs.readFileSync(path.join(wconf.output.path, '/locales/'+lang+'/translation.json'));
-            res.write(data);
+            let language = this.filterLocale(lang);
+            if (language) {
+                res.writeHead(200, {
+                    'Content-Type': 'text/html',
+                });
+                res.write(fs.readFileSync(path.join(wconf.output.path, '/locales/' + language + '/translation.json')));
+            } else {
+                res.writeHead(404, {
+                    'Content-Type': 'text/html',
+                });
+            }
             res.end();
         });
 
@@ -205,47 +228,6 @@ class TestServer {
             res.write(data);
             res.end();
         });
-
-        // -------------------------------------------------- first time server API
-
-        // this.app.get('/getTokens', (req, res) => {                      // DEPRECATED
-        //     res.writeHead(200, {
-        //         'Content-Type': 'application/json',
-        //     });
-        //     let data = fs.readFileSync(`../data/tokens.json`, { encoding : 'utf-8' });
-        //     res.write(data);
-        //     res.end();
-        // });
-
-        // this.app.get('/getPairs', (req, res) => {
-        //     res.writeHead(200, {
-        //         'Content-Type': 'application/json',
-        //     });
-        //     let data = fs.readFileSync(`../data/pairs.json`, { encoding : 'utf-8' });
-        //     res.write(data);
-        //     res.end();
-        // });
-
-        // this.app.get(`/lt_data`, (req, res) => {                          // DEPRECATED
-        //     transferApi.transferRequest(this.getBalanceBody(req.query.id))
-        //     .then(
-        //         balances => {
-        //             if (balances.result !== undefined) {
-        //                 transferApi.straightRequest('pools')
-        //                 .then(
-        //                     pools => {
-        //                         this.wrapJSONResponse(res, 200, this.getltData(balances.result, pools));
-        //                     },
-        //                     error => this.wrapJSONResponse(res, 500, error)
-        //                 );
-        //             } else {
-        //                 this.wrapJSONResponse(res, 200, { data : []})
-        //             }
-        //         },
-        //         error => this.wrapJSONResponse(res, 500, error)
-        //     );
-        // });
-
 
         this.app.get('/getLanguage/*', (req, res) => {
             let urlArr = req.url.split('/');

@@ -73,6 +73,7 @@ class SwapCard extends React.Component {
         this.props.openWaitingConfirmation();
         extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, valueProcessor.valueToBigInt(this.props.removeLiquidity.ltfield.value, this.props.removeLiquidity.ltfield.token.decimals).value)
         .then(result => {
+            this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
         },
         error => {
@@ -275,13 +276,13 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{utils.removeEndZeros(modeStruct.field0.value)}</div>
+                                <div>{modeStruct.field0.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{utils.removeEndZeros(modeStruct.field1.value)}</div>
+                                <div>{modeStruct.field1.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
@@ -433,7 +434,7 @@ class SwapCard extends React.Component {
 
     showExchRate (firstToken) {
         let res = utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]);
-        return utils.removeEndZeros(res);
+        return res;
     };
 
     showPercents () {

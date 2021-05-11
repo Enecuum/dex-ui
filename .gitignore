@@ -4,4 +4,5 @@ logs
 public/*
 !public/index.html
 !public/locales/*
+!public/favicon.ico
 package-lock.json

@@ -92,7 +92,6 @@ function mapStoreToProps(component) {
         case components.NAVBAR:
             return function (state) {
                 return {
-                    pending             : state.root.pending,
                     navOpened           : state.root.navOpened,
                     connectionStatus    : state.root.connectionStatus
                 };
@@ -141,7 +140,8 @@ function mapStoreToProps(component) {
                     liquidity       : state.swapCard.liquidity,
                     menuItem        : state.root.menuItem,
                     net             : state.root.net,
-                    liquidityRemove : state.swapCard.liquidityRemove
+                    liquidityRemove : state.swapCard.liquidityRemove,
+                    currentTxHash   : state.root.currentTxHash
                 };
             };
         case components.LIQUIDITY_TOKEN_ZONE:
@@ -196,7 +196,8 @@ function mapDispatchToProps(component) {
         case components.SWAP_CARD:
             return function (dispatch) {
                 return bindActionCreators({
-                    ...swapCardCreator
+                    ...swapCardCreator,
+                    updCurrentTxHash : rootCreator.updCurrentTxHash
                 }, dispatch);
             };
         case components.SWITCH:
@@ -258,7 +259,8 @@ function mapDispatchToProps(component) {
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
                     showPendingIndicator    : rootCreator.showPendingIndicator,
-                    hidePendingIndicator    : rootCreator.hidePendingIndicator
+                    hidePendingIndicator    : rootCreator.hidePendingIndicator,
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:

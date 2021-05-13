@@ -8,10 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
-import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel, TopPairs } from './components/entry';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, IndicatorPanel, TopPairs, Etm } from './components/entry';
 import BlankPage from './pages/blankPage';
-import Etm from './pages/Etm';
-
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
 import img1 from '../img/logo.png';
@@ -251,10 +249,9 @@ class Root extends React.Component {
                 );
             case 'etm':
                 return (
-                    <> </>
-                    // <div id="ETMPage" style={{paddingLeft : (this.state.navOpened ? '330px' : '70px')}}>
-                    //     <Etm root={ this } />
-                    // </div>
+                    <div id="ETMPage"  className="regular-page p-2 p-md-5 px-lg-0" >
+                        <Etm root={ this } />
+                    </div>
                 );
             case 'topPairs':
                 return (
@@ -296,9 +293,9 @@ class Root extends React.Component {
 
     render () {       
         return (
-            <div>
-            <Suspense fallback={<div>---</div>}>
-                <Navbar useSuspense={true}/>
+            <div className={this.props.menuItem === 'etm' ? 'background-opaque' : ''}>
+                <Suspense fallback={<div>---</div>}>
+                    <Navbar useSuspense={true}/>
                 </Suspense>
                 <main role='main' className={`container-fluid px-0 position-relative aside-${this.props.navOpened ? 'open' : 'closed'}`}>
                     <div id="contentWrapper" className='d-flex pb-5'>

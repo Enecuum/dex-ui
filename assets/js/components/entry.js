@@ -9,6 +9,7 @@ import CommonToast from './CommonToast';
 import Connect from './Connect';
 import IndicatorPanel from './IndicatorPanel';
 import TopPairs from './TopPairs';
+import Etm from '../pages/Etm';
 
 export {
     Navbar,
@@ -21,5 +22,6 @@ export {
     CommonToast,
     Connect,
     IndicatorPanel,
-    TopPairs
+    TopPairs,
+    Etm
 };

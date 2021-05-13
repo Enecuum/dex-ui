@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
@@ -6,9 +9,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../css/etm.css';
 
 import ValueProcessor from '../utils/ValueProcessor';
 import TokenConstraints from '../utils/TokenConstraints';
+
+
 
 class Etm extends React.Component {
     constructor (props) {
@@ -17,50 +23,23 @@ class Etm extends React.Component {
         this.valueProcessor = new ValueProcessor;
 		this.MAX_SUPPLY_LIMIT = this.valueProcessor.getMaxValue(10);
 		this.maxBigInt = this.valueProcessor.maxBigInt;
-		this.totalSupplyDefault = '';
-		this.feeValueDefault = '';
-		this.tickerDefault = '';
-		this.nameDefault = '';
-
-		this.tokenConstraints = new TokenConstraints(this.MAX_SUPPLY_LIMIT);
-        this.state = {
-        	mining_period: '',
-	        ticker: this.tickerDefault,    
-	        name: this.nameDefault,
-	        token_type: "0",
-	        reissuable: 0,
-	        mineable: 0,
-	        max_supply: '',
-	        block_reward: '',
-	        min_stake: '',
-	        referrer_stake: '',
-	        ref_share: '',          
-	        decimals: 10,
-	        total_supply: this.totalSupplyDefault,
-	        fee_type: "0",
-	        fee_value: this.feeValueDefault,
-	        min_fee_for_percent_fee_type: ''
-	    }
-
 	    this.handleInputChange = this.handleInputChange.bind(this);
-
     };
 
 	handleInputChange(event) {
 		const target = event.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
 		const name = target.name;
-		this.setState({
-			[name] : value
-		}, function() {
-			console.log(name)
+		console.log(name)
+		this.props.updateTokenProperty({
+			field : name,
+			value : target.value
 		});
 	}
 
+
     
     render () {
-
-
         return (
         	<div id="ETMWrapper" className="py-5 px-5">
         		<div className="h1 mb-5">Issue token</div>
@@ -70,9 +49,10 @@ class Etm extends React.Component {
 						<Col xl={7}>
 							<Form.Control 
 								type="text"
-								placeholder="Ticker"
+								placeholder={this.props.tokenData.ticker}
 								name="ticker"
-								value={this.state.ticker}
+								autocomplete="off"
+								value={this.props.tokenData.ticker}
 								onChange={this.handleInputChange} />
 							<Form.Text className="err-msg">
 								ErrorMesssage
@@ -84,8 +64,10 @@ class Etm extends React.Component {
 						<Col xl={7} >
 							<Form.Control
 								type="text"
-								placeholder="Name"
+								placeholder={this.props.tokenData.name}
 								name="name"
+								autocomplete="off"
+								value={this.props.tokenData.name}
 								onChange={this.handleInputChange} />
 							<Form.Text className="err-msg">
 								ErrorMesssage
@@ -101,7 +83,7 @@ class Etm extends React.Component {
 									label="Non-reissuable"
 									name="token_type"
 									value="0"
-									checked={this.state.token_type === "0"}
+									checked={this.props.tokenData.token_type === "0"}
 									id="tokenType0"
 									onChange={this.handleInputChange}
 								/>
@@ -110,7 +92,7 @@ class Etm extends React.Component {
 									label="Reissuable"
 									name="token_type"
 									value="1"
-									checked={this.state.token_type === "1"}
+									checked={this.props.tokenData.token_type === "1"}
 									id="tokenType1"
 									onChange={this.handleInputChange}
 								/>
@@ -119,7 +101,7 @@ class Etm extends React.Component {
 									label="Mineable"
 									name="token_type"
 									value="2"
-									checked={this.state.token_type === "2"}
+									checked={this.props.tokenData.token_type === "2"}
 									id="tokenType2"
 									onChange={this.handleInputChange}
 								/>
@@ -131,8 +113,10 @@ class Etm extends React.Component {
 						<Col xl={7}>
 							<Form.Control
 								type="text"
-								placeholder="Premine or Emission"
+								placeholder={this.props.tokenData.total_supply}
 								name="total_supply"
+								autocomplete="off"
+								value={this.props.tokenData.total_supply}
 								onChange={this.handleInputChange} />
 							<Form.Text className="err-msg">
 								ErrorMesssage
@@ -140,15 +124,17 @@ class Etm extends React.Component {
 						</Col>	
 					</Form.Group>
 
-					{ (this.state.token_type == "2") &&
+					{ (this.props.tokenData.token_type == "2") &&
 						<div>
 							<Form.Group as={Row} controlId="setTokenMaxSupply">
 								<Form.Label column sm={2}>Max Supply</Form.Label>
 								<Col xl={7}>
 									<Form.Control
 										type="text"
-										placeholder="Max Supply"
+										placeholder={this.props.tokenData.max_supply}
 										name="max_supply"
+										autocomplete="off"
+										value={this.props.tokenData.max_supply}
 										onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -161,8 +147,10 @@ class Etm extends React.Component {
 								<Col xl={7}>
 									<Form.Control
 										type="text"
-										placeholder="Block Reward"
+										placeholder={this.props.tokenData.block_reward}
 										name="block_reward"
+										autocomplete="off"
+										value={this.props.tokenData.block_reward}
 										onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -174,8 +162,10 @@ class Etm extends React.Component {
 								<Col xl={7}>
 									<Form.Control
 									type="text"
-									placeholder="Mining Period"
+									placeholder={this.props.tokenData.mining_period}
 									name="mining_period"
+									autocomplete="off"
+									value={this.props.tokenData.mining_period}
 									onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -187,8 +177,10 @@ class Etm extends React.Component {
 								<Col xl={7}>
 									<Form.Control
 										type="text"
-										placeholder="Min Stake"
+										placeholder={this.props.tokenData.min_stake}
 										name="min_stake"
+										autocomplete="off"
+										value={this.props.tokenData.min_stake}
 										onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -200,8 +192,10 @@ class Etm extends React.Component {
 								<Col xl={7}>
 									<Form.Control
 										type="text"
-										placeholder="Referrer Stake"
+										placeholder={this.props.tokenData.referrer_stake}
 										name="referrer_stake"
+										autocomplete="off"
+										value={this.props.tokenData.referrer_stake}
 										onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -213,8 +207,10 @@ class Etm extends React.Component {
 								<Col xl={7}>
 									<Form.Control
 										type="text"
-										placeholder="RefShare"
+										placeholder={this.props.tokenData.ref_share}
 										name="ref_share"
+										autocomplete="off"
+										value={this.props.tokenData.ref_share}
 										onChange={this.handleInputChange} />
 									<Form.Text className="err-msg">
 										ErrorMesssage
@@ -228,8 +224,10 @@ class Etm extends React.Component {
 						<Col xl={7}>
 							<Form.Control
 								type="text"
-								placeholder="Decimals"
+								placeholder={this.props.tokenData.decimals}
 								name="decimals"
+								autocomplete="off"
+								value={this.props.tokenData.decimals}
 								onChange={this.handleInputChange} />
 							<Form.Text className="err-msg">
 								ErrorMesssage
@@ -245,7 +243,7 @@ class Etm extends React.Component {
 									label="Flat"
 									name="fee_type"
 									value="0"
-									checked={this.state.fee_type === "0"}
+									checked={this.props.tokenData.fee_type === "0"}
 									id="setFeeType1"
 									onChange={this.handleInputChange} />
 								<Form.Check
@@ -253,7 +251,7 @@ class Etm extends React.Component {
 									label="Percent"
 									name="fee_type"
 									value="1"
-									checked={this.state.fee_type === "1"}
+									checked={this.props.tokenData.fee_type === "1"}
 									id="setFeeType2"
 									onChange={this.handleInputChange} />
 							</Col>	
@@ -264,22 +262,26 @@ class Etm extends React.Component {
 						<Col xl={7}>
 							<Form.Control
 								type="text"
-								placeholder="Fee"
+								placeholder={this.props.tokenData.fee_value}
 								name="fee_value"
+								autocomplete="off"
+								value={this.props.tokenData.fee_value}
 								onChange={this.handleInputChange} />
 							<Form.Text className="err-msg">
 								ErrorMesssage
 							</Form.Text>
 						</Col>	
 					</Form.Group>
-					{ (this.state.fee_type == "1") && 
+					{ (this.props.tokenData.fee_type == "1") && 
 						<Form.Group as={Row} controlId="setTokenMinFee">
 							<Form.Label column sm={2}>Min Fee</Form.Label>
 							<Col xl={7}>
 								<Form.Control
 									type="text"
-									placeholder="Min Fee"
+									placeholder={this.props.tokenData.min_fee_for_percent_fee_type}
 									name="min_fee_for_percent_fee_type"
+									autocomplete="off"
+									value={this.props.tokenData.min_fee_for_percent_fee_type}
 									onChange={this.handleInputChange} />
 								<Form.Text className="err-msg">
 									ErrorMesssage
@@ -291,8 +293,7 @@ class Etm extends React.Component {
 						<Col xl={{ span: 7, offset: 2 }} className="text-center">
 							<Button
 							variant="primary"
-							type="submit" 
-							>
+							type="submit" >
 								Issue token
 							</Button>
 						</Col>					
@@ -303,4 +304,6 @@ class Etm extends React.Component {
     };
 };
 
-export default Etm;
+const WEtm = connect(mapStoreToProps(components.ETM), mapDispatchToProps(components.ETM))(withTranslation()(Etm));
+
+export default WEtm;

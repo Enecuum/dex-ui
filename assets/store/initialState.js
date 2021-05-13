@@ -69,6 +69,30 @@ const initialState = {
         net         : presets.network.defaultNet,
         coinAmount  : 0,
         enx         : 0
+    },
+    etm : {
+        showForm : false,
+        tokenData : {
+            mining_period: '',
+            ticker: presets.etm.tickerDefault,    
+            name: presets.etm.nameDefault,
+            token_type: "0",
+            reissuable: 0,
+            mineable: 0,
+            max_supply: '',
+            block_reward: '',
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            decimals: 10,
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_type: "0",
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
+        dataValid : false,
+        showFormErrMessages : false,
+        possibleToIssueToken : false
     }
 };
 

@@ -5,6 +5,7 @@ import swapCardCreator from './actionCreators/swapCard';
 import tokenCardCreator from './actionCreators/tokenCard';
 import asideCreator from './actionCreators/aside';
 import indicatorPanelCreator from './actionCreators/indicatorPanel';
+import etmCreator from './actionCreators/etm';
 
 const components = {
     ROOT                : 0x0,
@@ -21,7 +22,8 @@ const components = {
     WAITING_CONFIRMATION: 0xB,
     LIQUIDITY_TOKEN_ZONE: 0xC,
     LP_WALLET_INFO      : 0xD,
-    TOP_PAIRS           : 0xF
+    TOP_PAIRS           : 0xF,
+    ETM                 : 0x10
 };
 
 function mapStoreToProps(component) {
@@ -115,7 +117,6 @@ function mapStoreToProps(component) {
                     ...state.indicatorPanel,
                     pubkey              : state.root.pubkey,
                     pendingIndicator    : state.root.pendingIndicator,
-                    net                 : state.root.net,
                     balances            : state.root.balances,
                     net                 : state.root.net
                 };
@@ -178,7 +179,35 @@ function mapStoreToProps(component) {
                     balances                : state.root.balances,
                     tokens                  : state.root.tokens
                 };
-            };            
+            };
+            case components.ETM:
+            return function (state) {
+                return {
+                    ...state.root,
+                showForm : state.etm.showForm,
+                tokenData : {
+                    mining_period                   : state.etm.tokenData.mining_period,
+                    ticker                          : state.etm.tokenData.ticker,
+                    name                            : state.etm.tokenData.name,
+                    token_type                      : state.etm.tokenData.token_type,
+                    reissuable                      : state.etm.tokenData.reissuable,
+                    mineable                        : state.etm.tokenData.mineable,
+                    max_supply                      : state.etm.tokenData.max_supply,
+                    block_reward                    : state.etm.tokenData.block_reward,
+                    min_stake                       : state.etm.tokenData.min_stake,
+                    referrer_stake                  : state.etm.tokenData.referrer_stake,
+                    ref_share                       : state.etm.tokenData.ref_share,   
+                    decimals                        : state.etm.tokenData.decimals,
+                    total_supply                    : state.etm.tokenData.total_supply,
+                    fee_type                        : state.etm.tokenData.fee_type,
+                    fee_value                       : state.etm.tokenData.fee_value,
+                    min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
+                },
+                dataValid : state.etm.dataValid,
+                showFormErrMessages : state.etm.showFormErrMessages,
+                possibleToIssueToken : state.etm.possibleToIssueToken
+                }
+            };
         default:
             return undefined;
     }
@@ -280,6 +309,12 @@ function mapDispatchToProps(component) {
                     assignCoinValue                 : swapCardCreator.assignCoinValue 
                 }, dispatch);
             };
+        case components.ETM:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updateTokenProperty             : etmCreator.updateTokenProperty
+                }, dispatch);
+            };            
 
         default:
             return undefined; 

@@ -4,6 +4,7 @@
 
 import presets from '../../store/pageDataPresets';
 import trafficController from './trafficController';
+import networkApi from './networkApi';
 import ValueProcessor from '../utils/ValueProcessor';
 
 const valueProcessor = new ValueProcessor();
@@ -13,10 +14,11 @@ BigInt.prototype.toJSON = function () {
 };
 
 const requestType = {
-    CREATE  : 'create_pool',
-    SWAP    : 'swap',
-    ADD     : 'add_liquidity',
-    REMOVE  : 'remove_liquidity'
+    CREATE       : 'create_pool',
+    SWAP         : 'swap',
+    ADD          : 'add_liquidity',
+    REMOVE       : 'remove_liquidity',
+    ISSUE_TOKEN :  'create_token'
 };
 
 class ExtRequests { 
@@ -99,12 +101,20 @@ class ExtRequests {
      * @param {BigInt} amount - lt amount for removing 
      * @returns {Promise}
      */
-    removeLiquidity (pubkey, lt, amount) {
+    removeLiquidity (pubkey, amount) {
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : lt,
             amount : amount
         });
     };
+
+    createToken (pubkey, lt, amount) {
+        return this.sendTx(pubkey, requestType.REMOVE, {
+            lt : lt,
+            amount : amount
+        });
+    };    
+
 
     sendTx (pubKey, reqType, params) {
         let data = {
@@ -120,6 +130,23 @@ class ExtRequests {
         };
         // console.log(data);      // TODO - remove for production
         // console.log(params);    // TODO - remove for production
+        return trafficController.sendTransaction(data);
+    };
+
+    issueToken (pubKey, reqType, fee, params) {
+        let data = {
+            from : pubKey,
+            to : presets.network.genesisPubKey,
+            value : fee,
+            tokenHash : presets.network.nativeToken.hash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : ENQweb3lib.serialize({
+                type : reqType,
+                parameters : params
+            })
+        };
+        // console.log(data);      // TODO - remove for production ????????????
+        // console.log(params);    // TODO - remove for production ????????????
         return trafficController.sendTransaction(data);
     };
 };

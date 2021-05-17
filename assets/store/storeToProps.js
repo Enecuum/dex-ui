@@ -8,22 +8,23 @@ import indicatorPanelCreator from './actionCreators/indicatorPanel';
 import etmCreator from './actionCreators/etm';
 
 const components = {
-    ROOT                : 0x0,
-    SWAP_CARD           : 0x1,
-    SWITCH              : 0x2,
-    TOKEN_CARD          : 0x3,
-    ASIDE               : 0x4,
-    CONNECTION_SERVICE  : 0x5,
-    NAVBAR              : 0x6,
-    CONNECT             : 0x7,
-    TOAST               : 0x8,
-    INDICATOR_PANEL     : 0x9,
-    CONFIRM_SUPPLY      : 0xA,
-    WAITING_CONFIRMATION: 0xB,
-    LIQUIDITY_TOKEN_ZONE: 0xC,
-    LP_WALLET_INFO      : 0xD,
-    TOP_PAIRS           : 0xF,
-    ETM                 : 0x10
+    ROOT                    : 0x0,
+    SWAP_CARD               : 0x1,
+    SWITCH                  : 0x2,
+    TOKEN_CARD              : 0x3,
+    ASIDE                   : 0x4,
+    CONNECTION_SERVICE      : 0x5,
+    NAVBAR                  : 0x6,
+    CONNECT                 : 0x7,
+    TOAST                   : 0x8,
+    INDICATOR_PANEL         : 0x9,
+    CONFIRM_SUPPLY          : 0xA,
+    WAITING_CONFIRMATION    : 0xB,
+    LIQUIDITY_TOKEN_ZONE    : 0xC,
+    LP_WALLET_INFO          : 0xD,
+    TOP_PAIRS               : 0xF,
+    ETM                     : 0x10,
+    CONFIRM_ISSUE_TOKEN     : 0x11
 };
 
 function mapStoreToProps(component) {
@@ -180,34 +181,45 @@ function mapStoreToProps(component) {
                     tokens                  : state.root.tokens
                 };
             };
-            case components.ETM:
+        case components.ETM:
             return function (state) {
                 return {
                     ...state.root,
-                showForm : state.etm.showForm,
-                tokenData : {
-                    mining_period                   : state.etm.tokenData.mining_period,
-                    ticker                          : state.etm.tokenData.ticker,
-                    name                            : state.etm.tokenData.name,
-                    token_type                      : state.etm.tokenData.token_type,
-                    reissuable                      : state.etm.tokenData.reissuable,
-                    mineable                        : state.etm.tokenData.mineable,
-                    max_supply                      : state.etm.tokenData.max_supply,
-                    block_reward                    : state.etm.tokenData.block_reward,
-                    min_stake                       : state.etm.tokenData.min_stake,
-                    referrer_stake                  : state.etm.tokenData.referrer_stake,
-                    ref_share                       : state.etm.tokenData.ref_share,   
-                    decimals                        : state.etm.tokenData.decimals,
-                    total_supply                    : state.etm.tokenData.total_supply,
-                    fee_type                        : state.etm.tokenData.fee_type,
-                    fee_value                       : state.etm.tokenData.fee_value,
-                    min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
-                },
-                dataValid : state.etm.dataValid,
-                showFormErrMessages : state.etm.showFormErrMessages,
-                possibleToIssueToken : state.etm.possibleToIssueToken
+                    mainToken               : state.root.mainToken,
+                    connectionStatus        : state.root.connectionStatus,                   
+                    balances                : state.root.balances,
+                    showForm : state.etm.showForm,
+                    tokenData : {
+                        mining_period                   : state.etm.tokenData.mining_period,
+                        ticker                          : state.etm.tokenData.ticker,
+                        name                            : state.etm.tokenData.name,
+                        token_type                      : state.etm.tokenData.token_type,
+                        reissuable                      : state.etm.tokenData.reissuable,
+                        mineable                        : state.etm.tokenData.mineable,
+                        max_supply                      : state.etm.tokenData.max_supply,
+                        block_reward                    : state.etm.tokenData.block_reward,
+                        min_stake                       : state.etm.tokenData.min_stake,
+                        referrer_stake                  : state.etm.tokenData.referrer_stake,
+                        ref_share                       : state.etm.tokenData.ref_share,   
+                        decimals                        : state.etm.tokenData.decimals,
+                        total_supply                    : state.etm.tokenData.total_supply,
+                        fee_type                        : state.etm.tokenData.fee_type,
+                        fee_value                       : state.etm.tokenData.fee_value,
+                        min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
+                    },
+                    dataValid : state.etm.dataValid,
+                    showFormErrMessages : state.etm.showFormErrMessages,
+                    possibleToIssueToken : state.etm.possibleToIssueToken
                 }
             };
+        case components.CONFIRM_ISSUE_TOKEN:
+            return function (state) {
+                return {
+                    ...state.root,
+                    dataValid            : state.etm.dataValid,
+                    possibleToIssueToken : state.etm.possibleToIssueToken
+                };
+            };            
         default:
             return undefined;
     }
@@ -312,10 +324,22 @@ function mapDispatchToProps(component) {
         case components.ETM:
             return function (dispatch) {
                 return bindActionCreators({
-                    updateTokenProperty             : etmCreator.updateTokenProperty
+                    updateTokenProperty             : etmCreator.updateTokenProperty,                    
+                    updateDataValid                 : etmCreator.updateDataValid,
+                    updatePossibleToIssueToken      : etmCreator.updatePossibleToIssueToken
                 }, dispatch);
             };            
-
+        case components.CONFIRM_ISSUE_TOKEN:
+            return function (dispatch) {
+                return bindActionCreators({
+                    closeConfirmCard        : swapCardCreator.closeConfirmCard,
+                    openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
+                    changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
+                    showPendingIndicator    : rootCreator.showPendingIndicator,
+                    hidePendingIndicator    : rootCreator.hidePendingIndicator,
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash
+                }, dispatch); 
+            };
         default:
             return undefined; 
     }

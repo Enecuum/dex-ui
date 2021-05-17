@@ -17,6 +17,8 @@ function getKeyValueObj(action) {
         return { reissuable: action.payload.value };
     else if (field == 'mineable')
         return { mineable: action.payload.value };
+    else if (field == 'max_supply')
+        return { max_supply: action.payload.value };    
     else if (field == 'block_reward')
         return { block_reward: action.payload.value };
     else if (field == 'min_stake')
@@ -63,7 +65,7 @@ export default function etmReducer(state = initialState.etm, action) {
         case actions.UPDATE_DATA_VALID:
             return {
                 ...state,
-                dataValid : action.value
+                dataValid : action.payload
             };
         case actions.UPDATE_SHOW_FORM_ERR_MESSAGES:
             return {
@@ -73,7 +75,7 @@ export default function etmReducer(state = initialState.etm, action) {
         case actions.UPDATE_POSSIBLE_TO_ISSUE_TOKEN:
             return {
                 ...state,
-                possibleToIssueToken : action.value
+                possibleToIssueToken : action.payload
             };            
         default:
             return state;

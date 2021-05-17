@@ -9,6 +9,20 @@ const actionCreators = {
             payload : payload 
         };
     },
+    updateDataValid (payload) {
+        console.log('updateDataValid', payload)
+        return {
+            type : actions.UPDATE_DATA_VALID,
+            payload : payload.value 
+        };
+    },
+    updatePossibleToIssueToken (payload) {
+        console.log('updatePossibleToIssueToken', payload)
+        return {
+            type : actions.UPDATE_POSSIBLE_TO_ISSUE_TOKEN,
+            payload : payload.value
+        };
+    },
 
     // assignBalanceObj (mode, field, balanceObj) {
     //     return {

@@ -316,7 +316,7 @@ class Root extends React.Component {
                 {this.props.connectionStatus && 
                     <div className="w-100 d-flex align-items-center justify-content-center d-xl-none" style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
                         <IndicatorPanel />
-                    </div>                    
+                    </div>
                 }
             </div>
         );

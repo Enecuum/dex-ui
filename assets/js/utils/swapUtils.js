@@ -52,12 +52,12 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
         pair = {
             token_0 : {
                 hash : modeStruct.field0.token.hash,
-                volume : modeStruct.field0.value,
+                volume : modeStruct.field0.value.replace(',', ''), // 123
                 decimals : modeStruct.field0.token.decimals
             },
             token_1 : {
                 hash : modeStruct.field1.token.hash,
-                volume : modeStruct.field1.value,
+                volume : modeStruct.field1.value.replace(',', ''),
                 decimals : modeStruct.field1.token.decimals
             },
             pool_fee : 0,

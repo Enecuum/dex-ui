@@ -164,7 +164,7 @@ function getBalanceObj(balances, hash) {
         return balanceObj;
     } else
         return {
-            amount : (hash) ? 0 : '-',
+            amount : (hash) ? 0 : '---',
             decimals : 0,
             minable : 0, 
             reissuable : 0
@@ -176,13 +176,13 @@ function getTokenObj(tokens, hash) {
     if (tokenObj) {
         if (tokenObj.decimals == undefined) {
             tokenObj.decimals = 0;
-            tokenObj.total_supply = -1;
+            tokenObj.total_supply = 0;
         }
         return tokenObj;
     } else
         return {
             hash : undefined,
-            ticker : '-',
+            ticker : '---',
             caption : '',
             decimals : 0,
             total_supply : 0

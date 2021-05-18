@@ -14,6 +14,8 @@ import '../../css/etm.css';
 
 import ValueProcessor from '../utils/ValueProcessor';
 import TokenConstraints from '../utils/TokenConstraints';
+import IssueTokenValidationRules from '../utils/issueTokenValidationRules';
+import ConfirmIssueToken from '../components/ConfirmIssueToken';
 
 
 
@@ -32,13 +34,19 @@ class Etm extends React.Component {
 	    	amount   : undefined,
 	    	decimals : undefined
 	    }
+	    this.BigIntParametersArrays = {
+	        decimalsDependent: ['max_supply','block_reward', 'min_stake', 'referrer_stake','total_supply', 'min_fee_for_percent_fee_type'],
+	        percentFeeToken: ['min_fee_for_percent_fee_type'],
+	        simpleToken: ['total_supply', 'fee_value'],
+	        mineableToken: ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share']
+	    }
+	    this.constraints = new TokenConstraints;
     };
 
 	handleInputChange(event) {
 		const target = event.target;
-		const value = target.type === 'checkbox' ? target.checked : target.value;
 		const name = target.name;
-		// console.log(name)
+
 		this.props.updateTokenProperty({
 			field : name,
 			value : target.value
@@ -73,7 +81,7 @@ class Etm extends React.Component {
 								if (mainTokenInfo[prop] !== undefined)
 									this.mainToken[prop] = mainTokenInfo[prop];
 							}
-							if (BigInt(this.mainToken.amount) >=  contract_pricelistIssueToken) {
+							if (BigInt(this.mainToken.amount) >= contract_pricelistIssueToken) {
 								this.balanseIsEnough = true;
 							}
 						}		
@@ -82,10 +90,72 @@ class Etm extends React.Component {
 			}
         })
 	}
+
+	getBigIntParametersArray() {
+        let parametersArr = this.BigIntParametersArrays.simpleToken;
+        if (this.props.tokenData.fee_type.value === 1)
+            parametersArr = parametersArr.concat(this.BigIntParametersArrays.percentFeeToken);
+        if (this.props.tokenData.token_type.value === 2)
+            parametersArr = parametersArr.concat(this.BigIntParametersArrays.mineableToken);
+        return parametersArr;
+    }
+
+	transformBigIntValue(propertyName) {
+        let decimals = $scope.newToken.decimals.value;
+        if (propertyName === 'fee_value' && $scope.newToken.fee_type.value === 1) {
+            decimals = $scope.newToken.fee_value.typeProperties[1].decimalPlaces;
+        } else if (propertyName === 'ref_share') {
+            decimals = $scope.newToken.ref_share.decimalPlaces;
+        }
+        let property = $scope.newToken[propertyName];
+        let transformResultObj = dataService.valueToBigInt(property.value, decimals);
+        property.integerPart = transformResultObj.integerPart; //only for dev check
+        property.fractionalPart = transformResultObj.rawFractionalPart; //only for validation
+        property.tmpValue = transformResultObj.value;
+    }    
+
+    processData() {
+    	let that = this;
+        if (this.props.tokenData.token_type.value === 2) {
+            let miningPeriodCheck = $scope.batchValidate($scope.miningPeriod, getMiningPeriodValidationRules());////////////////////////////////////////////////////////////////////////
+            if (miningPeriodCheck) 
+                this.calculateBlockReward();
+            else
+               this.props.tokenData.block_reward.value = '---'; 
+        }
+        let newMaxValue = dataService.getMaxValue(this.props.tokenData.decimals.value);/////////////////////////////////////////////////////////////////////////////////////////////////
+        this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
+           that.constraints[parameter].maxValue = that.constraints.fee_value_props_arr[0].maxValue = newMaxValue;
+        });
+        this.constraints.fee_value_props_arr[0].decimalPlaces = this.props.tokenData.decimals.value;
+        let commonValidationRules = getCommonValidationRules();/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        let commonCheckNewTokenData = $scope.batchValidate($scope.newToken, commonValidationRules);/////////////////////////////////////////////////////////////////////////////////////        
+        if  (commonCheckNewTokenData) {
+            let bigIntParamsArr = this.getBigIntParametersArray();
+            bigIntParamsArr.forEach(param => that.transformBigIntValue(param));
+            let specialValidationRules = this.getSpecialValidationRules();
+            $scope.batchValidate($scope.newToken, specialValidationRules);/////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+        }
+    }
+
+	calculateBlockReward() {
+        let block_reward = (this.props.tokenData.max_supply - this.props.tokenData.total_supply)/($scope.miningPeriod * 5760);
+
+        if (typeof block_reward === 'number')
+        	this.props.updateTokenProperty({
+				field : 'block_reward',
+				value : block_reward.toFixed(this.props.tokenData.decimals)
+			});
+        else
+            this.props.updateTokenProperty({
+				field : 'block_reward',
+				value : '---'
+			});        
+    }    
     
     render () {
     	this.watchIfEnoughMainTokenBalanceToIssueToken();
-
+		const t = this.props.t;  
     	if (!this.props.connectionStatus) {
     		return (
     			<div>
@@ -101,10 +171,10 @@ class Etm extends React.Component {
     	} else {
 	        return (
 	        	<div id="ETMWrapper" className="pb-5 px-5">
-	        		<div className="h1 mb-5">Issue token</div>
+	        		<div className="h1 mb-5">{t('etm.issueToken')}</div>
 					<Form onSubmit={e => { e.preventDefault(); }}>
 						<Form.Group as={Row} controlId="setTokenTicker">
-							<Form.Label column sm={2}>Ticker</Form.Label>
+							<Form.Label column sm={2}>{t('etm.ticker')}</Form.Label>
 							<Col xl={7}>
 								<Form.Control 
 									type="text"
@@ -119,7 +189,7 @@ class Etm extends React.Component {
 							</Col>	
 						</Form.Group>
 						<Form.Group as={Row} controlId="setTokenName">
-							<Form.Label column sm={2}>Name</Form.Label>
+							<Form.Label column sm={2}>{t('etm.name')}</Form.Label>
 							<Col xl={7} >
 								<Form.Control
 									type="text"
@@ -135,40 +205,41 @@ class Etm extends React.Component {
 						</Form.Group>
 						<fieldset >
 							<Form.Group as={Row} controlId="setTokenType">
-								<Form.Label column sm={2}>Token type</Form.Label>
+								<Form.Label column sm={2}>{t('etm.tokenType')}</Form.Label>
 								<Col xl={7}>
 									<Form.Check
 										type="radio"
-										label="Non-reissuable"
+										label={t('etm.nonReissuable')}
 										name="token_type"
 										value="0"
 										checked={this.props.tokenData.token_type === "0"}
 										id="tokenType0"
 										onChange={this.handleInputChange.bind(this)}
+										className="mb-2"
 									/>
 									<Form.Check
 										type="radio"
-										label="Reissuable"
+										label={t('etm.reissuable')}
 										name="token_type"
 										value="1"
 										checked={this.props.tokenData.token_type === "1"}
 										id="tokenType1"
 										onChange={this.handleInputChange.bind(this)}
+										className="mb-2"
 									/>
 									<Form.Check
 										type="radio"
-										label="Mineable"
+										label={t('etm.mineable')}
 										name="token_type"
 										value="2"
 										checked={this.props.tokenData.token_type === "2"}
 										id="tokenType2"
-										onChange={this.handleInputChange.bind(this)}
-									/>
+										onChange={this.handleInputChange.bind(this)} />
 								</Col>	
 							</Form.Group>
 						</fieldset>
 						<Form.Group as={Row} controlId="setTokenPremineEmission">
-							<Form.Label column sm={2}>Premine or Emission</Form.Label>
+							<Form.Label column sm={2}>{this.props.tokenData.token_type === '2' ? t('etm.premine') : t('etm.emission')}</Form.Label>
 							<Col xl={7}>
 								<Form.Control
 									type="text"
@@ -186,7 +257,7 @@ class Etm extends React.Component {
 						{ (this.props.tokenData.token_type == "2") &&
 							<div>
 								<Form.Group as={Row} controlId="setTokenMaxSupply">
-									<Form.Label column sm={2}>Max Supply</Form.Label>
+									<Form.Label column sm={2}>{t('etm.maxSupply')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 											type="text"
@@ -202,7 +273,7 @@ class Etm extends React.Component {
 								</Form.Group>
 
 								<Form.Group as={Row} controlId="setTokenBlockReward">
-									<Form.Label column sm={2}>Block Reward</Form.Label>
+									<Form.Label column sm={2}>{t('etm.blockReward')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 											type="text"
@@ -217,7 +288,7 @@ class Etm extends React.Component {
 									</Col>	
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenMiningPeriod">
-									<Form.Label column sm={2}>Mining Period</Form.Label>
+									<Form.Label column sm={2}>{t('etm.miningPeriod')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 										type="text"
@@ -232,7 +303,7 @@ class Etm extends React.Component {
 									</Col>	
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenMinStake">
-									<Form.Label column sm={2}>Min Stake</Form.Label>
+									<Form.Label column sm={2}>{t('etm.minStake')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 											type="text"
@@ -247,7 +318,7 @@ class Etm extends React.Component {
 									</Col>	
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenReferrerStake">
-									<Form.Label column sm={2}>Referrer Stake</Form.Label>
+									<Form.Label column sm={2}>{t('etm.referrerStake')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 											type="text"
@@ -262,7 +333,7 @@ class Etm extends React.Component {
 									</Col>	
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenRefShare">
-									<Form.Label column sm={2}>RefShare</Form.Label>
+									<Form.Label column sm={2}>{t('etm.refShare')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
 											type="text"
@@ -279,7 +350,7 @@ class Etm extends React.Component {
 							</div>
 						}
 						<Form.Group as={Row} controlId="setTokenDecimals">
-							<Form.Label column sm={2}>Decimals</Form.Label>
+							<Form.Label column sm={2}>{t('etm.decimals')}</Form.Label>
 							<Col xl={7}>
 								<Form.Control
 									type="text"
@@ -295,19 +366,20 @@ class Etm extends React.Component {
 						</Form.Group>
 						<fieldset>
 							<Form.Group as={Row} controlId="setTokenFeeType">
-								<Form.Label column sm={2}>Fee type</Form.Label>
+								<Form.Label column sm={2}>{t('etm.feeType')}</Form.Label>
 								<Col xl={7}>
 									<Form.Check
 										type="radio"
-										label="Flat"
+										label={t('etm.flat')}
 										name="fee_type"
 										value="0"
 										checked={this.props.tokenData.fee_type === "0"}
 										id="setFeeType1"
-										onChange={this.handleInputChange.bind(this)} />
+										onChange={this.handleInputChange.bind(this)}
+										className="mb-2" />
 									<Form.Check
 										type="radio"
-										label="Percent"
+										label={t('etm.percent')}
 										name="fee_type"
 										value="1"
 										checked={this.props.tokenData.fee_type === "1"}
@@ -317,7 +389,7 @@ class Etm extends React.Component {
 							</Form.Group>
 						</fieldset>
 						<Form.Group as={Row} controlId="setTokenFee">
-							<Form.Label column sm={2}>Fee</Form.Label>
+							<Form.Label column sm={2}>{t('etm.fee')}</Form.Label>
 							<Col xl={7}>
 								<Form.Control
 									type="text"
@@ -333,7 +405,7 @@ class Etm extends React.Component {
 						</Form.Group>
 						{ (this.props.tokenData.fee_type == "1") && 
 							<Form.Group as={Row} controlId="setTokenMinFee">
-								<Form.Label column sm={2}>Min Fee</Form.Label>
+								<Form.Label column sm={2}>{t('etm.minFee')}</Form.Label>
 								<Col xl={7}>
 									<Form.Control
 										type="text"
@@ -359,6 +431,9 @@ class Etm extends React.Component {
 							</Col>					
 						</Row>
 					</Form>
+					<Suspense fallback={<div>---</div>}>
+	                    <ConfirmIssueToken />
+	                </Suspense>
 				</div>
 	        );
 		}

@@ -73,42 +73,42 @@ class SwapApi {
     };
 
     // ----------------------------------------------------------- dev utils
-    createToken (ticker, emission, pubkey) {
-        return trafficController.simpleRequest(`${this.url}create_token`,
-            {
-                method : 'POST',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body : JSON.stringify({
-                    ticker   : ticker,
-                    emission : emission,
-                    pubkey   : pubkey
-                })
-            }
-        );
-    };
-    faucet (pubkey, hash, amount) {
-        return trafficController.simpleRequest(`${this.url}faucet`, {
-            method : 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body : JSON.stringify({
-                amount : amount,
-                hash   : hash,
-                id     : pubkey
-            })
-        });
-    };
+    // createToken (ticker, emission, pubkey) {
+    //     return trafficController.simpleRequest(`${this.url}create_token`,
+    //         {
+    //             method : 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json; charset=utf-8'
+    //             },
+    //             body : JSON.stringify({
+    //                 ticker   : ticker,
+    //                 emission : emission,
+    //                 pubkey   : pubkey
+    //             })
+    //         }
+    //     );
+    // };
+    // faucet (pubkey, hash, amount) {
+    //     return trafficController.simpleRequest(`${this.url}faucet`, {
+    //         method : 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json; charset=utf-8'
+    //         },
+    //         body : JSON.stringify({
+    //             amount : amount,
+    //             hash   : hash,
+    //             id     : pubkey
+    //         })
+    //     });
+    // };
     // ---------------------------------------------------------------------
 };
 
 const swapApi = new SwapApi();
 
 // Temporary functional for tests
-window.myCustomFunctionCreateToken = swapApi.createToken.bind(swapApi);
-window.myCustomFunctionFaucet = swapApi.faucet.bind(swapApi);
+// window.myCustomFunctionCreateToken = swapApi.createToken.bind(swapApi);
+// window.myCustomFunctionFaucet = swapApi.faucet.bind(swapApi);
 // --------------------
 
 export default swapApi;

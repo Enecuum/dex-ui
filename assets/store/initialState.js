@@ -91,6 +91,17 @@ const initialState = {
             fee_value: presets.etm.feeValueDefault,
             min_fee_for_percent_fee_type: ''
         },
+        tokenBigIntData : {
+            mining_period: '',
+            max_supply: '',
+            block_reward: '',
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
         dataValid : false,
         showFormErrMessages : false,
         possibleToIssueToken : false

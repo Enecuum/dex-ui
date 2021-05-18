@@ -1,4 +1,4 @@
-class issueTokenValidationRules {
+class IssueTokenValidationRules {
 	constructor() {}
 
 	getMiningPeriodValidationRules() {
@@ -669,5 +669,6 @@ class issueTokenValidationRules {
         };
         return validationRules;   
     }
-
 }
+
+export default IssueTokenValidationRules;

@@ -126,11 +126,11 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     confirmCardOpened : state.swapCard.confirmCardOpened,
-                    exchange    : state.swapCard.exchange,
-                    liquidity   : state.swapCard.liquidity,
-                    menuItem    : state.root.menuItem,
-                    pubkey      : state.root.pubkey,
-                    pairs       : state.root.pairs
+                    exchange          : state.swapCard.exchange,
+                    liquidity         : state.swapCard.liquidity,
+                    menuItem          : state.root.menuItem,
+                    pubkey            : state.root.pubkey,
+                    pairs             : state.root.pairs
                 };
             };
         case components.WAITING_CONFIRMATION:
@@ -175,10 +175,10 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
-                    connectionStatus        : state.root.connectionStatus,
-                    pairs                   : state.root.pairs,
-                    balances                : state.root.balances,
-                    tokens                  : state.root.tokens
+                    connectionStatus  : state.root.connectionStatus,
+                    pairs             : state.root.pairs,
+                    balances          : state.root.balances,
+                    tokens            : state.root.tokens
                 };
             };
         case components.ETM:
@@ -208,7 +208,7 @@ function mapStoreToProps(component) {
                         min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
                     },
                     dataValid : state.etm.dataValid,
-                    showFormErrMessages : state.etm.showFormErrMessages,
+                    showFormErrMessages  : state.etm.showFormErrMessages,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 }
             };
@@ -216,6 +216,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
+                    ...state.etm,
                     dataValid            : state.etm.dataValid,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };

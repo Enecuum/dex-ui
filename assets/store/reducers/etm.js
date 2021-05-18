@@ -41,10 +41,9 @@ function getKeyValueObj(action) {
         return { unknownProperty: action.payload.value };
 }
 
-function assignTokenProperty(state, action) {
-
+function assignTokenProperty(state, fragment, action) {
     return {
-        ...state.tokenData,
+        ...state[fragment],
         ...getKeyValueObj(action)
     }
 }
@@ -54,9 +53,13 @@ export default function etmReducer(state = initialState.etm, action) {
         case actions.UPDATE_TOKEN_PROPERTY:
             return {
                 ...state,
-                tokenData : assignTokenProperty(state, action)
-            }
-
+                tokenData : assignTokenProperty(state, 'tokenData', action)
+            };
+        case actions.UPDATE_TOKEN_PROPERTY:
+            return {
+                ...state,
+                tokenBigIntData : assignTokenProperty(state, 'tokenBigIntData', action)
+            };
         case actions.UPDATE_SHOW_FORM:
             return {
                 ...state,

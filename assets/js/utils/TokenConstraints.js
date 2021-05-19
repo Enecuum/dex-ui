@@ -13,9 +13,9 @@ class TokenСonstraints {
             maxLength: 40
         };
         this.token_type_arr = [
-            {title: 'NON_REISSUABLE', value: 0},
-            {title: 'REISSUABLE', value: 1},
-            {title: 'MINEABLE', value: 2}
+            {title: 'NON_REISSUABLE', value: '0'},
+            {title: 'REISSUABLE', value: '1'},
+            {title: 'MINEABLE', value: '2'}
         ];
         this.max_supply = {
             minValue: 0,
@@ -47,8 +47,8 @@ class TokenСonstraints {
             maxValue: this.MAX_SUPPLY_LIMIT
         };
         this.fee_type_arr = [
-            {title: 'TOKEN_FLAT_FEE', value: 0},
-            {title: 'TOKEN_PERCENT_FEE', value: 1}
+            {title: 'TOKEN_FLAT_FEE', value: '0'},
+            {title: 'TOKEN_PERCENT_FEE', value: '1'}
         ];
         this.fee_value_props_arr = [
             {

@@ -55,7 +55,7 @@ export default function etmReducer(state = initialState.etm, action) {
                 ...state,
                 tokenData : assignTokenProperty(state, 'tokenData', action)
             };
-        case actions.UPDATE_TOKEN_PROPERTY:
+        case actions.UPDATE_TOKEN_BIGINT_PROPERTY:
             return {
                 ...state,
                 tokenBigIntData : assignTokenProperty(state, 'tokenBigIntData', action)

@@ -80,10 +80,11 @@ class Validator {
             return Number.isInteger(dataObj.value);
         }
     }
-    batchValidate (validateObj, rulesObject) {
+    batchValidate (validateObj, rulesObject) {        
         let dataValid = true;
         let propsErr = {};
-        for (prop in rulesObject) {
+        let that = this;
+        for (let prop in rulesObject) {
             propsErr[prop] = 0;
             if (validateObj.hasOwnProperty(prop)) {
                 // $(rulesObject[prop].errMsgSelector).hide();
@@ -95,7 +96,7 @@ class Validator {
                                 argObj = check.args,
                                 desiredResult = check.desiredResult,
                                 errMsg = check.errMsg,
-                                result = dataValidator[method](argObj),
+                                result = that[method](argObj),
                                 selector = rulesObject[prop].errMsgSelector;
 
                             if (desiredResult !== result) {
@@ -103,6 +104,7 @@ class Validator {
                                 //     $(selector).show();
                                 //     $(selector).text(msg);
                                 // });
+                                console.log(prop, 'not valid')
                                 propsErr[prop]++;
                                 dataValid = false;
                             }
@@ -111,7 +113,9 @@ class Validator {
                 });
             }
         }
+        console.log(dataValid)
         return dataValid;
     }
-
 }
+
+export default Validator;

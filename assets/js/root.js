@@ -249,8 +249,8 @@ class Root extends React.Component {
                 );
             case 'etm':
                 return (
-                    <div id="ETMPage"  className="regular-page p-2 p-md-5 px-lg-0" >
-                        <Etm root={ this } />
+                    <div id="ETMPage" className="regular-page p-2 p-md-5 px-lg-0" >
+                        <Etm/>
                     </div>
                 );
             case 'topPairs':

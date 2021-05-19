@@ -9,6 +9,13 @@ const actionCreators = {
             payload : payload 
         };
     },
+    updateTokenBigIntProperty (payload) {
+        console.log(payload)
+        return {
+            type : actions.UPDATE_TOKEN_BIGINT_PROPERTY,
+            payload : payload 
+        };
+    },    
     updateDataValid (payload) {
         console.log('updateDataValid', payload)
         return {

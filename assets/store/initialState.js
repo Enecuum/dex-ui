@@ -77,7 +77,7 @@ const initialState = {
             mining_period: '',
             ticker: presets.etm.tickerDefault,    
             name: presets.etm.nameDefault,
-            token_type: "0",
+            token_type: '0',
             reissuable: 0,
             mineable: 0,
             max_supply: '',
@@ -87,7 +87,7 @@ const initialState = {
             ref_share: '',          
             decimals: 10,
             total_supply: presets.etm.totalSupplyDefault,
-            fee_type: "0",
+            fee_type: '0',
             fee_value: presets.etm.feeValueDefault,
             min_fee_for_percent_fee_type: ''
         },

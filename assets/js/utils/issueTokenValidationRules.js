@@ -1,31 +1,31 @@
 class IssueTokenValidationRules {
 	constructor() {}
 
-	getMiningPeriodValidationRules() {
+	getMiningPeriodValidationRules(miningPeriod, miningPeriodConstraints) {
         let validationRules = {
             value: {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.miningPeriod.value},
+                        args: {data: miningPeriod},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'testTheRegExp',
-                        args: {str: $scope.miningPeriod.value, regExpObj: /[^0-9]/},
+                        args: {str: miningPeriod, regExpObj: /[^0-9]/},
                         desiredResult: false,
-                        errMsg: 'INTEGER_REQUIRED'                                
+                        errMsg: 'INTEGER_REQUIRED'                          
                     },
                     {
                         method: 'inIntervalBothClosed',
-                        args: {value: $scope.miningPeriod.value, min: $scope.miningPeriod.minValue, max: $scope.miningPeriod.maxValue},
+                        args: {value: miningPeriod, min: miningPeriodConstraints.minValue, max: miningPeriodConstraints.maxValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'NOT_IN_RANGE',
                                     params: {
-                                        min: $scope.miningPeriod.minValue,
-                                        max: $scope.miningPeriod.maxValue
+                                        min: miningPeriodConstraints.minValue,
+                                        max: miningPeriodConstraints.maxValue
                                     }
                                 }
                     },
@@ -36,35 +36,28 @@ class IssueTokenValidationRules {
         return validationRules;
     }	
 
-	getCommonValidationRules() {
+	getCommonValidationRules(tokenData, tokenDataConstraints) {
         let validationRules = {
             ticker: {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.ticker.value},
+                        args: {data: tokenData.ticker},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.ticker.value, maxLength: $scope.newToken.ticker.maxLength},
+                        args: {dataStr: tokenData.ticker, maxLength: tokenDataConstraints.ticker.maxLength},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_STRING', params: {strLength: $scope.newToken.ticker.maxLength}}                                
+                        errMsg: {msg: 'TOO_LONG_STRING', params: {strLength: tokenDataConstraints.ticker.maxLength}}                                
                     },
                     {
                         method: 'testTheRegExp',
-                        args: {str: $scope.newToken.ticker.value, regExpObj: /[^A-Z]/},
+                        args: {str: tokenData.ticker, regExpObj: /[^A-Z]/},
                         desiredResult: false,
                         errMsg: 'INVALID_SYMBOLS'                                
-                    },                            
-                    {
-                        method: 'isInArray',
-                        args: {data: $scope.newToken.ticker.value, dataArray: $scope.onlyTickersArray},
-                        desiredResult: false,
-                        errMsg: 'TICKER_EXIST'                                
                     }
-
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenTickerWrapper .errMsg'
             },    
@@ -72,15 +65,15 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.name.value},
+                        args: {data: tokenData.name},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.name.value, maxLength: $scope.newToken.name.maxLength},
+                        args: {dataStr:tokenData.name, maxLength: tokenDataConstraints.name.maxLength},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_STRING', params: {strLength: $scope.newToken.name.maxLength}}                                
+                        errMsg: {msg: 'TOO_LONG_STRING', params: {strLength: tokenDataConstraints.name.maxLength}}                                
                     }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenNameWrapper .errMsg'
@@ -89,13 +82,13 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.token_type.value},
+                        args: {data: tokenData.token_type},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'isInArray',
-                        args: {data: $scope.newToken.token_type.value, dataArray: $scope.newToken.token_type.typeArray.map(function(type){return type.value})},
+                        args: {data: tokenData.token_type, dataArray: tokenDataConstraints.token_type_arr.map(function(type){return type.value})},
                         desiredResult: true,
                         errMsg: 'TOKEN_WRONG_TYPE'                                
                     }
@@ -103,17 +96,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenTypeWrapper .errMsg'
             },            
             max_supply: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.max_supply.value},
+                        args: {data: tokenData.max_supply},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.max_supply.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.max_supply, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -121,17 +114,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
             },
             block_reward: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.block_reward.value},
+                        args: {data: tokenData.block_reward},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.block_reward.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.block_reward, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -139,17 +132,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
             },
             min_stake: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.min_stake.value},
+                        args: {data: tokenData.min_stake},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.min_stake.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.min_stake, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -157,17 +150,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenMinStakeWrapper .errMsg'        
             },
             referrer_stake: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.referrer_stake.value},
+                        args: {data: tokenData.referrer_stake},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.referrer_stake.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.referrer_stake, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -175,17 +168,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenReferrerStakeWrapper .errMsg'        
             },
             ref_share: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.ref_share.value},
+                        args: {data: tokenData.ref_share},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.ref_share.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.ref_share, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -196,25 +189,25 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.decimals.value},
+                        args: {data: tokenData.decimals},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'inIntervalBothClosed',
-                        args: {value: $scope.newToken.decimals.value, min: $scope.newToken.decimals.minValue, max: $scope.newToken.decimals.maxValue},
+                        args: {value: tokenData.decimals, min: tokenDataConstraints.decimals.minValue, max: tokenDataConstraints.decimals.maxValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'NOT_IN_RANGE',
                                     params: {
-                                        min: $scope.newToken.decimals.minValue,
-                                        max: $scope.newToken.decimals.maxValue
+                                        min: tokenDataConstraints.decimals.minValue,
+                                        max: tokenDataConstraints.decimals.maxValue
                                     }
                                 }
                     },
                     {
                         method: 'isInteger',
-                        args: {value: $scope.newToken.decimals.value*1},
+                        args: {value: Number.parseInt(tokenData.decimals)},
                         desiredResult: true,
                         errMsg: 'INTEGER_REQUIRED'
                     }
@@ -225,13 +218,13 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.total_supply.value},
+                        args: {data: tokenData.total_supply},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.total_supply.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.total_supply, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     },
@@ -242,13 +235,13 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.fee_type.value},
+                        args: {data: tokenData.fee_type},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'isInArray',
-                        args: {data: $scope.newToken.fee_type.value, dataArray: $scope.newToken.fee_type.typeArray.map(function(type){return type.value})},
+                        args: {data: tokenData.fee_type, dataArray: tokenDataConstraints.fee_type_arr.map(function(type){return type.value})},
                         desiredResult: true,
                         errMsg: 'FEE_WRONG_TYPE'                                
                     }
@@ -259,13 +252,13 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.fee_value.value},
+                        args: {data: tokenData.fee_value},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.fee_value.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.fee_value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -273,17 +266,17 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenFeeValueWrapper .errMsg'
             },
             min_fee_for_percent_fee_type: {
-                requireToCheck: $scope.newToken.fee_type.value === 1 ? true : false,
+                requireToCheck: tokenData.fee_type === '1' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: $scope.newToken.min_fee_for_percent_fee_type.value},
+                        args: {data: tokenData.min_fee_for_percent_fee_type},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'execTheRegExp',
-                        args: {str: $scope.newToken.min_fee_for_percent_fee_type.value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: tokenData.min_fee_for_percent_fee_type, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -294,69 +287,69 @@ class IssueTokenValidationRules {
         return validationRules;       
     }
 
-	getSpecialValidationRules() {
+	getSpecialValidationRules(etmState, tokenDataConstraints, maxBigInt) {/////////////////////////////////
         let validationRules = {
             max_supply: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.max_supply.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.max_supply.fractionalPart, maxLength: tokenDataConstraints.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.max_supply.tmpValue, max: BigInt($scope.newToken.min_stake.minValue)},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: BigInt(tokenDataConstraints.min_stake.minValue)},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        minValue: $scope.newToken.min_stake.minValue
+                                        minValue: tokenDataConstraints.min_stake.minValue
                                     }
                                 }
                     },                   
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.max_supply.tmpValue, max: $scope.newToken.min_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.min_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MIN_STAKE')
+                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.max_supply.tmpValue, max: $scope.newToken.referrer_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.referrer_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.max_supply.tmpValue, max: $scope.newToken.total_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.total_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_EMISSION')
+                                        name: ''//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.max_supply.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: maxBigInt},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.max_supply.maxValue,
+                                        maxValue: tokenDataConstraints.max_supply.maxValue,
                                         ticker: ''
                                     }
                                 }
@@ -365,22 +358,22 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
             },
             block_reward: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,///////////////////////////////////////////
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.block_reward.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.block_reward.fractionalPart, maxLength: tokenDataConstraints.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}    ///////////////////////                            
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.block_reward.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.block_reward.completeValue, max: maxBigInt},
                         desiredResult: false,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.block_reward.maxValue,
+                                        maxValue: tokenDataConstraints.block_reward.maxValue,
                                         ticker: ''
                                     }
                                 }
@@ -389,66 +382,66 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
             },
             min_stake: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.min_stake.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.min_stake.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.min_stake.tmpValue, max: BigInt($scope.newToken.min_stake.minValue)},
+                        args: {value: etmState.tokenBigIntData.min_stake.completeValue, max: BigInt(tokenDataConstraints.min_stake.minValue)},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        minValue: $scope.newToken.min_stake.minValue
+                                        minValue: tokenDataConstraints.min_stake.minValue
                                     }
                                 }
                     },
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.min_stake.tmpValue, max: $scope.newToken.referrer_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.min_stake.completeValue, max: etmState.tokenBigIntData.referrer_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.min_stake.tmpValue, max: $scope.newToken.total_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.min_stake.completeValue, max: etmState.tokenBigIntData.total_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_EMISSION')
+                                        name: ''//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },                    
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.min_stake.tmpValue, max: $scope.newToken.max_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.min_stake.completeValue, max: etmState.tokenBigIntData.max_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },                    
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.min_stake.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.min_stake.completeValue, max: maxBigInt},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.min_stake.maxValue,
+                                        maxValue: etmState.tokenData.min_stake.maxValue,
                                         ticker: ''
                                     }
                                 }
@@ -457,66 +450,66 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenMinStakeWrapper .errMsg'        
             },
             referrer_stake: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.referrer_stake.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.referrer_stake.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.referrer_stake.tmpValue, max: BigInt($scope.newToken.min_stake.minValue)},
+                        args: {value: etmState.tokenBigIntData.referrer_stake.completeValue, max: BigInt(tokenDataConstraints.min_stake.minValue)},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        minValue: $scope.newToken.min_stake.minValue
+                                        minValue: etmState.tokenData.min_stake.minValue
                                     }
                                 }
                     },                   
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.referrer_stake.tmpValue, max: $scope.newToken.min_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.referrer_stake.completeValue, max: etmState.tokenBigIntData.min_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MIN_STAKE')
+                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.referrer_stake.tmpValue, max: $scope.newToken.total_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.referrer_stake.completeValue, max: etmState.tokenBigIntData.total_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_EMISSION')
+                                        name: ''//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },                    
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.referrer_stake.tmpValue, max: $scope.newToken.max_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.referrer_stake.completeValue, max: etmState.tokenBigIntData.max_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },   
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.referrer_stake.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.referrer_stake.completeValue, max: maxBigInt},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.referrer_stake.maxValue,
+                                        maxValue: tokenDataConstraints.referrer_stake.maxValue,
                                         ticker: ''
                                     }
                                 }
@@ -525,93 +518,93 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenReferrerStakeWrapper .errMsg'        
             },
             ref_share: {
-                requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.ref_share.fractionalPart, maxLength: $scope.newToken.ref_share.decimalPlaces},
+                        args: {dataStr: etmState.tokenBigIntData.ref_share.fractionalPart, maxLength: tokenDataConstraints.ref_share.decimalPlaces},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.ref_share.decimalPlaces}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: tokenDataConstraints.ref_share.decimalPlaces}}                                
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.ref_share.tmpValue, max: BigInt($scope.newToken.ref_share.maxValue * (10 ** $scope.newToken.ref_share.decimalPlaces))},
+                        args: {value: etmState.tokenBigIntData.ref_share.completeValue, max: BigInt(tokenDataConstraints.ref_share.maxValue * (10 ** tokenDataConstraints.ref_share.decimalPlaces))},
                         desiredResult: false,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.ref_share.maxValue,
+                                        maxValue: tokenDataConstraints.ref_share.maxValue,
                                         ticker: ''
                                     }
                                 }
                     }                                
                 ],
-                errMsgSelector: '#issueTokenForm #setTokenRefShareWrapper .errMsg'                     
+                errMsgSelector: '#issueTokenForm #setTokenRefShareWrapper .errMsg'             
             },
             total_supply: {                
                 checks: [                    
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.total_supply.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.total_supply.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
                     {
-                        requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                        requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.total_supply.tmpValue, max: BigInt($scope.newToken.min_stake.minValue)},
+                        args: {value: etmState.tokenBigIntData.total_supply.completeValue, max: BigInt(tokenDataConstraints.min_stake.minValue)},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        minValue: $scope.newToken.min_stake.minValue
+                                        minValue: tokenDataConstraints.min_stake.minValue
                                     }
                                 }
                     },                   
                     {
-                        requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                        requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.total_supply.tmpValue, max: $scope.newToken.min_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.total_supply.completeValue, max: etmState.tokenBigIntData.min_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MIN_STAKE')
+                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
                     {
-                        requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                        requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                         method: 'moreOrEqualThan',
-                        args: {value: $scope.newToken.total_supply.tmpValue, max: $scope.newToken.referrer_stake.tmpValue},
+                        args: {value: etmState.tokenBigIntData.total_supply.completeValue, max: etmState.tokenBigIntData.referrer_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
                     {
-                        requireToCheck: $scope.newToken.token_type.value === 2 ? true : false,
+                        requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.total_supply.tmpValue, max: $scope.newToken.max_supply.tmpValue},
+                        args: {value: etmState.tokenBigIntData.total_supply.completeValue, max: etmState.tokenBigIntData.max_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: $translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },
                     {
                         method: 'lessOrEqualThan',
-                        args: {value: $scope.newToken.total_supply.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.total_supply.completeValue, max: maxBigInt},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.total_supply.maxValue,
+                                        maxValue: tokenDataConstraints.total_supply.maxValue,
                                         ticker: ''
                                     }
                                 }
@@ -623,18 +616,18 @@ class IssueTokenValidationRules {
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.fee_value.fractionalPart, maxLength: $scope.newToken.fee_value.typeProperties[$scope.newToken.fee_type.value].decimalPlaces},
+                        args: {dataStr: etmState.tokenBigIntData.fee_value.fractionalPart, maxLength: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].decimalPlaces},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.fee_value.typeProperties[$scope.newToken.fee_type.value].decimalPlaces}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].decimalPlaces}}
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.fee_value.tmpValue, max: $scope.newToken.fee_type.value === 0 ? maxBigInt : BigInt($scope.newToken.fee_value.typeProperties[$scope.newToken.fee_type.value].maxValue * (10 ** $scope.newToken.fee_value.typeProperties[1].decimalPlaces))},
+                        args: {value: etmState.tokenBigIntData.fee_value.completeValue, max: etmState.tokenData.fee_type === '0' ? maxBigInt : BigInt(tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].maxValue * (10 ** tokenDataConstraints.fee_value_props_arr[1].decimalPlaces))},
                         desiredResult: false,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.fee_value.typeProperties[$scope.newToken.fee_type.value].maxValue,
+                                        maxValue: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].maxValue,
                                         ticker: '' 
                                     }
                                 }
@@ -643,22 +636,22 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenFeeValueWrapper .errMsg'
             },
             min_fee_for_percent_fee_type: {
-                requireToCheck: $scope.newToken.fee_type.value === 1 ? true : false,
+                requireToCheck: etmState.tokenData.fee_type === '1' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: $scope.newToken.min_fee_for_percent_fee_type.fractionalPart, maxLength: $scope.newToken.decimals.value},
+                        args: {dataStr: etmState.tokenBigIntData.min_fee_for_percent_fee_type.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: $scope.newToken.decimals.value}}                                
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
                     {
                         method: 'moreThan',
-                        args: {value: $scope.newToken.min_fee_for_percent_fee_type.tmpValue, max: maxBigInt},
+                        args: {value: etmState.tokenBigIntData.min_fee_for_percent_fee_type.completeValue, max: maxBigInt},
                         desiredResult: false,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',
                                     params: {
-                                        maxValue: $scope.newToken.min_fee_for_percent_fee_type.maxValue,
+                                        maxValue: tokenDataConstraints.min_fee_for_percent_fee_type.maxValue,
                                         ticker: ''
                                     }
                                 }

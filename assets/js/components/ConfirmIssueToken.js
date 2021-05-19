@@ -50,7 +50,7 @@ class ConfirmIssueToken extends React.Component {
 
     render() {
         const t = this.props.t;        
-        console.log(this.props.dataValid, this.props.possibleToIssueToken)
+        //console.log(this.props.dataValid, this.props.possibleToIssueToken)
         return (
 
             <>

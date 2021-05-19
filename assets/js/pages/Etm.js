@@ -16,6 +16,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import TokenConstraints from '../utils/TokenConstraints';
 import IssueTokenValidationRules from '../utils/issueTokenValidationRules';
 import ConfirmIssueToken from '../components/ConfirmIssueToken';
+import Validator from  '../utils/Validator';
 
 
 
@@ -40,7 +41,7 @@ class Etm extends React.Component {
 	        simpleToken: ['total_supply', 'fee_value'],
 	        mineableToken: ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share']
 	    }
-	    this.constraints = new TokenConstraints;
+	    this.constraints = new TokenConstraints(this.maxBigInt);
     };
 
 	handleInputChange(event) {
@@ -49,19 +50,27 @@ class Etm extends React.Component {
 
 		this.props.updateTokenProperty({
 			field : name,
-			value : target.value
+			value : name === 'ticker' ? target.value.toUpperCase() : target.value
 		});
+
+		this.processData();
+		
 	};
 
 	validateAndShowSubmit() {
 		let dataValid = true;
 		let possibleToIssueToken = true;
-		this.props.updateDataValid({
-			value : dataValid
-		});
-		this.props.updatePossibleToIssueToken({
-			value : possibleToIssueToken
-		});
+
+		//this.processData();
+
+		// this.props.updateDataValid({
+		// 	value : dataValid
+		// });
+		// this.props.updatePossibleToIssueToken({
+		// 	value : possibleToIssueToken
+		// });
+
+
 		// if (this.props.dataValid === true && this.props.possibleToIssueToken === true) {
 		// 	console.log(this.props.dataValid, this.props.possibleToIssueToken)
 		// }		
@@ -101,45 +110,59 @@ class Etm extends React.Component {
     }
 
 	transformBigIntValue(propertyName) {
-        let decimals = $scope.newToken.decimals.value;
-        if (propertyName === 'fee_value' && $scope.newToken.fee_type.value === 1) {
-            decimals = $scope.newToken.fee_value.typeProperties[1].decimalPlaces;
+        let decimals = this.props.tokenData.decimals;
+        if (propertyName === 'fee_value' && this.props.tokenData.fee_type === '1') {
+            decimals = this.constraints.fee_value_props_arr[1].decimalPlaces;
         } else if (propertyName === 'ref_share') {
-            decimals = $scope.newToken.ref_share.decimalPlaces;
+            decimals = this.constraints.ref_share.decimalPlaces;
         }
-        let property = $scope.newToken[propertyName];
-        let transformResultObj = dataService.valueToBigInt(property.value, decimals);
-        property.integerPart = transformResultObj.integerPart; //only for dev check
-        property.fractionalPart = transformResultObj.rawFractionalPart; //only for validation
-        property.tmpValue = transformResultObj.value;
+        let property = this.props.tokenData[propertyName];
+        let transformResultObj = this.valueProcessor.valueToBigInt(property, decimals);
+
+
+        if (this.props.tokenBigIntData[propertyName].completeValue !== transformResultObj.completeValue) {
+			this.props.updateTokenBigIntProperty({
+				field : propertyName,
+				value : {
+					        integerPart    : transformResultObj.integerPart, //only for dev check
+					        fractionalPart : transformResultObj.rawFractionalPart, //only for validation//////////////////////////////////////////////
+					        completeValue  : transformResultObj.value
+						}
+			});        	
+        }
     }    
 
     processData() {
     	let that = this;
-        if (this.props.tokenData.token_type.value === 2) {
-            let miningPeriodCheck = $scope.batchValidate($scope.miningPeriod, getMiningPeriodValidationRules());////////////////////////////////////////////////////////////////////////
+    	let validator = new Validator;
+    	let validationRules = new IssueTokenValidationRules;
+        if (this.props.tokenData.token_type === '2') {
+            let miningPeriodCheck = validator.batchValidate({value : this.props.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.props.tokenData.mining_period, this.constraints.mining_period));////////////////////////////////////////////////////////////////////////
             if (miningPeriodCheck) 
                 this.calculateBlockReward();
             else
-               this.props.tokenData.block_reward.value = '---'; 
+            	this.props.updateTokenProperty({
+					field : 'block_reward',
+					value : '---'
+				}); 
         }
-        let newMaxValue = dataService.getMaxValue(this.props.tokenData.decimals.value);/////////////////////////////////////////////////////////////////////////////////////////////////
+        let newMaxValue = this.valueProcessor.getMaxValue(this.props.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
            that.constraints[parameter].maxValue = that.constraints.fee_value_props_arr[0].maxValue = newMaxValue;
         });
-        this.constraints.fee_value_props_arr[0].decimalPlaces = this.props.tokenData.decimals.value;
-        let commonValidationRules = getCommonValidationRules();/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        let commonCheckNewTokenData = $scope.batchValidate($scope.newToken, commonValidationRules);/////////////////////////////////////////////////////////////////////////////////////        
+        this.constraints.fee_value_props_arr[0].decimalPlaces = this.props.tokenData.decimals;
+        let commonValidationRules = validationRules.getCommonValidationRules(this.props.tokenData, this.constraints);
+        let commonCheckNewTokenData = validator.batchValidate(this.props.tokenData, commonValidationRules);
         if  (commonCheckNewTokenData) {
             let bigIntParamsArr = this.getBigIntParametersArray();
             bigIntParamsArr.forEach(param => that.transformBigIntValue(param));
-            let specialValidationRules = this.getSpecialValidationRules();
-            $scope.batchValidate($scope.newToken, specialValidationRules);/////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+            let specialValidationRules = validationRules.getSpecialValidationRules(this.props, this.constraints, this.maxBigInt);
+        	validator.batchValidate({value : this.props.tokenData.mining_period}, specialValidationRules); 
         }
     }
 
 	calculateBlockReward() {
-        let block_reward = (this.props.tokenData.max_supply - this.props.tokenData.total_supply)/($scope.miningPeriod * 5760);
+        let block_reward = (this.props.tokenData.max_supply - this.props.tokenData.total_supply)/(this.props.tokenData.mining_period * 5760);
 
         if (typeof block_reward === 'number')
         	this.props.updateTokenProperty({
@@ -153,8 +176,8 @@ class Etm extends React.Component {
 			});        
     }    
     
-    render () {
-    	this.watchIfEnoughMainTokenBalanceToIssueToken();
+    render () {    	
+    	this.watchIfEnoughMainTokenBalanceToIssueToken();    	
 		const t = this.props.t;  
     	if (!this.props.connectionStatus) {
     		return (

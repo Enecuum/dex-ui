@@ -9,11 +9,11 @@ const actionCreators = {
             payload : payload 
         };
     },
-    updateTokenBigIntProperty (payload) {
-        console.log(payload)
+    updateTokenBigIntData (payload) {
+        console.log('sdfssssssssssssssssssssssssssssssssssssss',payload.value)
         return {
-            type : actions.UPDATE_TOKEN_BIGINT_PROPERTY,
-            payload : payload 
+            type : actions.UPDATE_TOKEN_BIGINT_DATA,
+            payload : payload.value 
         };
     },    
     updateDataValid (payload) {

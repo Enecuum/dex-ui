@@ -17,6 +17,7 @@ import TokenConstraints from '../utils/TokenConstraints';
 import IssueTokenValidationRules from '../utils/issueTokenValidationRules';
 import ConfirmIssueToken from '../components/ConfirmIssueToken';
 import Validator from  '../utils/Validator';
+import presets from '../../store/pageDataPresets';
 
 
 
@@ -35,6 +36,39 @@ class Etm extends React.Component {
 	    	amount   : undefined,
 	    	decimals : undefined
 	    }
+
+        this.newToken = {
+			tokenData : {
+	            mining_period: '',
+	            ticker: presets.etm.tickerDefault,    
+	            name: presets.etm.nameDefault,
+	            token_type: '0',
+	            reissuable: '0',
+	            mineable: '0',
+	            max_supply: '',
+	            block_reward: '',
+	            min_stake: '',
+	            referrer_stake: '',
+	            ref_share: '',          
+	            decimals: 10,
+	            total_supply: presets.etm.totalSupplyDefault,
+	            fee_type: '0',
+	            fee_value: presets.etm.feeValueDefault,
+	            min_fee_for_percent_fee_type: ''
+	        },
+	        tokenBigIntData : {
+	            mining_period: '',
+	            max_supply: '',
+	            block_reward: '',
+	            min_stake: '',
+	            referrer_stake: '',
+	            ref_share: '',          
+	            total_supply: presets.etm.totalSupplyDefault,
+	            fee_value: presets.etm.feeValueDefault,
+	            min_fee_for_percent_fee_type: ''
+	        }        	
+        }
+
 	    this.BigIntParametersArrays = {
 	        decimalsDependent: ['max_supply','block_reward', 'min_stake', 'referrer_stake','total_supply', 'min_fee_for_percent_fee_type'],
 	        percentFeeToken: ['min_fee_for_percent_fee_type'],
@@ -46,22 +80,24 @@ class Etm extends React.Component {
 
 	handleInputChange(event) {
 		const target = event.target;
-		const name = target.name;
+		const propName = target.name;
+		let value = propName === 'ticker' ? target.value.toUpperCase() : target.value
+		this.newToken.tokenData[propName] = value;
 
 		this.props.updateTokenProperty({
-			field : name,
-			value : name === 'ticker' ? target.value.toUpperCase() : target.value
+			field : propName,
+			value : value
 		});
+		console.log(this.newToken)
 
-		this.processData();
-		
+		this.processData(); 
 	};
 
 	validateAndShowSubmit() {
 		let dataValid = true;
 		let possibleToIssueToken = true;
 
-		//this.processData();
+		this.processData();
 
 		// this.props.updateDataValid({
 		// 	value : dataValid
@@ -102,82 +138,84 @@ class Etm extends React.Component {
 
 	getBigIntParametersArray() {
         let parametersArr = this.BigIntParametersArrays.simpleToken;
-        if (this.props.tokenData.fee_type.value === 1)
+        if (this.newToken.tokenData.fee_type === '1')
             parametersArr = parametersArr.concat(this.BigIntParametersArrays.percentFeeToken);
-        if (this.props.tokenData.token_type.value === 2)
+        if (this.newToken.tokenData.token_type === '2')
             parametersArr = parametersArr.concat(this.BigIntParametersArrays.mineableToken);
         return parametersArr;
     }
 
 	transformBigIntValue(propertyName) {
-        let decimals = this.props.tokenData.decimals;
-        if (propertyName === 'fee_value' && this.props.tokenData.fee_type === '1') {
+        let decimals = this.newToken.tokenData.decimals;
+        if (propertyName === 'fee_value' && this.newToken.tokenData.fee_type === '1') {
             decimals = this.constraints.fee_value_props_arr[1].decimalPlaces;
         } else if (propertyName === 'ref_share') {
             decimals = this.constraints.ref_share.decimalPlaces;
         }
-        let property = this.props.tokenData[propertyName];
+        let property = this.newToken.tokenData[propertyName];
         let transformResultObj = this.valueProcessor.valueToBigInt(property, decimals);
 
-
-        if (this.props.tokenBigIntData[propertyName].completeValue !== transformResultObj.completeValue) {
-			this.props.updateTokenBigIntProperty({
-				field : propertyName,
-				value : {
-					        integerPart    : transformResultObj.integerPart, //only for dev check
-					        fractionalPart : transformResultObj.rawFractionalPart, //only for validation//////////////////////////////////////////////
-					        completeValue  : transformResultObj.value
-						}
-			});        	
-        }
+        this.newToken.tokenBigIntData[propertyName] = {
+	        integerPart    : transformResultObj.integerPart, //only for dev check
+	        fractionalPart : transformResultObj.rawFractionalPart, //only for validation//////////////////////////////////////////////
+	        completeValue  : transformResultObj.value
+		}
     }    
 
-    processData() {
+    processData() {    	
     	let that = this;
     	let validator = new Validator;
     	let validationRules = new IssueTokenValidationRules;
-        if (this.props.tokenData.token_type === '2') {
-            let miningPeriodCheck = validator.batchValidate({value : this.props.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.props.tokenData.mining_period, this.constraints.mining_period));////////////////////////////////////////////////////////////////////////
+        if (this.newToken.tokenData.token_type === '2') {
+            let miningPeriodCheck = validator.batchValidate({value : this.newToken.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.newToken.tokenData.mining_period, this.constraints.mining_period));
             if (miningPeriodCheck) 
                 this.calculateBlockReward();
-            else
+            else {
+            	this.newToken.tokenData.block_reward = '---';
             	this.props.updateTokenProperty({
 					field : 'block_reward',
 					value : '---'
-				}); 
+				});             	
+            }
+
         }
-        let newMaxValue = this.valueProcessor.getMaxValue(this.props.tokenData.decimals);
+        let newMaxValue = this.valueProcessor.getMaxValue(this.newToken.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
            that.constraints[parameter].maxValue = that.constraints.fee_value_props_arr[0].maxValue = newMaxValue;
         });
-        this.constraints.fee_value_props_arr[0].decimalPlaces = this.props.tokenData.decimals;
-        let commonValidationRules = validationRules.getCommonValidationRules(this.props.tokenData, this.constraints);
-        let commonCheckNewTokenData = validator.batchValidate(this.props.tokenData, commonValidationRules);
+        this.constraints.fee_value_props_arr[0].decimalPlaces = this.newToken.tokenData.decimals;
+        let commonValidationRules = validationRules.getCommonValidationRules(this.newToken.tokenData, this.constraints);
+        let commonCheckNewTokenData = validator.batchValidate(this.newToken.tokenData, commonValidationRules);
         if  (commonCheckNewTokenData) {
             let bigIntParamsArr = this.getBigIntParametersArray();
             bigIntParamsArr.forEach(param => that.transformBigIntValue(param));
-            let specialValidationRules = validationRules.getSpecialValidationRules(this.props, this.constraints, this.maxBigInt);
-        	validator.batchValidate({value : this.props.tokenData.mining_period}, specialValidationRules); 
+        	let specialValidationRules = validationRules.getSpecialValidationRules(this.newToken, this.constraints, this.maxBigInt);
+        	validator.batchValidate({value : this.newToken.tokenData}, specialValidationRules); 
         }
     }
 
 	calculateBlockReward() {
-        let block_reward = (this.props.tokenData.max_supply - this.props.tokenData.total_supply)/(this.props.tokenData.mining_period * 5760);
+        let block_reward = (this.newToken.tokenData.max_supply - this.newToken.tokenData.total_supply)/(this.newToken.tokenData.mining_period * 5760);
 
-        if (typeof block_reward === 'number')
-        	this.props.updateTokenProperty({
+        if (typeof block_reward === 'number') {
+			let value = block_reward.toFixed(this.newToken.tokenData.decimals);
+			this.newToken.tokenData.block_reward = value;
+			this.props.updateTokenProperty({
 				field : 'block_reward',
-				value : block_reward.toFixed(this.props.tokenData.decimals)
-			});
-        else
+				value : value
+			});      	
+        } else {
+        	this.newToken.tokenData.block_reward = '---';
             this.props.updateTokenProperty({
 				field : 'block_reward',
 				value : '---'
-			});        
+			});
+		}	        
     }    
     
     render () {    	
-    	this.watchIfEnoughMainTokenBalanceToIssueToken();    	
+    	this.watchIfEnoughMainTokenBalanceToIssueToken();   
+
 		const t = this.props.t;  
     	if (!this.props.connectionStatus) {
     		return (

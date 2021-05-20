@@ -206,17 +206,7 @@ function mapStoreToProps(component) {
                         fee_value                       : state.etm.tokenData.fee_value,
                         min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
                     },
-                    tokenBigIntData : {
-                        mining_period                   : state.etm.tokenBigIntData.mining_period,
-                        max_supply                      : state.etm.tokenBigIntData.max_supply,
-                        block_reward                    : state.etm.tokenBigIntData.block_reward,
-                        min_stake                       : state.etm.tokenBigIntData.min_stake,
-                        referrer_stake                  : state.etm.tokenBigIntData.referrer_stake,
-                        ref_share                       : state.etm.tokenBigIntData.ref_share,          
-                        total_supply                    : state.etm.tokenBigIntData.total_supply,
-                        fee_value                       : state.etm.tokenBigIntData.fee_value,
-                        min_fee_for_percent_fee_type    : state.etm.tokenBigIntData.min_fee_for_percent_fee_type
-                    },
+                    tokenBigIntData : state.etm.tokenBigIntData,
                     dataValid : state.etm.dataValid,
                     showFormErrMessages  : state.etm.showFormErrMessages,
                     possibleToIssueToken : state.etm.possibleToIssueToken
@@ -336,7 +326,7 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     updateTokenProperty             : etmCreator.updateTokenProperty,
-                    updateTokenBigIntProperty       : etmCreator.updateTokenBigIntProperty,
+                    updateTokenBigIntData           : etmCreator.updateTokenBigIntData,
                     updateDataValid                 : etmCreator.updateDataValid,
                     updatePossibleToIssueToken      : etmCreator.updatePossibleToIssueToken
                 }, dispatch);

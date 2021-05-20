@@ -206,6 +206,7 @@ function mapStoreToProps(component) {
                         fee_value                       : state.etm.tokenData.fee_value,
                         min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
                     },
+                    msgData : state.etm.msgData,
                     tokenBigIntData : state.etm.tokenBigIntData,
                     dataValid : state.etm.dataValid,
                     showFormErrMessages  : state.etm.showFormErrMessages,
@@ -327,6 +328,7 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     updateTokenProperty             : etmCreator.updateTokenProperty,
                     updateTokenBigIntData           : etmCreator.updateTokenBigIntData,
+                    updateMsgData                   : etmCreator.updateMsgData,
                     updateDataValid                 : etmCreator.updateDataValid,
                     updatePossibleToIssueToken      : etmCreator.updatePossibleToIssueToken
                 }, dispatch);

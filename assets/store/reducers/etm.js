@@ -61,6 +61,11 @@ export default function etmReducer(state = initialState.etm, action) {
                 ...state,
                 tokenBigIntData : action.payload
             };
+        case actions.UPDATE_MSG_DATA:
+            return {
+                ...state,
+                msgData : action.payload
+            };            
         case actions.UPDATE_SHOW_FORM:
             return {
                 ...state,

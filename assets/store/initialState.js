@@ -81,7 +81,7 @@ const initialState = {
             reissuable: 0,
             mineable: 0,
             max_supply: '',
-            block_reward: '',
+            block_reward: presets.etm.blockRewardDefault,
             min_stake: '',
             referrer_stake: '',
             ref_share: '',          
@@ -102,6 +102,7 @@ const initialState = {
             fee_value: presets.etm.feeValueDefault,
             min_fee_for_percent_fee_type: ''
         },
+        msgData : {},
         dataValid : false,
         showFormErrMessages : false,
         possibleToIssueToken : false

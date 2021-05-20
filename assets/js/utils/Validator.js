@@ -81,16 +81,19 @@ class Validator {
         }
     }
     batchValidate (validateObj, rulesObject) {        
-        let dataValid = true;
+        let validationResult = {
+            dataValid : true,
+            propsArr : {}   
+        };
         let propsErr = {};
         let that = this;
         for (let prop in rulesObject) {
             propsErr[prop] = 0;
             if (validateObj.hasOwnProperty(prop)) {
-                // $(rulesObject[prop].errMsgSelector).hide();
                 rulesObject[prop].checks.forEach(function(check) {
                     let requireToCheck = rulesObject[prop].requireToCheck;
-                    if (requireToCheck === true || requireToCheck === undefined) {                       
+                    if (requireToCheck === true || requireToCheck === undefined) {
+                        console.log('свойствооооооооооо', prop);                       
                         if (propsErr[prop] === 0 && (check.requireToCheck === true || check.requireToCheck === undefined)) {
                             let method = check.method,
                                 argObj = check.args,
@@ -100,21 +103,23 @@ class Validator {
                                 selector = rulesObject[prop].errMsgSelector;
 
                             if (desiredResult !== result) {
-                                // $translate(errMsg.msg || errMsg, errMsg.params).then(function(msg) {
-                                //     $(selector).show();
-                                //     $(selector).text(msg);
-                                // });
                                 console.log(prop, 'not valid')
                                 propsErr[prop]++;
-                                dataValid = false;
+                                validationResult.dataValid = false;
+                                validationResult.propsArr[prop] = {
+                                    valid  : false,
+                                    msg        : errMsg.msg || errMsg,
+                                    params     : errMsg.params
+                                } 
+
                             }
                         }
                     }
                 });
             }
         }
-        console.log(dataValid)
-        return dataValid;
+        console.log(validationResult)
+        return validationResult;
     }
 }
 

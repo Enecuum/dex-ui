@@ -1,40 +1,41 @@
 class IssueTokenValidationRules {
 	constructor() {}
 
-	getMiningPeriodValidationRules(miningPeriod, miningPeriodConstraints) {
-        let validationRules = {
-            value: {
-                checks: [
-                    {
-                        method: 'isSet',
-                        args: {data: miningPeriod},
-                        desiredResult: true,
-                        errMsg: 'REQUIRED'
-                    },
-                    {
-                        method: 'testTheRegExp',
-                        args: {str: miningPeriod, regExpObj: /[^0-9]/},
-                        desiredResult: false,
-                        errMsg: 'INTEGER_REQUIRED'                          
-                    },
-                    {
-                        method: 'inIntervalBothClosed',
-                        args: {value: miningPeriod, min: miningPeriodConstraints.minValue, max: miningPeriodConstraints.maxValue},
-                        desiredResult: true,
-                        errMsg: {
-                                    msg: 'NOT_IN_RANGE',
-                                    params: {
-                                        min: miningPeriodConstraints.minValue,
-                                        max: miningPeriodConstraints.maxValue
-                                    }
-                                }
-                    },
-                ],
-                errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
-            }
-        }
-        return validationRules;
-    }	
+	// getMiningPeriodValidationRules(miningPeriod, miningPeriodConstraints) {
+ //        console.log('miningPeriod', miningPeriod)
+ //        let validationRules = {
+ //            mining_period: {
+ //                checks: [
+ //                    {
+ //                        method: 'isSet',
+ //                        args: {data: miningPeriod},
+ //                        desiredResult: true,
+ //                        errMsg: 'REQUIRED'
+ //                    },
+ //                    {
+ //                        method: 'testTheRegExp',
+ //                        args: {str: miningPeriod, regExpObj: /[^0-9]/},
+ //                        desiredResult: false,
+ //                        errMsg: 'INTEGER_REQUIRED'                          
+ //                    },
+ //                    {
+ //                        method: 'inIntervalBothClosed',
+ //                        args: {value: miningPeriod, min: miningPeriodConstraints.minValue, max: miningPeriodConstraints.maxValue},
+ //                        desiredResult: true,
+ //                        errMsg: {
+ //                                    msg: 'NOT_IN_RANGE',
+ //                                    params: {
+ //                                        min: miningPeriodConstraints.minValue,
+ //                                        max: miningPeriodConstraints.maxValue
+ //                                    }
+ //                                }
+ //                    },
+ //                ],
+ //                errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
+ //            }
+ //        }
+ //        return validationRules;
+ //    }	
 
 	getCommonValidationRules(tokenData, tokenDataConstraints) {
         let validationRules = {
@@ -113,24 +114,54 @@ class IssueTokenValidationRules {
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
             },
-            block_reward: {
+            mining_period: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: tokenData.block_reward},
+                        args: {data: tokenData.mining_period},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
-                        method: 'execTheRegExp',
-                        args: {str: tokenData.block_reward, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.mining_period, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                          
+                    },
+                    {
+                        method: 'inIntervalBothClosed',
+                        args: {value:  tokenData.mining_period, min: tokenDataConstraints.mining_period.minValue, max: tokenDataConstraints.mining_period.maxValue},
                         desiredResult: true,
-                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
-                    }
+                        errMsg: {
+                                    msg: 'NOT_IN_RANGE',
+                                    params: {
+                                        min: tokenDataConstraints.mining_period.minValue,
+                                        max: tokenDataConstraints.mining_period.maxValue
+                                    }
+                                }
+                    },
                 ],
-                errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
+                errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
             },
+            // block_reward: {
+            //     requireToCheck: tokenData.token_type === '2' ? true : false,
+            //     checks: [
+            //         {
+            //             method: 'isSet',
+            //             args: {data: tokenData.block_reward},
+            //             desiredResult: true,
+            //             errMsg: 'REQUIRED'
+            //         },
+            //         {
+            //             method: 'execTheRegExp',
+            //             args: {str: tokenData.block_reward, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+            //             desiredResult: true,
+            //             errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+            //         }
+            //     ],
+            //     errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
+            // },
             min_stake: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
@@ -288,13 +319,14 @@ class IssueTokenValidationRules {
     }
 
 	getSpecialValidationRules(etmState, tokenDataConstraints, maxBigInt) {/////////////////////////////////
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', etmState)
         let validationRules = {
             max_supply: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: etmState.tokenBigIntData.max_supply.fractionalPart, maxLength: tokenDataConstraints.decimals},
+                        args: {dataStr: etmState.tokenBigIntData.max_supply.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
                         errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
                     },
@@ -358,13 +390,25 @@ class IssueTokenValidationRules {
                 errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
             },
             block_reward: {
-                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,///////////////////////////////////////////
+                requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
+                        method: 'isSet',
+                        args: {data: etmState.tokenData.block_reward},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED'
+                    },
+                    {
+                        method: 'execTheRegExp',
+                        args: {str: etmState.tokenData.block_reward, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        desiredResult: true,
+                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
                         method: 'strExeedMaxLength',
-                        args: {dataStr: etmState.tokenBigIntData.block_reward.fractionalPart, maxLength: tokenDataConstraints.decimals},
+                        args: {dataStr: etmState.tokenBigIntData.block_reward.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}    ///////////////////////                            
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                           
                     },
                     {
                         method: 'moreThan',

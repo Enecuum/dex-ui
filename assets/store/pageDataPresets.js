@@ -74,6 +74,7 @@ const presets =  {
         feeValueDefault : '',
         tickerDefault : '',
         nameDefault : ''
+        blockRewardDefault : '---'
     }
 };
 

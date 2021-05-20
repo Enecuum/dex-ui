@@ -47,6 +47,7 @@ const actionPack =  {
     etm : {
         UPDATE_TOKEN_PROPERTY          : 'UPDATE_TOKEN_PROPERTY',
         UPDATE_TOKEN_BIGINT_DATA       : 'UPDATE_TOKEN_BIGINT_DATA',
+        UPDATE_MSG_DATA                : 'UPDATE_MSG_DATA',
         UPDATE_SHOW_FORM               : 'UPDATE_SHOW_FORM',
         UPDATE_DATA_VALID              : 'UPDATE_DATA_VALID',
         UPDATE_SHOW_FORM_ERR_MESSAGES  : 'UPDATE_SHOW_FORM_ERR_MESSAGES',

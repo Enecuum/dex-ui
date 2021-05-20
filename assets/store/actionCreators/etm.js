@@ -10,12 +10,17 @@ const actionCreators = {
         };
     },
     updateTokenBigIntData (payload) {
-        console.log('sdfssssssssssssssssssssssssssssssssssssss',payload.value)
         return {
             type : actions.UPDATE_TOKEN_BIGINT_DATA,
             payload : payload.value 
         };
-    },    
+    },
+    updateMsgData (payload) {
+        return {
+            type : actions.UPDATE_MSG_DATA,
+            payload : payload.value 
+        };
+    },
     updateDataValid (payload) {
         console.log('updateDataValid', payload)
         return {

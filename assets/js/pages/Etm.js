@@ -43,8 +43,8 @@ class Etm extends React.Component {
 	            ticker: presets.etm.tickerDefault,    
 	            name: presets.etm.nameDefault,
 	            token_type: '0',
-	            reissuable: '0',
-	            mineable: '0',
+	            reissuable: 0,
+	            mineable: 0,
 	            max_supply: '',
 	            block_reward: '',
 	            min_stake: '',
@@ -166,19 +166,23 @@ class Etm extends React.Component {
     	let that = this;
     	let validator = new Validator;
     	let validationRules = new IssueTokenValidationRules;
-        if (this.newToken.tokenData.token_type === '2') {
-            let miningPeriodCheck = validator.batchValidate({value : this.newToken.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.newToken.tokenData.mining_period, this.constraints.mining_period));
-            if (miningPeriodCheck) 
-                this.calculateBlockReward();
-            else {
-            	this.newToken.tokenData.block_reward = '---';
-            	this.props.updateTokenProperty({
-					field : 'block_reward',
-					value : '---'
-				});             	
-            }
-
-        }
+    //     if (this.newToken.tokenData.token_type === '2') {
+    //     	this.calculateBlockReward();
+    //         let miningPeriodCheck = validator.batchValidate({mining_period : this.newToken.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.newToken.tokenData.mining_period, this.constraints.mining_period));
+    //         if (miningPeriodCheck.dataValid) {
+    //         	console.log('mining_period_check')
+    //             this.calculateBlockReward();
+    //         } else {
+    //         	this.newToken.tokenData.block_reward = '---';
+    //         	this.props.updateMsgData({
+				// 	value : miningPeriodCheck.propsArr
+				// });
+    //         	this.props.updateTokenProperty({
+				// 	field : 'block_reward',
+				// 	value : '---'
+				// });
+    //         }
+    //     }
         let newMaxValue = this.valueProcessor.getMaxValue(this.newToken.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
            that.constraints[parameter].maxValue = that.constraints.fee_value_props_arr[0].maxValue = newMaxValue;
@@ -186,26 +190,46 @@ class Etm extends React.Component {
         this.constraints.fee_value_props_arr[0].decimalPlaces = this.newToken.tokenData.decimals;
         let commonValidationRules = validationRules.getCommonValidationRules(this.newToken.tokenData, this.constraints);
         let commonCheckNewTokenData = validator.batchValidate(this.newToken.tokenData, commonValidationRules);
-        if  (commonCheckNewTokenData) {
+        console.log('Общие правила', commonCheckNewTokenData.propsArr);
+
+		this.props.updateMsgData({
+			value : commonCheckNewTokenData.propsArr
+		});        
+        if (commonCheckNewTokenData.dataValid) {
+        	if (this.newToken.tokenData.token_type === '2') {
+	        	this.calculateBlockReward();
+	        }
             let bigIntParamsArr = this.getBigIntParametersArray();
             bigIntParamsArr.forEach(param => that.transformBigIntValue(param));
         	let specialValidationRules = validationRules.getSpecialValidationRules(this.newToken, this.constraints, this.maxBigInt);
-        	validator.batchValidate({value : this.newToken.tokenData}, specialValidationRules); 
+        	let validatonResult = validator.batchValidate(this.newToken.tokenData, specialValidationRules);
+        	console.log('Специальные правила', this.newToken, validatonResult.propsArr);
+        	this.props.updateMsgData({
+				value : validatonResult.propsArr
+			});
         }
     }
 
 	calculateBlockReward() {
-        let block_reward = (this.newToken.tokenData.max_supply - this.newToken.tokenData.total_supply)/(this.newToken.tokenData.mining_period * 5760);
-
+        let block_reward = (Number(this.newToken.tokenData.max_supply) - Number(this.newToken.tokenData.total_supply))/(Number(this.newToken.tokenData.mining_period) * 5760);
+        console.log('block_rewardblock_rewardblock_rewardblock_rewardblock_rewardblock_reward', block_reward);
         if (typeof block_reward === 'number') {
-			let value = block_reward.toFixed(this.newToken.tokenData.decimals);
-			this.newToken.tokenData.block_reward = value;
-			this.props.updateTokenProperty({
-				field : 'block_reward',
-				value : value
-			});      	
+        	if (block_reward > 0) {
+				let value = block_reward.toFixed(this.newToken.tokenData.decimals);
+				this.newToken.tokenData.block_reward = value;
+				this.props.updateTokenProperty({
+					field : 'block_reward',
+					value : value
+				});        		
+        	} else {
+	        	this.newToken.tokenData.block_reward = '0';
+	            this.props.updateTokenProperty({
+					field : 'block_reward',
+					value : '---'
+				});        		
+        	}      	
         } else {
-        	this.newToken.tokenData.block_reward = '---';
+        	this.newToken.tokenData.block_reward = '0';
             this.props.updateTokenProperty({
 				field : 'block_reward',
 				value : '---'
@@ -244,8 +268,8 @@ class Etm extends React.Component {
 									autoComplete="off"
 									value={this.props.tokenData.ticker}
 									onChange={this.handleInputChange.bind(this)} />
-								<Form.Text className="err-msg">
-									ErrorMesssage
+								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('ticker') ? 'd-block' : 'd-none'}`} >
+									{this.props.msgData.ticker !== undefined ? this.props.msgData.ticker.msg : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -259,8 +283,8 @@ class Etm extends React.Component {
 									autoComplete="off"
 									value={this.props.tokenData.name}
 									onChange={this.handleInputChange.bind(this)} />
-								<Form.Text className="err-msg">
-									ErrorMesssage
+								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('name') ? 'd-block' : 'd-none'}`} >
+									{this.props.msgData.name !== undefined ? this.props.msgData.name.msg : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -309,8 +333,8 @@ class Etm extends React.Component {
 									autoComplete="off"
 									value={this.props.tokenData.total_supply}
 									onChange={this.handleInputChange.bind(this)} />
-								<Form.Text className="err-msg">
-									ErrorMesssage
+								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('total_supply') ? 'd-block' : 'd-none'}`} >
+									{this.props.msgData.total_supply !== undefined ? this.props.msgData.total_supply.msg : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -327,9 +351,9 @@ class Etm extends React.Component {
 											autoComplete="off"
 											value={this.props.tokenData.max_supply}
 											onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
-										</Form.Text>
+									<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('max_supply') ? 'd-block' : 'd-none'}`} >
+										{this.props.msgData.max_supply !== undefined ? this.props.msgData.max_supply.msg : ''}
+									</Form.Text>
 									</Col>	
 								</Form.Group>
 
@@ -343,8 +367,8 @@ class Etm extends React.Component {
 											autoComplete="off"
 											value={this.props.tokenData.block_reward}
 											onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
+										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('block_reward') ? 'd-block' : 'd-none'}`} >
+											{this.props.msgData.block_reward !== undefined ? this.props.msgData.block_reward.msg : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -352,14 +376,14 @@ class Etm extends React.Component {
 									<Form.Label column sm={2}>{t('etm.miningPeriod')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
-										type="text"
-										placeholder={this.props.tokenData.mining_period}
-										name="mining_period"
-										autoComplete="off"
-										value={this.props.tokenData.mining_period}
-										onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
+											type="text"
+											placeholder={this.props.tokenData.mining_period}
+											name="mining_period"
+											autoComplete="off"
+											value={this.props.tokenData.mining_period}
+											onChange={this.handleInputChange.bind(this)} />
+										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('mining_period') ? 'd-block' : 'd-none'}`} >
+											{this.props.msgData.mining_period !== undefined ? this.props.msgData.mining_period.msg : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -373,8 +397,8 @@ class Etm extends React.Component {
 											autoComplete="off"
 											value={this.props.tokenData.min_stake}
 											onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
+										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('min_stake') ? 'd-block' : 'd-none'}`} >
+											{this.props.msgData.min_stake !== undefined ? this.props.msgData.min_stake.msg : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -388,8 +412,8 @@ class Etm extends React.Component {
 											autoComplete="off"
 											value={this.props.tokenData.referrer_stake}
 											onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
+										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('referrer_stake') ? 'd-block' : 'd-none'}`} >
+											{this.props.msgData.referrer_stake !== undefined ? this.props.msgData.referrer_stake.msg : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -403,8 +427,8 @@ class Etm extends React.Component {
 											autoComplete="off"
 											value={this.props.tokenData.ref_share}
 											onChange={this.handleInputChange.bind(this)} />
-										<Form.Text className="err-msg">
-											ErrorMesssage
+										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('ref_share') ? 'd-block' : 'd-none'}`} >
+											{this.props.msgData.ref_share !== undefined ? this.props.msgData.ref_share.msg : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -420,8 +444,8 @@ class Etm extends React.Component {
 									autoComplete="off"
 									value={this.props.tokenData.decimals}
 									onChange={this.handleInputChange.bind(this)} />
-								<Form.Text className="err-msg">
-									ErrorMesssage
+								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('decimals') ? 'd-block' : 'd-none'}`} >
+									{this.props.msgData.decimals !== undefined ? this.props.msgData.decimals.msg : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -459,8 +483,8 @@ class Etm extends React.Component {
 									autoComplete="off"
 									value={this.props.tokenData.fee_value}
 									onChange={this.handleInputChange.bind(this)} />
-								<Form.Text className="err-msg">
-									ErrorMesssage
+								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('fee_value') ? 'd-block' : 'd-none'}`} >
+									{this.props.msgData.fee_value !== undefined ? this.props.msgData.fee_value.msg : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -475,8 +499,8 @@ class Etm extends React.Component {
 										autoComplete="off"
 										value={this.props.tokenData.min_fee_for_percent_fee_type}
 										onChange={this.handleInputChange.bind(this)} />
-									<Form.Text className="err-msg">
-										ErrorMesssage
+									<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('min_fee_for_percent_fee_type') ? 'd-block' : 'd-none'}`} >
+										{this.props.msgData.min_fee_for_percent_fee_type !== undefined ? this.props.msgData.min_fee_for_percent_fee_type.msg : ''}
 									</Form.Text>
 								</Col>	
 							</Form.Group>

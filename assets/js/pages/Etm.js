@@ -376,14 +376,20 @@ class Etm extends React.Component {
 								<Form.Group as={Row} controlId="setTokenBlockReward">
 									<Form.Label column sm={2}>{t('etm.blockReward')}</Form.Label>
 									<Col xl={7}>
-										<Form.Control
-											readOnly
-											type="text"
-											placeholder={this.props.tokenData.block_reward}
-											name="block_reward"
-											autoComplete="off"
-											value={this.props.tokenData.block_reward}
-											onChange={this.handleInputChange.bind(this)} />
+										<InputGroup>
+											<Form.Control
+												readOnly
+												disabled
+												type="text"
+												placeholder={this.props.tokenData.block_reward}
+												name="block_reward"
+												autoComplete="off"
+												value={this.props.tokenData.block_reward}
+												onChange={this.handleInputChange.bind(this)} />
+											<InputGroup.Append>
+												<InputGroup.Text>{this.props.msgData.ticker !== undefined ? t('tokens') : this.props.tokenData.ticker}</InputGroup.Text>
+											</InputGroup.Append>
+										</InputGroup>	
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('block_reward') ? 'd-block' : 'd-none'}`} >
 											{this.props.msgData.block_reward !== undefined ? this.props.msgData.block_reward.msg : ''}
 										</Form.Text>
@@ -392,13 +398,18 @@ class Etm extends React.Component {
 								<Form.Group as={Row} controlId="setTokenMiningPeriod">
 									<Form.Label column sm={2}>{t('etm.miningPeriod')}</Form.Label>
 									<Col xl={7}>
-										<Form.Control
-											type="text"
-											placeholder={this.props.tokenData.mining_period}
-											name="mining_period"
-											autoComplete="off"
-											value={this.props.tokenData.mining_period}
-											onChange={this.handleInputChange.bind(this)} />
+										<InputGroup>
+											<Form.Control
+												type="text"
+												placeholder={this.props.tokenData.mining_period}
+												name="mining_period"
+												autoComplete="off"
+												value={this.props.tokenData.mining_period}
+												onChange={this.handleInputChange.bind(this)} />
+											<InputGroup.Append>
+												<InputGroup.Text>{t('etm.days')}</InputGroup.Text>
+											</InputGroup.Append>	
+										</InputGroup>	
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('mining_period') ? 'd-block' : 'd-none'}`} >
 											{this.props.msgData.mining_period !== undefined ? this.props.msgData.mining_period.msg : ''}
 										</Form.Text>
@@ -437,13 +448,18 @@ class Etm extends React.Component {
 								<Form.Group as={Row} controlId="setTokenRefShare">
 									<Form.Label column sm={2}>{t('etm.refShare')}</Form.Label>
 									<Col xl={7}>
-										<Form.Control
-											type="text"
-											placeholder={this.props.tokenData.ref_share}
-											name="ref_share"
-											autoComplete="off"
-											value={this.props.tokenData.ref_share}
-											onChange={this.handleInputChange.bind(this)} />
+										<InputGroup>
+											<Form.Control
+												type="text"
+												placeholder={this.props.tokenData.ref_share}
+												name="ref_share"
+												autoComplete="off"
+												value={this.props.tokenData.ref_share}
+												onChange={this.handleInputChange.bind(this)} />
+											<InputGroup.Append>
+												<InputGroup.Text>%</InputGroup.Text>
+											</InputGroup.Append>
+										</InputGroup>			
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('ref_share') ? 'd-block' : 'd-none'}`} >
 											{this.props.msgData.ref_share !== undefined ? this.props.msgData.ref_share.msg : ''}
 										</Form.Text>
@@ -455,6 +471,8 @@ class Etm extends React.Component {
 							<Form.Label column sm={2}>{t('etm.decimals')}</Form.Label>
 							<Col xl={7}>
 								<Form.Control
+									readOnly
+									disabled
 									type="text"
 									placeholder={this.props.tokenData.decimals}
 									name="decimals"
@@ -493,13 +511,18 @@ class Etm extends React.Component {
 						<Form.Group as={Row} controlId="setTokenFee">
 							<Form.Label column sm={2}>{t('etm.fee')}</Form.Label>
 							<Col xl={7}>
-								<Form.Control
-									type="text"
-									placeholder={this.props.tokenData.fee_value}
-									name="fee_value"
-									autoComplete="off"
-									value={this.props.tokenData.fee_value}
-									onChange={this.handleInputChange.bind(this)} />
+								<InputGroup>
+									<Form.Control
+										type="text"
+										placeholder={this.props.tokenData.fee_value}
+										name="fee_value"
+										autoComplete="off"
+										value={this.props.tokenData.fee_value}
+										onChange={this.handleInputChange.bind(this)} />
+									<InputGroup.Append>
+										<InputGroup.Text>{this.props.tokenData.fee_type === '0' ? (this.props.msgData.ticker !== undefined || !(this.props.tokenData.ticker.length)  ? t('tokens') : this.props.tokenData.ticker) : '%'}</InputGroup.Text>
+									</InputGroup.Append>
+								</InputGroup>	
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('fee_value') ? 'd-block' : 'd-none'}`} >
 									{this.props.msgData.fee_value !== undefined ? this.props.msgData.fee_value.msg : ''}
 								</Form.Text>

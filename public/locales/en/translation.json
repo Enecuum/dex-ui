@@ -122,7 +122,8 @@
         "flat" : "Flat",
         "percent" : "Percent",
         "fee" : "Fee",
-        "minFee" : "Min Fee"
+        "minFee" : "Min Fee",
+        "days" : "Days"
     },
     "info" : "Info",
     "submit" : "Submit",
@@ -147,5 +148,6 @@
     },
     "noData" : "No data",
     "noConnection" : "No connection.",
-    "clickConnect" : "Please click the \"Connect\" button in the navigation menu"
+    "clickConnect" : "Please click the \"Connect\" button in the navigation menu",
+    "tokens" : "Tokens"
 }

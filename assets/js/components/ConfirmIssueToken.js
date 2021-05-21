@@ -32,10 +32,45 @@ class ConfirmIssueToken extends React.Component {
     };
 
     sendIssueTokenTx() {
+        this.issueTokenRequest();
         console.log('отправка транзакции')
     }
+    // issueToken (pubKey, issueTokenCost, params)
 
+   issueTokenRequest() {
+        // this.props.openWaitingConfirmation();
+        let parameters = {
+                reissuable : this.props.tokenData.reissuable,
+                minable : this.props.tokenData.mineable,
+                fee_type : this.props.tokenData.fee_type,
+                fee_value : this.props.tokenBigIntData.fee_value.completeValue,
+                fee_min: this.props.tokenData.fee_type === '1' ? this.props.tokenBigIntData.min_fee_for_percent_fee_type : this.props.tokenBigIntData.fee_value.completeValue,
+                decimals : BigInt(this.props.tokenData.decimals),
+                total_supply : this.props.tokenBigIntData.total_supply.completeValue,
+                ticker : this.props.tokenData.ticker,
+                name: this.props.tokenData.name
+            }
 
+        if (this.props.tokenData.mineable === '1') {
+            mineableTokenAdditionalPrams = ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share'];
+            mineableTokenAdditionalPrams.forEach(function(param) {                
+                parameters[param] = this.props.tokenBigIntData[param].completeValue;
+            });
+        }
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!            
+// BigInt($scope.mainToken.fee_value) + BigInt(contract_pricelist.create_token); 
+
+        extRequests.issueToken(this.props.pubkey, 20000000000n, parameters)
+        .then(result => {
+            console.log('Success', result.hash)
+            // this.props.updCurrentTxHash(result.hash);
+            // this.props.changeWaitingStateType('submitted');
+        },
+        error => {
+            console.log('Error')
+            // this.props.changeWaitingStateType('rejected');
+        });
+    };
 
     // sendTransaction (pair) {
     //     this.closeCard();

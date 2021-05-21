@@ -133,19 +133,20 @@ class ExtRequests {
         return trafficController.sendTransaction(data);
     };
 
-    issueToken (pubKey, reqType, fee, params) {
+    issueToken (pubKey, issueTokenCost, params) {
+        console.log(pubKey, issueTokenCost, params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
-            value : fee,
+            value : issueTokenCost.toString(),
             tokenHash : presets.network.nativeToken.hash,
             nonce : Math.floor(Math.random() * 1e15),
             data : ENQweb3lib.serialize({
-                type : reqType,
+                type : requestType.ISSUE_TOKEN,
                 parameters : params
             })
         };
-        // console.log(data);      // TODO - remove for production ????????????
+        console.log(data);      // TODO - remove for production ????????????
         // console.log(params);    // TODO - remove for production ????????????
         return trafficController.sendTransaction(data);
     };

@@ -92,8 +92,7 @@ class Validator {
             if (validateObj.hasOwnProperty(prop)) {
                 rulesObject[prop].checks.forEach(function(check) {
                     let requireToCheck = rulesObject[prop].requireToCheck;
-                    if (requireToCheck === true || requireToCheck === undefined) {
-                        console.log('свойствооооооооооо', prop);                       
+                    if (requireToCheck === true || requireToCheck === undefined) {                     
                         if (propsErr[prop] === 0 && (check.requireToCheck === true || check.requireToCheck === undefined)) {
                             let method = check.method,
                                 argObj = check.args,
@@ -118,7 +117,6 @@ class Validator {
                 });
             }
         }
-        console.log(validationResult)
         return validationResult;
     }
 }

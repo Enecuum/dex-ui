@@ -24,3 +24,9 @@
 #ETMWrapper form input.form-control.form-control:focus {
     box-shadow: 0 0 0 0.1rem var(--color4);
 }
+
+.input-group-text {
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}

@@ -1,42 +1,5 @@
 class IssueTokenValidationRules {
 	constructor() {}
-
-	// getMiningPeriodValidationRules(miningPeriod, miningPeriodConstraints) {
- //        console.log('miningPeriod', miningPeriod)
- //        let validationRules = {
- //            mining_period: {
- //                checks: [
- //                    {
- //                        method: 'isSet',
- //                        args: {data: miningPeriod},
- //                        desiredResult: true,
- //                        errMsg: 'REQUIRED'
- //                    },
- //                    {
- //                        method: 'testTheRegExp',
- //                        args: {str: miningPeriod, regExpObj: /[^0-9]/},
- //                        desiredResult: false,
- //                        errMsg: 'INTEGER_REQUIRED'                          
- //                    },
- //                    {
- //                        method: 'inIntervalBothClosed',
- //                        args: {value: miningPeriod, min: miningPeriodConstraints.minValue, max: miningPeriodConstraints.maxValue},
- //                        desiredResult: true,
- //                        errMsg: {
- //                                    msg: 'NOT_IN_RANGE',
- //                                    params: {
- //                                        min: miningPeriodConstraints.minValue,
- //                                        max: miningPeriodConstraints.maxValue
- //                                    }
- //                                }
- //                    },
- //                ],
- //                errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
- //            }
- //        }
- //        return validationRules;
- //    }	
-
 	getCommonValidationRules(tokenData, tokenDataConstraints) {
         let validationRules = {
             ticker: {
@@ -144,24 +107,6 @@ class IssueTokenValidationRules {
                 ],
                 errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
             },
-            // block_reward: {
-            //     requireToCheck: tokenData.token_type === '2' ? true : false,
-            //     checks: [
-            //         {
-            //             method: 'isSet',
-            //             args: {data: tokenData.block_reward},
-            //             desiredResult: true,
-            //             errMsg: 'REQUIRED'
-            //         },
-            //         {
-            //             method: 'execTheRegExp',
-            //             args: {str: tokenData.block_reward, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
-            //             desiredResult: true,
-            //             errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
-            //         }
-            //     ],
-            //     errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
-            // },
             min_stake: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
                 checks: [
@@ -318,8 +263,7 @@ class IssueTokenValidationRules {
         return validationRules;       
     }
 
-	getSpecialValidationRules(etmState, tokenDataConstraints, maxBigInt) {/////////////////////////////////
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', etmState)
+	getSpecialValidationRules(etmState, tokenDataConstraints, maxBigInt) {
         let validationRules = {
             max_supply: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,

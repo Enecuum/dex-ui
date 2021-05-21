@@ -104,28 +104,12 @@ class Etm extends React.Component {
 			field : propName,
 			value : value
 		});
-		console.log(this.newToken)
 
 		this.processData(); 
 	};
 
 	validateAndShowSubmit() {
-		let dataValid = true;
-		let possibleToIssueToken = true;
-
-		this.processData();
-
-		// this.props.updateDataValid({
-		// 	value : dataValid
-		// });
-		// this.props.updatePossibleToIssueToken({
-		// 	value : possibleToIssueToken
-		// });
-
-
-		// if (this.props.dataValid === true && this.props.possibleToIssueToken === true) {
-		// 	console.log(this.props.dataValid, this.props.possibleToIssueToken)
-		// }		
+		this.processData('issueToken');			
 	};
 
 	watchIfEnoughMainTokenBalanceToIssueToken() {
@@ -178,27 +162,11 @@ class Etm extends React.Component {
 		}
     }    
 
-    processData() {    	
+    processData(purpose = '') { //if purpose == 'issueToken', 'possibleToIssueToken' property in etm.state will set to boolean 'true' or 'false' 	
     	let that = this;
     	let validator = new Validator;
     	let validationRules = new IssueTokenValidationRules;
-    //     if (this.newToken.tokenData.token_type === '2') {
-    //     	this.calculateBlockReward();
-    //         let miningPeriodCheck = validator.batchValidate({mining_period : this.newToken.tokenData.mining_period}, validationRules.getMiningPeriodValidationRules(this.newToken.tokenData.mining_period, this.constraints.mining_period));
-    //         if (miningPeriodCheck.dataValid) {
-    //         	console.log('mining_period_check')
-    //             this.calculateBlockReward();
-    //         } else {
-    //         	this.newToken.tokenData.block_reward = '---';
-    //         	this.props.updateMsgData({
-				// 	value : miningPeriodCheck.propsArr
-				// });
-    //         	this.props.updateTokenProperty({
-				// 	field : 'block_reward',
-				// 	value : '---'
-				// });
-    //         }
-    //     }
+    	let dataValid = false;
         let newMaxValue = this.valueProcessor.getMaxValue(this.newToken.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
            that.constraints[parameter].maxValue = that.constraints.fee_value_props_arr[0].maxValue = newMaxValue;
@@ -206,11 +174,13 @@ class Etm extends React.Component {
         this.constraints.fee_value_props_arr[0].decimalPlaces = this.newToken.tokenData.decimals;
         let commonValidationRules = validationRules.getCommonValidationRules(this.newToken.tokenData, this.constraints);
         let commonCheckNewTokenData = validator.batchValidate(this.newToken.tokenData, commonValidationRules);
-        console.log('Общие правила', commonCheckNewTokenData.propsArr);
+
+        dataValid = commonCheckNewTokenData.dataValid; 
 
 		this.props.updateMsgData({
 			value : commonCheckNewTokenData.propsArr
-		});        
+		});
+
         if (commonCheckNewTokenData.dataValid) {
         	if (this.newToken.tokenData.token_type === '2') {
 	        	this.calculateBlockReward();
@@ -219,16 +189,32 @@ class Etm extends React.Component {
             bigIntParamsArr.forEach(param => that.transformBigIntValue(param));
         	let specialValidationRules = validationRules.getSpecialValidationRules(this.newToken, this.constraints, this.maxBigInt);
         	let validatonResult = validator.batchValidate(this.newToken.tokenData, specialValidationRules);
-        	console.log('Специальные правила', this.newToken, validatonResult.propsArr);
+        	dataValid = validatonResult.dataValid;
         	this.props.updateMsgData({
 				value : validatonResult.propsArr
 			});
+			this.props.updateTokenBigIntData({
+				value : this.newToken.tokenBigIntData
+			});
         }
+
+		if (purpose === 'issueToken') {
+			this.props.updateTokenProperty({
+				field : 'reissuable',
+				value : this.newToken.tokenData.token_type !== '2' ? this.newToken.tokenData.token_type : '0'
+			});
+			this.props.updateTokenProperty({
+				field : 'mineable',
+				value : this.newToken.tokenData.token_type === '2' ? '1' : '0'
+			});
+			this.props.updatePossibleToIssueToken({
+				value : dataValid
+			});
+		}
     }
 
 	calculateBlockReward() {
         let block_reward = (Number(this.newToken.tokenData.max_supply) - Number(this.newToken.tokenData.total_supply))/(Number(this.newToken.tokenData.mining_period) * 5760);
-        console.log('block_rewardblock_rewardblock_rewardblock_rewardblock_rewardblock_reward', block_reward);
         if (typeof block_reward === 'number') {
         	if (block_reward >= 0) {
 				let value = block_reward.toFixed(this.newToken.tokenData.decimals);
@@ -276,7 +262,7 @@ class Etm extends React.Component {
 					<Form onSubmit={e => { e.preventDefault(); }}>
 						<Form.Group as={Row} controlId="setTokenTicker">
 							<Form.Label column sm={2}>{t('etm.ticker')}</Form.Label>
-							<Col xl={7}>
+							<Col xl={5}>
 								<Form.Control 
 									type="text"
 									placeholder={this.props.tokenData.ticker}
@@ -291,7 +277,7 @@ class Etm extends React.Component {
 						</Form.Group>
 						<Form.Group as={Row} controlId="setTokenName">
 							<Form.Label column sm={2}>{t('etm.name')}</Form.Label>
-							<Col xl={7} >
+							<Col xl={5} >
 								<Form.Control
 									type="text"
 									placeholder={this.props.tokenData.name}
@@ -307,7 +293,7 @@ class Etm extends React.Component {
 						<fieldset >
 							<Form.Group as={Row} controlId="setTokenType">
 								<Form.Label column sm={2}>{t('etm.tokenType')}</Form.Label>
-								<Col xl={7}>
+								<Col xl={5}>
 									<Form.Check
 										type="radio"
 										label={t('etm.nonReissuable')}
@@ -341,7 +327,7 @@ class Etm extends React.Component {
 						</fieldset>
 						<Form.Group as={Row} controlId="setTokenPremineEmission">
 							<Form.Label column sm={2}>{this.props.tokenData.token_type === '2' ? t('etm.premine') : t('etm.emission')}</Form.Label>
-							<Col xl={7}>
+							<Col xl={5}>
 								<Form.Control
 									type="text"
 									placeholder={this.props.tokenData.total_supply}
@@ -359,7 +345,7 @@ class Etm extends React.Component {
 							<div>
 								<Form.Group as={Row} controlId="setTokenMaxSupply">
 									<Form.Label column sm={2}>{t('etm.maxSupply')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<Form.Control
 											type="text"
 											placeholder={this.props.tokenData.max_supply}
@@ -375,7 +361,7 @@ class Etm extends React.Component {
 
 								<Form.Group as={Row} controlId="setTokenBlockReward">
 									<Form.Label column sm={2}>{t('etm.blockReward')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<InputGroup>
 											<Form.Control
 												readOnly
@@ -397,7 +383,7 @@ class Etm extends React.Component {
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenMiningPeriod">
 									<Form.Label column sm={2}>{t('etm.miningPeriod')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<InputGroup>
 											<Form.Control
 												type="text"
@@ -417,7 +403,7 @@ class Etm extends React.Component {
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenMinStake">
 									<Form.Label column sm={2}>{t('etm.minStake')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<Form.Control
 											type="text"
 											placeholder={this.props.tokenData.min_stake}
@@ -432,7 +418,7 @@ class Etm extends React.Component {
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenReferrerStake">
 									<Form.Label column sm={2}>{t('etm.referrerStake')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<Form.Control
 											type="text"
 											placeholder={this.props.tokenData.referrer_stake}
@@ -447,7 +433,7 @@ class Etm extends React.Component {
 								</Form.Group>
 								<Form.Group as={Row} controlId="setTokenRefShare">
 									<Form.Label column sm={2}>{t('etm.refShare')}</Form.Label>
-									<Col xl={7}>
+									<Col xl={5}>
 										<InputGroup>
 											<Form.Control
 												type="text"
@@ -469,7 +455,7 @@ class Etm extends React.Component {
 						}
 						<Form.Group as={Row} controlId="setTokenDecimals">
 							<Form.Label column sm={2}>{t('etm.decimals')}</Form.Label>
-							<Col xl={7}>
+							<Col xl={5}>
 								<Form.Control
 									readOnly
 									disabled
@@ -487,7 +473,7 @@ class Etm extends React.Component {
 						<fieldset>
 							<Form.Group as={Row} controlId="setTokenFeeType">
 								<Form.Label column sm={2}>{t('etm.feeType')}</Form.Label>
-								<Col xl={7}>
+								<Col xl={5}>
 									<Form.Check
 										type="radio"
 										label={t('etm.flat')}
@@ -510,7 +496,7 @@ class Etm extends React.Component {
 						</fieldset>
 						<Form.Group as={Row} controlId="setTokenFee">
 							<Form.Label column sm={2}>{t('etm.fee')}</Form.Label>
-							<Col xl={7}>
+							<Col xl={5}>
 								<InputGroup>
 									<Form.Control
 										type="text"
@@ -531,7 +517,7 @@ class Etm extends React.Component {
 						{ (this.props.tokenData.fee_type == "1") && 
 							<Form.Group as={Row} controlId="setTokenMinFee">
 								<Form.Label column sm={2}>{t('etm.minFee')}</Form.Label>
-								<Col xl={7}>
+								<Col xl={5}>
 									<Form.Control
 										type="text"
 										placeholder={this.props.tokenData.min_fee_for_percent_fee_type}
@@ -546,7 +532,7 @@ class Etm extends React.Component {
 							</Form.Group>
 						}
 						<Row>
-							<Col xl={{ span: 7, offset: 2 }} className="text-center">
+							<Col xl={{ span: 5, offset: 2 }} className="text-center">
 								<Button
 								variant="primary"
 								type="submit"

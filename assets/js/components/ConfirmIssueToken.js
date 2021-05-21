@@ -12,13 +12,30 @@ import '../../css/confirm-supply.css';
 const valueProcessor = new ValueProcessor();
 
 class ConfirmIssueToken extends React.Component {
+    constructor(props) {
+        super(props);
+        this.tokenTypesTitles = {
+            'type_0' : 'etm.nonReissuable',
+            'type_1' : 'etm.reissuable',
+            'type_2' : 'etm.mineable',
+        }
+
+        this.tokenFeeTypesTitles = {
+            'type_0' : 'etm.nonReissuable',
+            'type_1' : 'etm.reissuable'
+        }
+    }
+
     closeCard () {
+        console.log('dsfsdfsdfsdfsdfsdfsdsdf')
         this.props.closeConfirmCard();
     };
 
     sendIssueTokenTx() {
         console.log('отправка транзакции')
     }
+
+
 
     // sendTransaction (pair) {
     //     this.closeCard();
@@ -55,7 +72,7 @@ class ConfirmIssueToken extends React.Component {
 
             <>
                 <Modal
-                    show={this.props.dataValid && this.props.possibleToIssueToken}////////////////////////////////////////////////////
+                    show={this.props.possibleToIssueToken}////////////////////////////////////////////////////
                     aria-labelledby="example-custom-modal-styling-title"
                     onHide={this.closeCard.bind(this)}/////////////////////////////////////////////////////
                     centered >
@@ -63,19 +80,62 @@ class ConfirmIssueToken extends React.Component {
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
                                 <span>
-                                    {t('trade.confirmCard.header')}
+                                    {t('etm.issueToken')}
                                 </span>
                             </div>
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="h3 font-weight-bold">
-                            eeeeeeeeeeeeeee
-                        </div>
+                        <h5>{t('etm.ticker')}</h5>
+                        <p>{this.props.tokenData.ticker}</p>
 
-                        <div className="my-5">
-                  
-                        </div>
+                        <h5>{t('etm.name')}</h5>
+                        <p>{this.props.tokenData.name}</p>
+
+                        <h5>{t('etm.tokenType')}</h5>
+                        <p>{t(this.tokenTypesTitles['type_' + this.props.tokenData.token_type])}</p>
+
+                        <h5>{t('etm.decimals')}</h5>
+                        <p>{this.props.tokenData.decimals}</p>
+
+
+                        <h5>{this.props.tokenData.token_type === '2' ? t('etm.premine') : t('etm.emission')}</h5>
+                        <p>{this.props.tokenData.total_supply}</p>
+
+                        { (this.props.tokenData.mineable == "1") &&
+                            <div>
+                                <h5>{t('etm.maxSupply')}</h5>
+                                <p>{this.props.tokenData.max_supply}</p>
+
+                                <h5>{t('etm.blockReward')}</h5>
+                                <p>{this.props.tokenData.block_reward}</p>
+
+                                <h5>{t('etm.minStake')}</h5>
+                                <p>{this.props.tokenData.min_stake}</p>
+
+                                <h5>{t('etm.referrerStake')}</h5>
+                                <p>{this.props.tokenData.referrer_stake}</p>
+
+                                <h5>{t('etm.refShare')}</h5>
+                                <p>{this.props.tokenData.ref_share}%</p>
+                            </div>
+                        }
+
+                        <h5>{t('etm.feeType')}</h5>
+                        <p>{t(this.tokenFeeTypesTitles['type_' + this.props.tokenData.fee_type])}</p>
+
+                        <h5>{t('etm.fee')}</h5>
+                        <p>{this.props.tokenData.fee_value} <span>{this.props.tokenData.fee_type === '0' ? this.props.tokenData.ticker : '%'}</span></p>
+
+                        { (this.props.tokenData.fee_type == "1") &&
+                            <div>
+                                <h5>{t('etm.minFee')}</h5>
+                                <p>{this.props.tokenData.min_fee_for_percent_fee_type} {this.props.tokenData.ticker}</p>
+                            </div>
+                        }
+                        
+                        <p className="h4 mt-5 mb-5">TOKEN_ISSUE_TOTAL_PAY</p>                                                                                                       
+
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.sendIssueTokenTx.bind(this)}>
                             {t('trade.confirmCard.confirm')}

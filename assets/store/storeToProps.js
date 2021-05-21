@@ -218,6 +218,8 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.etm,
+                    tokenData            : state.etm.tokenData,
+                    tokenBigIntData      : state.etm.tokenBigIntData,
                     dataValid            : state.etm.dataValid,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };

@@ -343,34 +343,34 @@ class IssueTokenValidationRules {
                     },                   
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.min_stake.completeValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: etmState.tokenBigIntData.min_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
+                                        name: 'TOKEN_MIN_STAKE'//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.referrer_stake.completeValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: etmState.tokenBigIntData.referrer_stake.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: 'TOKEN_REFERRER_STAKE'//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
                     {
                         method: 'moreOrEqualThan',
-                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: tokenDataConstraints.total_supply.completeValue},
+                        args: {value: etmState.tokenBigIntData.max_supply.completeValue, max: etmState.tokenBigIntData.total_supply.completeValue},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_EMISSION')
+                                        name: 'TOKEN_EMISSION'//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },
@@ -452,7 +452,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: 'TOKEN_REFERRER_STAKE'//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
@@ -463,7 +463,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_EMISSION')
+                                        name: 'TOKEN_EMISSION'//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },                    
@@ -474,7 +474,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: 'TOKEN_MAX_SUPPLY'//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },                    
@@ -520,7 +520,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
+                                        name: 'TOKEN_MIN_STAKE'//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
@@ -531,7 +531,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_EMISSION')
+                                        name: 'TOKEN_EMISSION'//$translate.instant('TOKEN_EMISSION')
                                     }
                                 }
                     },                    
@@ -542,7 +542,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: 'TOKEN_MAX_SUPPLY'//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },   
@@ -613,7 +613,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MIN_STAKE')
+                                        name: 'TOKEN_MIN_STAKE'//$translate.instant('TOKEN_MIN_STAKE')
                                     }
                                 }
                     },                    
@@ -625,7 +625,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_REFERRER_STAKE')
+                                        name: 'TOKEN_REFERRER_STAKE'//$translate.instant('TOKEN_REFERRER_STAKE')
                                     }
                                 }
                     },                    
@@ -637,7 +637,7 @@ class IssueTokenValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
                                     params: {
-                                        name: ''//$translate.instant('TOKEN_MAX_SUPPLY')
+                                        name: 'TOKEN_MAX_SUPPLY'//$translate.instant('TOKEN_MAX_SUPPLY')
                                     }
                                 }
                     },

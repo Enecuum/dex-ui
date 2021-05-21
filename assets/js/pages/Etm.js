@@ -84,6 +84,22 @@ class Etm extends React.Component {
 		let value = propName === 'ticker' ? target.value.toUpperCase() : target.value
 		this.newToken.tokenData[propName] = value;
 
+		if (propName === 'token_type') {
+			this.newToken.tokenData.total_supply = presets.etm.totalSupplyDefault;
+			this.props.updateTokenProperty({
+				field : 'total_supply',
+				value : presets.etm.totalSupplyDefault
+			});
+		}
+
+		if (propName === 'fee_type') {
+			this.newToken.tokenData.fee_value = presets.etm.feeValueDefault;
+			this.props.updateTokenProperty({
+				field : 'fee_value',
+				value : presets.etm.feeValueDefault
+			});
+		} 
+
 		this.props.updateTokenProperty({
 			field : propName,
 			value : value
@@ -214,7 +230,7 @@ class Etm extends React.Component {
         let block_reward = (Number(this.newToken.tokenData.max_supply) - Number(this.newToken.tokenData.total_supply))/(Number(this.newToken.tokenData.mining_period) * 5760);
         console.log('block_rewardblock_rewardblock_rewardblock_rewardblock_rewardblock_reward', block_reward);
         if (typeof block_reward === 'number') {
-        	if (block_reward > 0) {
+        	if (block_reward >= 0) {
 				let value = block_reward.toFixed(this.newToken.tokenData.decimals);
 				this.newToken.tokenData.block_reward = value;
 				this.props.updateTokenProperty({
@@ -361,6 +377,7 @@ class Etm extends React.Component {
 									<Form.Label column sm={2}>{t('etm.blockReward')}</Form.Label>
 									<Col xl={7}>
 										<Form.Control
+											readOnly
 											type="text"
 											placeholder={this.props.tokenData.block_reward}
 											name="block_reward"

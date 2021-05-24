@@ -68,13 +68,23 @@ export default function etmReducer(state = initialState.etm, action) {
         case actions.UPDATE_SHOW_FORM:
             return {
                 ...state,
-                showForm : action.value
+                showForm : action.payload
             };
         case actions.UPDATE_DATA_VALID:
             return {
                 ...state,
                 dataValid : action.payload
             };
+        case actions.UPDATE_ISSUE_TOKEN_TX_AMOUNT:
+            return {
+                ...state,
+                issueTokenTxAmount : action.payload
+            } 
+        case actions.UPDATE_MAIN_TOKEN_TICKER:
+            return {
+                ...state,
+                mainTokenTicker : action.payload
+            }                
         // case actions.UPDATE_SHOW_FORM_ERR_MESSAGES:
         //     return {
         //         ...state,

@@ -184,6 +184,7 @@ function mapStoreToProps(component) {
         case components.ETM:
             return function (state) {
                 return {
+                    showForm                : state.etm.showForm,
                     mainToken               : state.root.mainToken,
                     connectionStatus        : state.root.connectionStatus,                   
                     balances                : state.root.balances,
@@ -206,6 +207,8 @@ function mapStoreToProps(component) {
                         fee_value                       : state.etm.tokenData.fee_value,
                         min_fee_for_percent_fee_type    : state.etm.tokenData.min_fee_for_percent_fee_type
                     },
+                    issueTokenTxAmount : state.etm.issueTokenTxAmount,
+                    mainTokenTicker : state.etm.mainTokenTicker,
                     msgData : state.etm.msgData,
                     tokenBigIntData : state.etm.tokenBigIntData,
                     dataValid : state.etm.dataValid,
@@ -218,6 +221,8 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.etm,
+                    mainTokenTicker      : state.etm.mainTokenTicker,
+                    issueTokenTxAmount   : state.etm.issueTokenTxAmount,
                     tokenData            : state.etm.tokenData,
                     tokenBigIntData      : state.etm.tokenBigIntData,
                     dataValid            : state.etm.dataValid,
@@ -328,11 +333,14 @@ function mapDispatchToProps(component) {
         case components.ETM:
             return function (dispatch) {
                 return bindActionCreators({
-                    updateTokenProperty             : etmCreator.updateTokenProperty,
-                    updateTokenBigIntData           : etmCreator.updateTokenBigIntData,
-                    updateMsgData                   : etmCreator.updateMsgData,
-                    updateDataValid                 : etmCreator.updateDataValid,
-                    updatePossibleToIssueToken      : etmCreator.updatePossibleToIssueToken
+                    updateShowForm                 : etmCreator.updateShowForm,
+                    updateTokenProperty            : etmCreator.updateTokenProperty,
+                    updateTokenBigIntData          : etmCreator.updateTokenBigIntData,
+                    updateMsgData                  : etmCreator.updateMsgData,
+                    updateDataValid                : etmCreator.updateDataValid,
+                    updatePossibleToIssueToken     : etmCreator.updatePossibleToIssueToken,
+                    updateIssueTokenTxAmount       : etmCreator.updateIssueTokenTxAmount,
+                    updateMainTokenTicker          : etmCreator.updateMainTokenTicker
                 }, dispatch);
             };            
         case components.CONFIRM_ISSUE_TOKEN:

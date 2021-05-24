@@ -102,8 +102,11 @@ const initialState = {
             fee_value: presets.etm.feeValueDefault,
             min_fee_for_percent_fee_type: ''
         },
+        issueTokenTxAmount : '',
+        mainTokenTicker : presets.network.nativeToken.ticker,
         msgData : {},
         dataValid : false,
+        showForm : false,
         showFormErrMessages : false,
         possibleToIssueToken : false
     }

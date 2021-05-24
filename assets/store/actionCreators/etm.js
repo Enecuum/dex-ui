@@ -35,6 +35,24 @@ const actionCreators = {
             payload : payload.value
         };
     },
+    updateIssueTokenTxAmount (payload) {
+        return {
+            type : actions.UPDATE_ISSUE_TOKEN_TX_AMOUNT,
+            payload : payload.value
+        };
+    },
+    updateMainTokenTicker (payload) {
+        return {
+            type : actions.UPDATE_MAIN_TOKEN_TICKER,
+            payload : payload.value
+        };
+    },
+    updateShowForm (payload) {
+        return {
+            type : actions.UPDATE_SHOW_FORM,
+            payload : payload.value
+        };
+    },    
 
     // assignBalanceObj (mode, field, balanceObj) {
     //     return {

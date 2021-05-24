@@ -18,7 +18,7 @@ class ConfirmIssueToken extends React.Component {
             'type_0' : 'etm.nonReissuable',
             'type_1' : 'etm.reissuable',
             'type_2' : 'etm.mineable',
-        }
+        }        
 
         this.tokenFeeTypesTitles = {
             'type_0' : 'etm.nonReissuable',
@@ -40,9 +40,9 @@ class ConfirmIssueToken extends React.Component {
    issueTokenRequest() {
         // this.props.openWaitingConfirmation();
         let parameters = {
-                reissuable : this.props.tokenData.reissuable,
-                minable : this.props.tokenData.mineable,
-                fee_type : this.props.tokenData.fee_type,
+                reissuable : parseInt(this.props.tokenData.reissuable),
+                minable : parseInt(this.props.tokenData.mineable),
+                fee_type : parseInt(this.props.tokenData.fee_type),
                 fee_value : this.props.tokenBigIntData.fee_value.completeValue,
                 fee_min: this.props.tokenData.fee_type === '1' ? this.props.tokenBigIntData.min_fee_for_percent_fee_type : this.props.tokenBigIntData.fee_value.completeValue,
                 decimals : BigInt(this.props.tokenData.decimals),
@@ -52,15 +52,15 @@ class ConfirmIssueToken extends React.Component {
             }
 
         if (this.props.tokenData.mineable === '1') {
-            mineableTokenAdditionalPrams = ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share'];
+            let mineableTokenAdditionalPrams = ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share'];
+            let that = this;
             mineableTokenAdditionalPrams.forEach(function(param) {                
-                parameters[param] = this.props.tokenBigIntData[param].completeValue;
+                parameters[param] = that.props.tokenBigIntData[param].completeValue;
             });
         }
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!            
-// BigInt($scope.mainToken.fee_value) + BigInt(contract_pricelist.create_token); 
+        console.log(this.props.issueTokenTxAmount)
 
-        extRequests.issueToken(this.props.pubkey, 20000000000n, parameters)
+        extRequests.issueToken(this.props.pubkey, this.props.issueTokenTxAmount, parameters)
         .then(result => {
             console.log('Success', result.hash)
             // this.props.updCurrentTxHash(result.hash);
@@ -69,8 +69,37 @@ class ConfirmIssueToken extends React.Component {
         error => {
             console.log('Error')
             // this.props.changeWaitingStateType('rejected');
-        });
+        }); 
+
+        // let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
+        // tokenInfoRequest.then(result => {
+        //     if (!result.lock) {
+        //         result.json().then(mainToken => {
+        //             let mainTokenFee = BigInt(mainToken[0].fee_value);
+        //             this.issueTokenTxAmount = BigInt(this.props.issueTokenCost) + BigInt(mainTokenFee);
+        //             console.log(this.issueTokenTxAmount)
+        //             this.mainTokenTicker = mainToken[0].ticker;
+        //             extRequests.issueToken(this.props.pubkey, issueTokenTxAmount, parameters)
+        //             .then(result => {
+        //                 console.log('Success', result.hash)
+        //                 // this.props.updCurrentTxHash(result.hash);
+        //                 // this.props.changeWaitingStateType('submitted');
+        //             },
+        //             error => {
+        //                 console.log('Error')
+        //                 // this.props.changeWaitingStateType('rejected');
+        //             });                                   
+        //         })
+        //     }
+        // })
     };
+
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!            
+// BigInt($scope.mainToken.fee_value) + BigInt(contract_pricelist.create_token);
+
+
 
     // sendTransaction (pair) {
     //     this.closeCard();
@@ -169,7 +198,7 @@ class ConfirmIssueToken extends React.Component {
                             </div>
                         }
                         
-                        <p className="h4 mt-5 mb-5">TOKEN_ISSUE_TOTAL_PAY</p>                                                                                                       
+                        <p className="h4 mt-5 mb-5">TOKEN_ISSUE_TOTAL_PAY: {this.props.issueTokenTxAmount} {this.props.mainTokenTicker}</p>                                                                                                       
 
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.sendIssueTokenTx.bind(this)}>

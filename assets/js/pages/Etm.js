@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import networkApi from '../requests/networkApi';
+import swapApi from '../requests/swapApi';
 import { withTranslation } from "react-i18next";
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -30,7 +31,6 @@ class Etm extends React.Component {
 		this.maxBigInt = this.valueProcessor.maxBigInt;
 	    this.handleInputChange = this.handleInputChange.bind(this);
 	    this.validateAndShowSubmit = this.validateAndShowSubmit.bind(this);
-	    this.balanseIsEnough = false;
 	    this.mainToken = {	    	
 	    	ticker   : undefined,
 	    	amount   : undefined,
@@ -76,6 +76,7 @@ class Etm extends React.Component {
 	        mineableToken: ['max_supply','block_reward', 'min_stake', 'referrer_stake', 'ref_share']
 	    }
 	    this.constraints = new TokenConstraints(this.maxBigInt);
+		this.watchIfEnoughMainTokenBalanceToIssueToken();
     };
 
 	handleInputChange(event) {
@@ -89,6 +90,14 @@ class Etm extends React.Component {
 			this.props.updateTokenProperty({
 				field : 'total_supply',
 				value : presets.etm.totalSupplyDefault
+			});
+			this.props.updateTokenProperty({
+				field : 'reissuable',
+				value : target.value !== '2' ? target.value : 0
+			});
+			this.props.updateTokenProperty({
+				field : 'minable',
+				value : target.value === '2' ? 1 : 0
 			});
 		}
 
@@ -113,27 +122,55 @@ class Etm extends React.Component {
 	};
 
 	watchIfEnoughMainTokenBalanceToIssueToken() {
-		let contractPricelist = networkApi.getContractPricelist();
-		contractPricelist.then(result => {
-			if (!result.lock) {
-				result.json().then(pricelist => {
-					let contract_pricelistIssueToken = BigInt(pricelist.create_token);
+		if (this.props.showForm !== true) {
 
-					if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
-						let mainTokenInfo = this.props.balances.find(token => token.token === this.props.mainToken);
-						if (mainTokenInfo !== undefined) {
-							for (let prop in this.mainToken) {
-								if (mainTokenInfo[prop] !== undefined)
-									this.mainToken[prop] = mainTokenInfo[prop];
-							}
-							if (BigInt(this.mainToken.amount) >= contract_pricelistIssueToken) {
-								this.balanseIsEnough = true;
-							}
-						}		
-					}									
-				})
-			}
-        })
+			let contractPricelist = networkApi.getContractPricelist();
+
+			contractPricelist.then(result => {
+
+				if (!result.lock) {
+					result.json().then(pricelist => {
+
+						let contract_pricelistIssueToken = BigInt(pricelist.create_token);
+						if (this.props.mainToken !== undefined && this.props.balances !== undefined) {	
+
+							let mainTokenInfo = this.props.balances.find(token => token.token === this.props.mainToken);
+							if (mainTokenInfo !== undefined) {
+
+								for (let prop in this.mainToken) {
+									if (mainTokenInfo[prop] !== undefined)
+										this.mainToken[prop] = mainTokenInfo[prop];
+								}
+
+								if (BigInt(this.mainToken.amount) >= contract_pricelistIssueToken) {								
+									let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
+							        tokenInfoRequest.then(result => {
+							            if (!result.lock) {
+							                result.json().then(mainToken => {
+							                    let mainTokenFee = BigInt(mainToken[0].fee_value);
+							                    let issueTokenTxAmount = BigInt(contract_pricelistIssueToken) + BigInt(mainTokenFee);						                    
+							                    let mainTokenTicker = mainToken[0].ticker;
+												if (BigInt(this.mainToken.amount) >= issueTokenTxAmount) {
+													this.props.updateIssueTokenTxAmount({
+														value : issueTokenTxAmount
+													});
+													this.props.updateMainTokenTicker({
+														value : mainTokenTicker
+													});
+													this.props.updateShowForm({
+														value : true
+													});
+												}                                
+							                })
+							            }
+							        })
+								}
+							}		
+						}									
+					})
+				}
+	        })
+		}
 	}
 
 	getBigIntParametersArray() {
@@ -249,7 +286,8 @@ class Etm extends React.Component {
     				Подключитесь
     			</div>
     		)
-    	} else if (!this.balanseIsEnough) {    		
+    	} else if (!this.props.showForm) {
+
     		return (
     			<div>
     				Нет денег. Пополните баланс главного токена

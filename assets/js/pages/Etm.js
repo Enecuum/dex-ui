@@ -291,8 +291,8 @@ class Etm extends React.Component {
     		)
     	} else if (!this.props.showForm) {
     		return (
-    			<div>
-    				Нет денег. Пополните баланс главного токена
+    			<div className="px-5">
+    				Сhecking the balance of the native token...
     			</div>
     		)
     	} else {

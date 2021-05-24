@@ -30,7 +30,7 @@ class ExtRequests {
 
     /**
      * Get network url or name
-     * @param {boollean} full - flag for getting (true - full url) (false - name of network)
+     * @param {boollean} full - flag for getting url (deprecated)
      * @returns {string}
      */
     getProvider (full) {

@@ -24,11 +24,12 @@ class ConnectionService extends React.Component {
             this.props.assignPubkey(res.pubkey);
             this.props.updDexData(res.pubkey);
             this.props.setConStatus(true);
+            this.props.closeConList();
         },
         () => {
+            this.props.closeConList();
             this.props.setConStatus(false);
         });
-        this.props.closeConList();
     };
 
     render () {

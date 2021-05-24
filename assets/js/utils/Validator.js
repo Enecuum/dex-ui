@@ -102,7 +102,6 @@ class Validator {
                                 selector = rulesObject[prop].errMsgSelector;
 
                             if (desiredResult !== result) {
-                                console.log(prop, 'not valid')
                                 propsErr[prop]++;
                                 validationResult.dataValid = false;
                                 validationResult.propsArr[prop] = {

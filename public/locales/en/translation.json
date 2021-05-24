@@ -123,7 +123,8 @@
         "percent" : "Percent",
         "fee" : "Fee",
         "minFee" : "Min Fee",
-        "days" : "Days"
+        "days" : "Days",
+        "tokenIssueTotalPay":"You will pay {{issueTokenCost}} {{ticker}} for token issue:"
     },
     "info" : "Info",
     "submit" : "Submit",

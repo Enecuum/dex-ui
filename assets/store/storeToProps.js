@@ -209,6 +209,7 @@ function mapStoreToProps(component) {
                     },
                     issueTokenTxAmount : state.etm.issueTokenTxAmount,
                     mainTokenTicker : state.etm.mainTokenTicker,
+                    mainTokenDecimals : state.etm.mainTokenDecimals,
                     msgData : state.etm.msgData,
                     tokenBigIntData : state.etm.tokenBigIntData,
                     dataValid : state.etm.dataValid,
@@ -340,12 +341,14 @@ function mapDispatchToProps(component) {
                     updateDataValid                : etmCreator.updateDataValid,
                     updatePossibleToIssueToken     : etmCreator.updatePossibleToIssueToken,
                     updateIssueTokenTxAmount       : etmCreator.updateIssueTokenTxAmount,
-                    updateMainTokenTicker          : etmCreator.updateMainTokenTicker
+                    updateMainTokenTicker          : etmCreator.updateMainTokenTicker,
+                    updateMainTokenDecimals        : etmCreator.updateMainTokenDecimals
                 }, dispatch);
             };            
         case components.CONFIRM_ISSUE_TOKEN:
             return function (dispatch) {
                 return bindActionCreators({
+                    updatePossibleToIssueToken : etmCreator.updatePossibleToIssueToken,
                     closeConfirmCard        : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType  : swapCardCreator.changeWaitingStateType,

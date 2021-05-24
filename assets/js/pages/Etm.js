@@ -149,14 +149,16 @@ class Etm extends React.Component {
 							                result.json().then(mainToken => {
 							                    let mainTokenFee = BigInt(mainToken[0].fee_value);
 							                    let issueTokenTxAmount = BigInt(contract_pricelistIssueToken) + BigInt(mainTokenFee);						                    
-							                    let mainTokenTicker = mainToken[0].ticker;
 												if (BigInt(this.mainToken.amount) >= issueTokenTxAmount) {
 													this.props.updateIssueTokenTxAmount({
 														value : issueTokenTxAmount
 													});
 													this.props.updateMainTokenTicker({
-														value : mainTokenTicker
+														value : mainToken[0].ticker
 													});
+													this.props.updateMainTokenDecimals({
+														value : mainToken[0].decimals
+													});													
 													this.props.updateShowForm({
 														value : true
 													});
@@ -282,12 +284,12 @@ class Etm extends React.Component {
 		const t = this.props.t;  
     	if (!this.props.connectionStatus) {
     		return (
-    			<div>
-    				Подключитесь
+    			<div className="px-5">
+    				<div className="mb-3 h5">{t('noConnection')}</div>
+    				<div className="mb-3 h6">{t('clickConnect')}</div>
     			</div>
     		)
     	} else if (!this.props.showForm) {
-
     		return (
     			<div>
     				Нет денег. Пополните баланс главного токена

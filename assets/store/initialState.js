@@ -104,6 +104,7 @@ const initialState = {
         },
         issueTokenTxAmount : '',
         mainTokenTicker : presets.network.nativeToken.ticker,
+        mainTokenDecimals : 10,
         msgData : {},
         dataValid : false,
         showForm : false,

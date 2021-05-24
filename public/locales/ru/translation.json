@@ -125,7 +125,8 @@
         "percent" : "Процентная",
         "fee" : "Комиссия",
         "minFee" : "Минимальная комиссия",
-        "days" : "Дни"
+        "days" : "Дни",
+        "tokenIssueTotalPay":"Стоимость выпуска токена {{issueTokenCost}} {{ticker}}:"
     },
     "info" : "Инфо",
     "submit" : "Отправить",

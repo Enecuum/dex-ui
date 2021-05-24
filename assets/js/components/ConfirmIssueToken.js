@@ -27,18 +27,16 @@ class ConfirmIssueToken extends React.Component {
     }
 
     closeCard () {
-        console.log('dsfsdfsdfsdfsdfsdfsdsdf')
-        this.props.closeConfirmCard();
+        this.props.updatePossibleToIssueToken({
+            value : false
+        });
     };
 
     sendIssueTokenTx() {
         this.issueTokenRequest();
-        console.log('отправка транзакции')
     }
-    // issueToken (pubKey, issueTokenCost, params)
 
    issueTokenRequest() {
-        // this.props.openWaitingConfirmation();
         let parameters = {
                 reissuable : parseInt(this.props.tokenData.reissuable),
                 minable : parseInt(this.props.tokenData.mineable),
@@ -58,7 +56,6 @@ class ConfirmIssueToken extends React.Component {
                 parameters[param] = that.props.tokenBigIntData[param].completeValue;
             });
         }
-        console.log(this.props.issueTokenTxAmount)
 
         extRequests.issueToken(this.props.pubkey, this.props.issueTokenTxAmount, parameters)
         .then(result => {
@@ -69,37 +66,8 @@ class ConfirmIssueToken extends React.Component {
         error => {
             console.log('Error')
             // this.props.changeWaitingStateType('rejected');
-        }); 
-
-        // let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
-        // tokenInfoRequest.then(result => {
-        //     if (!result.lock) {
-        //         result.json().then(mainToken => {
-        //             let mainTokenFee = BigInt(mainToken[0].fee_value);
-        //             this.issueTokenTxAmount = BigInt(this.props.issueTokenCost) + BigInt(mainTokenFee);
-        //             console.log(this.issueTokenTxAmount)
-        //             this.mainTokenTicker = mainToken[0].ticker;
-        //             extRequests.issueToken(this.props.pubkey, issueTokenTxAmount, parameters)
-        //             .then(result => {
-        //                 console.log('Success', result.hash)
-        //                 // this.props.updCurrentTxHash(result.hash);
-        //                 // this.props.changeWaitingStateType('submitted');
-        //             },
-        //             error => {
-        //                 console.log('Error')
-        //                 // this.props.changeWaitingStateType('rejected');
-        //             });                                   
-        //         })
-        //     }
-        // })
+        });
     };
-
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!            
-// BigInt($scope.mainToken.fee_value) + BigInt(contract_pricelist.create_token);
-
-
 
     // sendTransaction (pair) {
     //     this.closeCard();
@@ -130,8 +98,7 @@ class ConfirmIssueToken extends React.Component {
     };
 
     render() {
-        const t = this.props.t;        
-        //console.log(this.props.dataValid, this.props.possibleToIssueToken)
+        const t = this.props.t;
         return (
 
             <>
@@ -197,8 +164,7 @@ class ConfirmIssueToken extends React.Component {
                                 <p>{this.props.tokenData.min_fee_for_percent_fee_type} {this.props.tokenData.ticker}</p>
                             </div>
                         }
-                        
-                        <p className="h4 mt-5 mb-5">TOKEN_ISSUE_TOTAL_PAY: {this.props.issueTokenTxAmount} {this.props.mainTokenTicker}</p>                                                                                                       
+                        <p className="h4 mt-5 mb-5">{t('etm.tokenIssueTotalPay', {issueTokenCost : valueProcessor.usCommasBigIntDecimals(this.props.issueTokenTxAmount, this.props.mainTokenDecimals, this.props.mainTokenDecimals), ticker : this.props.mainTokenTicker})}</p>                                                                                                       
 
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.sendIssueTokenTx.bind(this)}>

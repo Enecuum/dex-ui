@@ -33,7 +33,11 @@ class ConfirmIssueToken extends React.Component {
     };
 
     sendIssueTokenTx() {
+        this.props.openWaitingConfirmation();
         this.issueTokenRequest();
+        this.props.updatePossibleToIssueToken({
+            value : false
+        });
     }
 
    issueTokenRequest() {
@@ -60,37 +64,14 @@ class ConfirmIssueToken extends React.Component {
         extRequests.issueToken(this.props.pubkey, this.props.issueTokenTxAmount, parameters)
         .then(result => {
             console.log('Success', result.hash)
-            // this.props.updCurrentTxHash(result.hash);
-            // this.props.changeWaitingStateType('submitted');
+            this.props.updCurrentTxHash(result.hash);
+            this.props.changeWaitingStateType('submitted');
         },
         error => {
             console.log('Error')
-            // this.props.changeWaitingStateType('rejected');
+            this.props.changeWaitingStateType('rejected');
         });
     };
-
-    // sendTransaction (pair) {
-    //     this.closeCard();
-    //     this.props.openWaitingConfirmation();
-    //     let tx;
-    //     if (utils.pairExists(pair)) {
-    //         if (this.props.menuItem == 'exchange') {
-    //             tx = extRequests.swap(this.props.pubkey, this.props.exchange);
-    //         } else if (this.props.menuItem == 'liquidity') {
-    //             tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
-    //         }
-    //     } else {
-    //         tx = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem]);
-    //     }
-    //     tx.then(result => {
-    //         console.log(result);
-    //         this.props.updCurrentTxHash(result.hash);
-    //         this.props.changeWaitingStateType('submitted');
-    //     },
-    //     error => {
-    //         this.props.changeWaitingStateType('rejected');
-    //     });
-    // };
 
     getBigIntValue (num) { 
         if (num && num !== Infinity) 
@@ -103,9 +84,9 @@ class ConfirmIssueToken extends React.Component {
 
             <>
                 <Modal
-                    show={this.props.possibleToIssueToken}////////////////////////////////////////////////////
+                    show={this.props.possibleToIssueToken}
                     aria-labelledby="example-custom-modal-styling-title"
-                    onHide={this.closeCard.bind(this)}/////////////////////////////////////////////////////
+                    onHide={this.closeCard.bind(this)}
                     centered >
                     <Modal.Header closeButton>
                         <Modal.Title id="example-custom-modal-styling-title">

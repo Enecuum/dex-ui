@@ -48,6 +48,15 @@ function assignTokenProperty(state, fragment, action) {
     }
 }
 
+function etmSore(state, changingProperty) {
+    return {
+        ...state,
+        ...changingProperty
+    };
+};
+
+
+
 export default function etmReducer(state = initialState.etm, action) {
     switch (action.type) {
         case actions.UPDATE_TOKEN_PROPERTY:
@@ -94,7 +103,28 @@ export default function etmReducer(state = initialState.etm, action) {
             return {
                 ...state,
                 possibleToIssueToken : action.payload
-            };            
+            };
+        case actions.CLOSE_WAITING_CONFIRMATION:
+            return etmSore(state, {
+                waitingConfirmation : {
+                    ...state.waitingConfirmation,
+                    visibility : false
+                }
+            });
+        case actions.CHANGE_WAITING_STATE_TYPE:
+            return etmSore(state, {
+                waitingConfirmation : {
+                    ...state.waitingConfirmation,
+                    txStateType : action.value
+                }
+            });
+        case actions.OPEN_WAITING_CONFIRMATION:
+            return etmSore(state, {
+                waitingConfirmation : {
+                    ...state.waitingConfirmation,
+                    visibility : true
+                }
+            });                                    
         default:
             return state;
     }

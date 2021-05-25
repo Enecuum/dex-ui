@@ -146,6 +146,14 @@ function mapStoreToProps(component) {
                     currentTxHash   : state.root.currentTxHash
                 };
             };
+        case components.WAITING_ISSUE_TOKEN_CONFIRMATION:
+            return function (state) {
+                return {
+                    ...state.swapCard.waitingConfirmation,///////////////////////////
+                    net             : state.root.net,
+                    currentTxHash   : state.root.currentTxHash
+                };
+            };            
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (state) {
                 return {
@@ -322,6 +330,14 @@ function mapDispatchToProps(component) {
                     changeCreatePoolState       : swapCardCreator.changeCreatePoolState
                 }, dispatch);
             };
+        case components.WAITING_ISSUE_TOKEN_CONFIRMATION:
+            return function (dispatch) {
+                return bindActionCreators({
+                    closeWaitingConfirmation    : etmCreator.closeWaitingConfirmation,
+                    openWaitingConfirmation     : etmCreator.openWaitingConfirmation,
+                    changeWaitingStateType      : etmCreator.changeWaitingStateType
+                }, dispatch);
+            };            
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (dispatch) {
                 return bindActionCreators({
@@ -349,12 +365,12 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     updatePossibleToIssueToken : etmCreator.updatePossibleToIssueToken,
-                    closeConfirmCard        : swapCardCreator.closeConfirmCard,
-                    openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
-                    changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
-                    showPendingIndicator    : rootCreator.showPendingIndicator,
-                    hidePendingIndicator    : rootCreator.hidePendingIndicator,
-                    updCurrentTxHash        : rootCreator.updCurrentTxHash
+                    // closeConfirmCard           : etmCreator.closeConfirmCard,
+                    openWaitingConfirmation    : etmCreator.openWaitingConfirmation,
+                    changeWaitingStateType     : etmCreator.changeWaitingStateType,
+                    showPendingIndicator       : rootCreator.showPendingIndicator,
+                    hidePendingIndicator       : rootCreator.hidePendingIndicator,
+                    updCurrentTxHash           : rootCreator.updCurrentTxHash
                 }, dispatch); 
             };
         default:

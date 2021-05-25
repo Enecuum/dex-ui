@@ -102,6 +102,10 @@ const initialState = {
             fee_value: presets.etm.feeValueDefault,
             min_fee_for_percent_fee_type: ''
         },
+        waitingConfirmation : {
+            visibility  : false,
+            txStateType : 'waiting'
+        },
         issueTokenTxAmount : '',
         mainTokenTicker : presets.network.nativeToken.ticker,
         mainTokenDecimals : 10,

@@ -4,6 +4,7 @@ import SwapCard from './SwapCard';
 import ConnectionService from './ConnectionService';
 import ConfirmSupply from './ConfirmSupply';
 import WaitingConfirmation from './waitingConfirmation';
+import WaitingIssueTokenConfirmation from './waitingIssueTokenConfirmation';
 import Switch from './Switch';
 import CommonToast from './CommonToast';
 import Connect from './Connect';
@@ -18,6 +19,7 @@ export {
     ConnectionService,
     ConfirmSupply,
     WaitingConfirmation,
+    WaitingIssueTokenConfirmation,
     Switch,
     CommonToast,
     Connect,

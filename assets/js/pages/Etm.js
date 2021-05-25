@@ -201,7 +201,7 @@ class Etm extends React.Component {
 		}
     }    
 
-    processData(purpose = '') { //if purpose == 'issueToken', 'possibleToIssueToken' property in etm.state will set to boolean 'true' or 'false' 	
+    processData(purpose = '') { //if purpose == 'issueToken', 'possibleToIssueToken' property in etm.state will set to boolean 'true' or 'false'
     	let that = this;
     	let validator = new Validator;
     	let validationRules = new IssueTokenValidationRules;

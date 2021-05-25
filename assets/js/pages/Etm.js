@@ -25,7 +25,7 @@ import presets from '../../store/pageDataPresets';
 class Etm extends React.Component {
     constructor (props) {
         super(props);
-
+        this.props.resetStore();
         this.valueProcessor = new ValueProcessor;
 		this.MAX_SUPPLY_LIMIT = this.valueProcessor.getMaxValue(10);
 		this.maxBigInt = this.valueProcessor.maxBigInt;
@@ -38,35 +38,8 @@ class Etm extends React.Component {
 	    }
 
         this.newToken = {
-			tokenData : {
-	            mining_period: '',
-	            ticker: presets.etm.tickerDefault,    
-	            name: presets.etm.nameDefault,
-	            token_type: '0',
-	            reissuable: 0,
-	            mineable: 0,
-	            max_supply: '',
-	            block_reward: '',
-	            min_stake: '',
-	            referrer_stake: '',
-	            ref_share: '',          
-	            decimals: 10,
-	            total_supply: presets.etm.totalSupplyDefault,
-	            fee_type: '0',
-	            fee_value: presets.etm.feeValueDefault,
-	            min_fee_for_percent_fee_type: ''
-	        },
-	        tokenBigIntData : {
-	            mining_period: '',
-	            max_supply: '',
-	            block_reward: '',
-	            min_stake: '',
-	            referrer_stake: '',
-	            ref_share: '',          
-	            total_supply: presets.etm.totalSupplyDefault,
-	            fee_value: presets.etm.feeValueDefault,
-	            min_fee_for_percent_fee_type: ''
-	        }        	
+			tokenData : this.props.tokenData,
+	        tokenBigIntData : this.props.tokenBigIntData     	
         }
 
 	    this.BigIntParametersArrays = {
@@ -202,6 +175,10 @@ class Etm extends React.Component {
     }    
 
     processData(purpose = '') { //if purpose == 'issueToken', 'possibleToIssueToken' property in etm.state will set to boolean 'true' or 'false'
+    	if (purpose === 'issueToken') {
+    		this.newToken.tokenData = this.props.tokenData;
+    		this.newToken.tokenBigIntData = this.props.tokenBigIntData;
+    	}
     	let that = this;
     	let validator = new Validator;
     	let validationRules = new IssueTokenValidationRules;

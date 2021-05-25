@@ -70,6 +70,7 @@ class WaitingIssueTokenConfirmation extends React.Component {
 
     closeWaitingConfirmation () {
         this.props.closeWaitingConfirmation();
+        this.props.resetStore();        
         setTimeout(() => {
             this.props.changeWaitingStateType('waiting')
         }, 1000);

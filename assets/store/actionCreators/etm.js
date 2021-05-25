@@ -72,7 +72,12 @@ const actionCreators = {
             type : actions.CHANGE_WAITING_STATE_TYPE,
             value : stateType
         };
-    },    
+    },
+    resetStore() { 
+        return {
+            type : actions.RESET_STORE
+        }        
+    }    
 };
 
 export default actionCreators;

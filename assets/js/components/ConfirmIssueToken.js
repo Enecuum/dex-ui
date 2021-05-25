@@ -66,6 +66,7 @@ class ConfirmIssueToken extends React.Component {
             console.log('Success', result.hash)
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
+            this.props.resetStore();
         },
         error => {
             console.log('Error')

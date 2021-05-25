@@ -124,7 +124,11 @@ export default function etmReducer(state = initialState.etm, action) {
                     ...state.waitingConfirmation,
                     visibility : true
                 }
-            });                                    
+            });
+        case actions.RESET_STORE:
+            return {
+                ...initialState.etm
+            };
         default:
             return state;
     }

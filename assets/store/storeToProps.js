@@ -151,7 +151,8 @@ function mapStoreToProps(component) {
                 return {
                     ...state.swapCard.waitingConfirmation,///////////////////////////
                     net             : state.root.net,
-                    currentTxHash   : state.root.currentTxHash
+                    currentTxHash   : state.root.currentTxHash,
+                    txState         : state.etm.waitingConfirmation.txStateType
                 };
             };            
         case components.LIQUIDITY_TOKEN_ZONE:
@@ -335,7 +336,8 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     closeWaitingConfirmation    : etmCreator.closeWaitingConfirmation,
                     openWaitingConfirmation     : etmCreator.openWaitingConfirmation,
-                    changeWaitingStateType      : etmCreator.changeWaitingStateType
+                    changeWaitingStateType      : etmCreator.changeWaitingStateType,
+                    resetStore                  : etmCreator.resetStore
                 }, dispatch);
             };            
         case components.LIQUIDITY_TOKEN_ZONE:
@@ -358,7 +360,8 @@ function mapDispatchToProps(component) {
                     updatePossibleToIssueToken     : etmCreator.updatePossibleToIssueToken,
                     updateIssueTokenTxAmount       : etmCreator.updateIssueTokenTxAmount,
                     updateMainTokenTicker          : etmCreator.updateMainTokenTicker,
-                    updateMainTokenDecimals        : etmCreator.updateMainTokenDecimals
+                    updateMainTokenDecimals        : etmCreator.updateMainTokenDecimals,
+                    resetStore                     : etmCreator.resetStore
                 }, dispatch);
             };            
         case components.CONFIRM_ISSUE_TOKEN:
@@ -370,7 +373,8 @@ function mapDispatchToProps(component) {
                     changeWaitingStateType     : etmCreator.changeWaitingStateType,
                     showPendingIndicator       : rootCreator.showPendingIndicator,
                     hidePendingIndicator       : rootCreator.hidePendingIndicator,
-                    updCurrentTxHash           : rootCreator.updCurrentTxHash
+                    updCurrentTxHash           : rootCreator.updCurrentTxHash,
+                    resetStore                  : etmCreator.resetStore
                 }, dispatch); 
             };
         default:

@@ -101,7 +101,7 @@ class ExtRequests {
      * @param {BigInt} amount - lt amount for removing 
      * @returns {Promise}
      */
-    removeLiquidity (pubkey, amount) {
+    removeLiquidity (pubkey, lt, amount) {
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : lt,
             amount : amount

@@ -112,7 +112,7 @@
         "reissuable" : "C не фиксированной эмиссией и возможностью дополнительно эмитировать токены",
         "mineable" : "C возможностью майнинга на мобильных телефонах с операционной системой Android",
         "premine" : "Premine",
-        "emission" : "Emission",
+        "emission" : "Эмиссия",
         "maxSupply" : "Max Supply",
         "blockReward" : "Block Reward",
         "miningPeriod" : "Mining Period",
@@ -152,5 +152,20 @@
     "noData" : "Нет данных",
     "noConnection" : "Отсутствует соединение.",
     "clickConnect" : "Пожалуйста, нажмите кнопку \"Подключение\" в навигационном меню",
-    "tokens" : "Токены"
+    "tokens" : "Токены",
+    "errorMsg" : {
+        "REQUIRED": "Обязательное значение",
+        "TOO_LONG_STRING": "Слишком длинная строка. Должно быть не более {{strLength}} символов",
+        "INVALID_SYMBOLS": "Должны быть только латинские символы.",
+        "NOT_IN_RANGE": "Неверное значение. Должно быть в пределе от {{min}} до {{max}}",
+        "FEE_WRONG_TYPE": "Неверный тип комиссии",        
+        "INVALID_SYMBOLS_IN_DIGITAL_VALUE": "Недопустимые символы. Введненное значение не является целым или десятичным числом.",
+        "TOO_LONG_FRACTIONAL_PART": "Число знаков в десятичной части не должно превышать {{decimals}}",
+        "EXEED_MAX_VALUE_IN_TOKENS": "Не должно превышать {{maxValue}} {{ticker}}",
+        "INTEGER_REQUIRED": "Значение должно быть целым числом",
+        "NOT_IN_RANGE": "Неверное значение. Должно быть в пределе от {{min}} до {{max}}",
+        "MUST_BE_GREATER_THAN": "Значение должно быть больше {{minValue}}",
+        "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть больше или равно, чем {{name}}",
+        "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}"            
+    }
 }

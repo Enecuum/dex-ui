@@ -181,7 +181,7 @@ class Etm extends React.Component {
     	}
     	let that = this;
     	let validator = new Validator;
-    	let validationRules = new IssueTokenValidationRules(this.props.t);
+    	let validationRules = new IssueTokenValidationRules(this.props.t, this.props.tokenData.token_type === '2' ? 'etm.premine' : 'etm.emission');
     	let dataValid = false;
         let newMaxValue = this.valueProcessor.getMaxValue(this.newToken.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {

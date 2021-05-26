@@ -181,7 +181,7 @@ class Etm extends React.Component {
     	}
     	let that = this;
     	let validator = new Validator;
-    	let validationRules = new IssueTokenValidationRules;
+    	let validationRules = new IssueTokenValidationRules(this.props.t);
     	let dataValid = false;
         let newMaxValue = this.valueProcessor.getMaxValue(this.newToken.tokenData.decimals);
         this.BigIntParametersArrays.decimalsDependent.forEach(function(parameter) {
@@ -288,7 +288,7 @@ class Etm extends React.Component {
 									value={this.props.tokenData.ticker}
 									onChange={this.handleInputChange.bind(this)} />
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('ticker') ? 'd-block' : 'd-none'}`} >
-									{this.props.msgData.ticker !== undefined ? this.props.msgData.ticker.msg : ''}
+									{this.props.msgData.ticker !== undefined ? t('errorMsg.' + this.props.msgData.ticker.msg, this.props.msgData.ticker.params) : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -303,7 +303,7 @@ class Etm extends React.Component {
 									value={this.props.tokenData.name}
 									onChange={this.handleInputChange.bind(this)} />
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('name') ? 'd-block' : 'd-none'}`} >
-									{this.props.msgData.name !== undefined ? this.props.msgData.name.msg : ''}
+									{this.props.msgData.name !== undefined ? t('errorMsg.' + this.props.msgData.name.msg, this.props.msgData.name.params) : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -353,7 +353,7 @@ class Etm extends React.Component {
 									value={this.props.tokenData.total_supply}
 									onChange={this.handleInputChange.bind(this)} />
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('total_supply') ? 'd-block' : 'd-none'}`} >
-									{this.props.msgData.total_supply !== undefined ? this.props.msgData.total_supply.msg : ''}
+									{this.props.msgData.total_supply !== undefined ? t('errorMsg.' + this.props.msgData.total_supply.msg, this.props.msgData.total_supply.params) : ''}								
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -371,7 +371,7 @@ class Etm extends React.Component {
 											value={this.props.tokenData.max_supply}
 											onChange={this.handleInputChange.bind(this)} />
 									<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('max_supply') ? 'd-block' : 'd-none'}`} >
-										{this.props.msgData.max_supply !== undefined ? this.props.msgData.max_supply.msg : ''}
+										{this.props.msgData.max_supply !== undefined ? t('errorMsg.' + this.props.msgData.max_supply.msg, this.props.msgData.max_supply.params) : ''}
 									</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -394,7 +394,7 @@ class Etm extends React.Component {
 											</InputGroup.Append>
 										</InputGroup>	
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('block_reward') ? 'd-block' : 'd-none'}`} >
-											{this.props.msgData.block_reward !== undefined ? this.props.msgData.block_reward.msg : ''}
+											{this.props.msgData.block_reward !== undefined ? t('errorMsg.' + this.props.msgData.block_reward.msg, this.props.msgData.block_reward.params) : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -414,7 +414,7 @@ class Etm extends React.Component {
 											</InputGroup.Append>	
 										</InputGroup>	
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('mining_period') ? 'd-block' : 'd-none'}`} >
-											{this.props.msgData.mining_period !== undefined ? this.props.msgData.mining_period.msg : ''}
+											{this.props.msgData.mining_period !== undefined ? t('errorMsg.' + this.props.msgData.mining_period.msg, this.props.msgData.mining_period.params) : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -429,7 +429,7 @@ class Etm extends React.Component {
 											value={this.props.tokenData.min_stake}
 											onChange={this.handleInputChange.bind(this)} />
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('min_stake') ? 'd-block' : 'd-none'}`} >
-											{this.props.msgData.min_stake !== undefined ? this.props.msgData.min_stake.msg : ''}
+											{this.props.msgData.min_stake !== undefined ? t('errorMsg.' + this.props.msgData.min_stake.msg, this.props.msgData.min_stake.params) : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -444,7 +444,7 @@ class Etm extends React.Component {
 											value={this.props.tokenData.referrer_stake}
 											onChange={this.handleInputChange.bind(this)} />
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('referrer_stake') ? 'd-block' : 'd-none'}`} >
-											{this.props.msgData.referrer_stake !== undefined ? this.props.msgData.referrer_stake.msg : ''}
+											{this.props.msgData.referrer_stake !== undefined ? t('errorMsg.' + this.props.msgData.referrer_stake.msg, this.props.msgData.referrer_stake.params) : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -464,7 +464,7 @@ class Etm extends React.Component {
 											</InputGroup.Append>
 										</InputGroup>			
 										<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('ref_share') ? 'd-block' : 'd-none'}`} >
-											{this.props.msgData.ref_share !== undefined ? this.props.msgData.ref_share.msg : ''}
+											{this.props.msgData.ref_share !== undefined ? t('errorMsg.' + this.props.msgData.ref_share.msg, this.props.msgData.ref_share.params) : ''}
 										</Form.Text>
 									</Col>	
 								</Form.Group>
@@ -483,7 +483,7 @@ class Etm extends React.Component {
 									value={this.props.tokenData.decimals}
 									onChange={this.handleInputChange.bind(this)} />
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('decimals') ? 'd-block' : 'd-none'}`} >
-									{this.props.msgData.decimals !== undefined ? this.props.msgData.decimals.msg : ''}
+									{this.props.msgData.decimals !== undefined ? t('errorMsg.' + this.props.msgData.decimals.msg, this.props.msgData.decimals.params) : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -527,7 +527,7 @@ class Etm extends React.Component {
 									</InputGroup.Append>
 								</InputGroup>	
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('fee_value') ? 'd-block' : 'd-none'}`} >
-									{this.props.msgData.fee_value !== undefined ? this.props.msgData.fee_value.msg : ''}
+									{this.props.msgData.fee_value !== undefined ? t('errorMsg.' + this.props.msgData.fee_value.msg, this.props.msgData.fee_value.params) : ''}
 								</Form.Text>
 							</Col>	
 						</Form.Group>
@@ -543,7 +543,7 @@ class Etm extends React.Component {
 										value={this.props.tokenData.min_fee_for_percent_fee_type}
 										onChange={this.handleInputChange.bind(this)} />
 									<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('min_fee_for_percent_fee_type') ? 'd-block' : 'd-none'}`} >
-										{this.props.msgData.min_fee_for_percent_fee_type !== undefined ? this.props.msgData.min_fee_for_percent_fee_type.msg : ''}
+										{this.props.msgData.min_fee_for_percent_fee_type !== undefined ? t('errorMsg.' + this.props.msgData.min_fee_for_percent_fee_type.msg, this.props.msgData.min_fee_for_percent_fee_type.params) : ''}
 									</Form.Text>
 								</Col>	
 							</Form.Group>

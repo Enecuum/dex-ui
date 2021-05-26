@@ -44,16 +44,16 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.swapCard,
-                    pubkey                  : state.root.pubkey,
-                    connectionStatus        : state.root.connectionStatus,
-                    langData                : state.root.langData.trade.swapCard,
-                    menuItem                : state.root.menuItem,
-                    removeLiquiditySimpleView: state.swapCard.removeLiquidity.simpleView,
-                    removeLiquidityAmount   : state.swapCard.removeLiquidity.amount,
-                    pairs                   : state.root.pairs,
-                    balances                : state.root.balances,
-                    navOpened               : state.root.navOpened,
-                    tokens                  : state.root.tokens
+                    pubkey                     : state.root.pubkey,
+                    connectionStatus           : state.root.connectionStatus,
+                    langData                   : state.root.langData.trade.swapCard,
+                    menuItem                   : state.root.menuItem,
+                    removeLiquiditySimpleView  : state.swapCard.removeLiquidity.simpleView,
+                    removeLiquidityAmount      : state.swapCard.removeLiquidity.amount,
+                    pairs                      : state.root.pairs,
+                    balances                   : state.root.balances,
+                    navOpened                  : state.root.navOpened,
+                    tokens                     : state.root.tokens
                 };
             };
         case components.SWITCH:

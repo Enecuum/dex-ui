@@ -118,7 +118,7 @@
         "miningPeriod" : "Mining Period",
         "minStake" : "Минимальный стейк",
         "referrerStake" : "Referrer Stake",
-        "refShare" : "RefShare",
+        "refShare" : "Ref. share",
         "decimals" : "Decimals",
         "feeType" : "Тип комиссии",
         "flat" : "Фиксированная",

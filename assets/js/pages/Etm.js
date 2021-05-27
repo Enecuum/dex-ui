@@ -56,6 +56,14 @@ class Etm extends React.Component {
 		const target = event.target;
 		const propName = target.name;
 		let value = propName === 'ticker' ? target.value.toUpperCase() : target.value
+		
+		if (propName === 'decimals') {			
+			if (isNaN(value) || value === '' || value === undefined) {
+				value = 0;
+			}
+			value = parseInt(value);	
+		}
+
 		this.newToken.tokenData[propName] = value;
 
 		if (propName === 'token_type') {
@@ -474,8 +482,7 @@ class Etm extends React.Component {
 							<Form.Label column sm={2}>{t('etm.decimals')}</Form.Label>
 							<Col xl={5}>
 								<Form.Control
-									readOnly
-									disabled
+
 									type="text"
 									placeholder={this.props.tokenData.decimals}
 									name="decimals"

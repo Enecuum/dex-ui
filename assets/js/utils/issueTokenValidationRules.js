@@ -70,12 +70,19 @@ class IssueTokenValidationRules {
                         args: {data: tokenData.max_supply},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
-                    },
+                    },                    
                     {
                         method: 'execTheRegExp',
                         args: {str: tokenData.max_supply, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
+                        requireToCheck: tokenData.decimals === 0 ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.max_supply, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
                     }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
@@ -124,6 +131,13 @@ class IssueTokenValidationRules {
                         args: {str: tokenData.min_stake, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
+                        requireToCheck: tokenData.decimals === 0 ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.min_stake, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
                     }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenMinStakeWrapper .errMsg'        
@@ -142,6 +156,13 @@ class IssueTokenValidationRules {
                         args: {str: tokenData.referrer_stake, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
+                        requireToCheck: tokenData.decimals === 0 ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.referrer_stake, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
                     }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenReferrerStakeWrapper .errMsg'        
@@ -207,6 +228,13 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     },
+                    {
+                        requireToCheck: tokenData.decimals === 0 ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.total_supply, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
+                    }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenTotalSupplyWrapper .errMsg'        
             },                     
@@ -258,6 +286,13 @@ class IssueTokenValidationRules {
                         args: {str: tokenData.min_fee_for_percent_fee_type, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
+                        requireToCheck: tokenData.decimals === 0 ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.min_fee_for_percent_fee_type, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
                     }
                 ],
                 errMsgSelector: '#issueTokenForm #setTokenMinFeeWrapper .errMsg'
@@ -270,8 +305,9 @@ class IssueTokenValidationRules {
         let validationRules = {
             max_supply: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
-                checks: [
+                checks: [                
                     {
+                        requireToCheck: etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.max_supply.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -351,7 +387,7 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     },
-                    {
+                    {                        
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.block_reward.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -376,6 +412,7 @@ class IssueTokenValidationRules {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
+                        requireToCheck: etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.min_stake.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -444,6 +481,7 @@ class IssueTokenValidationRules {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
                 checks: [
                     {
+                        requireToCheck: etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.referrer_stake.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -535,6 +573,7 @@ class IssueTokenValidationRules {
             total_supply: {                
                 checks: [                    
                     {
+                        requireToCheck: etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.total_supply.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -630,6 +669,7 @@ class IssueTokenValidationRules {
                 requireToCheck: etmState.tokenData.fee_type === '1' ? true : false,
                 checks: [
                     {
+                        requireToCheck:etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.min_fee_for_percent_fee_type.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,

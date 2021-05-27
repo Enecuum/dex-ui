@@ -25,8 +25,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INVALID_SYMBOLS'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenTickerWrapper .errMsg'
+                ]
             },    
             name: {
                 checks: [
@@ -42,8 +41,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: {msg: 'TOO_LONG_STRING', params: {strLength: tokenDataConstraints.name.maxLength}}                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenNameWrapper .errMsg'
+                ]
             },                     
             token_type: {
                 checks: [
@@ -59,8 +57,7 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'TOKEN_WRONG_TYPE'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenTypeWrapper .errMsg'
+                ]
             },            
             max_supply: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
@@ -84,8 +81,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
+                ]
             },
             mining_period: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
@@ -114,8 +110,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     },
-                ],
-                errMsgSelector: '#issueTokenForm #setMiningPeriodWrapper .errMsg'
+                ]
             },
             min_stake: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
@@ -139,8 +134,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMinStakeWrapper .errMsg'        
+                ]
             },
             referrer_stake: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
@@ -164,8 +158,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenReferrerStakeWrapper .errMsg'        
+                ]
             },
             ref_share: {
                 requireToCheck: tokenData.token_type === '2' ? true : false,
@@ -182,8 +175,7 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenRefShareWrapper .errMsg'
+                ]
             },                                     
             decimals: {
                 checks: [
@@ -211,8 +203,7 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'INTEGER_REQUIRED'
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenDecimalsWrapper .errMsg'
+                ]
             },            
             total_supply: {
                 checks: [
@@ -235,8 +226,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenTotalSupplyWrapper .errMsg'        
+                ]
             },                     
             fee_type: {
                 checks: [
@@ -252,8 +242,7 @@ class IssueTokenValidationRules {
                         desiredResult: true,
                         errMsg: 'FEE_WRONG_TYPE'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenFeeTypeWrapper .errMsg'
+                ]
             },
             fee_value: {
                 checks: [
@@ -268,9 +257,15 @@ class IssueTokenValidationRules {
                         args: {str: tokenData.fee_value, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                    },
+                    {
+                        requireToCheck: tokenData.decimals === 0 && tokenData.fee_type === '0' ? true : false,
+                        method: 'testTheRegExp',
+                        args: {str:  tokenData.fee_value, regExpObj: /[^0-9]/},
+                        desiredResult: false,
+                        errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenFeeValueWrapper .errMsg'
+                ]
             },
             min_fee_for_percent_fee_type: {
                 requireToCheck: tokenData.fee_type === '1' ? true : false,
@@ -294,8 +289,7 @@ class IssueTokenValidationRules {
                         desiredResult: false,
                         errMsg: 'INTEGER_REQUIRED'                                
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMinFeeWrapper .errMsg'
+                ]
             }                           
         };
         return validationRules;       
@@ -369,8 +363,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMaxSupplyWrapper .errMsg'        
+                ]
             },
             block_reward: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
@@ -388,6 +381,7 @@ class IssueTokenValidationRules {
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     },
                     {                        
+                        requireToCheck: etmState.tokenData.decimals === 0 ? false : true,
                         method: 'strExeedMaxLength',
                         args: {dataStr: etmState.tokenBigIntData.block_reward.fractionalPart, maxLength: etmState.tokenData.decimals},
                         desiredResult: false,
@@ -405,8 +399,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenBlockRewardWrapper .errMsg'        
+                ]
             },
             min_stake: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
@@ -474,8 +467,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMinStakeWrapper .errMsg'        
+                ]
             },
             referrer_stake: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
@@ -543,8 +535,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenReferrerStakeWrapper .errMsg'        
+                ]
             },
             ref_share: {
                 requireToCheck: etmState.tokenData.token_type === '2' ? true : false,
@@ -567,8 +558,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenRefShareWrapper .errMsg'             
+                ]
             },
             total_supply: {                
                 checks: [                    
@@ -639,17 +629,24 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenTotalSupplyWrapper .errMsg'        
+                ]
             },                     
             fee_value: {
                 checks: [
                     {
+                        requireToCheck: etmState.tokenData.decimals > 0 ? true : false,
                         method: 'strExeedMaxLength',
-                        args: {dataStr: etmState.tokenBigIntData.fee_value.fractionalPart, maxLength: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].decimalPlaces},
+                        args: {dataStr: etmState.tokenBigIntData.fee_value.fractionalPart, maxLength: tokenDataConstraints.fee_value_props_arr[parseInt(etmState.tokenData.fee_type)].decimalPlaces},
                         desiredResult: false,
                         errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].decimalPlaces}}
                     },
+                    {
+                        requireToCheck: etmState.tokenData.decimals === 0 && etmState.tokenData.fee_type === '1' ? true : false,
+                        method: 'strExeedMaxLength',
+                        args: {dataStr: etmState.tokenBigIntData.fee_value.fractionalPart, maxLength: tokenDataConstraints.fee_value_props_arr[parseInt(etmState.tokenData.fee_type)].decimalPlaces},
+                        desiredResult: false,
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].decimalPlaces}}
+                    },                    
                     {
                         method: 'moreThan',
                         args: {value: etmState.tokenBigIntData.fee_value.completeValue, max: etmState.tokenData.fee_type === '0' ? maxBigInt : BigInt(tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].maxValue * (10 ** tokenDataConstraints.fee_value_props_arr[1].decimalPlaces))},
@@ -662,8 +659,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenFeeValueWrapper .errMsg'
+                ]
             },
             min_fee_for_percent_fee_type: {
                 requireToCheck: etmState.tokenData.fee_type === '1' ? true : false,
@@ -687,8 +683,7 @@ class IssueTokenValidationRules {
                                     }
                                 }
                     }                                
-                ],
-                errMsgSelector: '#issueTokenForm #setTokenMinFeeWrapper .errMsg'
+                ]
             }                           
         };
         return validationRules;   

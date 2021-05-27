@@ -98,9 +98,7 @@ class Validator {
                                 argObj = check.args,
                                 desiredResult = check.desiredResult,
                                 errMsg = check.errMsg,
-                                result = that[method](argObj),
-                                selector = rulesObject[prop].errMsgSelector;
-
+                                result = that[method](argObj)
                             if (desiredResult !== result) {
                                 propsErr[prop]++;
                                 validationResult.dataValid = false;

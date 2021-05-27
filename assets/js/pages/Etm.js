@@ -482,7 +482,8 @@ class Etm extends React.Component {
 							<Form.Label column sm={2}>{t('etm.decimals')}</Form.Label>
 							<Col xl={5}>
 								<Form.Control
-
+									readOnly
+									disabled
 									type="text"
 									placeholder={this.props.tokenData.decimals}
 									name="decimals"

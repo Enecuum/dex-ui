@@ -103,6 +103,7 @@
     },
     "etm" : {
         "issueToken" : "Issue token",
+        "issueTokenQuotes" : "'Issue token'",
         "ticker" : "Ticker",
         "name" : "Name",
         "tokenType" : "Token type",
@@ -164,6 +165,9 @@
         "NOT_IN_RANGE":"Incorrect value. Must be in the range of {{min}} to {{max}}",
         "MUST_BE_GREATER_THAN":"The value must be greater than {{minValue}}",
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE":"The value must be greater or equal than {{name}}",
-        "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}"            
-    }
+        "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}",
+        "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",
+        "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}."
+    },
+    "checkingMainTokenBalance" : "Сhecking the balance of the native token..."
 }

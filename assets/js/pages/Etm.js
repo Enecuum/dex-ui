@@ -31,11 +31,7 @@ class Etm extends React.Component {
 		this.maxBigInt = this.valueProcessor.maxBigInt;
 	    this.handleInputChange = this.handleInputChange.bind(this);
 	    this.validateAndShowSubmit = this.validateAndShowSubmit.bind(this);
-	    this.mainToken = {	    	
-	    	ticker   : undefined,
-	    	amount   : undefined,
-	    	decimals : undefined
-	    }
+	    this.nativeTokenBalanceStateMsg = this.props.t('checkingMainTokenBalance');
 
         this.newToken = {
 			tokenData : this.props.tokenData,
@@ -103,6 +99,7 @@ class Etm extends React.Component {
 	};
 
 	watchIfEnoughMainTokenBalanceToIssueToken() {
+		let mainTokenAmount = 0;
 		if (this.props.showForm !== true) {
 
 			let contractPricelist = networkApi.getContractPricelist();
@@ -113,43 +110,41 @@ class Etm extends React.Component {
 					result.json().then(pricelist => {
 
 						let contract_pricelistIssueToken = BigInt(pricelist.create_token);
-						if (this.props.mainToken !== undefined && this.props.balances !== undefined) {	
 
+						if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
 							let mainTokenInfo = this.props.balances.find(token => token.token === this.props.mainToken);
+
 							if (mainTokenInfo !== undefined) {
-
-								for (let prop in this.mainToken) {
-									if (mainTokenInfo[prop] !== undefined)
-										this.mainToken[prop] = mainTokenInfo[prop];
-								}
-
-								if (BigInt(this.mainToken.amount) >= contract_pricelistIssueToken) {								
-									let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
-							        tokenInfoRequest.then(result => {
-							            if (!result.lock) {
-							                result.json().then(mainToken => {
-							                    let mainTokenFee = BigInt(mainToken[0].fee_value);
-							                    let issueTokenTxAmount = BigInt(contract_pricelistIssueToken) + BigInt(mainTokenFee);						                    
-												if (BigInt(this.mainToken.amount) >= issueTokenTxAmount) {
-													this.props.updateIssueTokenTxAmount({
-														value : issueTokenTxAmount
-													});
-													this.props.updateMainTokenTicker({
-														value : mainToken[0].ticker
-													});
-													this.props.updateMainTokenDecimals({
-														value : mainToken[0].decimals
-													});													
-													this.props.updateShowForm({
-														value : true
-													});
-												}                                
-							                })
-							            }
-							        })
-								}
-							}		
-						}									
+								mainTokenAmount = mainTokenInfo.amount;
+							}
+																
+							let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
+					        tokenInfoRequest.then(result => {
+					            if (!result.lock) {
+					                result.json().then(mainToken => {
+					                    let mainTokenFee = BigInt(mainToken[0].fee_value);
+					                    let issueTokenTxAmount = BigInt(contract_pricelistIssueToken) + BigInt(mainTokenFee);
+					                    let issueTokenTxAmountFormatted = this.valueProcessor.usCommasBigIntDecimals(issueTokenTxAmount, mainToken[0].decimals, mainToken[0].decimals);					                    
+										if (BigInt(mainTokenAmount) >= issueTokenTxAmount) {
+											this.props.updateIssueTokenTxAmount({
+												value : issueTokenTxAmount
+											});
+											this.props.updateMainTokenTicker({
+												value : mainToken[0].ticker
+											});
+											this.props.updateMainTokenDecimals({
+												value : mainToken[0].decimals
+											});													
+											this.props.updateShowForm({
+												value : true
+											});
+										} else {
+											this.nativeTokenBalanceStateMsg = this.props.t('errorMsg.INSUFFICIENT_FUNDS_FOR_OPERATION', {operationName : this.props.t('etm.issueTokenQuotes')}) + ' ' +this.props.t('errorMsg.TOP_UP_BALANCE', {value : issueTokenTxAmountFormatted, ticker : mainToken[0].ticker})
+										}
+					                })
+					            }
+					        })
+						}
 					})
 				}
 	        })
@@ -277,7 +272,7 @@ class Etm extends React.Component {
     	} else if (!this.props.showForm) {
     		return (
     			<div className="px-5">
-    				Сhecking the balance of the native token...
+    				{this.nativeTokenBalanceStateMsg}
     			</div>
     		)
     	} else {

@@ -115,11 +115,11 @@ class ConfirmSupply extends React.Component {
                                 </div>
                                 <div>
                                     {utils.countPoolShare(pair, {
-                                        value0 : utils.convertFieldValueintoBigInt(modeStruct.field0),
-                                        value1 : utils.convertFieldValueintoBigInt(modeStruct.field1)
+                                        value0 : modeStruct.field0.value.value,
+                                        value1 : modeStruct.field1.value.value
                                     }, true)}%
                                 </div>
-                            </div>                  
+                            </div>
                         </div>
                         <Button className='btn-secondary confirm-supply-button w-100'
                                 onClick={this.sendTransaction.bind(this, pair)}>

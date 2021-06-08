@@ -4,7 +4,10 @@ function getDefaultField(id) {
     return {
         id      : id,
         balance : presets.swapTokens.emptyBalance, // balance of the token from 'token' property
-        value   : '',
+        value   : {
+            value   : undefined,
+            decimals: undefined
+        },
         token   : presets.swapTokens.emptyToken
     };
 };

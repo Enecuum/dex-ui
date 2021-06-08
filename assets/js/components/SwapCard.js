@@ -64,9 +64,12 @@ class SwapCard extends React.Component {
 
     setRemoveLiquidityValue(value) {
         this.rmPercents = value;
-        let fieldValue = valueProcessor.usCommasBigIntDecimals(utils.countPortion(this.props.removeLiquidity.ltfield.balance.amount, value).toFixed(), this.props.removeLiquidity.ltfield.balance.decimals);
-        this.props.assignCoinValue('removeLiquidity', 'ltfield', fieldValue);
-        this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldValue);
+        let fieldObj = { 
+            value : utils.countPortion(this.props.removeLiquidity.ltfield.balance.amount, value), 
+            decimals : this.props.removeLiquidity.ltfield.balance.decimalss
+        };
+        this.props.assignCoinValue('removeLiquidity', 'ltfield', fieldObj);
+        this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldObj.value);
     };
 
     removeRequest() {
@@ -276,13 +279,13 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field0.value}</div>
+                                <div>{modeStruct.field0.value.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field1.value}</div>
+                                <div>{modeStruct.field1.value.value}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
@@ -389,7 +392,7 @@ class SwapCard extends React.Component {
                         onChange={this.changeField.bind(this, props.id)}
                         className='c-input-field'
                         type='text'
-                        value={props.fieldData.value}
+                        value={this.showInputValue(props.fieldData.value)}
                         placeholder='0.0'
                         autoComplete='off'>
                     </input>
@@ -416,10 +419,21 @@ class SwapCard extends React.Component {
 
     /* ============================ data calculation and filtration ============================= */
 
+    showInputValue(valueObj) {
+        // make rules for showing numbers acording to national standarts
+        let res;
+        if (valueObj.value != undefined) {
+            res = valueProcessor.usCommasBigIntDecimals(valueObj.value, valueObj.decimals).replace(/,/g, '');
+            console.log(res);
+            res = utils.removeEndZeros(res);
+        }
+        return res;
+    }
+
     showPoolShare () {
         let res =  utils.countPoolShare(this.activePair, {
-            value0 : utils.convertFieldValueintoBigInt(this.props.liquidity.field0),
-            value1 : utils.convertFieldValueintoBigInt(this.props.liquidity.field1)
+            value0 : this.props.liquidity.field0.value.value,
+            value1 : this.props.liquidity.field1.value.value
         }, true) + '';
         if (res < 0.001 && res != '-')
             res = '< 0.001';
@@ -468,32 +482,34 @@ class SwapCard extends React.Component {
     changeField(fieldId) {
         let mode = this.getMode();
         let field = this.getFieldName(fieldId);
-        let value = this.props[mode][field].value;
+        let value;
+        // ---------------
         if (['insertText', 'deleteContentBackward', 'deleteContentForward'].indexOf(event.inputType) !== -1) {
-            if (document.getElementById(fieldId).value == '.')
+            let newVal = document.getElementById(fieldId).value;
+            if (newVal == '.' || newVal == ',')
                 value = '0.';
             if (event.inputType == 'insertText' && !(new RegExp('[0-9|\\.|\\,]+')).test(event.data)) {
-                // nothing to do. this.updCardInternals() will save you previous number
             } else if (event.inputType == 'deleteContentBackward' || event.inputType == 'deleteContentForward') {
-                value = document.getElementById(fieldId).value;
+                value = newVal;
             } else {
-                let newVal = document.getElementById(fieldId).value;
-                if ((new RegExp('^[0-9|,]+\\.?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal)) {
-                    if ((/.*\..*/).test(newVal)) {
-                        value = newVal;
-                    } else {
-                        value = utils.removeEndZeros(valueProcessor.usCommasBigIntDecimals(valueProcessor.valueToBigInt(newVal.replace(/,/g,"")).value));
-                    }
-                }
+                if ((new RegExp('^[0-9]+(\\.|,)?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal))
+                    value = newVal.replace(',','.'); 
             }
         } else if (['deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             value = document.getElementById(fieldId).value;
-        } else { }
-        this.props.assignCoinValue(mode, field, value);
-        value = value.replace(/,/g,"");
-        let fieldObj = this.props[mode][field];
-        fieldObj.value = value;
-        this.countCounterField(fieldObj, this.getFieldName(fieldId, true), (mode == 'removeLiquidity') ? true : false, field);
+        } else {}
+        // ---------------
+        if (value !== undefined) {
+            let decimals = this.props[mode][field].token.decimals;
+            let newVal = {
+                value : BigInt(value * Math.pow(10, decimals)),
+                decimals : decimals
+            };
+            this.props.assignCoinValue(mode, field, newVal);
+            let fieldObj = this.props[mode][field];
+            fieldObj.value = newVal;
+            this.countCounterField(fieldObj, this.getFieldName(fieldId, true), (mode == 'removeLiquidity') ? true : false, field);
+        }
         this.establishReadiness();
     };
 
@@ -515,7 +531,7 @@ class SwapCard extends React.Component {
             value : BigInt(pair.token_1.volume),
             decimals : decimals[1]
         };
-        let amountIn = valueProcessor.valueToBigInt(activeField.value, activeField.balance.decimals);
+        let amountIn = activeField.value;
 
         if (this.props.menuItem == 'exchange') {
             if (activeField.token.hash == pair.token_0.hash)
@@ -530,59 +546,52 @@ class SwapCard extends React.Component {
         }
     };
 
-    countCounterField(activeField, cField, removeLiquidity, aField) {
+    countCounterField(fieldObj, cField, removeLiquidity, aField) {
         let mode = this.getMode();
         if (!this.pairExists)
             return;
-        if (activeField.value == '') {
-            this.props.assignCoinValue(mode, cField, '');
+        if (fieldObj.value.value == undefined)
             return;
-        }
         let counterField = this.props[this.getMode()][cField];
-        if (activeField.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
+        if (fieldObj.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
                 return;
             }
             if (removeLiquidity) {
-                this.countRemoveLiquidity(mode, aField, this.props[this.getMode()][aField].value);
+                this.countRemoveLiquidity(mode, aField, fieldObj.value);
             } else {
-                let counterFieldPrice = this.countPrice(activeField, counterField, this.activePair);
-                counterFieldPrice = valueProcessor.usCommasBigIntDecimals(counterFieldPrice.value, counterFieldPrice.decimals);
-                counterFieldPrice = utils.removeEndZeros(counterFieldPrice);
-                this.props.assignCoinValue(mode, cField, counterFieldPrice);
+                let counterFieldPrice = this.countPrice(fieldObj, counterField, this.activePair);
+                this.props.assignCoinValue(mode, cField, {
+                    value : counterFieldPrice.value,
+                    decimals : counterFieldPrice.decimals
+                });
             }
         }
     };
 
     countRemoveLiquidity (mode, cField, fieldValue, forcedLt) {
         let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, {
-            t0 : {
-                value : utils.convertFieldValueintoBigInt(this.props.removeLiquidity.field0),
-                decimals : this.props.removeLiquidity.field0.token.decimals
-            },
-            t1 : {
-                value : utils.convertFieldValueintoBigInt(this.props.removeLiquidity.field1),
-                decimals : this.props.removeLiquidity.field1.token.decimals
-            },
+            t0 : this.props.removeLiquidity.field0.value,
+            t1 : this.props.removeLiquidity.field1.value,
             lt : {
-                value : (forcedLt) ? forcedLt : utils.convertFieldValueintoBigInt({ value : fieldValue, token : { decimals : this.props.removeLiquidity.ltfield.token.decimals } }),
+                value : (forcedLt) ? forcedLt : fieldValue,
                 ...this.props.removeLiquidity.ltfield.token
             }
         }, cField);
         let rmPercent = 50;//utils.countPercentsByPortion(this.props.removeLiquidity.ltfield.balance.amount, Number(counted.lt.value / BigInt(counted.lt.decimals))).toFixed(1);
         
         if (!this.isValidPercent(rmPercent)) {
-            let full = this.props.removeLiquidity.ltfield.balance.amount;
-            this.rmPercents = 100;
-            this.props.assignCoinValue(mode, 'ltfield', full);
-            this.countRemoveLiquidity(mode, 'ltfield', fieldValue, full);
+            // let full = this.props.removeLiquidity.ltfield.balance.amount;
+            // this.rmPercents = 100;
+            // this.props.assignCoinValue(mode, 'ltfield', full);
+            // this.countRemoveLiquidity(mode, 'ltfield', fieldValue, full);
         } else {
             if (cField != 'field0')
-                this.props.assignCoinValue(mode, 'field0',  valueProcessor.usCommasBigIntDecimals(counted.t0.value, counted.t0.decimals));
+                this.props.assignCoinValue(mode, 'field0',  counted.t0);
             if (cField != 'field1')
-                this.props.assignCoinValue(mode, 'field1',  valueProcessor.usCommasBigIntDecimals(counted.t1.value, counted.t1.decimals));
+                this.props.assignCoinValue(mode, 'field1',  counted.t1);
             if (cField != 'ltfield')
-                this.props.assignCoinValue(mode, 'ltfield', valueProcessor.usCommasBigIntDecimals(counted.lt.value, counted.lt.decimals));
+                this.props.assignCoinValue(mode, 'ltfield', counted.lt);
         }
     };
 

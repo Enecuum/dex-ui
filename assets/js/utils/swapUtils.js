@@ -52,12 +52,12 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
         pair = {
             token_0 : {
                 hash : modeStruct.field0.token.hash,
-                volume : modeStruct.field0.value.replace(',', ''), // 123
+                volume : modeStruct.field0.value.value,
                 decimals : modeStruct.field0.token.decimals
             },
             token_1 : {
                 hash : modeStruct.field1.token.hash,
-                volume : modeStruct.field1.value.replace(',', ''),
+                volume : modeStruct.field1.value.value,
                 decimals : modeStruct.field1.token.decimals
             },
             pool_fee : 0,
@@ -99,13 +99,20 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
  * @returns {string} - percents
  */
 function countPoolShare(pair, values, addition) {
-    if (!pairExists(pair)) {
+    if (!pairExists(pair))
         return '100';
+
+    let value0, value1, volume0, volume1;
+
+    try {
+        value0  = BigInt(values.value0);
+        value1  = BigInt(values.value1);
+        volume0 = BigInt(pair.token_0.volume);
+        volume1 = BigInt(pair.token_1.volume);
+    } catch (e) {
+        return;
     }
-    let value0  = BigInt(values.value0);
-    let value1  = BigInt(values.value1);
-    let volume0 = BigInt(pair.token_0.volume);
-    let volume1 = BigInt(pair.token_1.volume);
+
     if (addition) {
         volume0 += value0;
         volume1 += value1;
@@ -125,17 +132,9 @@ function countPoolShare(pair, values, addition) {
         decimals : 0
     });
     let res = vp.div(inputVolume, poolVolume);
-
+    if (!Object.keys(res).length)
+        return '';
     return vp.usCommasBigIntDecimals(res.value * 100n, 24, 10);
-};
-
-function convertFieldValueintoBigInt (field) {
-    if (field.token.decimals == undefined || field.value == NaN)
-        return 0n;
-    let str = String(field.value).replace(',','');
-    if (str !== NaN || field.token.decimals !== NaN)
-        return vp.valueToBigInt(str, field.token.decimals).value;
-    return 0n;
 };
 
 /* ================================= search functions ================================ */
@@ -192,7 +191,6 @@ function getTokenObj(tokens, hash) {
 /* =================================================================================== */
 
 export default {
-    convertFieldValueintoBigInt,
     countPercentsByPortion,
     countExchangeRate,
     countPoolShare,

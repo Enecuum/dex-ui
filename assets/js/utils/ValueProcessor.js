@@ -43,7 +43,7 @@ class ValueProcessor {
                 fractionalPart = str.substring(str.length - decimals);
                 for (let i=0; i < (decimals - str.length); i++) {
                     fractionalPart = '0' + fractionalPart;
-                }                      
+                }                  
             }
             return integerPart + delimiter + fractionalPart.substring(0, fixed);
         } else
@@ -66,20 +66,19 @@ class ValueProcessor {
     div (op0, op1) {
         return this.bigIntMathOperation(this.operations.DIV, op0, op1);
     }
+    assignValidValue (valueObj) {
+        if (valueObj.value == undefined || valueObj.decimals == undefined)
+            return undefined;
+        valueObj.value = BigInt(valueObj.value)
+        return valueObj;
+    }
     bigIntMathOperation (operation, op0, op1) {
-        if (op0.value == undefined || op1.value == undefined) {
-            console.log('bigint_math_operation: without value');
-            op0.value = 0;
-            op1.value = 0;
-        }
-        if (op0.decimals == undefined || op1.decimals == undefined) {
-            console.log('bigint_math_operation: without decimals');
-            op0.decimals = 0;
-            op1.decimals = 0;
-        }
-        op0.value = BigInt(op0.value);
-        op1.value = BigInt(op1.value);
-        
+        op0 = this.assignValidValue(op0);
+        op1 = this.assignValidValue(op1);
+ 
+        if (op0 == undefined || op1 == undefined)
+            return {};
+
         let decimalsAddition = Math.abs(op1.decimals - op0.decimals);
         if (op0.decimals > op1.decimals) {
             op1.decimals += decimalsAddition;

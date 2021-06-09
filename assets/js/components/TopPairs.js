@@ -96,9 +96,9 @@ class TopPairs extends React.Component {
 						},
 						your_lp_tokens : ltDestructionResult,
 						your_pool_share : swapUtils.countPoolShare(pair, {
-                            value0 : ltDestructionResult.t0.value, 
-                            value1 : ltDestructionResult.t1.value
-                        })
+                            value0 : ltDestructionResult.t0, 
+                            value1 : ltDestructionResult.t1
+                        }, balances)
 					})
 				} else {
 					console.log('Чёрный список!!!')

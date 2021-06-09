@@ -149,9 +149,9 @@ class LiquidityTokensZone extends React.Component {
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">Pool share:</span>
                                         {utils.removeEndZeros(utils.countPoolShare(el, {
-                                            value0 : this.pooled[index].t0.value,
-                                            value1 : this.pooled[index].t1.value
-                                        }))}%
+                                            value0 : this.pooled[index].t0,
+                                            value1 : this.pooled[index].t1
+                                        }, this.props.balances))}%
                                     </div>
                                 </div>
 

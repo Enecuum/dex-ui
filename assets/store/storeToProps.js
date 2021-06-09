@@ -130,7 +130,8 @@ function mapStoreToProps(component) {
                     liquidity         : state.swapCard.liquidity,
                     menuItem          : state.root.menuItem,
                     pubkey            : state.root.pubkey,
-                    pairs             : state.root.pairs
+                    pairs             : state.root.pairs,
+                    balances          : state.root.balances
                 };
             };
         case components.WAITING_CONFIRMATION:

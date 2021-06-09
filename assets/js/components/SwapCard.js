@@ -422,19 +422,19 @@ class SwapCard extends React.Component {
     showInputValue(valueObj) {
         // make rules for showing numbers acording to national standarts
         let res;
-        if (valueObj.text != undefined) {
+        if (valueObj.text !== undefined)
             if (valueObj.text != '')
                 res = utils.removeEndZeros(valueObj.text);
-        } else
+        else
             res = '';
         return res;
     }
 
     showPoolShare () {
         let res =  utils.countPoolShare(this.activePair, {
-            value0 : this.props.liquidity.field0.value.value,
-            value1 : this.props.liquidity.field1.value.value
-        }, true) + '';
+            value0 : this.props.liquidity.field0.value,
+            value1 : this.props.liquidity.field1.value
+        }, this.props.balances, true) + '';
         if (res < 0.001 && res != '-')
             res = '< 0.001';
         if (res == Infinity)
@@ -570,7 +570,8 @@ class SwapCard extends React.Component {
                 let counterFieldPrice = this.countPrice(fieldObj, counterField, this.activePair);
                 this.props.assignCoinValue(mode, cField, {
                     value : counterFieldPrice.value,
-                    decimals : counterFieldPrice.decimals
+                    decimals : counterFieldPrice.decimals,
+                    text : valueProcessor.usCommasBigIntDecimals(counterFieldPrice.value, counterFieldPrice.decimals).replace(/,/g, '')
                 });
             }
         }

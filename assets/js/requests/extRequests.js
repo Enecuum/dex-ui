@@ -24,8 +24,13 @@ const requestType = {
 class ExtRequests { 
 
     getBigIntAmount (field) { // utility
-        let value = field.value.replace(',', '');
-        return valueProcessor.valueToBigInt(value, field.balance.decimals).value;
+        let diff = field.balance.decimals - field.value.decimals;
+        if (diff > 0)
+            return field.value.value * Math.pow(10, Math.abs(diff));
+        else if (diff < 0)
+            return field.value.value / Math.pow(10, Math.abs(diff));
+        else 
+            return field.value.value;
     };
 
     /**
@@ -128,8 +133,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        // console.log(data);      // TODO - remove for production
-        // console.log(params);    // TODO - remove for production
+        // console.log(data);
+        // console.log(params);
         return trafficController.sendTransaction(data);
     };
 
@@ -146,8 +151,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        console.log(data);      // TODO - remove for production ????????????
-        // console.log(params);    // TODO - remove for production ????????????
+        // console.log(data);      
+        // console.log(params);
         return trafficController.sendTransaction(data);
     };
 };

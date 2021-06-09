@@ -37,7 +37,6 @@ class ConfirmSupply extends React.Component {
             tx = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem]);
         }
         tx.then(result => {
-            console.log(result);
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
         },
@@ -92,13 +91,13 @@ class ConfirmSupply extends React.Component {
                                 <div>
                                     {firstToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
-                                <LogoToken data={{url : img1, value : modeStruct.field0.value}} />
+                                <LogoToken data={{url : img1, value : modeStruct.field0.value.value}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
                                     {secondToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
-                                <LogoToken data={{url : img2, value : modeStruct.field1.value}} />
+                                <LogoToken data={{url : img2, value : modeStruct.field1.value.value}} />
                             </div>
                             <div className='d-flex align-items-start justify-content-between mb-2'>
                                 <div>
@@ -115,9 +114,9 @@ class ConfirmSupply extends React.Component {
                                 </div>
                                 <div>
                                     {utils.countPoolShare(pair, {
-                                        value0 : modeStruct.field0.value.value,
-                                        value1 : modeStruct.field1.value.value
-                                    }, true)}%
+                                        value0 : modeStruct.field0.value,
+                                        value1 : modeStruct.field1.value
+                                    }, this.props.balances, true)}%
                                 </div>
                             </div>
                         </div>

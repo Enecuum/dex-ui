@@ -92,15 +92,17 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
  * @param {boolean} addition - if it's true, then sum up pool volume and user value 
  * @returns {string} - percents
  */
-function countPoolShare(pair, values, addition) {
+function countPoolShare(pair, values, balances, addition) {
     if (!pairExists(pair))
         return '100';
 
     let value0, value1, volume0, volume1;
 
     try {
-        value0  = BigInt(values.value0);
-        value1  = BigInt(values.value1);
+        if (values.value0.value === undefined || values.value1.value === undefined)
+            return;
+        value0  = values.value0;
+        value1  = values.value1;
         volume0 = BigInt(pair.token_0.volume);
         volume1 = BigInt(pair.token_1.volume);
     } catch (e) {
@@ -108,27 +110,21 @@ function countPoolShare(pair, values, addition) {
     }
 
     if (addition) {
-        volume0 += value0;
-        volume1 += value1;
+        volume0 += BigInt(value0.value);
+        volume1 += BigInt(value1.value);
     }
-    let inputVolume = vp.mul({
-        value : value0,
-        decimals : 0
-    }, {
-        value : value1,
-        decimals : 0
-    });
+    let inputVolume = vp.mul(value0, value1);
     let poolVolume  = vp.mul({
         value : volume0,
-        decimals : 0
+        decimals : getBalanceObj(balances, pair.token_0.hash).decimals
     }, {
         value : volume1,
-        decimals : 0
+        decimals : getBalanceObj(balances, pair.token_1.hash).decimals
     });
     let res = vp.div(inputVolume, poolVolume);
     if (!Object.keys(res).length)
         return '';
-    return vp.usCommasBigIntDecimals(res.value * 100n, 24, 10);
+    return vp.usCommasBigIntDecimals(res.value, res.decimals, 10);
 };
 
 /* ================================= search functions ================================ */

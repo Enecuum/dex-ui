@@ -31,39 +31,36 @@ class LiquidityTokensZone extends React.Component {
     };
 
     assignDataForRemoveLiquidity (field, data) {
-        try {
-            data.coinValue = data.coinValue.toFixed();
-        } catch (e) {}
         let mode = 'removeLiquidity';
         this.props.assignTokenValue(mode, field, data.token);
-        this.props.assignCoinValue(mode, field, valueProcessor.usCommasBigIntDecimals(data.coinValue, data.decimals));
+        this.props.assignCoinValue(mode, field, valueProcessor.usCommasBigIntDecimals(data.coinValue.value, data.coinValue.decimals));
     };
 
     openRmLiquidityCard (pool) {
         let ltData = utils.getBalanceObj(this.props.balances, pool.lt);
-        let coinValue = utils.countPortion(ltData.amount, 50);
+        let coinValue = utils.countPortion({
+            value : ltData.amount,
+            decimals : ltData.decimals
+        }, 50);
         this.assignDataForRemoveLiquidity('ltfield', {
             token : this.getTokenByHash(pool.lt),
-            coinValue : coinValue,
-            decimals : ltData.decimals
+            coinValue : coinValue
         });
         let counted = testFormulas.ltDestruction(this.props.tokens, pool, {
             lt : {
-                value : coinValue.toFixed(),
-                decimals : ltData.decimals,
+                value : coinValue.value,
+                decimals : coinValue.decimals,
                 total_supply : utils.getTokenObj(this.props.tokens, pool.lt).total_supply
             }
         }, 'ltfield');
         
         this.assignDataForRemoveLiquidity('field0', {
             token : this.getTokenByHash(pool.token_0.hash),
-            coinValue : counted.t0.value,
-            decimals : counted.t0.decimals
+            coinValue : counted.t0
         });
         this.assignDataForRemoveLiquidity('field1', {
             token : this.getTokenByHash(pool.token_1.hash),
-            coinValue : counted.t1.value,
-            decimals : counted.t1.decimals
+            coinValue : counted.t1
         });
         this.props.changeRemoveLiquidityVisibility();
     };

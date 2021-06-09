@@ -11,7 +11,7 @@ function pairExists (pair) {
 };
 
 function removeEndZeros (value) {
-    if (value == 0)
+    if (value == '0')
         return '0';
     if ((/\.[0-9]*0+$/).test(value)) {
         value = value.replace(/0*$/, '');
@@ -21,16 +21,10 @@ function removeEndZeros (value) {
     return value;
 };
 
-function divide(input_0, input_1) { // TODO - remove after checking
-    try {
-        return Number(input_0) / Number(input_1);
-    } catch (e) {
-        return 0;
-    }
-};
-
 function countPortion (fullAmount, percent) {
-    return Number(fullAmount) * (Number(percent) / 100);
+    let hundred = vp.valueToBigInt(100, fullAmount.decimals);
+    let percentObj = vp.valueToBigInt(percent, fullAmount.decimals);
+    return vp.mul(fullAmount, vp.div(percentObj, hundred));
 };
 
 function countPercentsByPortion (fullAmount, portion) {
@@ -199,6 +193,5 @@ export default {
     getBalanceObj,
     getTokenObj,
     pairExists,
-    searchSwap,
-    divide
+    searchSwap
 };

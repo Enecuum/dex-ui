@@ -1,0 +1,32 @@
+#ETMPage {
+    box-sizing: border-box;
+    padding-top: var(--top-menu-height);
+    height: 100%;
+    overflow-y: hidden;
+}
+
+#ETMWrapper {
+    box-sizing: border-box;
+    height: calc(100% - var(--top-menu-height));
+}
+
+#ETMWrapper form .err-msg {
+    color: #e03266;
+    font-size: 13px;
+}
+
+#ETMWrapper form input.form-control {
+    color: var(--color1);
+    background-color: var(--color7);
+    border-color: var(--color4);
+}
+
+#ETMWrapper form input.form-control.form-control:focus {
+    box-shadow: 0 0 0 0.1rem var(--color4);
+}
+
+.input-group-text {
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+}

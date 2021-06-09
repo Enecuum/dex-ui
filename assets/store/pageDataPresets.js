@@ -68,6 +68,13 @@ const presets =  {
                 }
             },
         }
+    },
+    etm : {
+        totalSupplyDefault : '',
+        feeValueDefault : '',
+        tickerDefault : '',
+        nameDefault : '',
+        blockRewardDefault : '---'
     }
 };
 

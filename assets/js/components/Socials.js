@@ -7,23 +7,23 @@ class Socials extends React.Component {
         super();
         this.items = {
             twitter : {
-                link: 'twitter',
+                link: 'https://twitter.com/ENEXSPACE',
                 iconClasses: 'fab fa-twitter'
             },
             telegram : {
-                link: 'telegram',
+                link: 'https://t.me/enexspace',
                 iconClasses: 'fab fa-telegram-plane'
             },
             medium : {
-                link: 'medium',
+                link: 'https://blog.enex.space/',
                 iconClasses: 'fab fa-medium-m'
             },
             reddit : {
-                link: 'reddit',
+                link: 'https://www.reddit.com/user/enex_space',
                 iconClasses: 'fab fa-reddit-alien'
             },
             github : {
-                link: 'github',
+                link: 'https://github.com/TrinityLabDAO',
                 iconClasses: 'fab fa-github'
             }
         }

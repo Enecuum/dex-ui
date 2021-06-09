@@ -101,6 +101,32 @@
             }
         }
     },
+    "etm" : {
+        "issueToken" : "Issue token",
+        "issueTokenQuotes" : "'Issue token'",
+        "ticker" : "Ticker",
+        "name" : "Name",
+        "tokenType" : "Token type",
+        "nonReissuable" : "Non-reissuable",
+        "reissuable" : "Reissuable",
+        "mineable" : "Mineable",
+        "premine" : "Premine",
+        "emission" : "Emission",
+        "maxSupply" : "Max Supply",
+        "blockReward" : "Block Reward",
+        "miningPeriod" : "Mining Period",
+        "minStake" : "Min Stake",
+        "referrerStake" : "Referrer Stake",
+        "refShare" : "Ref. share",
+        "decimals" : "Decimals",
+        "feeType" : "Fee type",
+        "flat" : "Flat",
+        "percent" : "Percent",
+        "fee" : "Fee",
+        "minFee" : "Min Fee",
+        "days" : "Days",
+        "tokenIssueTotalPay":"You will pay {{issueTokenCost}} {{ticker}} for token issue:"
+    },
     "info" : "Info",
     "submit" : "Submit",
     "close" : "Close",
@@ -124,5 +150,24 @@
     },
     "noData" : "No data",
     "noConnection" : "No connection.",
-    "clickConnect" : "Please click the \"Connect\" button in the navigation menu"
+    "clickConnect" : "Please click the \"Connect\" button in the navigation menu",
+    "tokens" : "Tokens",
+    "errorMsg" : {
+        "REQUIRED":"Required",
+        "TOO_LONG_STRING":"Sting too long. Must be {{strLength}} characters or less",
+        "INVALID_SYMBOLS":"Invalid symbols. Must be only latin letters.",
+        "NOT_IN_RANGE":"Incorrect value. Must be in the range of {{min}} to {{max}}",
+        "FEE_WRONG_TYPE":"Wrong type of fee",        
+        "INVALID_SYMBOLS_IN_DIGITAL_VALUE":"Invalid symbols. Value must be integer or decimal value.",
+        "TOO_LONG_FRACTIONAL_PART":"Fractional part too long. Must be {{decimals}} digits or less.",
+        "EXEED_MAX_VALUE_IN_TOKENS":"Value must not exceed {{maxValue}} {{ticker}}",
+        "INTEGER_REQUIRED":"Integer required",
+        "NOT_IN_RANGE":"Incorrect value. Must be in the range of {{min}} to {{max}}",
+        "MUST_BE_GREATER_THAN":"The value must be greater than {{minValue}}",
+        "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE":"The value must be greater or equal than {{name}}",
+        "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}",
+        "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",
+        "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}."
+    },
+    "checkingMainTokenBalance" : "Сhecking the balance of the native token..."
 }

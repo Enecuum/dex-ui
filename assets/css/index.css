@@ -241,30 +241,6 @@ right: 0;
     background-color: rgba(0,0,0,0.7);
 }
 
-#ETMPage {
-    box-sizing: border-box;
-    padding-top: var(--top-menu-height);
-    background-color: #202836;
-    height: 100%;
-    overflow-y: hidden;
-}
-
-#ETMWrapper {
-    box-sizing: border-box;
-    height: calc(100% - var(--top-menu-height));
-}
-
-#ETMWrapper form .err-msg {
-    color: #e03266;
-    font-size: 13px;
-}
-
-
-#ETMWrapper form .form-control {
-    background-color: var(--color5);
-    color: var(--color1);
-}
-
 .modal-body, .modal-header {
     padding: 1.5rem;
 }
@@ -329,3 +305,15 @@ right: 0;
     margin-top: var(--top-menu-height);
     width: 100%;
 }
+
+.background-opaque:before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;    
+    background-color: var(--bg-color-1)!important;
+}
+

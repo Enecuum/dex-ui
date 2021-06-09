@@ -15,6 +15,7 @@ function getDefaultField(id) {
 const initialState = {
     root : {
         net                     : presets.network.defaultNet,
+        mainToken               : presets.network.nativeToken.hash,
         langData                : presets.langData,
         connecionListOpened     : false,
         navOpened               : window.innerWidth <= 757 ? false : true,
@@ -72,6 +73,50 @@ const initialState = {
         net         : presets.network.defaultNet,
         coinAmount  : 0,
         enx         : 0
+    },
+    etm : {
+        showForm : false,
+        tokenData : {
+            mining_period: '',
+            ticker: presets.etm.tickerDefault,    
+            name: presets.etm.nameDefault,
+            token_type: '0',
+            reissuable: 0,
+            mineable: 0,
+            max_supply: '',
+            block_reward: presets.etm.blockRewardDefault,
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            decimals: 10,
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_type: '0',
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
+        tokenBigIntData : {
+            mining_period: '',
+            max_supply: '',
+            block_reward: '',
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
+        waitingConfirmation : {
+            visibility  : false,
+            txStateType : 'waiting'
+        },
+        issueTokenTxAmount : '',
+        mainTokenTicker : presets.network.nativeToken.ticker,
+        mainTokenDecimals : 10,
+        msgData : {},
+        dataValid : false,
+        showForm : false,
+        showFormErrMessages : false,
+        possibleToIssueToken : false
     }
 };
 

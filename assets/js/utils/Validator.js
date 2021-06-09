@@ -80,38 +80,42 @@ class Validator {
             return Number.isInteger(dataObj.value);
         }
     }
-    batchValidate (validateObj, rulesObject) {
-        let dataValid = true;
+    batchValidate (validateObj, rulesObject) {        
+        let validationResult = {
+            dataValid : true,
+            propsArr : {}   
+        };
         let propsErr = {};
-        for (prop in rulesObject) {
+        let that = this;
+        for (let prop in rulesObject) {
             propsErr[prop] = 0;
             if (validateObj.hasOwnProperty(prop)) {
-                // $(rulesObject[prop].errMsgSelector).hide();
                 rulesObject[prop].checks.forEach(function(check) {
                     let requireToCheck = rulesObject[prop].requireToCheck;
-                    if (requireToCheck === true || requireToCheck === undefined) {                       
+                    if (requireToCheck === true || requireToCheck === undefined) {                     
                         if (propsErr[prop] === 0 && (check.requireToCheck === true || check.requireToCheck === undefined)) {
                             let method = check.method,
                                 argObj = check.args,
                                 desiredResult = check.desiredResult,
                                 errMsg = check.errMsg,
-                                result = dataValidator[method](argObj),
-                                selector = rulesObject[prop].errMsgSelector;
-
+                                result = that[method](argObj)
                             if (desiredResult !== result) {
-                                // $translate(errMsg.msg || errMsg, errMsg.params).then(function(msg) {
-                                //     $(selector).show();
-                                //     $(selector).text(msg);
-                                // });
                                 propsErr[prop]++;
-                                dataValid = false;
+                                validationResult.dataValid = false;
+                                validationResult.propsArr[prop] = {
+                                    valid  : false,
+                                    msg        : errMsg.msg || errMsg,
+                                    params     : errMsg.params
+                                } 
+
                             }
                         }
                     }
                 });
             }
         }
-        return dataValid;
+        return validationResult;
     }
-
 }
+
+export default Validator;

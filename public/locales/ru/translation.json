@@ -31,6 +31,10 @@
             "mode1" : "Ликвидность"
         },
         "swapCard" : {
+            "inputField" : {
+                "balance" : "Баланс",
+                "selectToken" : "Выберите токен"
+            },
             "exchange" : {
                 "header" : "Обмен",
                 "description" : "Торговля токенами в одно мгновение",
@@ -64,8 +68,12 @@
                 "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
             },
             "removeLiquidity" : {
-                "simple" : "Simple",
-                "detailed" : "Detailed"
+                "amount" : "Количество",
+                "price" : "Цена",
+                "simple" : "Упрощённый вид",
+                "detailed" : "Детальный вид",
+                "header" : "Удалить Ликвидность",
+                "tooltipText" : "Удалите токены ликвидности для получения токенов пула"
             }
         },
         "tokenCard" : {
@@ -110,15 +118,15 @@
         "name" : "Имя",
         "tokenType" : "Тип токена",
         "nonReissuable" : "С фиксированной эмиссией",
-        "reissuable" : "C не фиксированной эмиссией и возможностью дополнительно эмитировать токены",
+        "reissuable" : "C нефиксированной эмиссией и возможностью дополнительно эмитировать токены",
         "mineable" : "C возможностью майнинга на мобильных телефонах с операционной системой Android",
         "premine" : "Premine",
         "emission" : "Эмиссия",
         "maxSupply" : "Max Supply",
         "blockReward" : "Block Reward",
-        "miningPeriod" : "Mining Period",
+        "miningPeriod" : "Майнинг период",
         "minStake" : "Минимальный стейк",
-        "referrerStake" : "Referrer Stake",
+        "referrerStake" : "Реферальная ставка",
         "refShare" : "Ref. share",
         "decimals" : "Decimals",
         "feeType" : "Тип комиссии",

@@ -101,6 +101,7 @@
 .token-button {
     background-color: #00000000;
     border-radius: var(--border-radius1);
+    
 }
 
 .token-button .chevron-down {

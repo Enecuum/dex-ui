@@ -14,7 +14,7 @@ const presets =  {
 
     swapTokens : {
         emptyToken: {
-            ticker      : 'Select a token',
+            ticker      : undefined, // undefined - flag for using i18 default meaning
             hash        : undefined,
             caption     : '',
             decimals    : undefined,
@@ -23,7 +23,7 @@ const presets =  {
         emptyBalance: {
             amount      : '-',
             token       : undefined,
-            ticker      : 'Select a token',
+            ticker      : undefined,// undefined - flag for using i18 default meaning
             decimals    : 0,
             minable     : 0,
             reissuables : 0

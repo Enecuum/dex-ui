@@ -50,9 +50,9 @@ class Root extends React.Component {
     // --------------------------------------- upd dex data
 
     updDexData (pubkey) {
+        this.updBalances(pubkey);
         this.updTokens();
         this.updPools();
-        this.updBalances(pubkey);
     };
 
     intervalUpdDexData () {

@@ -26,9 +26,9 @@ class ExtRequests {
     getBigIntAmount (field) { // utility
         let diff = field.balance.decimals - field.value.decimals;
         if (diff > 0)
-            return field.value.value * Math.pow(10, Math.abs(diff));
+            return BigInt(field.value.value) * BigInt(Math.pow(10, Math.abs(diff)));
         else if (diff < 0)
-            return field.value.value / Math.pow(10, Math.abs(diff));
+            return BigInt(field.value.value) / BigInt(Math.pow(10, Math.abs(diff)));
         else 
             return field.value.value;
     };
@@ -106,20 +106,12 @@ class ExtRequests {
      * @param {BigInt} amount - lt amount for removing 
      * @returns {Promise}
      */
-    removeLiquidity (pubkey, lt, amount) {
+    removeLiquidity (pubkey, lt, ltfield) {
         return this.sendTx(pubkey, requestType.REMOVE, {
             lt : lt,
-            amount : amount
+            amount : this.getBigIntAmount(ltfield)
         });
     };
-
-    createToken (pubkey, lt, amount) {
-        return this.sendTx(pubkey, requestType.REMOVE, {
-            lt : lt,
-            amount : amount
-        });
-    };    
-
 
     sendTx (pubKey, reqType, params) {
         let data = {
@@ -133,8 +125,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        // console.log(data);
-        // console.log(params);
+        console.log(data);
+        console.log(params);
         return trafficController.sendTransaction(data);
     };
 

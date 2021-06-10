@@ -27,10 +27,12 @@ class WaitingConfirmation extends React.Component {
 
     getDescription () {
         let descriptionPhrase = '';
+        let v0 = this.props[this.props.menuItem].field0.value.text;
+        let v1 = this.props[this.props.menuItem].field1.value.text;
         let interpolateParams = {
-            value0 : this.props[this.props.menuItem].field0.value,
+            value0 : (v0 == undefined) ? '' : v0,
             ticker0 : this.props[this.props.menuItem].field0.token.ticker,
-            value1 : this.props[this.props.menuItem].field1.value,
+            value1 : (v1 == undefined) ? '' : v1,
             ticker1 : this.props[this.props.menuItem].field1.token.ticker
         }
 

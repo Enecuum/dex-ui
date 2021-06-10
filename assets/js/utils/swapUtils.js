@@ -79,7 +79,7 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
             value : pair.token_1.volume,
             decimals : pair.token_1.decimals
         });
-        return vp.usCommasBigIntDecimals(res.value, res.decimals, 10);
+        return vp.usCommasBigIntDecimals(res.value, res.decimals);
     } else {
         return '-';
     }
@@ -124,7 +124,7 @@ function countPoolShare(pair, values, balances, addition) {
     let res = vp.div(inputVolume, poolVolume);
     if (!Object.keys(res).length)
         return '';
-    return vp.usCommasBigIntDecimals(res.value, res.decimals, 10);
+    return vp.usCommasBigIntDecimals(res.value, res.decimals / 2, 10);
 };
 
 /* ================================= search functions ================================ */

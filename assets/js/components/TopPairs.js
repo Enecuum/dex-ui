@@ -60,15 +60,22 @@ class TopPairs extends React.Component {
 			pairs.forEach(function(pair, i, pairsArr) {
 				if ((uniquePairsTokensList[pair.token_0.hash].inWhiteList === true) && (uniquePairsTokensList[pair.token_1.hash].inWhiteList === true) && (uniquePairsTokensList[pair.lt].inWhiteList === true)) {
 					let ltInBalance = balances.find(tokenBalance => tokenBalance.token === pair.lt);
-					let amountLT = 0;
+					let amountLT = 0, decimalsLT = 0;
 
-					if (ltInBalance !== undefined)						
+					if (ltInBalance !== undefined) {				
 						amountLT = ltInBalance.amount;
+						decimalsLT = ltInBalance.decimals;
+					}
 
+					let ltObj = swapUtils.getTokenObj(tokens, pair.lt);
                     let ltDestructionResult = testFormulas.ltDestruction(tokens, pair, {
                         lt : {
                             value : amountLT,
-                            ...swapUtils.getTokenObj(tokens, pair.lt)
+							decimals : decimalsLT,
+							total_supply : {
+								value : ltObj.total_supply,
+								decimals : ltObj.decimals
+							}
                         }
                     }, 'ltfield');
 

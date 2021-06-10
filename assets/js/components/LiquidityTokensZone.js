@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Accordion, Button } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { connect, connectAdvanced } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import ValueProcessor from '../utils/ValueProcessor';
@@ -32,8 +32,9 @@ class LiquidityTokensZone extends React.Component {
 
     assignDataForRemoveLiquidity (field, data) {
         let mode = 'removeLiquidity';
+        data.coinValue.text = valueProcessor.usCommasBigIntDecimals(data.coinValue.value, data.coinValue.decimals).replace(/,/g, '');
         this.props.assignTokenValue(mode, field, data.token);
-        this.props.assignCoinValue(mode, field, valueProcessor.usCommasBigIntDecimals(data.coinValue.value, data.coinValue.decimals));
+        this.props.assignCoinValue(mode, field, data.coinValue);
     };
 
     openRmLiquidityCard (pool) {
@@ -42,18 +43,26 @@ class LiquidityTokensZone extends React.Component {
             value : ltData.amount,
             decimals : ltData.decimals
         }, 50);
+
         this.assignDataForRemoveLiquidity('ltfield', {
             token : this.getTokenByHash(pool.lt),
             coinValue : coinValue
+        });
+        console.log({
+            value : coinValue.value,
+            decimals : coinValue.decimals,
+            total_supply : utils.getTokenObj(this.props.tokens, pool.lt).total_supply
         });
         let counted = testFormulas.ltDestruction(this.props.tokens, pool, {
             lt : {
                 value : coinValue.value,
                 decimals : coinValue.decimals,
-                total_supply : utils.getTokenObj(this.props.tokens, pool.lt).total_supply
+                total_supply : {
+                    value : utils.getTokenObj(this.props.tokens, pool.lt).total_supply,
+                    decimals : ltData.decimals
+                }
             }
         }, 'ltfield');
-        
         this.assignDataForRemoveLiquidity('field0', {
             token : this.getTokenByHash(pool.token_0.hash),
             coinValue : counted.t0
@@ -96,10 +105,16 @@ class LiquidityTokensZone extends React.Component {
                 t0 : 0,
                 t1 : 0
             };
+        let balanceObj = utils.getBalanceObj(this.props.balances, pair.lt);
+        let ltObj = utils.getTokenObj(this.props.tokens, pair.lt);
         this.pooled[index] = testFormulas.ltDestruction(this.props.tokens, pair, {
             lt : {
-                value : utils.getBalanceObj(this.props.balances, pair.lt).amount, 
-                ...utils.getTokenObj(this.props.tokens, pair.lt)
+                value : balanceObj.amount,
+                decimals : balanceObj.decimals,
+                total_supply : {
+                    value : ltObj.total_supply,
+                    decimals : ltObj.decimals
+                }
             }
         }, 'ltfield');
     };

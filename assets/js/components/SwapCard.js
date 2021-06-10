@@ -69,12 +69,12 @@ class SwapCard extends React.Component {
             decimals : this.props.removeLiquidity.ltfield.balance.decimals
         }, value);
         this.props.assignCoinValue('removeLiquidity', 'ltfield', fieldObj);
-        this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldObj.value);
+        this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldObj);
     };
 
     removeRequest() {
         this.props.openWaitingConfirmation();
-        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, valueProcessor.valueToBigInt(this.props.removeLiquidity.ltfield.value, this.props.removeLiquidity.ltfield.token.decimals).value)
+        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, this.props.removeLiquidity.ltfield)
         .then(result => {
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
@@ -279,13 +279,13 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field0.value.value}</div>
+                                <div>{this.showInputValue(modeStruct.field0.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{modeStruct.field1.value.value}</div>
+                                <div>{this.showInputValue(modeStruct.field1.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
                                 </div>
@@ -577,13 +577,22 @@ class SwapCard extends React.Component {
         }
     };
 
+    assingCoinValueWithText (mode, field, value) {
+        value.text = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals).replace(/,/g, '');
+        this.props.assignCoinValue(mode, field, value);
+    }
+
     countRemoveLiquidity (mode, cField, fieldValue, forcedLt) {
         let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, {
             t0 : this.props.removeLiquidity.field0.value,
             t1 : this.props.removeLiquidity.field1.value,
             lt : {
-                value : (forcedLt) ? forcedLt : fieldValue,
-                ...this.props.removeLiquidity.ltfield.token
+                value : (forcedLt) ? forcedLt : fieldValue.value,
+                decimals : fieldValue.decimals,
+                total_supply : {
+                    value : this.props.removeLiquidity.ltfield.token.total_supply,
+                    decimals : this.props.removeLiquidity.ltfield.token.decimals
+                }
             }
         }, cField);
         let rmPercent = 50;//utils.countPercentsByPortion(this.props.removeLiquidity.ltfield.balance.amount, Number(counted.lt.value / BigInt(counted.lt.decimals))).toFixed(1);
@@ -595,11 +604,11 @@ class SwapCard extends React.Component {
             // this.countRemoveLiquidity(mode, 'ltfield', fieldValue, full);
         } else {
             if (cField != 'field0')
-                this.props.assignCoinValue(mode, 'field0',  counted.t0);
+                this.assingCoinValueWithText(mode, 'field0',  counted.t0);
             if (cField != 'field1')
-                this.props.assignCoinValue(mode, 'field1',  counted.t1);
+                this.assingCoinValueWithText(mode, 'field1',  counted.t1);
             if (cField != 'ltfield')
-                this.props.assignCoinValue(mode, 'ltfield', counted.lt);
+                this.assingCoinValueWithText(mode, 'ltfield', counted.lt);
         }
     };
 

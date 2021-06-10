@@ -91,13 +91,13 @@ class ConfirmSupply extends React.Component {
                                 <div>
                                     {firstToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
-                                <LogoToken data={{url : img1, value : modeStruct.field0.value.value}} />
+                                <LogoToken data={{url : img1, value : modeStruct.field0.value.text}} />
                             </div>
                             <div className='d-flex align-items-center justify-content-between mb-2'>
                                 <div>
                                     {secondToken.ticker} {t('trade.confirmCard.deposited')}
                                 </div>
-                                <LogoToken data={{url : img2, value : modeStruct.field1.value.value}} />
+                                <LogoToken data={{url : img2, value : modeStruct.field1.value.text}} />
                             </div>
                             <div className='d-flex align-items-start justify-content-between mb-2'>
                                 <div>

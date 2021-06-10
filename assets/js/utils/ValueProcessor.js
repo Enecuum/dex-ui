@@ -73,8 +73,8 @@ class ValueProcessor {
         return valueObj;
     }
     bigIntMathOperation (operation, op0, op1) {
-        op0 = this.assignValidValue(op0);
-        op1 = this.assignValidValue(op1);
+        op0 = this.assignValidValue({...op0});
+        op1 = this.assignValidValue({...op1});
  
         if (op0 == undefined || op1 == undefined)
             return {};

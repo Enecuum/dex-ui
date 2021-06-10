@@ -27,7 +27,7 @@ function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigIn
  * @returns {object} - tokenTrio
  */
 function ltDestruction (tokens, pair, tokenTrio, chField) {
-    if (tokenTrio.lt.total_supply === 0) {
+    if (tokenTrio.lt.total_supply.value === 0) {
         return {
             lt : {value : 0n, decimals : 0, addition : 0},
             t0 : {value : 0n, decimals : 0, addition : 0},
@@ -37,7 +37,7 @@ function ltDestruction (tokens, pair, tokenTrio, chField) {
     let token0 = { value : pair.token_0.volume, decimals : utils.getTokenObj(tokens, pair.token_0.hash).decimals };
     let token1 = { value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals };
     // -------
-    let total = { value : tokenTrio.lt.total_supply, decimals : tokenTrio.lt.decimals };
+    let total = tokenTrio.lt.total_supply;
     if (chField == 'ltfield') {
         let div = vp.div(tokenTrio.lt, total);
         return {

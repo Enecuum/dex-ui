@@ -131,6 +131,7 @@ function mapStoreToProps(component) {
                     menuItem          : state.root.menuItem,
                     pubkey            : state.root.pubkey,
                     pairs             : state.root.pairs,
+                    tokens            : state.root.tokens,
                     balances          : state.root.balances
                 };
             };

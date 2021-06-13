@@ -64,7 +64,8 @@
                 "addLiquidity" : "Добавить ликвидность",
                 "fillAllFields" : "Заполните все поля",
                 "swap" : "Обменять",
-                "createPair" : "Создать пару"
+                "createPair" : "Создать пару",
+                "insufficientFunds" : "Недостаточно средств"
             },
             "aboutButtonInfo" : {
                 "withoutPair" : "Такой пары не существует",

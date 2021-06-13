@@ -77,7 +77,7 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            { valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(testFormulas.countLTAmount(pair, modeStruct, this.props.menuItem)), 10, 10) }
+                            { valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(testFormulas.countLTAmount(pair, modeStruct, this.props.menuItem, this.props.tokens)), 10, 10) }
                         </div>
                         <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>

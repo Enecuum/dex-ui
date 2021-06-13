@@ -65,7 +65,8 @@
                 "addLiquidity" : "Add liquidity",
                 "fillAllFields" : "Fill all fields",
                 "swap" : "Swap",
-                "createPair" : "Create pair"
+                "createPair" : "Create pair",
+                "insufficientFunds" : "Insufficient funds"
             },
             "aboutButtonInfo" : {
                 "withoutPair" : "There is no such pair",

@@ -30,6 +30,8 @@ class SwapCard extends React.Component {
         super(props);
         this.pairExists = false;
         this.readyToSubmit = false;
+        this.enoughMoney = [];
+        this.insufficientFunds = false;
         this.activePair = {};
         this.rmPercents = 50;
         this.removeLiquidity = {
@@ -189,7 +191,7 @@ class SwapCard extends React.Component {
                                     </div>
                                 </>
                             }
-                            { this.getSubmitButton() }
+                            { this.getSubmitButton(modeStruct) }
                         </>
                     }
 
@@ -336,7 +338,7 @@ class SwapCard extends React.Component {
         );    
     };
 
-    getSubmitButton() {
+    getSubmitButton(modeStruct) {
         const t = this.props.t;
         let buttonName;
         if (this.props.connectionStatus == false)
@@ -346,9 +348,15 @@ class SwapCard extends React.Component {
                 buttonName = 'swap';
             else if (this.props.menuItem == 'liquidity')
                 buttonName = 'addLiquidity';
-            if (!this.readyToSubmit) {
+            if (!this.readyToSubmit)
                 buttonName = 'fillAllFields';
-            }
+            let id0 = this.enoughMoney.indexOf(modeStruct.field0.id);
+            let id1 = this.enoughMoney.indexOf(modeStruct.field1.id);
+            if (id0 != -1 || id1 != -1) {
+                buttonName = 'insufficientFunds';
+                this.insufficientFunds = true;
+            } else 
+                this.insufficientFunds = false;
             if (this.pairExists == false) {
                 buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
                 return (
@@ -379,6 +387,18 @@ class SwapCard extends React.Component {
         );
     };
 
+    getBalanceColor (id) {
+        let c_color = {danger : '#CD5C5C', simple : '#61c2d0'};
+        if (this.enoughMoney.indexOf(id) == -1)
+            return {
+                color : c_color.simple
+            };
+        else
+            return {
+                color : c_color.danger
+            };
+    };
+
     getInputField(props) {
         let ticker = props.fieldData.token.ticker;
         if (ticker === undefined)
@@ -400,7 +420,8 @@ class SwapCard extends React.Component {
                         type='text'
                         value={this.showInputValue(props.fieldData.value)}
                         placeholder='0.0'
-                        autoComplete='off'>
+                        autoComplete='off'
+                        style={this.getBalanceColor(props.id)}>
                     </input>
                     <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
                         <div className='d-flex align-items-center mr-2'>{ticker}</div>
@@ -650,7 +671,7 @@ class SwapCard extends React.Component {
     };
 
     openConfirmCard() {
-        if (this.props.connectionStatus && this.isReadyToSubmit())
+        if (this.props.connectionStatus && this.isReadyToSubmit() && !this.insufficientFunds)
             this.props.openConfirmCard();
     };
 
@@ -660,6 +681,7 @@ class SwapCard extends React.Component {
 
     /* =========================== rules checking for ConfirmCard opening ========================== */
     establishReadiness() {
+        this.countBadBalance();
         if (this.isReadyToSubmit())
             this.readyToSubmit = true;
         else
@@ -683,13 +705,49 @@ class SwapCard extends React.Component {
         }
     };
 
+    pushBadBalanceId (id) {
+        let i = this.enoughMoney.indexOf(id);
+        if (i == -1)
+            this.enoughMoney.push(id);
+    };
+
+    popBadBalanceId (id) {
+        let i = this.enoughMoney.indexOf(id);
+        if (i != -1)
+            this.enoughMoney.splice(i, 1);
+    }
+
+    countBadBalance () {
+        let mode = this.getMode();
+        let f0 = this.props[mode].field0;
+        let f1 = this.props[mode].field1;
+        let balance0 = {value : f0.balance.amount, decimals : f0.balance.decimals};
+        let balance1 = {value : f1.balance.amount, decimals : f1.balance.decimals};
+        let substraction0, substraction1;
+        try {
+            substraction0 = valueProcessor.sub(balance0, f0.value);
+            substraction1 = valueProcessor.sub(balance1, f1.value);
+        } catch (e) {
+            return;
+        }
+        if (substraction0.value < 0)
+            this.pushBadBalanceId(f0.id);
+        else
+            this.popBadBalanceId(f0.id);
+        if (substraction1.value < 0)
+            this.pushBadBalanceId(f1.id);
+        else 
+            this.popBadBalanceId(f1.id);
+    };
+
     isReadyToSubmit() {
         let mode = this.getMode();
-        if (this.props[mode].field0.value != 0 &&
-            this.props[mode].field1.value != 0 &&
-            this.props[mode].field0.token.hash != undefined &&
-            this.props[mode].field1.token.hash != undefined) {
-            return true;
+        let f0 = this.props[mode].field0, f1 = this.props[mode].field1;
+        if ((f0.value.value != undefined && f0.value.value != 0) &&
+            (f1.value.value != undefined && f1.value.value != 0) &&
+            f0.token.hash != undefined &&
+            f1.token.hash != undefined) {
+                return true;
         }
         return false;
     };

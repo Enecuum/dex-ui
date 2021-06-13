@@ -440,11 +440,11 @@ class SwapCard extends React.Component {
         let res =  utils.countPoolShare(this.activePair, {
             value0 : this.props.liquidity.field0.value,
             value1 : this.props.liquidity.field1.value
-        }, this.props.balances, true) + '';
-        if (res < 0.001 && res != '-')
+        }, this.props.balances, true);
+        if (res === undefined)
+            return '-';
+        if (res < 0.001)
             res = '< 0.001';
-        if (res == Infinity)
-            res = '-';
         return res.substring(0, 7) + ' %';
     };
 

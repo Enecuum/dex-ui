@@ -26,6 +26,9 @@
         }
     },
     "trade" : {
+        "lpTokensWalletInfo" : {
+            "header" : "Ваши токены ликвидности"
+        },
         "switch" : {
             "mode0" : "Обмен",
             "mode1" : "Ликвидность"

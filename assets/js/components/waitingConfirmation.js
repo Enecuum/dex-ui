@@ -29,11 +29,13 @@ class WaitingConfirmation extends React.Component {
         let descriptionPhrase = '';
         let v0 = this.props[this.props.menuItem].field0.value.text;
         let v1 = this.props[this.props.menuItem].field1.value.text;
+        let t0 = this.props[this.props.menuItem].field0.token.ticker;
+        let t1 = this.props[this.props.menuItem].field1.token.ticker;
         let interpolateParams = {
-            value0 : (v0 == undefined) ? '' : v0,
-            ticker0 : this.props[this.props.menuItem].field0.token.ticker,
-            value1 : (v1 == undefined) ? '' : v1,
-            ticker1 : this.props[this.props.menuItem].field1.token.ticker
+            value0  : (v0 == undefined) ? '' : v0,
+            ticker0 : (t0 == undefined) ? '' : t0,
+            value1  : (v1 == undefined) ? '' : v1,
+            ticker1 : (t1 == undefined) ? '' : t1,
         }
 
         if (!this.props.createPool) {

@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import ValueProcessor from '../utils/ValueProcessor';
 import PairLogos from '../components/PairLogos';
 import utils from '../utils/swapUtils';
-import swapApi from '../requests/swapApi';
 import testFormulas from '../utils/testFormulas';
 
 const valueProcessor = new ValueProcessor();
@@ -38,10 +38,16 @@ class LPTokensWalletInfo extends React.Component {
     };
 
     countPooledAmount () {
+        let ltBalance = utils.getBalanceObj(this.props.balances, this.pair.lt);
+        let ltObj = utils.getTokenObj(this.props.tokens, this.pair.lt);
         this.pooled = testFormulas.ltDestruction(this.props.tokens, this.pair, {
             lt : { 
-                value : utils.getBalanceObj(this.props.balances, this.pair.lt).amount, 
-                ...utils.getTokenObj(this.props.tokens, this.pair.lt)
+                value : ltBalance.amount,
+                decimals : ltBalance.decimals,
+                total_supply : {
+                    value : ltObj.total_supply,
+                    decimals : ltObj.decimals
+                }
             }
         }, 'ltfield');
     };
@@ -53,7 +59,7 @@ class LPTokensWalletInfo extends React.Component {
             let secondToken = utils.getTokenObj(this.props.tokens, this.pair.token_1.hash);
             return (
                 <div className="general-card p-4">
-                    <div id='under-header'>LP tokens in your wallet</div>
+                    <div id='under-header'>{this.props.t('trade.lpTokensWalletInfo.header')}</div>
                     <div className="d-flex align-items-center justify-content-between py-2">
                         {/* <PairLogos  logos={{logo1 : this.logo1, logo2 : this.logo2, logoSize : 'sm'}} /> */}
                         <div>
@@ -88,6 +94,6 @@ class LPTokensWalletInfo extends React.Component {
     }
 };
 
-const WLPTokensWalletInfo = connect(mapStoreToProps(components.LP_WALLET_INFO), mapDispatchToProps(components.LP_WALLET_INFO))(LPTokensWalletInfo);
+const WLPTokensWalletInfo = connect(mapStoreToProps(components.LP_WALLET_INFO), mapDispatchToProps(components.LP_WALLET_INFO))(withTranslation()(LPTokensWalletInfo));
 
 export default WLPTokensWalletInfo;

@@ -26,6 +26,9 @@
         }
     },
     "trade" : {
+        "lpTokensWalletInfo" : {
+            "header" : "LP tokens in your wallet"
+        },
         "switch" : {
             "mode0" : "Exchange",
             "mode1" : "Liquidity"

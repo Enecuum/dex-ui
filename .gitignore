@@ -6,3 +6,4 @@ public/*
 !public/locales/*
 !public/favicon.ico
 package-lock.json
+.idea

@@ -28,9 +28,9 @@ class ConfirmSupply extends React.Component {
         this.props.openWaitingConfirmation();
         let tx;
         if (utils.pairExists(pair)) {
-            if (this.props.menuItem == 'exchange') {
+            if (this.props.menuItem === 'exchange') {
                 tx = extRequests.swap(this.props.pubkey, this.props.exchange);
-            } else if (this.props.menuItem == 'liquidity') {
+            } else if (this.props.menuItem === 'liquidity') {
                 tx = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity);
             }
         } else {
@@ -56,7 +56,8 @@ class ConfirmSupply extends React.Component {
         let firstToken = modeStruct.field0.token;
         let secondToken = modeStruct.field1.token;
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token]);
-        if (utils.pairExists(pair) && this.props.menuItem == 'exchange' && this.props.confirmCardOpened)
+        let ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+        if (utils.pairExists(pair) && this.props.menuItem === 'exchange' && this.props.confirmCardOpened)
             this.sendTransaction(pair);
         return (
             <>
@@ -77,7 +78,7 @@ class ConfirmSupply extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="h3 font-weight-bold">
-                            { valueProcessor.usCommasBigIntDecimals(this.getBigIntValue(testFormulas.countLTAmount(pair, modeStruct, this.props.menuItem, this.props.tokens)), 10, 10) }
+                            { valueProcessor.usCommasBigIntDecimals(ltValue.value, ltValue.decimals) }
                         </div>
                         <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                         <div className='h5 mb-4'>
@@ -129,7 +130,7 @@ class ConfirmSupply extends React.Component {
             </>
         );
     };
-};
+}
 
 const WConfirmSupply = connect(mapStoreToProps(components.CONFIRM_SUPPLY), mapDispatchToProps(components.CONFIRM_SUPPLY))(withTranslation()(ConfirmSupply));
 

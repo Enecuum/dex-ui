@@ -490,7 +490,9 @@ class SwapCard extends React.Component {
 
     showPercents () {
         let fixedLength = 1;
-        let result = Number(this.rmPercents).toFixed(fixedLength);
+        let result = '-';
+        if (!Number.isNaN(this.rmPercents))
+            result = Number(this.rmPercents).toFixed(fixedLength);
         if (result == 0)
             return `< 0.${'0'.repeat(fixedLength - 1)}1`;
         return result;
@@ -618,7 +620,11 @@ class SwapCard extends React.Component {
     }
 
     bigIntToString (value, decimals, fixed) {
-        return valueProcessor.usCommasBigIntDecimals(value, decimals, fixed).replace(/,/g, '');
+        let res = valueProcessor.usCommasBigIntDecimals(value, decimals, fixed);
+        if (res !== undefined)
+            return res.replace(/,/g, '');
+        else
+            return undefined;
     }
 
     countRemoveLiquidity (mode, cField, fieldValue, forcedLt) {
@@ -636,7 +642,7 @@ class SwapCard extends React.Component {
         }, cField);
         let balanceObj = {value : this.props.removeLiquidity.ltfield.balance.amount, decimals : this.props.removeLiquidity.ltfield.balance.decimals};
         let rmPercent = utils.countPercentsByPortion(balanceObj, counted.lt);
-        if (!this.isValidPercent(rmPercent)) {
+        if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
             let full = this.props.removeLiquidity.ltfield.balance.amount;
             this.rmPercents = 100;
             this.props.assignCoinValue(mode, 'ltfield', {

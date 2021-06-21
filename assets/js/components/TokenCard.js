@@ -17,7 +17,7 @@ class TokenCard extends React.Component {
         this.updTokens();
     };
 
-    async updTokens() {
+    updTokens() {
         this.props.assignTokenList(this.makeList());
     };
 

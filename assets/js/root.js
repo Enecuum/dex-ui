@@ -135,7 +135,7 @@ class Root extends React.Component {
                 promises.push(
                     res.value.json()
                     .then(res => {
-                        if (res.status != 3 && res.status != 2)
+                        if (res.status !== 3 && res.status !== 2)
                             allDone = false;
                     })
                     .catch(() => allDone = false)
@@ -155,7 +155,7 @@ class Root extends React.Component {
         let enexTypes = ['create_pool', 'swap', 'add_liquidity', 'remove_liquidity'];
         for (let i in pendingArray) {
             let data = objectFromData.parse(pendingArray[i].data);
-            if (enexTypes.indexOf(data.type) == -1)
+            if (enexTypes.indexOf(data.type) === -1)
                 pendingArray.splice(i, 1);
         }
         return pendingArray;
@@ -169,7 +169,7 @@ class Root extends React.Component {
                     if (!res.lock)
                         res.json()
                         .then(pendingArray => {
-                            if (Array.isArray(pendingArray) && pendingArray.length != 0) {
+                            if (Array.isArray(pendingArray) && pendingArray.length !== 0) {
                                 pendingArray = this.filterEnexTxs(pendingArray);
                                 this.controlPendingSpinnerVisibility(pendingArray);
                             } else {
@@ -195,13 +195,13 @@ class Root extends React.Component {
     };
 
     updBalanceForms () {
-        if (this.props.menuItem == 'exchange') {
+        if (this.props.menuItem === 'exchange') {
             this.updBalanceObj('exchange', 'field0');
             this.updBalanceObj('exchange', 'field1');
-        } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityMain && !this.props.liquidityRemove) {
+        } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityMain && !this.props.liquidityRemove) {
             this.updBalanceObj('liquidity', 'field0');
             this.updBalanceObj('liquidity', 'field1');
-        } else if (this.props.menuItem == 'liquidity' && this.props.liquidityRemove) {
+        } else if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove) {
             this.updBalanceObj('removeLiquidity', 'field0');
             this.updBalanceObj('removeLiquidity', 'field1');
             this.updBalanceObj('removeLiquidity', 'ltfield');
@@ -316,7 +316,8 @@ class Root extends React.Component {
 
                 </main>
                 {this.props.connectionStatus && 
-                    <div className="w-100 d-flex align-items-center justify-content-center d-xl-none" style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
+                    <div className="w-100 d-flex align-items-center justify-content-center d-xl-none"
+                         style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
                         <IndicatorPanel />
                     </div>
                 }

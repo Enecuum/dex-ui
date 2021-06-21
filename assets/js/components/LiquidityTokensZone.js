@@ -21,11 +21,24 @@ class LiquidityTokensZone extends React.Component {
 
     };
 
-    getltData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens 
+    getTokenByHash (hash) {
+        let empty = { ticker : '-', hash : undefined };
+        if (this.props.tList.length == 0)
+            return empty;
+        else {
+            let found = this.props.tList.find(el => {
+                if (el.hash == hash)
+                    return true;
+            });
+            return (found) ? found : empty;
+        }
+    };
+
+    getLtData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens
         let filtered = [];
         for (let pool of this.props.pairs)
             for (let balance of this.props.balances)
-                if (balance.token == pool.lt)
+                if (balance.token === pool.lt)
                     filtered.push(pool);
         return filtered;
     };
@@ -38,53 +51,8 @@ class LiquidityTokensZone extends React.Component {
     };
 
     openRmLiquidityCard (pool) {
-        let ltData = utils.getBalanceObj(this.props.balances, pool.lt);
-        let coinValue = utils.countPortion({
-            value : ltData.amount,
-            decimals : ltData.decimals
-        }, 50);
-
-        this.assignDataForRemoveLiquidity('ltfield', {
-            token : this.getTokenByHash(pool.lt),
-            coinValue : coinValue
-        });
-        console.log({
-            value : coinValue.value,
-            decimals : coinValue.decimals,
-            total_supply : utils.getTokenObj(this.props.tokens, pool.lt).total_supply
-        });
-        let counted = testFormulas.ltDestruction(this.props.tokens, pool, {
-            lt : {
-                value : coinValue.value,
-                decimals : coinValue.decimals,
-                total_supply : {
-                    value : utils.getTokenObj(this.props.tokens, pool.lt).total_supply,
-                    decimals : ltData.decimals
-                }
-            }
-        }, 'ltfield');
-        this.assignDataForRemoveLiquidity('field0', {
-            token : this.getTokenByHash(pool.token_0.hash),
-            coinValue : counted.t0
-        });
-        this.assignDataForRemoveLiquidity('field1', {
-            token : this.getTokenByHash(pool.token_1.hash),
-            coinValue : counted.t1
-        });
+        this.fillRmLiquidityFields(pool);
         this.props.changeRemoveLiquidityVisibility();
-    };
-
-    getTokenByHash (hash) {
-        let empty = { ticker : '-', hash : undefined };
-        if (this.props.tList.length == 0)
-            return empty;
-        else {
-            let found = this.props.tList.find(el => {
-                if (el.hash == hash)
-                    return true;
-            });
-            return (found) ? found : empty;
-        }
     };
     
     getYourPoolToken (ltHash) {
@@ -119,12 +87,43 @@ class LiquidityTokensZone extends React.Component {
         }, 'ltfield');
     };
 
-    renderltList () {
-        let ltList = this.getltData();
-        if (ltList.length == 0)
+    fillRmLiquidityFields (pool) {
+        let ltData = utils.getBalanceObj(this.props.balances, pool.lt);
+        let coinValue = utils.countPortion({
+            value : ltData.amount,
+            decimals : ltData.decimals
+        }, 50);
+
+        this.assignDataForRemoveLiquidity('ltfield', {
+            token : this.getTokenByHash(pool.lt),
+            coinValue : coinValue
+        });
+        let counted = testFormulas.ltDestruction(this.props.tokens, pool, {
+            lt : {
+                value : coinValue.value,
+                decimals : coinValue.decimals,
+                total_supply : {
+                    value : utils.getTokenObj(this.props.tokens, pool.lt).total_supply,
+                    decimals : ltData.decimals
+                }
+            }
+        }, 'ltfield');
+        this.assignDataForRemoveLiquidity('field0', {
+            token : this.getTokenByHash(pool.token_0.hash),
+            coinValue : counted.t0
+        });
+        this.assignDataForRemoveLiquidity('field1', {
+            token : this.getTokenByHash(pool.token_1.hash),
+            coinValue : counted.t1
+        });
+    };
+
+
+    renderLtList () {
+        let ltList = this.getLtData();
+        if (ltList.length === 0)
             return (
-                <div className="liquidity-tokens-empty-zone"> 
-                </div>
+                <div className="liquidity-tokens-empty-zone"/>
             );
         else {
             return ltList.map((el, index) => {
@@ -143,7 +142,7 @@ class LiquidityTokensZone extends React.Component {
                                 onClick={() => this.setState({ activeId: this.state.activeId !== index ? index : '' })}
                                 data-active-accordion-elem = {index === this.state.activeId ? 'active' : 'inactive'} >
                                     <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
-                                    <i className="fas fa-chevron-down accordion-chevron"></i>
+                                    <i className="fas fa-chevron-down accordion-chevron"/>
                             </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey={index+''}>
@@ -187,7 +186,7 @@ class LiquidityTokensZone extends React.Component {
         return(
             <>
                 <Accordion>
-                    { this.renderltList() }
+                    { this.renderLtList() }
                 </Accordion>
             </>
         );

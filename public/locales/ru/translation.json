@@ -62,10 +62,12 @@
                 "beforeConnection" : "Подключите кошелёк",
                 "afterConnection" : "Отправить",
                 "addLiquidity" : "Добавить ликвидность",
+                "removeLiquidity" : "Удалить ликвидность",
                 "fillAllFields" : "Заполните все поля",
                 "swap" : "Обменять",
                 "createPair" : "Создать пару",
-                "insufficientFunds" : "Недостаточно средств"
+                "insufficientFunds" : "Недостаточно средств",
+                "invalidPool" : "Такой пул не существует"
             },
             "aboutButtonInfo" : {
                 "withoutPair" : "Такой пары не существует",
@@ -77,7 +79,8 @@
                 "simple" : "Упрощённый вид",
                 "detailed" : "Детальный вид",
                 "header" : "Удалить Ликвидность",
-                "tooltipText" : "Удалите токены ликвидности для получения токенов пула"
+                "tooltipText" : "Удалите токены ликвидности для получения токенов пула",
+                "input" : "Ввод"
             }
         },
         "tokenCard" : {

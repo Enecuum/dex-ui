@@ -63,10 +63,12 @@
                 "beforeConnection" : "Connect a wallet",
                 "afterConnection" : "Submit",
                 "addLiquidity" : "Add liquidity",
+                "removeLiquidity" : "Remove liquidity",
                 "fillAllFields" : "Fill all fields",
                 "swap" : "Swap",
                 "createPair" : "Create pair",
-                "insufficientFunds" : "Insufficient funds"
+                "insufficientFunds" : "Insufficient funds",
+                "invalidPool" : "Invalid pool"
             },
             "aboutButtonInfo" : {
                 "withoutPair" : "There is no such pair",
@@ -78,7 +80,8 @@
                 "simple" : "Simple",
                 "detailed" : "Detailed",
                 "header" : "Remove Liquidity", 
-                "tooltipText" : "Remove liquidity tokens to get pool tokens"
+                "tooltipText" : "Remove liquidity tokens to get pool tokens",
+                "input" : "input"
             }
         },
         "tokenCard" : {

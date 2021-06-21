@@ -5,33 +5,33 @@ const vp = new ValueProcessor();
 /* =================================== micro-utils =================================== */
 
 function pairExists (pair) {
-    if (pair.lt === undefined || pair.pool_fee === undefined) 
-        return false;
-    return true;
-};
+    return !(pair.lt === undefined || pair.pool_fee === undefined);
+}
 
 function removeEndZeros (value) {
-    if (value == '0')
+    if (value === '0')
         return '0';
     if ((/\.[0-9]*0+$/).test(value)) {
         value = value.replace(/0*$/, '');
-        if (value[value.length-1] == '.')
+        if (value[value.length-1] === '.')
             value = value.slice(0, value.length-1);
     }
     return value;
-};
+}
+
+/* =============================== BigInt calculations =============================== */
 
 function countPortion (fullAmount, percent) {
     let hundred = vp.valueToBigInt(100, fullAmount.decimals);
     let percentObj = vp.valueToBigInt(percent, fullAmount.decimals);
     return vp.mul(fullAmount, vp.div(percentObj, hundred));
-};
+}
 
 function countPercentsByPortion (fullAmount, portion) {
-    return (Number(portion) / Number(fullAmount)) * 100;
-};
-
-/* =============================== BigInt calculations =============================== */
+    let hundred = {value : 100, decimals : 0};
+    let res = vp.mul(vp.div(portion, fullAmount), hundred);
+    return vp.usCommasBigIntDecimals(res.value, res.decimals);
+}
 
 /**
  * Get exchange rate of two tokens. Все value и volume передавать в "копейках".
@@ -40,7 +40,7 @@ function countPercentsByPortion (fullAmount, portion) {
  * @param {object} modeStruct - field from swapCard redux store like (liquidity, exchange, removeLiquidity)
  * @returns {string} - us commas
  */
-function countExchangeRate(pair, firstPerSecond, modeStruct) {
+function countExchangeRate (pair, firstPerSecond, modeStruct) {
     pair = { ...pair };
     if (!pairExists(pair)) {
         pair = {
@@ -83,16 +83,17 @@ function countExchangeRate(pair, firstPerSecond, modeStruct) {
     } else {
         return '-';
     }
-};
+}
 
 /**
  * Get pool share in percents. Все value и volume передавать в "копейках".
  * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
  * @param {object} values - {value0, value1}
- * @param {boolean} addition - if it's true, then sum up pool volume and user value 
+ * @param {boolean} addition - if it's true, then sum up pool volume and user value
+ * @param {object} balances - balance object from redux state
  * @returns {string} - percents
  */
-function countPoolShare(pair, values, balances, addition) {
+function countPoolShare (pair, values, balances, addition) {
     if (!pairExists(pair))
         return '100';
 
@@ -100,13 +101,13 @@ function countPoolShare(pair, values, balances, addition) {
 
     try {
         if (values.value0.value === undefined || values.value1.value === undefined)
-            return;
+            return undefined;
         value0  = values.value0;
         value1  = values.value1;
         volume0 = BigInt(pair.token_0.volume);
         volume1 = BigInt(pair.token_1.volume);
     } catch (e) {
-        return;
+        return undefined;
     }
 
     let volumeObj0 = {
@@ -125,47 +126,53 @@ function countPoolShare(pair, values, balances, addition) {
     let poolVolume = vp.mul(volumeObj0, volumeObj1);
     let res = vp.div(inputVolume, poolVolume);
     if (!Object.keys(res).length)
-        return;
+        return undefined;
     return vp.usCommasBigIntDecimals(res.value, res.decimals / 2, 10);
-};
+}
 
 /* ================================= search functions ================================ */
 
-function searchSwap(pairs, tokens) {
+function searchSwap (pairs, tokens, lpToken) {
     const emptyPair = {
         token_0 : {},
         token_1 : {}
     };
-    if (pairs.length == 0 || !Array.isArray(pairs))
+    if (pairs.length === 0 || !Array.isArray(pairs))
         return emptyPair;
     let hashes = [tokens[0].hash, tokens[1].hash];
     let validPair = pairs.find(el => {
-        if (hashes.indexOf(el.token_0.hash) != -1 &&
-            hashes.indexOf(el.token_1.hash) != -1 &&
+        if (hashes.indexOf(el.token_0.hash) !== -1 &&
+            hashes.indexOf(el.token_1.hash) !== -1 &&
             el.token_0.hash !== el.token_1.hash) {
-            return el;
+            if (lpToken)
+                if (el.lt === lpToken)
+                    return el;
+                else
+                    return undefined;
+            else
+                return el;
         }
     });
     return (validPair) ? validPair : emptyPair;
-};
+}
 
-function getBalanceObj(balances, hash) {
-    let balanceObj = balances.find(el => el.token == hash);
+function getBalanceObj (balances, hash) {
+    let balanceObj = balances.find(el => el.token === hash);
     if (balanceObj) {
         return balanceObj;
     } else
         return {
             amount : (hash) ? 0 : '---',
             decimals : 0,
-            minable : 0, 
+            minable : 0,
             reissuable : 0
         };
-};
+}
 
-function getTokenObj(tokens, hash) {
-    let tokenObj = tokens.find(el => el.hash == hash);
+function getTokenObj (tokens, hash) {
+    let tokenObj = tokens.find(el => el.hash === hash);
     if (tokenObj) {
-        if (tokenObj.decimals == undefined) {
+        if (tokenObj.decimals === undefined) {
             tokenObj.decimals = 0;
             tokenObj.total_supply = 0;
         }
@@ -178,7 +185,7 @@ function getTokenObj(tokens, hash) {
             decimals : 0,
             total_supply : 0
         };
-};
+}
 
 /* =================================================================================== */
 

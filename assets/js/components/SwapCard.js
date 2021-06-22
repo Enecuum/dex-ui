@@ -488,8 +488,7 @@ class SwapCard extends React.Component {
         return utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]);
     };
 
-    showPercents () {
-        let fixedLength = 1;
+    showPercents (fixedLength=1) {
         let result = '-';
         if (!Number.isNaN(this.rmPercents))
             result = Number(this.rmPercents).toFixed(fixedLength);
@@ -640,6 +639,13 @@ class SwapCard extends React.Component {
                 }
             }
         }, cField);
+        if (!Object.keys(counted.t0).length || !Object.keys(counted.t1).length) { // invalid ltDestruction
+            let zeroValue = {value: 0, decimals: 0, text: '0'};
+            this.assignCoinValueWithText(mode, 'field0',  zeroValue);
+            this.assignCoinValueWithText(mode, 'field1',  zeroValue);
+            this.assignCoinValueWithText(mode, 'ltfield', zeroValue);
+            return;
+        }
         let balanceObj = {value : this.props.removeLiquidity.ltfield.balance.amount, decimals : this.props.removeLiquidity.ltfield.balance.decimals};
         let rmPercent = utils.countPercentsByPortion(balanceObj, counted.lt);
         if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
@@ -744,18 +750,18 @@ class SwapCard extends React.Component {
         let f1 = this.props[mode].field1;
         let balance0 = {value : f0.balance.amount, decimals : f0.balance.decimals};
         let balance1 = {value : f1.balance.amount, decimals : f1.balance.decimals};
-        let substraction0, substraction1;
+        let subtraction0, subtraction1;
         try {
-            substraction0 = valueProcessor.sub(balance0, f0.value);
-            substraction1 = valueProcessor.sub(balance1, f1.value);
+            subtraction0 = valueProcessor.sub(balance0, f0.value);
+            subtraction1 = valueProcessor.sub(balance1, f1.value);
         } catch (e) {
             return;
         }
-        if (substraction0.value < 0)
+        if (subtraction0.value < 0)
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (substraction1.value < 0)
+        if (subtraction1.value < 0)
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

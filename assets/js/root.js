@@ -2,19 +2,23 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
+import { CookiesProvider } from 'react-cookie';
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
-import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm } from './components/entry';
+import { Navbar, Aside, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation,
+         WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, SwapCard } from './components/entry';
+
 import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
-import img1 from '../img/logo.png';
-import img2 from '../img/bry-logo.png';
-import SwapAddon from './components/SwapAddon';
+// import img1 from '../img/logo.png';
+// import img2 from '../img/bry-logo.png';
+// import SwapAddon from './components/SwapAddon';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
 
@@ -331,9 +335,11 @@ const WRoot = connect(mapStoreToProps(components.ROOT), mapDispatchToProps(compo
 ReactDOM.render(
     <I18nextProvider i18n={i18n}>
         <Provider store={ store } >
-            <Suspense fallback={<div>---</div>}>
-                <WRoot />
-            </Suspense>
+            <CookiesProvider>
+                <Suspense fallback={<div>---</div>}>
+                    <WRoot />
+                </Suspense>
+            </CookiesProvider>
         </Provider>
     </I18nextProvider>,
     document.getElementById('root')

@@ -19,6 +19,10 @@ import '../../css/confirm-supply.css';
 const valueProcessor = new ValueProcessor();
 
 class ConfirmSupply extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     closeCard () {
         this.props.closeConfirmCard();
     };

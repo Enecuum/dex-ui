@@ -24,7 +24,8 @@ const components = {
     LP_WALLET_INFO          : 0xD,
     TOP_PAIRS               : 0xF,
     ETM                     : 0x10,
-    CONFIRM_ISSUE_TOKEN     : 0x11
+    CONFIRM_ISSUE_TOKEN     : 0x11,
+    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12
 };
 
 function mapStoreToProps(component) {
@@ -199,7 +200,6 @@ function mapStoreToProps(component) {
                     mainToken               : state.root.mainToken,
                     connectionStatus        : state.root.connectionStatus,                   
                     balances                : state.root.balances,
-                    showForm : state.etm.showForm,
                     tokenData : {
                         mining_period                   : state.etm.tokenData.mining_period,
                         ticker                          : state.etm.tokenData.ticker,
@@ -244,7 +244,7 @@ function mapStoreToProps(component) {
         default:
             return undefined;
     }
-};
+}
 
 function mapDispatchToProps(component) {
     switch (component) {
@@ -382,7 +382,7 @@ function mapDispatchToProps(component) {
         default:
             return undefined; 
     }
-};
+}
 
 export {
     mapStoreToProps,

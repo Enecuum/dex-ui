@@ -51,12 +51,12 @@ class ConnectionService extends React.Component {
                     <div onClick={this.connectToEnq.bind(this)} className='enq-wallet d-flex align-items-center'>
                         <p className='col-6 text-nowrap'>{t('tokenWallet', {'token' : 'ENQ'})}</p>
                         <div className='col-6 d-flex justify-content-end align-items-center' >
-                            <div className='c-circle'></div>
-                            <img src={img}></img>
+                            <div className='c-circle'/>
+                            <img src={img}/>
                         </div>
                     </div>
                     <a href='https://chrome.google.com/webstore/detail/enecuum/oendodccclbjedifljnlkapjejklgekf' className='d-flex justify-content-center c-clue'>
-                        <span className='icon-Icon4'></span>
+                        <span className='icon-Icon4'/>
                         {t('navbars.top.connectionCard.clue')}
                     </a>
                 </Modal.Body>
@@ -64,7 +64,7 @@ class ConnectionService extends React.Component {
             </>
         );
     }
-};
+}
 
 const WConnectionService = connect(mapStoreToProps(components.CONNECTION_SERVICE), mapDispatchToProps(components.CONNECTION_SERVICE))(withTranslation()(ConnectionService));
 

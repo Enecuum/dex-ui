@@ -10,8 +10,8 @@ class CommonToast extends React.Component {
 
     render() {
         return (
-          <Toast show="true" className="common-toast">
-            <Toast.Header>
+          <Toast show="true" className="common-toast" onClose={this.props.closeAction.bind(this.props)}>
+            <Toast.Header className="toast-header">
                 {this.props.renderHeader()}
             </Toast.Header>
             <Toast.Body>

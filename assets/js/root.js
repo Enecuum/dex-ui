@@ -16,6 +16,7 @@ import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
+import AccountShortInfo from "./components/AccountShortInfo";
 import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
 
 
@@ -310,9 +311,9 @@ class Root extends React.Component {
                         {this.menuViewController()}
                         {this.connectionList()}
                     </div>
-                    {/* <div id="toastWrapper" className="position-absolute pt-4">
-                        <CommonToast />
-                    </div> */}    
+                    <div id="toastWrapper" className="position-absolute pt-4">
+                        <AccountShortInfo />
+                    </div>
 
                 </main>
                 {this.props.connectionStatus && 

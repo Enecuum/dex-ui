@@ -111,10 +111,10 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.indicatorPanel,
-                    pubkey              : state.root.pubkey,
-                    pendingIndicator    : state.root.pendingIndicator,
-                    balances            : state.root.balances,
-                    net                 : state.root.net
+                    pubkey                  : state.root.pubkey,
+                    pendingIndicator        : state.root.pendingIndicator,
+                    balances                : state.root.balances,
+                    net                     : state.root.net
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -238,7 +238,9 @@ function mapStoreToProps(component) {
         case components.ACCOUNT_SHORT_INFO:
             return function (state) {
                 return {
-                    pubkey : state.root.pubkey
+                    pubkey                : state.root.pubkey,
+                    net                   : state.root.net,
+                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
                 }
             };
         default:
@@ -381,7 +383,14 @@ function mapDispatchToProps(component) {
                 }, dispatch); 
             };
         default:
-            return undefined; 
+            return undefined;
+
+        case components.ACCOUNT_SHORT_INFO:
+            return function (dispatch) {
+                return bindActionCreators({
+                    changeAccountInfoVisibility : indicatorPanelCreator.changeAccountInfoVisibility
+                }, dispatch);
+            };
     }
 }
 

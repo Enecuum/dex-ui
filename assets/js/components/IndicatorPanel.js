@@ -53,15 +53,14 @@ class IndicatorPanel extends React.Component {
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
                     <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer hover-pointer'
-                         onClick={this.openCloseAccountInfo.bind(this)}>{this.packAdressString(this.props.pubkey)}</div>
+                         onClick={this.openCloseAccountInfo.bind(this)}>{utils.packAddressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );
     };
 
     openCloseAccountInfo () {
-        this.setState({accountInfoVisibility : !this.state.accountInfoVisibility})
-        // window.open(this.props.net.url + '#!/account/' + this.props.pubkey, '_blank').focus();
+        this.props.changeAccountInfoVisibility();
     };
 
     updData () {
@@ -85,15 +84,10 @@ class IndicatorPanel extends React.Component {
         err => console.log('cannot make getProvider request'));
     };
 
-    packAdressString(addr) {
-        return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
-    };
-
     render () {
         return (
             <>
                 {this.renderWalletInfo()}
-                <AccountShortInfo/>
             </>
         );
     };

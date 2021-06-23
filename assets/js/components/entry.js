@@ -6,7 +6,7 @@ import ConfirmSupply from './ConfirmSupply';
 import WaitingConfirmation from './waitingConfirmation';
 import WaitingIssueTokenConfirmation from './waitingIssueTokenConfirmation';
 import Switch from './Switch';
-import CommonToast from './CommonToast';
+import CommonToast from '../elements/CommonToast';
 import Connect from './Connect';
 import IndicatorPanel from './IndicatorPanel';
 import TopPairs from './TopPairs';

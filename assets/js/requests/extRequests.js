@@ -35,7 +35,7 @@ class ExtRequests {
 
     /**
      * Get network url or name
-     * @param {boollean} full - flag for getting url (deprecated)
+     * @param {bool} full - flag for getting url (deprecated)
      * @returns {string}
      */
     getProvider (full) {
@@ -44,7 +44,7 @@ class ExtRequests {
 
     /**
      * Get balance of the required token
-     * @param {string} pubKey - users publick key (get it while connecting to the extention)
+     * @param {string} pubKey - users public key (get it while connecting to the extension)
      * @param {string} hash - hash of the required token
      * @returns {Promise}
      */
@@ -57,8 +57,8 @@ class ExtRequests {
 
     /**
      * Create pool with two pairs that are chosen in ui-form
-     * @param {string} pubkey - users publick key (get it while connecting to the extention)
-     * @param {object} modeStruct - data structure from initialState.js, such as 'swapCard.liqudity', 'swapCard.exchange'
+     * @param {string} pubkey - users public key (get it while connecting to the extension)
+     * @param {object} modeStruct - data structure from initialState.js, such as 'swapCard.liquidity', 'swapCard.exchange'
      * @returns {Promise}
      */
     createPool (pubkey, modeStruct) {
@@ -72,7 +72,7 @@ class ExtRequests {
 
     /**
      * Exchange pair of tokens
-     * @param {string} pubkey - users publick key (get it while connecting to the extention)
+     * @param {string} pubkey - users public key (get it while connecting to the extension)
      * @param {object} exchangeMode - data structure from initialState.js
      * @returns {Promise}
      */
@@ -86,7 +86,7 @@ class ExtRequests {
 
     /**
      * Exchange pair of tokens
-     * @param {string} pubkey - users publick key (get it while connecting to the extention)
+     * @param {string} pubkey - users public key (get it while connecting to the extension)
      * @param {object} liquidityMode - data structure from initialState.js
      * @returns {Promise}
      */
@@ -101,9 +101,9 @@ class ExtRequests {
 
     /**
      * Get coins at the cost of 'liquidity tokens'
-     * @param {string} pubkey - users publick key (get it while connecting to the extention)
+     * @param {string} pubkey - users public key (get it while connecting to the extension)
      * @param {string} lt - lp token hash
-     * @param {BigInt} amount - lt amount for removing 
+     * @param {BigInt} ltfield - field from remove liquidity redux state with lt amount
      * @returns {Promise}
      */
     removeLiquidity (pubkey, lt, ltfield) {
@@ -147,7 +147,7 @@ class ExtRequests {
         // console.log(params);
         return trafficController.sendTransaction(data);
     };
-};
+}
 
 const extRequests = new ExtRequests();
 

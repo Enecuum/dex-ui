@@ -5,6 +5,7 @@
 import config from '../../../config.json';
 import trafficController from './trafficController';
 import presets from '../../store/pageDataPresets';
+
 class SwapApi {
     constructor () {
         this.url = presets.network.defaultNet.url;
@@ -102,7 +103,7 @@ class SwapApi {
     //     });
     // };
     // ---------------------------------------------------------------------
-};
+}
 
 const swapApi = new SwapApi();
 

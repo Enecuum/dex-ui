@@ -37,7 +37,7 @@ class ConnectionService extends React.Component {
         return (
             <>
               <Modal
-                show={this.props.connecionListOpened}
+                show={this.props.connectionListOpened}
                 aria-labelledby="custom-modal-styling-title"
                 onHide={this.props.closeConList.bind(this.props)}
                 centered

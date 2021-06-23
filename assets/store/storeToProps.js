@@ -16,16 +16,16 @@ const components = {
     CONNECTION_SERVICE      : 0x5,
     NAVBAR                  : 0x6,
     CONNECT                 : 0x7,
-    TOAST                   : 0x8,
-    INDICATOR_PANEL         : 0x9,
-    CONFIRM_SUPPLY          : 0xA,
-    WAITING_CONFIRMATION    : 0xB,
-    LIQUIDITY_TOKEN_ZONE    : 0xC,
-    LP_WALLET_INFO          : 0xD,
-    TOP_PAIRS               : 0xF,
-    ETM                     : 0x10,
-    CONFIRM_ISSUE_TOKEN     : 0x11,
-    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12
+    INDICATOR_PANEL         : 0x8,
+    CONFIRM_SUPPLY          : 0x9,
+    WAITING_CONFIRMATION    : 0xA,
+    LIQUIDITY_TOKEN_ZONE    : 0xB,
+    LP_WALLET_INFO          : 0xC,
+    TOP_PAIRS               : 0xD,
+    ETM                     : 0xE,
+    CONFIRM_ISSUE_TOKEN     : 0xF,
+    ACCOUNT_SHORT_INFO      : 0x10,
+    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x11
 };
 
 function mapStoreToProps(component) {
@@ -90,7 +90,7 @@ function mapStoreToProps(component) {
                 return {
                     pubkey              : state.root.pubkey,
                     connectionStatus    : state.root.connectionStatus,
-                    connecionListOpened : state.root.connecionListOpened
+                    connectionListOpened : state.root.connecionListOpened
                 };
             };
         case components.NAVBAR:
@@ -106,13 +106,7 @@ function mapStoreToProps(component) {
         //             langData : state.root.langData.navbars.top,
 
         //         };
-        //     };  
-        case components.TOAST: //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            return function (state) {
-                return {
-                    info : state.root.langData.info  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                };
-            }
+        //     };
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
@@ -240,9 +234,16 @@ function mapStoreToProps(component) {
                     dataValid            : state.etm.dataValid,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };
-            };            
+            };
+        case components.ACCOUNT_SHORT_INFO:
+            return function (state) {
+                return {
+                    pubkey : state.root.pubkey
+                }
+            };
         default:
             return undefined;
+
     }
 }
 

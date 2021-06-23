@@ -58,6 +58,10 @@ const actionPack =  {
         UPDATE_MAIN_TOKEN_TICKER       : 'UPDATE_MAIN_TOKEN_TICKER',
         UPDATE_MAIN_TOKEN_DECIMALS     : 'UPDATE_MAIN_TOKEN_DECIMALS',
         RESET_STORE                    : 'RESET_STORE'
+    },
+    farms : {
+        UPDATE_EXPANDED_ROW : 'UPDATE_EXPANDED_ROW',
+        UPDATE_SORT_TYPE    : 'UPDATE_SORT_TYPE'
     }
 };
 

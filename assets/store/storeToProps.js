@@ -6,6 +6,7 @@ import tokenCardCreator from './actionCreators/tokenCard';
 import asideCreator from './actionCreators/aside';
 import indicatorPanelCreator from './actionCreators/indicatorPanel';
 import etmCreator from './actionCreators/etm';
+import farmsCreator from './actionCreators/farms';
 
 const components = {
     ROOT                    : 0x0,
@@ -24,7 +25,8 @@ const components = {
     LP_WALLET_INFO          : 0xD,
     TOP_PAIRS               : 0xF,
     ETM                     : 0x10,
-    CONFIRM_ISSUE_TOKEN     : 0x11
+    CONFIRM_ISSUE_TOKEN     : 0x11,
+    FARMS                   : 0x12
 };
 
 function mapStoreToProps(component) {
@@ -240,7 +242,16 @@ function mapStoreToProps(component) {
                     dataValid            : state.etm.dataValid,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };
-            };            
+            };
+        case components.FARMS:
+            return function (state) {
+                return {
+                    ...state.root,
+                    connectionStatus  : state.root.connectionStatus,
+                    balances          : state.root.balances,
+                    tokens            : state.root.tokens
+                };
+            };                        
         default:
             return undefined;
     }
@@ -379,6 +390,13 @@ function mapDispatchToProps(component) {
                     resetStore                  : etmCreator.resetStore
                 }, dispatch); 
             };
+        case components.FARMS:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updateExpandedRow : etmCreator.updateExpandedRow,
+                    updateSortType    : etmCreator.updateSortType
+                }, dispatch); 
+            };            
         default:
             return undefined; 
     }

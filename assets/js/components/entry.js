@@ -11,6 +11,7 @@ import Connect from './Connect';
 import IndicatorPanel from './IndicatorPanel';
 import TopPairs from './TopPairs';
 import Etm from '../pages/Etm';
+import Farms from '../pages/Farms';
 
 export {
     Navbar,
@@ -25,5 +26,6 @@ export {
     Connect,
     IndicatorPanel,
     TopPairs,
-    Etm
+    Etm,
+    Farms
 };

@@ -117,6 +117,10 @@ const initialState = {
         showForm : false,
         showFormErrMessages : false,
         possibleToIssueToken : false
+    },
+    farms : {
+        extendedRow : null,
+        sortType    : 'liquidity'
     }
 };
 

@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
-import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm } from './components/entry';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms } from './components/entry';
 import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
@@ -263,7 +263,13 @@ class Root extends React.Component {
                     <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <TopPairs  useSuspense={false}/>
                     </div>                    
-                );    
+                );
+            case 'farms':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <Farms useSuspense={false}/>
+                    </div>                    
+                );                    
             default:
                 return (
                     <BlankPage text="Coming soon"/>

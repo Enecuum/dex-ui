@@ -46,9 +46,19 @@
 }
 
 .recent-txs-place {
-    width: 107.5%;
+    width: 108%;
     margin-left: -12px;
     margin-bottom: -29px;
     border-radius: 0 0 var(--border-radius2) var(--border-radius2);
     background-color: var(--color5);
+}
+
+.recent-tx-ref {
+    color: var(--color3);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.recent-tx-ref:hover {
+    color: var(--color3);
 }

@@ -14,7 +14,8 @@ const actionPack =  {
         HIDE_PENDING_STATE      : 'HIDE_PENDING_STATE',
         UPD_PAIRS               : 'UPD_PAIRS',
         ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
-        UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH'
+        UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH',
+        UPD_RECENT_TXS          : 'UPD_RECENT_TXS'
     },
     swapCard : {
         SWAP_FIELDS                         : 'SWAP_FIELDS',

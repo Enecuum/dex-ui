@@ -32,7 +32,6 @@ class CookieProcessor {
     _buildNewCookie (newValue, options) {
         for (let optionKey in options)
             newValue += `; ${this._encodeKeyValue(optionKey, options[optionKey])}`
-        console.log(newValue);
         return newValue;
     }
 
@@ -52,6 +51,14 @@ class CookieProcessor {
         return this._findNoteByHash(txHash, withoutConcatenation)
     }
 
+    _getClearedHistory () {
+        let rawHistory = {...this._history}
+        let clearedHistory = {}
+        for (let key in rawHistory)
+            clearedHistory[key.slice(this._pubKey.length)] = rawHistory[key]
+        return clearedHistory
+    }
+
     /* ===================================================================== */
 
     updateSettings (pubKey, path) {
@@ -61,13 +68,14 @@ class CookieProcessor {
 
     /**
      * Get: all - all notes are linked with your account, note - one note (by tx hash)
-     * @returns {{all: any, note: any}}
+     * @returns {{all: any, note: any, cleared: any}}
      */
     get () {
         this._history = this._filter(document.cookie, this._pubKey)
         return {
-            all  : this._getAllHistory.bind(this),
-            note : this._getOneNote.bind(this)
+            all     : this._getAllHistory.bind(this),
+            cleared : this._getClearedHistory.bind(this),
+            note    : this._getOneNote.bind(this)
         }
     }
 

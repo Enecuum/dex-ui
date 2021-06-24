@@ -247,7 +247,12 @@ function mapStoreToProps(component) {
         case components.RECENT_TXS_LIST:
             return function (state) {
                 return {
-                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
+                    pubkey                : state.root.pubkey,
+                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility,
+                    recentTxs             : state.root.recentTxs,
+                    pairs                 : state.root.pairs,
+                    tokens                : state.root.tokens,
+                    net                   : state.root.net
                 }
             }
         default:
@@ -389,8 +394,6 @@ function mapDispatchToProps(component) {
                     resetStore                  : etmCreator.resetStore
                 }, dispatch); 
             };
-        default:
-            return undefined;
 
         case components.ACCOUNT_SHORT_INFO:
             return function (dispatch) {
@@ -399,6 +402,16 @@ function mapDispatchToProps(component) {
                     openConList                 : rootCreator.openConList
                 }, dispatch);
             };
+
+        case components.RECENT_TXS_LIST:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updRecentTxs : rootCreator.updRecentTxs
+                }, dispatch);
+            };
+
+        default:
+            return undefined;
     }
 }
 

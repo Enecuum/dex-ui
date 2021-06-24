@@ -31,6 +31,7 @@ const initialState = {
         balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
         pairs       : [],   // [{token_0 : {volume, hash}, token_2 : {volume, hash}, pool_fee, lt}] - all pairs from dex
         tokens      : [],   // [{ticker, hash, caption}] - all tokens from dex
+        recentTxs   : []
     },
     swapCard : {
         exchange: {

@@ -104,6 +104,13 @@ const actionCreators = {
             type : actions.UPD_CURRENT_TX_HASH,
             value : hash
         }
+    },
+
+    updRecentTxs (txs) {
+        return {
+            type : actions.UPD_RECENT_TXS,
+            value : txs
+        }
     }
 };
 

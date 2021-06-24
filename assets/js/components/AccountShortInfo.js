@@ -8,9 +8,11 @@ import CommonToast from "../elements/CommonToast"
 import RecentTransactions from "./RecentTransactions";
 
 import utils from "../utils/swapUtils";
+import {cookieProcessor as cp} from "../utils/cookieProcessor";
 
 import "../../css/account-short-info.css"
 import img from "../../img/ENEXlogo.png";
+
 
 class AccountShortInfo extends React.Component {
     constructor(props) {
@@ -29,6 +31,11 @@ class AccountShortInfo extends React.Component {
         this.props.changeAccountInfoVisibility()
     }
 
+    reloadPage () {
+        cp.set('reload', true, true)
+        location.reload()
+    }
+
     renderHeader () {
         return (
             <>
@@ -43,8 +50,8 @@ class AccountShortInfo extends React.Component {
                 <Card className='account-card'>
                     <Card.Body>
                         <div className="d-flex justify-content-between mt-2">
-                            <small className="mr-4 connected-with">Connected with enq-wallet</small>
-                            <button className="ml-5 extra-small-button">Change</button>
+                            <small className="mr-5 connected-with">Connected with ENQ-wallet</small>
+                            <button className="ml-lg-2 extra-small-button" onClick={this.reloadPage.bind(this)}>Change</button>
                         </div>
                         <div className="d-flex justify-content-start mt-2">
                             <div className="mr-3">

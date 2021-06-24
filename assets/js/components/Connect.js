@@ -24,7 +24,7 @@ class Connect extends React.Component {
     render() {
         return this.renderConnectionButton();
     }
-};
+}
 
 const WConnect = connect(mapStoreToProps(components.CONNECT), mapDispatchToProps(components.CONNECT))(withTranslation()(Connect));
 

@@ -18,7 +18,7 @@ import utils from './utils/swapUtils';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 import AccountShortInfo from "./components/AccountShortInfo";
 import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
-
+import {cookieProcessor as cp} from "./utils/cookieProcessor";
 
 const objectFromData = new ObjectFromData();
 
@@ -297,7 +297,16 @@ class Root extends React.Component {
             );
     };
 
-    render () {       
+    openConnectionListWhileReload () {
+        let res = cp.get().note('reload', true)
+        if (res && res['reload'] === "true") {
+            cp.set('reload', false, true)
+            this.openConnectionList()
+        }
+    }
+
+    render () {
+        {this.openConnectionListWhileReload()}
         return (
             <div className={this.props.menuItem === 'etm' ? 'background-opaque' : ''}>
                 <Suspense fallback={<div>---</div>}>

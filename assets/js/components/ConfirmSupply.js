@@ -11,7 +11,7 @@ import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-import CookieProcessor from '../utils/cookieProcessor';
+import {cookieProcessor as cp} from '../utils/cookieProcessor';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -22,7 +22,6 @@ const valueProcessor = new ValueProcessor();
 class ConfirmSupply extends React.Component {
     constructor(props) {
         super(props);
-        this.cp = new CookieProcessor(this.props.pubkey, '/');
     }
 
     closeCard () {
@@ -45,7 +44,7 @@ class ConfirmSupply extends React.Component {
         tx.then(result => {
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
-            this.cp.set(result.hash, 0);
+            cp.set(result.hash, 0);
         },
         error => {
             this.props.changeWaitingStateType('rejected');

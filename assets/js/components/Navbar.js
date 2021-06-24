@@ -37,7 +37,7 @@ class Navbar extends React.Component {
             </nav>
         );
     };
-};
+}
 
 const WNavbar = connect(mapStoreToProps(components.NAVBAR), mapDispatchToProps(components.NAVBAR))(withTranslation()(Navbar));
 

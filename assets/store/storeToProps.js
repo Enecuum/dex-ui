@@ -25,7 +25,8 @@ const components = {
     ETM                     : 0xE,
     CONFIRM_ISSUE_TOKEN     : 0xF,
     ACCOUNT_SHORT_INFO      : 0x10,
-    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x11
+    RECENT_TXS_LIST         : 0x11,
+    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12
 };
 
 function mapStoreToProps(component) {
@@ -243,6 +244,12 @@ function mapStoreToProps(component) {
                     accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
                 }
             };
+        case components.RECENT_TXS_LIST:
+            return function (state) {
+                return {
+                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
+                }
+            }
         default:
             return undefined;
 
@@ -388,7 +395,8 @@ function mapDispatchToProps(component) {
         case components.ACCOUNT_SHORT_INFO:
             return function (dispatch) {
                 return bindActionCreators({
-                    changeAccountInfoVisibility : indicatorPanelCreator.changeAccountInfoVisibility
+                    changeAccountInfoVisibility : indicatorPanelCreator.changeAccountInfoVisibility,
+                    openConList                 : rootCreator.openConList
                 }, dispatch);
             };
     }

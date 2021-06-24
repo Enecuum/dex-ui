@@ -17,8 +17,8 @@ class CookieProcessor {
         return history
     }
 
-    _findNoteByHash (hash) {
-        let concatenatedKey = this._pubKey + hash
+    _findNoteByHash (hash, withoutConcatenation) {
+        let concatenatedKey = (withoutConcatenation) ? String(hash) : this._pubKey + String(hash)
         let result = this._history[concatenatedKey];
         if (result === undefined)
             return result;
@@ -32,14 +32,15 @@ class CookieProcessor {
     _buildNewCookie (newValue, options) {
         for (let optionKey in options)
             newValue += `; ${this._encodeKeyValue(optionKey, options[optionKey])}`
+        console.log(newValue);
         return newValue;
     }
 
-    _writeCookie (key, value, options={}) {
+    _writeCookie (key, value, options={}, withoutConcatenation) {
         options.path = this._path
         if (options.expires != -1)
             options.expires = new Date((Date.now() + this._cookieTTL)).toUTCString()
-        let keyValueString = this._encodeKeyValue(this._pubKey+key, value)
+        let keyValueString = this._encodeKeyValue((withoutConcatenation) ? key : this._pubKey+key, value)
         document.cookie = this._buildNewCookie(keyValueString, options)
     }
 
@@ -47,11 +48,16 @@ class CookieProcessor {
         return this._history
     }
 
-    _getOneNote (txHash) {
-        return this._findNoteByHash(txHash)
+    _getOneNote (txHash, withoutConcatenation) {
+        return this._findNoteByHash(txHash, withoutConcatenation)
     }
 
     /* ===================================================================== */
+
+    updateSettings (pubKey, path) {
+        this._pubKey = pubKey
+        this._path = path
+    }
 
     /**
      * Get: all - all notes are linked with your account, note - one note (by tx hash)
@@ -69,9 +75,10 @@ class CookieProcessor {
      * Set or update key=value pair
      * @param key - transaction hash
      * @param value - transaction status (0 - pending, 1 - duplicated, 2 - rejected, 3 - successful)
+     * @param withoutConcatenation - set true for technical variables (use without pubKey concatenation)
      */
-    set (key, value) {
-        this._writeCookie(key, value)
+    set (key, value, withoutConcatenation) {
+        this._writeCookie(key, value, {}, withoutConcatenation)
     }
 
     /**
@@ -83,4 +90,6 @@ class CookieProcessor {
     }
 }
 
-export default CookieProcessor;
+const cookieProcessor = new CookieProcessor()
+
+export { cookieProcessor };

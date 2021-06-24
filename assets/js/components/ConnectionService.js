@@ -4,11 +4,14 @@ import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
 
+import {cookieProcessor as cp} from "../utils/cookieProcessor";
+
 import img from '../../img/logo.png';
 import '../../css/close-button.css';
 import '../../css/index.css';
 import '../../css/wallet-connection.css';
 import '../../css/font-style.css';
+
 
 class ConnectionService extends React.Component {
     constructor (props) {
@@ -18,13 +21,14 @@ class ConnectionService extends React.Component {
 
     async connectToEnq () {
         if (!this.props.connectionStatus)
-            await ENQweb3lib.connect();
+            await ENQweb3lib.connect()
         await ENQweb3lib.enable()
         .then(res => {
-            this.props.assignPubkey(res.pubkey);
-            this.props.updDexData(res.pubkey);
-            this.props.setConStatus(true);
-            this.props.closeConList();
+            cp.updateSettings(res.pubkey, '/')
+            this.props.assignPubkey(res.pubkey)
+            this.props.updDexData(res.pubkey)
+            this.props.setConStatus(true)
+            this.props.closeConList()
         },
         () => {
             this.props.closeConList();
@@ -52,7 +56,7 @@ class ConnectionService extends React.Component {
                         <p className='col-6 text-nowrap'>{t('tokenWallet', {'token' : 'ENQ'})}</p>
                         <div className='col-6 d-flex justify-content-end align-items-center' >
                             <div className='c-circle'/>
-                            <img src={img}/>
+                            <img src={img} alt="wallet img"/>
                         </div>
                     </div>
                     <a href='https://chrome.google.com/webstore/detail/enecuum/oendodccclbjedifljnlkapjejklgekf' className='d-flex justify-content-center c-clue'>

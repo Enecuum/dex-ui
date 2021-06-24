@@ -15,7 +15,7 @@ import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
 import ValueProcessor from '../utils/ValueProcessor';
-import CookieProcessor from '../utils/cookieProcessor';
+import {cookieProcessor as cp} from '../utils/cookieProcessor';
 import swapApi from '../requests/swapApi';
 import extRequests from '../requests/extRequests';
 
@@ -29,7 +29,6 @@ const valueProcessor = new ValueProcessor();
 class SwapCard extends React.Component {
     constructor(props) {
         super(props);
-        this.cp = new CookieProcessor(this.props.pubkey, '/');
         this.pairExists = false;
         this.readyToSubmit = false;
         this.enoughMoney = [];
@@ -86,7 +85,7 @@ class SwapCard extends React.Component {
         .then(result => {
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
-            this.cp.set(result.hash, 0);
+            cp.set(result.hash, 0);
         }, () => {
             this.props.changeWaitingStateType('rejected');
         });

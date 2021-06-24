@@ -12,6 +12,12 @@
     height: 1.2rem;
     font-size: 0.7rem;
 }
+.extra-small-button:hover {
+    background-color: var(--color5);
+}
+.extra-small-button:active {
+    background-color: var(--color2);
+}
 
 .white-circle {
     width: 20px;

@@ -429,7 +429,7 @@ class SwapCard extends React.Component {
                 <div className="d-flex align-items-center justify-content-between">
                     <input id={props.id}
                         onChange={this.changeField.bind(this, props.id)}
-                        className='c-input-field'
+                        className='c-input-field mr-2'
                         type='text'
                         value={this.showInputValue(props.fieldData.value)}
                         placeholder='0.0'
@@ -437,8 +437,8 @@ class SwapCard extends React.Component {
                         style={this.getBalanceColor(props.id)}>
                     </input>
                     <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
-                        <div className='d-flex align-items-center mr-2'>{ticker}</div>
-                        <span className='icon-Icon26 d-flex align-items-center chevron-down'/>
+                        <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>
+                        <span className='icon-Icon26 d-flex align-items-center chevron-down'></span>
                     </div>                
                 </div>
             </div>

@@ -131,7 +131,6 @@ class ExtRequests {
     };
 
     issueToken (pubKey, issueTokenCost, params) {
-        console.log(pubKey, issueTokenCost, params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,

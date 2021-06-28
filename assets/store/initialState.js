@@ -119,7 +119,7 @@ const initialState = {
         possibleToIssueToken : false
     },
     farms : {
-        extendedRow : null,
+        expandedRow : null,
         sortType    : 'liquidity'
     }
 };

@@ -1,18 +1,18 @@
 import actionPack from '../actions/actions';
 
-const actions = actionPack.etm;
+const actions = actionPack.farms;
 
 const actionCreators = {
     updateExpandedRow (payload) {
         return {
             type : actions.UPDATE_EXPANDED_ROW,
-            payload : payload 
+            payload : payload.value 
         };
     },
     updateSortType (payload) {
         return {
             type : actions.UPDATE_SORT_TYPE,
-            payload : payload 
+            payload : payload.value 
         };
     }      
 };

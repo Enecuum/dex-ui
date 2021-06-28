@@ -37,6 +37,10 @@
     padding: .75rem;
 }
 
+.drop-farms-table-wrapper .table-dark [data-expanded-row="true"] td  .cell-wrapper {
+    border-bottom: 2px solid var(--color2);    
+}
+
 .drop-farms-table-wrapper .table-dark tr td:first-child .cell-wrapper {
     border-top-left-radius: var(--border-radius2);
     border-bottom-left-radius: var(--border-radius2);
@@ -77,17 +81,25 @@
     opacity: 1;
 }
 
-
-.Rectangle_3_copy_3 {
-  border-width: 1px;
-  border-color: rgb(97, 117, 139);
-  border-style: solid;
-  border-radius: 3px;
-  background-color: rgb(44, 55, 75);
-  position: absolute;
-  left: 651px;
-  top: 490px;
-  width: 1614px;
-  height: 97px;
-  z-index: 46;
+.farm-controls-wrapper td {
+  background-color: transparent!important;
 }
+
+.table-dark.table-hover tbody tr.farm-controls-wrapper:hover {
+    background-color: transparent;
+}
+
+.earned-title {
+    color: var(--color2);
+}
+
+.earned-value {
+    font-family: var(--font-face-black), sans-serif;
+    color: var(--color1);
+    font-size: 30px;
+}
+
+.harvest-button {
+    color: var(--color1);
+}
+

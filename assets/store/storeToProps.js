@@ -247,6 +247,7 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
+                    ...state.farms,
                     connectionStatus  : state.root.connectionStatus,
                     balances          : state.root.balances,
                     tokens            : state.root.tokens
@@ -393,8 +394,9 @@ function mapDispatchToProps(component) {
         case components.FARMS:
             return function (dispatch) {
                 return bindActionCreators({
-                    updateExpandedRow : etmCreator.updateExpandedRow,
-                    updateSortType    : etmCreator.updateSortType
+                    updateExpandedRow : farmsCreator.updateExpandedRow,
+                    updateSortType    : farmsCreator.updateSortType,
+                    updCurrentTxHash  : rootCreator.updCurrentTxHash,
                 }, dispatch); 
             };            
         default:

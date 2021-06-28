@@ -8,12 +8,12 @@ export default function farmsReducer (state = initialState.farms, action) {
         case actions.UPDATE_EXPANDED_ROW:
             return {
                 ...state,
-                extendedRow : action.value
+                expandedRow : action.payload
             };
         case actions.UPDATE_SORT_TYPE:
             return {
                 ...state,
-                sortType : action.value
+                sortType : action.payload
             };            
             
         default: 

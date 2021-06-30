@@ -151,8 +151,9 @@ class Farms extends React.Component {
                      obj[param] = params[param]    
         }
 
-        extRequests.sendTx(pubkey, actionType, obj)
+        extRequests.farmAction(pubkey, actionType, obj)        
         .then(result => {
+            console.log(obj)
             console.log('Success', result.hash)
             this.props.updCurrentTxHash(result.hash);
             // this.props.changeWaitingStateType('submitted');

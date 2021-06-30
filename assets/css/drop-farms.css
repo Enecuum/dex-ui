@@ -89,7 +89,7 @@
     background-color: transparent;
 }
 
-.earned-title {
+.color-2 {
     color: var(--color2);
 }
 
@@ -99,7 +99,28 @@
     font-size: 30px;
 }
 
-.harvest-button {
+.outline-border-color2-button {
+    color: var(--color2);
+    border: 1px solid var(--color2)!important;
+    border-radius: var(--border-radius2);
+    background-color: transparent!important;
+}
+
+.outline-border-color2-button:hover, .outline-border-color2-button:focus, .outline-border-color2-button:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color2)!important;
+    background-color: var(--color2)!important;
     color: var(--color1);
 }
 
+.outline-border-color3-button {
+    color: var(--color3);
+    border: 1px solid var(--color3);
+    border-radius: var(--border-radius2);
+    background-color: transparent;
+}
+
+.outline-border-color3-button:hover, .outline-border-color3-button:focus, .outline-border-color3-button:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color3);
+    background-color: var(--color3);
+    color: var(--color1);    
+}

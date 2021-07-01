@@ -9,13 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
-<<<<<<< HEAD
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms } from './components/entry';
-=======
-import { Navbar, Aside, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation,
-         WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, SwapCard } from './components/entry';
 
->>>>>>> develop
 import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';

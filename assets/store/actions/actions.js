@@ -14,7 +14,8 @@ const actionPack =  {
         HIDE_PENDING_STATE      : 'HIDE_PENDING_STATE',
         UPD_PAIRS               : 'UPD_PAIRS',
         ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
-        UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH'
+        UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH',
+        UPD_RECENT_TXS          : 'UPD_RECENT_TXS'
     },
     swapCard : {
         SWAP_FIELDS                         : 'SWAP_FIELDS',
@@ -32,7 +33,7 @@ const actionPack =  {
         CHANGE_WAITING_STATE_TYPE           : 'CHANGE_WAITING_STATE_TYPE',
         TOGGLE_REMOVE_LIQUIDITY_VIEW        : 'TOGGLE_REMOVE_LIQUIDITY_VIEW',
         CHANGE_CREATE_POOL_STATE            : 'CHANGE_CREATE_POOL_STATE',
-        CHANGE_REMOVE_LIQUDITY_VISIBILITY   : 'CHANGE_REMOVE_LIQUDITY_VISIBILITY'
+        CHANGE_REMOVE_LIQUDITY_VISIBILITY   : 'CHANGE_REMOVE_LIQUIDITY_VISIBILITY'
     },
     tokenCard : {
         ASSIGN_TOKEN_LIST : 'ASSIGN_TOKEN_LIST',
@@ -42,7 +43,8 @@ const actionPack =  {
         UPD_EXCH_RATE   : 'UPD_EXCH_RATE'
     },
     indicatorPanel : {
-        UPD_COIN_AMOUNT : 'UPD_COIN_AMOUNT'
+        UPD_COIN_AMOUNT             : 'UPD_COIN_AMOUNT',
+        CHANGE_ACC_INFO_VISIBILITY  : 'CHANGE_ACC_INFO_VISIBILITY'
     },
     etm : {
         UPDATE_TOKEN_PROPERTY          : 'UPDATE_TOKEN_PROPERTY',

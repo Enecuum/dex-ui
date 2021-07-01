@@ -5,19 +5,24 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeT
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
+<<<<<<< HEAD
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms } from './components/entry';
+=======
+import { Navbar, Aside, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation,
+         WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, SwapCard } from './components/entry';
+
+>>>>>>> develop
 import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
-import img1 from '../img/logo.png';
-import img2 from '../img/bry-logo.png';
-import SwapAddon from './components/SwapAddon';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
+import AccountShortInfo from "./components/AccountShortInfo";
 import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
-
+import {cookieProcessor as cp} from "./utils/cookieProcessor";
 
 const objectFromData = new ObjectFromData();
 
@@ -302,7 +307,16 @@ class Root extends React.Component {
             );
     };
 
-    render () {       
+    openConnectionListWhileReload () {
+        let res = cp.get().note('reload', true)
+        if (res && res['reload'] === "true") {
+            cp.set('reload', false, true)
+            this.openConnectionList()
+        }
+    }
+
+    render () {
+        {this.openConnectionListWhileReload()}
         return (
             <div className={this.props.menuItem === 'etm' ? 'background-opaque' : ''}>
                 <Suspense fallback={<div>---</div>}>
@@ -316,9 +330,9 @@ class Root extends React.Component {
                         {this.menuViewController()}
                         {this.connectionList()}
                     </div>
-                    {/* <div id="toastWrapper" className="position-absolute pt-4">
-                        <CommonToast />
-                    </div> */}    
+                    <div id="toastWrapper" className="position-absolute pt-4">
+                        <AccountShortInfo />
+                    </div>
 
                 </main>
                 {this.props.connectionStatus && 
@@ -330,7 +344,7 @@ class Root extends React.Component {
             </div>
         );
     };
-};
+}
 
 const WRoot = connect(mapStoreToProps(components.ROOT), mapDispatchToProps(components.ROOT))(withTranslation()(Root));
 

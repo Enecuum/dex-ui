@@ -187,11 +187,16 @@ function getTokenObj (tokens, hash) {
         };
 }
 
+function packAddressString (addr) {
+    return `0x${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
+}
+
 /* =================================================================================== */
 
 export default {
     countPercentsByPortion,
     countExchangeRate,
+    packAddressString,
     countPoolShare,
     removeEndZeros,
     countPortion,

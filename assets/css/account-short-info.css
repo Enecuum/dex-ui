@@ -1,0 +1,64 @@
+.account-card {
+    background-color: var(--color6);
+    border: 1px solid var(--color5);
+    margin-top: -10px;
+}
+
+.extra-small-button {
+    border: 1px solid var(--color4);
+    border-radius: 5px;
+    background-color: #00000000;
+    color: var(--color4);
+    height: 1.2rem;
+    font-size: 0.7rem;
+}
+.extra-small-button:hover {
+    background-color: var(--color5);
+}
+.extra-small-button:active {
+    background-color: var(--color2);
+}
+
+.white-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background: white;
+    margin-right: -36px;
+}
+
+.account-image {
+    width: 15px;
+    height: 15px;
+    margin-top: -43px;
+    margin-left: 2px;
+}
+
+.functional-ref {
+    color: grey;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.connected-with {
+    color: grey;
+    font-size: 0.8rem;
+}
+
+.recent-txs-place {
+    width: 108%;
+    margin-left: -12px;
+    margin-bottom: -29px;
+    border-radius: 0 0 var(--border-radius2) var(--border-radius2);
+    background-color: var(--color5);
+}
+
+.recent-tx-ref {
+    color: var(--color3);
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.recent-tx-ref:hover {
+    color: var(--color3);
+}

@@ -8,7 +8,7 @@ function rootStore (state, changingProperty) {
         ...state,
         ...changingProperty
     };
-};
+}
 
 export default function rootReducer (state = initialState.root, action) {
     switch (action.type) {
@@ -58,6 +58,9 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.UPD_CURRENT_TX_HASH:
             return rootStore(state, { currentTxHash : action.value });
+
+        case actions.UPD_RECENT_TXS:
+            return rootStore(state, { recentTxs: action.value })
 
         default:
             return state;

@@ -10,7 +10,7 @@ function getDefaultField(id) {
         },
         token   : presets.swapTokens.emptyToken
     };
-};
+}
 
 const initialState = {
     root : {
@@ -18,7 +18,7 @@ const initialState = {
         mainToken               : presets.network.nativeToken.hash,
         langData                : presets.langData,
         connecionListOpened     : false,
-        navOpened               : window.innerWidth <= 757 ? false : true,
+        navOpened               : window.innerWidth > 757,
         connectionStatus        : false,
         menuItem                : 'exchange',
         pubkey                  : '',
@@ -31,6 +31,7 @@ const initialState = {
         balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
         pairs       : [],   // [{token_0 : {volume, hash}, token_2 : {volume, hash}, pool_fee, lt}] - all pairs from dex
         tokens      : [],   // [{ticker, hash, caption}] - all tokens from dex
+        recentTxs   : []
     },
     swapCard : {
         exchange: {
@@ -68,6 +69,7 @@ const initialState = {
         exchangeRate : ''
     },
     indicatorPanel : {
+        accountInfoVisibility : false,
         nativeToken : presets.network.nativeToken.hash,
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
@@ -114,7 +116,6 @@ const initialState = {
         mainTokenDecimals : 10,
         msgData : {},
         dataValid : false,
-        showForm : false,
         showFormErrMessages : false,
         possibleToIssueToken : false
     },

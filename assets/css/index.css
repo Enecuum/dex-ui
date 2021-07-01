@@ -142,7 +142,7 @@ right: 0;
 } */
 
 #toastWrapper {
-    right: 50px;
+    right: 30px;
     top: var(--top-menu-height);
 }
 
@@ -161,7 +161,7 @@ right: 0;
 }
 
 .wrapper-1 {
-    border-radius: var(--border-radius-1);
+    border-radius: var(--border-radius1);
     background-color: var(--bg-color-1);
 }
 
@@ -324,10 +324,14 @@ right: 0;
     right: 0;    
     background-color: var(--bg-color-1)!important;
 }
-
 .unselectable-text {
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+}
+
+.toast-header {
+    margin-top: 5px;
+
 }

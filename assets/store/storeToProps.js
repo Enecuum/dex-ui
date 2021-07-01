@@ -9,24 +9,26 @@ import etmCreator from './actionCreators/etm';
 import farmsCreator from './actionCreators/farms';
 
 const components = {
-    ROOT                    : 0x0,
-    SWAP_CARD               : 0x1,
-    SWITCH                  : 0x2,
-    TOKEN_CARD              : 0x3,
-    ASIDE                   : 0x4,
-    CONNECTION_SERVICE      : 0x5,
-    NAVBAR                  : 0x6,
-    CONNECT                 : 0x7,
-    TOAST                   : 0x8,
-    INDICATOR_PANEL         : 0x9,
-    CONFIRM_SUPPLY          : 0xA,
-    WAITING_CONFIRMATION    : 0xB,
-    LIQUIDITY_TOKEN_ZONE    : 0xC,
-    LP_WALLET_INFO          : 0xD,
-    TOP_PAIRS               : 0xF,
-    ETM                     : 0x10,
-    CONFIRM_ISSUE_TOKEN     : 0x11,
-    FARMS                   : 0x12
+    ROOT                             : 0x0,
+    SWAP_CARD                        : 0x1,
+    SWITCH                           : 0x2,
+    TOKEN_CARD                       : 0x3,
+    ASIDE                            : 0x4,
+    CONNECTION_SERVICE               : 0x5,
+    NAVBAR                           : 0x6,
+    CONNECT                          : 0x7,
+    INDICATOR_PANEL                  : 0x8,
+    CONFIRM_SUPPLY                   : 0x9,
+    WAITING_CONFIRMATION             : 0xA,
+    LIQUIDITY_TOKEN_ZONE             : 0xB,
+    LP_WALLET_INFO                   : 0xC,
+    TOP_PAIRS                        : 0xD,
+    ETM                              : 0xE,
+    CONFIRM_ISSUE_TOKEN              : 0xF,
+    ACCOUNT_SHORT_INFO               : 0x10,
+    RECENT_TXS_LIST                  : 0x11,
+    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12,
+    FARMS                            : 0x13
 };
 
 function mapStoreToProps(component) {
@@ -91,7 +93,7 @@ function mapStoreToProps(component) {
                 return {
                     pubkey              : state.root.pubkey,
                     connectionStatus    : state.root.connectionStatus,
-                    connecionListOpened : state.root.connecionListOpened
+                    connectionListOpened : state.root.connecionListOpened
                 };
             };
         case components.NAVBAR:
@@ -107,21 +109,15 @@ function mapStoreToProps(component) {
         //             langData : state.root.langData.navbars.top,
 
         //         };
-        //     };  
-        case components.TOAST: //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            return function (state) {
-                return {
-                    info : state.root.langData.info  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                };
-            }
+        //     };
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
                     ...state.indicatorPanel,
-                    pubkey              : state.root.pubkey,
-                    pendingIndicator    : state.root.pendingIndicator,
-                    balances            : state.root.balances,
-                    net                 : state.root.net
+                    pubkey                  : state.root.pubkey,
+                    pendingIndicator        : state.root.pendingIndicator,
+                    balances                : state.root.balances,
+                    net                     : state.root.net
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -201,7 +197,6 @@ function mapStoreToProps(component) {
                     mainToken               : state.root.mainToken,
                     connectionStatus        : state.root.connectionStatus,                   
                     balances                : state.root.balances,
-                    showForm : state.etm.showForm,
                     tokenData : {
                         mining_period                   : state.etm.tokenData.mining_period,
                         ticker                          : state.etm.tokenData.ticker,
@@ -243,6 +238,27 @@ function mapStoreToProps(component) {
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };
             };
+
+                       
+        case components.ACCOUNT_SHORT_INFO:
+            return function (state) {
+                return {
+                    pubkey                : state.root.pubkey,
+                    net                   : state.root.net,
+                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
+                }
+            };
+        case components.RECENT_TXS_LIST:
+            return function (state) {
+                return {
+                    pubkey                : state.root.pubkey,
+                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility,
+                    recentTxs             : state.root.recentTxs,
+                    pairs                 : state.root.pairs,
+                    tokens                : state.root.tokens,
+                    net                   : state.root.net
+                }
+            }
         case components.FARMS:
             return function (state) {
                 return {
@@ -252,11 +268,12 @@ function mapStoreToProps(component) {
                     balances          : state.root.balances,
                     tokens            : state.root.tokens
                 };
-            };                        
+            }; 
         default:
             return undefined;
+
     }
-};
+}
 
 function mapDispatchToProps(component) {
     switch (component) {
@@ -391,6 +408,20 @@ function mapDispatchToProps(component) {
                     resetStore                  : etmCreator.resetStore
                 }, dispatch); 
             };
+        case components.ACCOUNT_SHORT_INFO:
+            return function (dispatch) {
+                return bindActionCreators({
+                    changeAccountInfoVisibility : indicatorPanelCreator.changeAccountInfoVisibility,
+                    openConList                 : rootCreator.openConList
+                }, dispatch);
+            };
+
+        case components.RECENT_TXS_LIST:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updRecentTxs : rootCreator.updRecentTxs
+                }, dispatch);
+            };
         case components.FARMS:
             return function (dispatch) {
                 return bindActionCreators({
@@ -400,9 +431,9 @@ function mapDispatchToProps(component) {
                 }, dispatch); 
             };            
         default:
-            return undefined; 
+            return undefined;
     }
-};
+}
 
 export {
     mapStoreToProps,

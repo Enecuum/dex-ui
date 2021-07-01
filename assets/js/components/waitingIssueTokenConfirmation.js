@@ -45,7 +45,7 @@ class WaitingIssueTokenConfirmation extends React.Component {
                                 href = { this.explorer_tx_href }
                                 target = "_blank" >
                                 <span className="mr-3">{ this.props.t('viewOnSite', {'site' : this.explorer_href_alias})}</span>
-                                <span className="icon-Icon11"></span>
+                                <span className="icon-Icon11"/>
                             </a>
                             <Button
                                 className='btn-secondary mx-auto mt-3'
@@ -76,7 +76,7 @@ class WaitingIssueTokenConfirmation extends React.Component {
         }, 1000);
     };
 
-    render() {
+    render () {
         this.explorer_tx_href = this.explorer_href + '#!/tx/' + this.props.currentTxHash;
         return (
             <>
@@ -104,7 +104,7 @@ class WaitingIssueTokenConfirmation extends React.Component {
             </>
         );
     };
-};
+}
 
 const WWaitingIssueTokenConfirmation = connect(mapStoreToProps(components.WAITING_ISSUE_TOKEN_CONFIRMATION), mapDispatchToProps(components.WAITING_ISSUE_TOKEN_CONFIRMATION))(withTranslation()(WaitingIssueTokenConfirmation));
 

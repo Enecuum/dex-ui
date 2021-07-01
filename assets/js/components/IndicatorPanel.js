@@ -1,7 +1,8 @@
 import React from 'react';
-import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+
+import AccountShortInfo from "./AccountShortInfo";
 
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
@@ -15,6 +16,9 @@ class IndicatorPanel extends React.Component {
         super(props);
         this.updData();
         this.circleUpd();
+        this.state = {
+            accountInfoVisibility : false
+        };
     };
 
     renderPendingIndicator () {
@@ -22,7 +26,7 @@ class IndicatorPanel extends React.Component {
             return(
                 <div id="pendingIndicator" className="d-flex align-items-center justify-content-end px-3 mr-3">
                     <span className="mr-2">Pending</span>
-                    <span className="spinner icon-Icon3"></span>
+                    <span className="spinner icon-Icon3"/>
                 </div>
             );
         else
@@ -48,14 +52,15 @@ class IndicatorPanel extends React.Component {
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
-                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer hover-pointer' onClick={this.openInExplorer.bind(this)}>{this.packAdressString(this.props.pubkey)}</div>
+                    <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer hover-pointer'
+                         onClick={this.openCloseAccountInfo.bind(this)}>{utils.packAddressString(this.props.pubkey)}</div>
                 </div>
             </div>
         );
     };
 
-    openInExplorer () {
-        window.open(this.props.net.url + '#!/account/' + this.props.pubkey, '_blank').focus();
+    openCloseAccountInfo () {
+        this.props.changeAccountInfoVisibility();
     };
 
     updData () {
@@ -79,14 +84,14 @@ class IndicatorPanel extends React.Component {
         err => console.log('cannot make getProvider request'));
     };
 
-    packAdressString(addr) {
-        return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
-    };
-
     render () {
-        return this.renderWalletInfo();
+        return (
+            <>
+                {this.renderWalletInfo()}
+            </>
+        );
     };
-};
+}
 
 const WIndicatorPanel = connect(mapStoreToProps(components.INDICATOR_PANEL), mapDispatchToProps(components.INDICATOR_PANEL))(IndicatorPanel);
 

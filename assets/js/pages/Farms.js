@@ -209,7 +209,7 @@ class Farms extends React.Component {
                     </div>                                                                    
                 </div>
                 <div>
-                    {this.getStakeButton(true)}
+                    {this.getStakeButton(false)}
                 </div>
     		</>
     	)	
@@ -487,7 +487,7 @@ class Farms extends React.Component {
 												</td>
 
 												<td>
-													<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control" onClick={that.aupdateExpandedRow.bind(that)}>
+													<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.aupdateExpandedRow.bind(that)}>
 														<div className="mr-2">Details</div>
 														<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
 													</div>	

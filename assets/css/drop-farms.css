@@ -93,7 +93,7 @@
     color: var(--color2);
 }
 
-.earned-value {
+.earned-value, .stake-value {
     font-family: var(--font-face-black), sans-serif;
     color: var(--color1);
     font-size: 30px;
@@ -124,3 +124,38 @@
     background-color: var(--color3);
     color: var(--color1);    
 }
+
+.increase-decrease-btn  {
+    height: 58px;
+    width: 70px;
+    flex-basis: 70px;
+    font-size: 30px;
+}
+
+.zero-flex {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.stake-input-area {
+    border-radius: var(--border-radius2);
+    background: var(--color6);
+}
+
+.set-max {
+    opacity: 0.9;
+}
+
+.set-max:hover {
+    opacity: 1;
+}
+
+.text-color4-link {
+    color: var(--color4);    
+}
+
+.text-color4-link:hover {
+    color: var(--color3);
+    text-decoration: none;
+}
+

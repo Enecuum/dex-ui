@@ -62,8 +62,9 @@ const actionPack =  {
         RESET_STORE                    : 'RESET_STORE'
     },
     farms : {
-        UPDATE_EXPANDED_ROW : 'UPDATE_EXPANDED_ROW',
-        UPDATE_SORT_TYPE    : 'UPDATE_SORT_TYPE'
+        UPDATE_EXPANDED_ROW     : 'UPDATE_EXPANDED_ROW',
+        UPDATE_SORT_TYPE        : 'UPDATE_SORT_TYPE',
+        UPDATE_SHOW_STAKE_MODAL : 'UPDATE_SHOW_STAKE_MODAL'
     }
 };
 

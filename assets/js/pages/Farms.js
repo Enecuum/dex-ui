@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
@@ -8,6 +8,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import StakeModal from '../components/StakeModal';
 import { withTranslation } from "react-i18next";
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
@@ -190,7 +191,7 @@ class Farms extends React.Component {
 	    )	
     }
 
-    getStakeControl() {
+    getStakeControl(basic=false) {
 
         let params = {
             lpTokenName : 'Cale-BNB ' + 'LP'
@@ -209,7 +210,16 @@ class Farms extends React.Component {
                     </div>                                                                    
                 </div>
                 <div>
-                    {this.getStakeButton(false)}
+                    {basic === true &&
+                        <>
+                            {this.getStakeButton(true)}
+                        </>
+                    }
+                    {basic === false &&
+                        <>
+                            {this.getIncreaseDecreaseStakeButtons()}
+                        </>
+                    }
                 </div>
     		</>
     	)	
@@ -227,15 +237,40 @@ class Farms extends React.Component {
         let buttonState = active === true ? 'active' : 'disabled';
         return (
             <>
-                <Button
+                {<Button
                     className={attributes[buttonState].className}                   
                     disabled={!active}
                 >
                     Stake LP
-                </Button>
+                </Button>}                
             </>
         )
-    }    
+    }
+
+    getIncreaseDecreaseStakeButtons(){
+        return (
+            <>
+                <div className="d-flex align-items-center justify-content-between">
+                    <div className="stake-value">
+                        0.176
+                    </div>
+                    <div className="d-flex align-items-center justify-content-between">
+                        <Button
+                            className="btn outline-border-color3-button btn btn-primary mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
+                        >
+                            -
+                        </Button>
+                        <Button
+                            className="btn outline-border-color3-button btn btn-primary increase-decrease-btn zero-flex text-center"
+                        >
+                            +
+                        </Button>                                                
+                    </div>
+                </div>
+
+            </>
+        )        
+    }
 
     getHarvestButton(active = true) {
     	let attributes = {
@@ -283,18 +318,7 @@ class Farms extends React.Component {
 						    <Dropdown.Item >Liquidity</Dropdown.Item>
 						  </Dropdown.Menu>
 						</Dropdown>
-
-{/*                        {
-                            this.dropFarmActions.map(( action, index ) => {
-                                return (
-                                    <Button
-                                        className="mr-2"
-                                        variant="outline-info"
-                                        onClick={this.executeDropFarmAction.bind(this, action, this.props.pubkey, this.dropFarmActionsParams[action])}>{action}</Button>
-                                ) 
-                            })             
-                        }*/}
-             
+           
 					</div>
 					<div className="">
                         <input  id='farms-filter-field'
@@ -549,6 +573,9 @@ class Farms extends React.Component {
 					  </Card.Body>
 					</Card>    			
     			</div>
+                <Suspense fallback={<div>---</div>}>
+                    <StakeModal />
+                </Suspense>
     		</div>
         )
     }        

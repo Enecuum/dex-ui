@@ -266,7 +266,8 @@ function mapStoreToProps(component) {
                     ...state.farms,
                     connectionStatus  : state.root.connectionStatus,
                     balances          : state.root.balances,
-                    tokens            : state.root.tokens
+                    tokens            : state.root.tokens,
+                    showStakeModal    : state.farms.showStakeModal
                 };
             }; 
         default:
@@ -428,6 +429,7 @@ function mapDispatchToProps(component) {
                     updateExpandedRow : farmsCreator.updateExpandedRow,
                     updateSortType    : farmsCreator.updateSortType,
                     updCurrentTxHash  : rootCreator.updCurrentTxHash,
+                    updShowStakeModal : farmsCreator.updShowStakeModal
                 }, dispatch); 
             };            
         default:

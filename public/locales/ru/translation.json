@@ -186,5 +186,13 @@
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Недостаточно средств для выполнения операции {{operationName}}.",
         "TOP_UP_BALANCE": "Пожалуйста, пополните баланс до {{value}} {{ticker}}."
     },
+    "dropFarms" : {
+        "stakeLPTokens" : "Stake LP tokens",
+        "stake"         : "Stake",  
+        "getLPToken"    : "Get {{tokenName}} LP"      
+    },
+    "max" : "MAX",
+    "balance" : "Balance",
+    "cancel" : "Cancel",
     "checkingMainTokenBalance" : "Проверка баланса нативного токена..."
 }

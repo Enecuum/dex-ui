@@ -14,8 +14,12 @@ export default function farmsReducer (state = initialState.farms, action) {
             return {
                 ...state,
                 sortType : action.payload
+            };
+        case actions.UPDATE_SHOW_STAKE_MODAL:
+            return {
+                ...state,
+                showStakeModal : action.payload
             };            
-            
         default: 
             return state;
     }

@@ -120,8 +120,17 @@ const initialState = {
         possibleToIssueToken : false
     },
     farms : {
-        expandedRow : null,
-        sortType    : 'liquidity'
+        expandedRow    : null,
+        sortType       : 'liquidity',
+        showStakeModal : false,
+        stakeData      : {
+            stakedTokenName    : '',
+            stakedTokenBalance : '',
+            stakeValue         : 0,  
+            stakeTxStatus      : '',
+            stakeValid         : true,
+            stakeValidationMsg : ''
+        }
     }
 };
 

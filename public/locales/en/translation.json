@@ -200,5 +200,14 @@
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",
         "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}."
     },
+    "dropFarms" : {
+        "stakeLPTokens" : "Stake LP tokens",
+        "stake"         : "Stake",  
+        "getLPToken"    : "Get {{tokenName}} LP"      
+    },
+    "confirm" : "Confirm",
+    "max" : "MAX",
+    "balance" : "Balance",
+    "cancel" : "Cancel",
     "checkingMainTokenBalance" : "Сhecking the balance of the native token..."
 }

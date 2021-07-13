@@ -120,10 +120,16 @@ const initialState = {
         possibleToIssueToken : false
     },
     farms : {
-        expandedRow    : null,
-        sortType       : 'liquidity',
-        showStakeModal : false,
-        stakeData      : {
+        mainToken         : presets.network.nativeToken.hash,
+        mainTokenAmount   : undefined,
+        mainTokenDecimals : undefined,
+        mainTokenFee      : presets.network.nativeToken.fee,
+        pricelist         : {},
+        expandedRow       : null,
+        managedFarmData   : null,
+        sortType          : 'liquidity',
+        showStakeModal    : false,
+        stakeData         : {
             stakedTokenName    : '',
             stakedTokenBalance : '',
             stakeValue         : 0,  

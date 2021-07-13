@@ -10,9 +10,11 @@ import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import StakeModal from '../components/StakeModal';
 import { withTranslation } from "react-i18next";
+import networkApi from '../requests/networkApi';
+import swapApi from '../requests/swapApi';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-import swapUtils from '../utils/swapUtils';
+import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
 import '../../css/drop-farms.css';
 import SimpleBar from 'simplebar-react';
@@ -23,78 +25,7 @@ const valueProcessor = new ValueProcessor();
 class Farms extends React.Component {
     constructor(props) {
         super(props);
-        this.farms = [
-        	{        		
-        		id        : 'a',
-        		token1	  : 'CAKE',
-        		token2	  : 'BNB',
-        		title     : 'CAKE-BNBa',
-        		earned    : 123456789123456789,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'b',
-        		token1	  : 'CAKE1',
-        		token2	  : 'BNB',
-        		title     : 'CAKE1-BNBb',
-        		earned    : 0,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'c',
-        		token1	  : 'CAKE2',
-        		token2	  : 'BNB',
-        		title     : 'CAKE2-BNBc',
-        		earned    : 1,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'd',
-        		token1	  : 'CAKE',
-        		token2	  : 'BNB',
-        		title     : 'CAKE-BNBd',
-        		earned    : 1,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'e',
-        		token1	  : 'CAKE',
-        		token2	  : 'BNB',
-        		title     : 'CAKE-BNBe',
-        		earned    : 1,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'f',
-        		token1	  : 'CAKE',
-        		token2	  : 'BNB',
-        		title     : 'CAKE-BNBf',
-        		earned    : 1,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	},
-        	{        		
-        		id        : 'g',
-        		token1	  : 'CAKE',
-        		token2	  : 'BNB',
-        		title     : 'CAKE-BNBg',
-        		earned    : 1,
-        		apy       : 1,
-        		liquidity : 1,
-        		reward    : 0
-        	}
-        ]
+        this.farms = [];
 
         this.dropFarmActions = [
             'create_farm',
@@ -132,15 +63,18 @@ class Farms extends React.Component {
                 }                
             }
         }
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);    
+
+        this.updateMainTokenInfo();
+        this.updatePricelist();
     };
 
-      handleChange(action, param, event) {
+    handleChange(action, param, event) {
         console.log(action, param)
         let value = event.target.value;
         this.setState(state => (state.dropFarmActionsParams[action][param] = value, state))
         console.log(this.state)
-      }
+    }
 
     executeDropFarmAction(actionType, pubkey, params) {
         console.log(params)
@@ -166,7 +100,7 @@ class Farms extends React.Component {
         });
     }
 
-    aupdateExpandedRow(event) {
+    updateExpandedRow(event) {
     	const target = event.target;
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
 		this.props.updateExpandedRow({
@@ -191,11 +125,57 @@ class Farms extends React.Component {
 	    )	
     }
 
-    getStakeControl(basic=false) {
+    updateMainTokenAmount() {
+        let mainTokenAmount = 0;
+        if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
+            let mainTokenBalance = this.props.balances.find(token => token.token === this.props.mainToken);
+
+            if (mainTokenBalance !== undefined) {
+                mainTokenAmount = mainTokenBalance.amount;
+            }
+            this.props.updateMainTokenAmount({
+                value : mainTokenAmount
+            });
+        }    
+    }
+
+    updateMainTokenInfo() {
+        let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
+        tokenInfoRequest.then(result => {
+            if (!result.lock) {
+                result.json().then(mainToken => {
+                    this.props.updateMainTokenDecimals({
+                        value : mainToken[0].decimals
+                    });
+                    this.props.updateMainTokenFee({
+                        value : BigInt(mainToken[0].fee_value)
+                    });                    
+                });
+            }
+        });
+    }
+
+    updatePricelist() {
+        let contractPricelist = networkApi.getContractPricelist();
+
+        contractPricelist.then(result => {
+            if (!result.lock) {
+                result.json().then(pricelist => {
+                    this.props.updatePricelist({
+                        value : pricelist
+                    });
+                });
+            }
+        });        
+    }
+
+    getStakeControl(farmTitle, basic=true) {
+
+        this.updateMainTokenAmount()
 
         let params = {
-            lpTokenName : 'Cale-BNB ' + 'LP'
-        } 
+            lpTokenName : farmTitle + ' LP'
+        }
 
     	return (
     		<>
@@ -228,10 +208,10 @@ class Farms extends React.Component {
     getStakeButton(active = true) {
         let attributes = {
             active : {
-                className : 'btn outline-border-color3-button py-3 px-5 w-100'
+                className : 'btn py-3 px-5 w-100 outline-border-color3-button'
             },
             disabled : {
-                className : 'btn outline-border-color2-button py-3 px-5 w-100'
+                className : 'btn py-3 px-5 w-100 outline-border-color2-button'
             }
         }
         let buttonState = active === true ? 'active' : 'disabled';
@@ -240,6 +220,7 @@ class Farms extends React.Component {
                 {<Button
                     className={attributes[buttonState].className}                   
                     disabled={!active}
+                    onClick={(e) => this.showStakeModal('stake', e)}
                 >
                     Stake LP
                 </Button>}                
@@ -297,16 +278,43 @@ class Farms extends React.Component {
     	)
     }
 
+    showStakeModal (action) {
+        let farmId = this.props.expandedRow;
+        let farmData = this.farms.find(item => item.farm_id === farmId);
+
+        this.props.updateManagedFarmData({
+            value : farmData !== undefined ? farmData : null
+        });
+
+        this.props.updShowStakeModal({
+            value : true
+        });
+    }
+
     getFarmsTable() {
     	const t = this.props.t;
     	let that = this;
+
+        let farmsList = networkApi.getDexFarms(this.props.pubkey);
+
+        farmsList.then(result => {
+
+            if (!result.lock) {
+                result.json().then(resultFarmsList => {
+                    this.farms = resultFarmsList;
+                })
+            }
+        }, () => {
+            this.farms = [];
+        })
+
     	return (
     		<>
-				<div className="d-flex align-items-center justify-content-between pb-4">
+				<div className="SET-D-FLEX-IF-READY d-none align-items-center justify-content-between pb-4">
 					<div className="d-flex align-items-center justify-content-start">
 						<i className="fas fa-grip-horizontal mr-2"></i>
 						<i className="fas fa-table mr-3"></i>
-						<Dropdown className="mr-3">
+						<Dropdown className="mr-3 sort-by">
 						  <Dropdown.Toggle variant="success" id="dropdown-basic">
 						    Sort by
 						  </Dropdown.Toggle>
@@ -328,161 +336,162 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
+<div className="d-none" id="farmActions">
+    <div className="h2">
+        Actions
+    </div>
 
-<div className="h2">
-    Actions
+    <Accordion className="mb-4">
+      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+        <Accordion.Toggle as={Card.Header} eventKey="0"   style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           borderBottom: '2px solid #454d55'
+                       }}
+                       className="hover-pointer">
+          Create Farm
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="0">
+          <Card.Body className="pt-4" style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           opacity: '0.9'
+                       }}>
+                           
+                            <Form>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>stake_token</Form.Label>
+                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.create_farm.stake_token} onChange={(e) => this.handleChange('create_farm','stake_token', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                              <Form.Group controlId="formGroupPassword">
+                                <Form.Label>reward_token</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.reward_token} onChange={(e) => this.handleChange('create_farm','reward_token', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>block_reward</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.block_reward} onChange={(e) => this.handleChange('create_farm','block_reward', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                              <Form.Group controlId="formGroupPassword">
+                                <Form.Label>emission</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.emission} onChange={(e) => this.handleChange('create_farm','emission', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>                          
+                            </Form>
+                            <Button variant="primary"
+                            onClick={this.executeDropFarmAction.bind(this, 'create_farm', this.props.pubkey, this.state.dropFarmActionsParams.create_farm)}>
+                                Create Farm
+                            </Button>
+                       </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+        <Accordion.Toggle as={Card.Header} eventKey="1"  style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           borderBottom: '2px solid #454d55'
+                       }}
+                       className="hover-pointer">
+         Add Funds
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="1">
+          <Card.Body className="pt-4" style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           opacity: '0.9'
+                       }}>
+                            <Form>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>farm_id</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.farm_id} onChange={(e) => this.handleChange('add_funds','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                              <Form.Group controlId="formGroupPassword">
+                                <Form.Label>amount</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.amount} onChange={(e) => this.handleChange('add_funds','amount', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>                          
+                            </Form>
+                            <Button variant="primary"
+                            onClick={this.executeDropFarmAction.bind(this, 'add_funds', this.props.pubkey, this.state.dropFarmActionsParams.add_funds)}>
+                                Add Funds
+                              </Button>
+                       </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+        <Accordion.Toggle as={Card.Header} eventKey="2"  style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           borderBottom: '2px solid #454d55'
+                       }}
+                       className="hover-pointer">
+         Put Stake
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="2">
+          <Card.Body className="pt-4" style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           opacity: '0.9'
+                       }}>
+                            <Form>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>farm_id</Form.Label>
+                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.put_stake.farm_id} onChange={(e) => this.handleChange('put_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                              <Form.Group controlId="formGroupPassword">
+                                <Form.Label>amount</Form.Label>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.put_stake.amount} onChange={(e) => this.handleChange('put_stake','amount', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                            </Form>
+                            <Button variant="primary"
+                            onClick={this.executeDropFarmAction.bind(this, 'put_stake', this.props.pubkey, this.state.dropFarmActionsParams.put_stake)}>
+                                 Put Stake
+                              </Button>                        
+                       </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+        <Accordion.Toggle as={Card.Header} eventKey="3"  style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           borderBottom: '2px solid #454d55'
+                       }}
+                       className="hover-pointer">
+         Close Stake
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="3">
+          <Card.Body className="pt-4" style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           opacity: '0.9'
+                       }}>
+                            <Form>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>farm_id</Form.Label>
+                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.close_stake.farm_id} onChange={(e) => this.handleChange('close_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                            </Form>
+                            <Button variant="primary"
+                            onClick={this.executeDropFarmAction.bind(this, 'close_stake', this.props.pubkey, this.state.dropFarmActionsParams.close_stake)}>
+                                 Close Stake
+                              </Button>                          
+                       </Card.Body>
+        </Accordion.Collapse>
+      </Card>    
+    </Accordion>
 </div>
-
-<Accordion className="mb-4">
-  <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-    <Accordion.Toggle as={Card.Header} eventKey="0"   style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       borderBottom: '2px solid #454d55'
-                   }}
-                   className="hover-pointer">
-      Create Farm
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="0">
-      <Card.Body className="pt-4" style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       opacity: '0.9'
-                   }}>
-                       
-                        <Form>
-                          <Form.Group controlId="formGroupEmail">
-                            <Form.Label>stake_token</Form.Label>
-                            <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.create_farm.stake_token} onChange={(e) => this.handleChange('create_farm','stake_token', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                          <Form.Group controlId="formGroupPassword">
-                            <Form.Label>reward_token</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.reward_token} onChange={(e) => this.handleChange('create_farm','reward_token', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                          <Form.Group controlId="formGroupEmail">
-                            <Form.Label>block_reward</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.block_reward} onChange={(e) => this.handleChange('create_farm','block_reward', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                          <Form.Group controlId="formGroupPassword">
-                            <Form.Label>emission</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.emission} onChange={(e) => this.handleChange('create_farm','emission', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>                          
-                        </Form>
-                        <Button variant="primary"
-                        onClick={this.executeDropFarmAction.bind(this, 'create_farm', this.props.pubkey, this.state.dropFarmActionsParams.create_farm)}>
-                            Create Farm
-                        </Button>
-                   </Card.Body>
-    </Accordion.Collapse>
-  </Card>
-  <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-    <Accordion.Toggle as={Card.Header} eventKey="1"  style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       borderBottom: '2px solid #454d55'
-                   }}
-                   className="hover-pointer">
-     Add Funds
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="1">
-      <Card.Body className="pt-4" style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       opacity: '0.9'
-                   }}>
-                        <Form>
-                          <Form.Group controlId="formGroupEmail">
-                            <Form.Label>farm_id</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.farm_id} onChange={(e) => this.handleChange('add_funds','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                          <Form.Group controlId="formGroupPassword">
-                            <Form.Label>amount</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.amount} onChange={(e) => this.handleChange('add_funds','amount', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>                          
-                        </Form>
-                        <Button variant="primary"
-                        onClick={this.executeDropFarmAction.bind(this, 'add_funds', this.props.pubkey, this.state.dropFarmActionsParams.add_funds)}>
-                            Add Funds
-                          </Button>
-                   </Card.Body>
-    </Accordion.Collapse>
-  </Card>
-  <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-    <Accordion.Toggle as={Card.Header} eventKey="2"  style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       borderBottom: '2px solid #454d55'
-                   }}
-                   className="hover-pointer">
-     Put Stake
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="2">
-      <Card.Body className="pt-4" style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       opacity: '0.9'
-                   }}>
-                        <Form>
-                          <Form.Group controlId="formGroupEmail">
-                            <Form.Label>farm_id</Form.Label>
-                            <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.put_stake.farm_id} onChange={(e) => this.handleChange('put_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                          <Form.Group controlId="formGroupPassword">
-                            <Form.Label>amount</Form.Label>
-                            <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.put_stake.amount} onChange={(e) => this.handleChange('put_stake','amount', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                        </Form>
-                        <Button variant="primary"
-                        onClick={this.executeDropFarmAction.bind(this, 'put_stake', this.props.pubkey, this.state.dropFarmActionsParams.put_stake)}>
-                             Put Stake
-                          </Button>                        
-                   </Card.Body>
-    </Accordion.Collapse>
-  </Card>
-  <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-    <Accordion.Toggle as={Card.Header} eventKey="3"  style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       borderBottom: '2px solid #454d55'
-                   }}
-                   className="hover-pointer">
-     Close Stake
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="3">
-      <Card.Body className="pt-4" style={{
-                       color: 'white',
-                       backgroundColor: 'var(--color8)',
-                       opacity: '0.9'
-                   }}>
-                        <Form>
-                          <Form.Group controlId="formGroupEmail">
-                            <Form.Label>farm_id</Form.Label>
-                            <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.close_stake.farm_id} onChange={(e) => this.handleChange('close_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                          </Form.Group>
-                        </Form>
-                        <Button variant="primary"
-                        onClick={this.executeDropFarmAction.bind(this, 'close_stake', this.props.pubkey, this.state.dropFarmActionsParams.close_stake)}>
-                             Close Stake
-                          </Button>                          
-                   </Card.Body>
-    </Accordion.Collapse>
-  </Card>    
-</Accordion>
-
-<div className="h2">
-    Farms
-</div>
+            <div className="h2">
+                Farms
+            </div>
 		    	<div className="drop-farms-table-wrapper">
 			    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	
 						<Table hover variant="dark" style={{tableLayout : 'auto'}}>
 							<tbody>
 						        {this.farms.map(( farm, index ) => {
+                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
 						        	return (
 							          	<>
-								            <tr key={index} data-farm-id={farm.id} data-expanded-row={this.props.expandedRow === farm.id}>
+								            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
 												<td className="text-nowrap">
 													<div className="cell-wrapper d-flex align-items-center justify-content-center">
-														{farm.title}
+														{farmTitle}
 													</div>
 												</td>
 												<td>
@@ -500,7 +509,7 @@ class Farms extends React.Component {
 												<td>
 													<div className="cell-wrapper">
 														<div className="text-color4">Liquidity</div>
-														<div>{valueProcessor.usCommasBigIntDecimals((farm.liquidity !== undefined ? '$ ' + farm.liquidity : '---'), 10, 10)}</div>
+														<div>${valueProcessor.usCommasBigIntDecimals((farm.liquidity !== undefined ? farm.liquidity : '---'), 10, 10)}</div>
 													</div>	
 												</td>
 												<td>
@@ -511,13 +520,13 @@ class Farms extends React.Component {
 												</td>
 
 												<td>
-													<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.aupdateExpandedRow.bind(that)}>
+													<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.updateExpandedRow.bind(that)}>
 														<div className="mr-2">Details</div>
 														<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
 													</div>	
 												</td>										
 								            </tr>
-								            {this.props.expandedRow === farm.id &&
+								            {this.props.expandedRow === farm.farm_id &&
 												<tr className="mb-3 farm-controls-wrapper">
 													<td colSpan="6" className="py-4">
 														<div className="row mx-0 px-0">
@@ -526,7 +535,7 @@ class Farms extends React.Component {
 																	<div className="d-flex align-items-center justify-content-start mb-2">
 																		{farm.earned !== undefined && farm.earned > 0 && 
 																			<div className="text-color3 mr-2">
-																				{farm.token1}
+																				{farm.stake_token_name}
 																			</div>
 																		}
 																		<div className="color-2">
@@ -541,7 +550,7 @@ class Farms extends React.Component {
 															</div>
 															<div className="col-12 col-lg-6 col-xl-5 pl-xl-5">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																	{this.getStakeControl()}
+																	{this.getStakeControl(farmTitle, !(farm.stake > 0))}
 																</div>
 															</div>
 														</div>
@@ -561,14 +570,14 @@ class Farms extends React.Component {
 
     render() {
 		const t = this.props.t;
-		//this.pairsArr = this.populateTable();
+		//this.pairsArr = this.populateTable();        
     	return (
     		<div className="row">    		
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			
 					<Card className="c-card-1 pt-4" id="farmsCard">
 					  <Card.Body>
 					    <Card.Text as="div">
-						    {this.farms.length > 0 && this.props.connectionStatus ? this.getFarmsTable() : this.getTmpErrorElement()}						    
+						    {this.props.connectionStatus ? this.getFarmsTable() : this.getTmpErrorElement() /*проверка на пустой массив списка ферм*/}				    
 					    </Card.Text>
 					  </Card.Body>
 					</Card>    			

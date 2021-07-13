@@ -10,6 +10,11 @@ export default function farmsReducer (state = initialState.farms, action) {
                 ...state,
                 expandedRow : action.payload
             };
+        case actions.UPDATE_MANAGED_FARM_DATA:
+            return {
+                ...state,
+                managedFarmData : action.payload
+            };            
         case actions.UPDATE_SORT_TYPE:
             return {
                 ...state,
@@ -19,7 +24,27 @@ export default function farmsReducer (state = initialState.farms, action) {
             return {
                 ...state,
                 showStakeModal : action.payload
-            };            
+            };
+        case actions.UPDATE_MAIN_TOKEN_AMOUNT:
+            return {
+                ...state,
+                mainTokenAmount : action.payload
+            };
+        case actions.UPDATE_MAIN_TOKEN_DECIMALS:
+            return {
+                ...state,
+                mainTokenDecimals : action.payload
+            };
+        case actions.UPDATE_MAIN_TOKEN_FEE:
+            return {
+                ...state,
+                mainTokenFee : action.payload
+            };
+        case actions.UPDATE_PRICELIST:
+            return {
+                ...state,
+                pricelist : action.payload
+            };
         default: 
             return state;
     }

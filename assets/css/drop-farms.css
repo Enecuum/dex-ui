@@ -159,3 +159,33 @@
     text-decoration: none;
 }
 
+.sort-by button {
+    background-color: transparent;
+    border-color: var(--color2);
+    border-radius: var(--border-radius2);
+}
+
+.sort-by button.dropdown-toggle::after {
+    margin-left: 50px;
+}
+
+.sort-by:hover button, .sort-by.show .btn-success:not(:disabled):not(.disabled).active, .sort-by.show .btn-success:not(:disabled):not(.disabled):active, .sort-by.show>.btn-success.dropdown-toggle, .sort-by .btn-success.focus, .sort-by .btn-success:focus {
+    border-color: var(--color4);
+    background-color: var(--color2);
+    box-shadow: none;
+}
+
+.sort-by .dropdown-menu {
+    background-color: var(--color8);
+    box-shadow: 0px 0px 38px 0px rgba(26, 31, 46, 0.004);
+    border-radius: var(--border-radius2);
+}
+
+.sort-by .dropdown-menu .dropdown-item {
+    color: var(--color1);
+}
+
+.sort-by .dropdown-menu .dropdown-item:focus, .sort-by .dropdown-menu .dropdown-item:hover {
+    background-color: var(--color2);
+    color: var(--color1);
+}

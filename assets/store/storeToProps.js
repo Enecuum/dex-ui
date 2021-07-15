@@ -273,7 +273,8 @@ function mapStoreToProps(component) {
                     balances          : state.root.balances,
                     tokens            : state.root.tokens,
                     showStakeModal    : state.farms.showStakeModal,
-                    managedFarmData   : state.farms.managedFarmData
+                    managedFarmData   : state.farms.managedFarmData,
+                    currentAction     : state.farms.currentAction
                 };
             }; 
         default:
@@ -440,7 +441,8 @@ function mapDispatchToProps(component) {
                     updateMainTokenAmount   : farmsCreator.updateMainTokenAmount,
                     updateMainTokenDecimals : farmsCreator.updateMainTokenDecimals,
                     updateMainTokenFee      : farmsCreator.updateMainTokenFee,
-                    updatePricelist         : farmsCreator.updatePricelist
+                    updatePricelist         : farmsCreator.updatePricelist,
+                    updateCurrentAction     : farmsCreator.updateCurrentAction
                 }, dispatch); 
             };            
         default:

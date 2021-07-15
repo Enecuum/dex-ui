@@ -50,6 +50,12 @@ const actionCreators = {
             type : actions.UPDATE_PRICELIST,
             payload : payload.value 
         };
+    },
+    updateCurrentAction (payload) {
+        return {
+            type : actions.UPDATE_CURRENT_ACTION,
+            payload : payload.value 
+        };
     }
 };
 

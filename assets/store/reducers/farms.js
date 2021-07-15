@@ -45,6 +45,11 @@ export default function farmsReducer (state = initialState.farms, action) {
                 ...state,
                 pricelist : action.payload
             };
+        case actions.UPDATE_CURRENT_ACTION:
+            return {
+                ...state,
+                currentAction : action.payload
+            };    
         default: 
             return state;
     }

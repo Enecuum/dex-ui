@@ -28,38 +28,34 @@ class Farms extends React.Component {
         this.farms = [];
 
         this.dropFarmActions = [
-            'create_farm',
-            'add_funds',
-            'put_stake',
-            'close_stake',
-            // 'get_reward',
-            // 'increase_stake'
+            'farm_create',
+            'farm_increase_stake',
+            'farm_decrease_stake',
+            'farm_close_stake',
+            'farm_get_reward'
         ];
 
         this.state = {
             dropFarmActionsParams : {
-                create_farm : {
+                farm_create : {
                     "stake_token": "1111111111111111111111111111111111111111111111111111111111111111",
                     "reward_token": "1111111111111111111111111111111111111111111111111111111111111111",
                     "block_reward": 1,
                     "emission": 100                
                 },
-                add_funds : {
+                farm_increase_stake : {
                     farm_id : '',
                     amount : ''
                 },
-                put_stake : {
+                farm_decrease_stake : {
                     farm_id : '',
                     amount : ''
                 },
-                close_stake : {
+                farm_close_stake : {
                     farm_id : ''
                 },
-                get_reward : {//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Нет параметров! Id Фермы??!!
-
-                },
-                increase_stake : {//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Id Фермы??!!
-                    amount  : ''
+                farm_get_reward : {
+                    farm_id  : ''
                 }                
             }
         }
@@ -170,9 +166,6 @@ class Farms extends React.Component {
     }
 
     getStakeControl(farmTitle, basic=true) {
-
-        this.updateMainTokenAmount()
-
         let params = {
             lpTokenName : farmTitle + ' LP'
         }
@@ -192,7 +185,7 @@ class Farms extends React.Component {
                 <div>
                     {basic === true &&
                         <>
-                            {this.getStakeButton(true)}
+                            {this.getStakeButton()}
                         </>
                     }
                     {basic === false &&
@@ -205,7 +198,8 @@ class Farms extends React.Component {
     	)	
     }
 
-    getStakeButton(active = true) {
+    getStakeButton() {
+        let active = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake));
         let attributes = {
             active : {
                 className : 'btn py-3 px-5 w-100 outline-border-color3-button'
@@ -229,6 +223,8 @@ class Farms extends React.Component {
     }
 
     getIncreaseDecreaseStakeButtons(){
+        let increaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake));
+        let decreaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_close_stake));
         return (
             <>
                 <div className="d-flex align-items-center justify-content-between">
@@ -238,11 +234,15 @@ class Farms extends React.Component {
                     <div className="d-flex align-items-center justify-content-between">
                         <Button
                             className="btn outline-border-color3-button btn btn-primary mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
+                            disabled={!decreaseStakeActive}
+                            onClick={(e) => this.showStakeModal('unstake', e)}
                         >
                             -
                         </Button>
                         <Button
                             className="btn outline-border-color3-button btn btn-primary increase-decrease-btn zero-flex text-center"
+                            disabled={!increaseStakeActive}
+                            onClick={(e) => this.showStakeModal('stake', e)}                            
                         >
                             +
                         </Button>                                                
@@ -289,6 +289,9 @@ class Farms extends React.Component {
         this.props.updShowStakeModal({
             value : true
         });
+        this.props.updateCurrentAction({
+            value : action
+        });
     }
 
     getFarmsTable() {
@@ -301,6 +304,7 @@ class Farms extends React.Component {
 
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
+                    this.updateMainTokenAmount();
                     this.farms = resultFarmsList;
                 })
             }
@@ -336,7 +340,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none" id="farmActions">
+<div className="d-none1" id="farmActions">
     <div className="h2">
         Actions
     </div>
@@ -349,7 +353,7 @@ class Farms extends React.Component {
                            borderBottom: '2px solid #454d55'
                        }}
                        className="hover-pointer">
-          Create Farm
+          Create a drop farm (farm_create)
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="0">
           <Card.Body className="pt-4" style={{
@@ -361,24 +365,24 @@ class Farms extends React.Component {
                             <Form>
                               <Form.Group controlId="formGroupEmail">
                                 <Form.Label>stake_token</Form.Label>
-                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.create_farm.stake_token} onChange={(e) => this.handleChange('create_farm','stake_token', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_create.stake_token} onChange={(e) => this.handleChange('farm_create','stake_token', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                               <Form.Group controlId="formGroupPassword">
                                 <Form.Label>reward_token</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.reward_token} onChange={(e) => this.handleChange('create_farm','reward_token', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.reward_token} onChange={(e) => this.handleChange('farm_create','reward_token', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                               <Form.Group controlId="formGroupEmail">
                                 <Form.Label>block_reward</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.block_reward} onChange={(e) => this.handleChange('create_farm','block_reward', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.block_reward} onChange={(e) => this.handleChange('farm_create','block_reward', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                               <Form.Group controlId="formGroupPassword">
                                 <Form.Label>emission</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.create_farm.emission} onChange={(e) => this.handleChange('create_farm','emission', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.emission} onChange={(e) => this.handleChange('farm_create','emission', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>                          
                             </Form>
                             <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'create_farm', this.props.pubkey, this.state.dropFarmActionsParams.create_farm)}>
-                                Create Farm
+                            onClick={this.executeDropFarmAction.bind(this, 'farm_create', this.props.pubkey, this.state.dropFarmActionsParams.farm_create)}>
+                                Create a drop farm (farm_create)
                             </Button>
                        </Card.Body>
         </Accordion.Collapse>
@@ -390,7 +394,7 @@ class Farms extends React.Component {
                            borderBottom: '2px solid #454d55'
                        }}
                        className="hover-pointer">
-         Add Funds
+         Stake (farm_increase_stake)
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="1">
           <Card.Body className="pt-4" style={{
@@ -401,16 +405,16 @@ class Farms extends React.Component {
                             <Form>
                               <Form.Group controlId="formGroupEmail">
                                 <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.farm_id} onChange={(e) => this.handleChange('add_funds','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.farm_id} onChange={(e) => this.handleChange('farm_increase_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                               <Form.Group controlId="formGroupPassword">
                                 <Form.Label>amount</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.add_funds.amount} onChange={(e) => this.handleChange('add_funds','amount', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.amount} onChange={(e) => this.handleChange('farm_increase_stake','amount', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>                          
                             </Form>
                             <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'add_funds', this.props.pubkey, this.state.dropFarmActionsParams.add_funds)}>
-                                Add Funds
+                            onClick={this.executeDropFarmAction.bind(this, 'farm_increase_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_increase_stake)}>
+                                Stake (farm_increase_stake)
                               </Button>
                        </Card.Body>
         </Accordion.Collapse>
@@ -422,7 +426,7 @@ class Farms extends React.Component {
                            borderBottom: '2px solid #454d55'
                        }}
                        className="hover-pointer">
-         Put Stake
+         Unstake (farm_decrease_stake)
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="2">
           <Card.Body className="pt-4" style={{
@@ -433,16 +437,16 @@ class Farms extends React.Component {
                             <Form>
                               <Form.Group controlId="formGroupEmail">
                                 <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.put_stake.farm_id} onChange={(e) => this.handleChange('put_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.farm_decrease_stake.farm_id} onChange={(e) => this.handleChange('farm_decrease_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                               <Form.Group controlId="formGroupPassword">
                                 <Form.Label>amount</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.put_stake.amount} onChange={(e) => this.handleChange('put_stake','amount', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_decrease_stake.amount} onChange={(e) => this.handleChange('farm_decrease_stake','amount', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                             </Form>
                             <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'put_stake', this.props.pubkey, this.state.dropFarmActionsParams.put_stake)}>
-                                 Put Stake
+                            onClick={this.executeDropFarmAction.bind(this, 'farm_decrease_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_decrease_stake)}>
+                                Unstake (farm_decrease_stake)
                               </Button>                        
                        </Card.Body>
         </Accordion.Collapse>
@@ -454,7 +458,7 @@ class Farms extends React.Component {
                            borderBottom: '2px solid #454d55'
                        }}
                        className="hover-pointer">
-         Close Stake
+         Unstake and receive rewards (farm_close_stake)
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="3">
           <Card.Body className="pt-4" style={{
@@ -465,16 +469,44 @@ class Farms extends React.Component {
                             <Form>
                               <Form.Group controlId="formGroupEmail">
                                 <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.close_stake.farm_id} onChange={(e) => this.handleChange('close_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_close_stake.farm_id} onChange={(e) => this.handleChange('farm_close_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
                               </Form.Group>
                             </Form>
                             <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'close_stake', this.props.pubkey, this.state.dropFarmActionsParams.close_stake)}>
-                                 Close Stake
+                            onClick={this.executeDropFarmAction.bind(this, 'farm_close_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_close_stake)}>
+                                Unstake and receive rewards (farm_close_stake)
                               </Button>                          
                        </Card.Body>
         </Accordion.Collapse>
-      </Card>    
+      </Card>
+      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+        <Accordion.Toggle as={Card.Header} eventKey="4"  style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           borderBottom: '2px solid #454d55'
+                       }}
+                       className="hover-pointer">
+         Harvest reward (farm_get_reward)
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="4">
+          <Card.Body className="pt-4" style={{
+                           color: 'white',
+                           backgroundColor: 'var(--color8)',
+                           opacity: '0.9'
+                       }}>
+                            <Form>
+                              <Form.Group controlId="formGroupEmail">
+                                <Form.Label>farm_id</Form.Label>
+                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_get_reward.farm_id} onChange={(e) => this.handleChange('farm_get_reward','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                              </Form.Group>
+                            </Form>
+                            <Button variant="primary"
+                            onClick={this.executeDropFarmAction.bind(this, 'farm_get_reward', this.props.pubkey, this.state.dropFarmActionsParams.farm_get_reward)}>
+                               Harvest reward (farm_get_reward)
+                              </Button>                          
+                       </Card.Body>
+        </Accordion.Collapse>
+      </Card>          
     </Accordion>
 </div>
             <div className="h2">
@@ -509,7 +541,7 @@ class Farms extends React.Component {
 												<td>
 													<div className="cell-wrapper">
 														<div className="text-color4">Liquidity</div>
-														<div>${valueProcessor.usCommasBigIntDecimals((farm.liquidity !== undefined ? farm.liquidity : '---'), 10, 10)}</div>
+														<div>${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
 													</div>	
 												</td>
 												<td>

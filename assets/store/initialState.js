@@ -129,6 +129,7 @@ const initialState = {
         managedFarmData   : null,
         sortType          : 'liquidity',
         showStakeModal    : false,
+        currentAction     : undefined,
         stakeData         : {
             stakedTokenName    : '',
             stakedTokenBalance : '',

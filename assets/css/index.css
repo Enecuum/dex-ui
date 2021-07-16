@@ -333,5 +333,9 @@ right: 0;
 
 .toast-header {
     margin-top: 5px;
+}
 
+.err-msg {
+    color: #e03266;
+    font-size: 13px;
 }

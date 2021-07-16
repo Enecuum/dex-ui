@@ -73,11 +73,10 @@ class Farms extends React.Component {
     }
 
     executeDropFarmAction(actionType, pubkey, params) {
-        console.log(params)
         let obj = {}
         for (let param in params) {
                 if (param === 'amount' || param === 'block_reward' || param === 'emission')
-                        obj[param] = BigInt(params[param]) * BigInt(1e10);
+                        obj[param] = valueProcessor.valueToBigInt(params[param], 10).value;
                 else 
                      obj[param] = params[param]    
         }
@@ -97,11 +96,11 @@ class Farms extends React.Component {
     }
 
     updateExpandedRow(event) {
-    	const target = event.target;
+    	const target = event.target;        
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
 		this.props.updateExpandedRow({
 			value : farmId
-		});
+		});      
     }
 
     getTmpErrorElement() {
@@ -166,6 +165,7 @@ class Farms extends React.Component {
     }
 
     getStakeControl(farmTitle, basic=true) {
+        const t = this.props.t;
         let params = {
             lpTokenName : farmTitle + ' LP'
         }
@@ -199,6 +199,7 @@ class Farms extends React.Component {
     }
 
     getStakeButton() {
+        const t = this.props.t;
         let active = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake));
         let attributes = {
             active : {
@@ -229,7 +230,7 @@ class Farms extends React.Component {
             <>
                 <div className="d-flex align-items-center justify-content-between">
                     <div className="stake-value">
-                        0.176
+                        {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), 10, 10)}
                     </div>
                     <div className="d-flex align-items-center justify-content-between">
                         <Button
@@ -280,11 +281,11 @@ class Farms extends React.Component {
 
     showStakeModal (action) {
         let farmId = this.props.expandedRow;
-        let farmData = this.farms.find(item => item.farm_id === farmId);
+        // let farmData = this.farms.find(item => item.farm_id === farmId);
 
-        this.props.updateManagedFarmData({
-            value : farmData !== undefined ? farmData : null
-        });
+        // this.props.updateManagedFarmData({
+        //     value : farmData !== undefined ? farmData : null
+        // });
 
         this.props.updShowStakeModal({
             value : true
@@ -306,6 +307,11 @@ class Farms extends React.Component {
                 result.json().then(resultFarmsList => {
                     this.updateMainTokenAmount();
                     this.farms = resultFarmsList;
+                    if (this.props.expandedRow !== null) {
+                        this.props.updateManagedFarmData({
+                            value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
+                        });  
+                    }
                 })
             }
         }, () => {
@@ -340,7 +346,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none1" id="farmActions">
+<div className="d-none" id="farmActions">
     <div className="h2">
         Actions
     </div>
@@ -547,7 +553,7 @@ class Farms extends React.Component {
 												<td>
 													<div className="cell-wrapper">
 														<div className="text-color4">Reward</div>
-														<div>{valueProcessor.usCommasBigIntDecimals((farm.reward !== undefined ? farm.reward : '---'), 10, 10)}</div>
+														<div>{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), 10, 10)}</div>
 													</div>	
 												</td>
 
@@ -582,7 +588,7 @@ class Farms extends React.Component {
 															</div>
 															<div className="col-12 col-lg-6 col-xl-5 pl-xl-5">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																	{this.getStakeControl(farmTitle, !(farm.stake > 0))}
+																	{this.getStakeControl(farmTitle, !(farm.stake !== null && farm.stake > 0))}
 																</div>
 															</div>
 														</div>

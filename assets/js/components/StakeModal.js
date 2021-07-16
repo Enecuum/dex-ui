@@ -3,7 +3,8 @@ import { Modal, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
-
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
 
@@ -130,17 +131,21 @@ class StakeModal extends React.Component {
                                 <div>{t('dropFarms.stake')}</div>
                                 <div className="d-flex flex-nowrap">
                                     <div className="mr-2">{t('balance')}:</div>
-                                    <div>0.176</div>
+                                    <div>{this.props.managedFarmData !== null ? this.props.managedFarmData.earned : '---'}</div>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between">
-                                <div>0</div>
+                                <Form.Control type="text" placeholder="0" className="mr-4"/>
                                 <div className="d-flex flex-nowrap">
                                     <div className="mr-2 set-max text-color3 hover-pointer">{t('max')}</div>
-                                    <div>CAKE-BNB LP</div>
+                                    <div className="text-nowrap">CAKE-BNB LP</div>
                                 </div>
                             </div>                                                         
                         </div>
+
+                        <div className={`err-msg mb-4 ${this.props.stakeData.stakeValid ? 'd-none' : 'd-block'}`}>
+                            {this.props.stakeData.stakeValidationMsg}
+                        </div>                        
 
                         <div className="d-flex align-items-center justify-content-between mb-4">
                             {this.modifyStakeRanges.ranges.map((item, index) => (

@@ -39,13 +39,13 @@ class StakeUnstakeValidationRules {
                 checks: [
                     {
                         method: 'isSet',
-                        args: {data: data.stakeValue},
+                        args: {data: data.stakeValue.numberValue},
                         desiredResult: true,
                         errMsg: 'REQUIRED_STAKE'////Сообщение, что должен быть определен стейк
                     },                    
                     {
                         method: 'execTheRegExp',
-                        args: {str: data.stakeValue, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
+                        args: {str: data.stakeValue.numberValue, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
                     }
@@ -77,7 +77,7 @@ class StakeUnstakeValidationRules {
                     {
                         requireToCheck: data.mainToken !== data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
-                        args: {value: data.stakeValue.value, max: data.stakeTokenAmount},
+                        args: {value: data.stakeValue.bigIntValue, max: data.stakeTokenAmount},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS1',
@@ -90,7 +90,7 @@ class StakeUnstakeValidationRules {
                     {
                         requireToCheck: data.mainToken === data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
-                        args: {value: data.stakeValue.value, max: data.mainTokenAmount - data.actionCost},
+                        args: {value: data.stakeValue.bigIntValue, max: data.mainTokenAmount - data.actionCost},
                         desiredResult: true,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS2',

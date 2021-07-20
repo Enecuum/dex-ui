@@ -59,12 +59,21 @@ class StakeModal extends React.Component {
     handleInputChange(event) {
       const target = event.target;
       let value = target.value;
+      this.processData(value);
+    }
 
+    doAction() {
+      let value = this.props.stakeData.stakeValue.numberValue
+      this.processData(value, 'sendTx');
+    }
+
+    processData(value, purpose = '') { //if purpose == 'sendTx' will send stake/unstake transaction
       let paramsForValidation = {
-        //farmId           : this.props.expandedRow,
         mainToken            : this.props.mainToken,
         stakeTokenAmount     : BigInt(this.props.stakeData.stakeTokenAmount),
-        stakeValue           : value,
+        stakeValue           : {
+                                  numberValue : value
+                                },
         mainTokenAmount      : BigInt(this.props.mainTokenAmount),
         actionCost           : BigInt(this.props.stakeData.actionCost),
         stake_token_decimals : this.props.managedFarmData.stake_token_decimals,
@@ -83,8 +92,9 @@ class StakeModal extends React.Component {
       });
 
       if (commonCheck.dataValid) {
-        paramsForValidation.stakeValue = this.valueProcessor.valueToBigInt(value, this.props.managedFarmData.stake_token_decimals);
-        console.log(paramsForValidation)
+        let bigIntValue = this.valueProcessor.valueToBigInt(value, this.props.managedFarmData.stake_token_decimals);
+        paramsForValidation.stakeValue.bigIntValue = bigIntValue.value;
+        paramsForValidation.stakeValue.rawFractionalPart = bigIntValue.rawFractionalPart;
         let specialValidationRules = validationRules.getSpecialValidationRules(this.props.currentAction, paramsForValidation);
         let validatonResult = validator.batchValidate(paramsForValidation, specialValidationRules);
         dataValid = validatonResult.dataValid;
@@ -97,6 +107,33 @@ class StakeModal extends React.Component {
           value : paramsForValidation.stakeValue
         });
       }
+
+      this.props.updateStakeData({
+        field : 'stakeValid',
+        value : dataValid
+      });
+
+      if (purpose === 'sendTx') {
+        let obj = {
+          farm_id : this.props.managedFarmData.farm_id,
+          amount : paramsForValidation.stakeValue.bigIntValue
+        }
+
+        extRequests.farmAction(this.props.pubkey, this.props.currentAction, obj)        
+        .then(result => {
+            console.log(obj)
+            console.log('Success', result.hash);
+            this.closeModal();
+            //this.props.updCurrentTxHash(result.hash);
+            // this.props.changeWaitingStateType('submitted');
+            // this.props.resetStore();
+        },
+        error => {
+            console.log('Error')
+            this.props.changeWaitingStateType('rejected');
+        });
+      }
+
     }
 
     render() {
@@ -109,7 +146,8 @@ class StakeModal extends React.Component {
                     show={this.props.showStakeModal}
                     aria-labelledby="example-custom-modal-styling-title"
                     onHide={this.closeModal.bind(this)}
-                    centered >
+                    centered 
+                    animation={false}>
                     <Modal.Header closeButton className="mb-0 pb-0">
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
@@ -133,7 +171,8 @@ class StakeModal extends React.Component {
                                   type="text"
                                   placeholder="0"
                                   className="mr-4 stake-input"
-                                  onChange={this.handleInputChange.bind(this)}/>
+                                  onChange={this.handleInputChange.bind(this)}
+                                  autoFocus/>
                                 <div className="d-flex flex-nowrap">
                                     <div className="mr-2 set-max text-color3 hover-pointer">{t('max')}</div>
                                     <div className="text-nowrap">{this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : '---'} LP</div>
@@ -158,7 +197,7 @@ class StakeModal extends React.Component {
                             </Button>
                             <Button className='btn-secondary confirm-supply-button w-100 ml-2'
                                     disabled={!this.props.stakeData.stakeValid}
-                                    onClick={this.sendIssueTokenTx.bind(this)}>
+                                    onClick={this.doAction.bind(this)}>
                                 {t('confirm')}
                             </Button>                        
                         </div>

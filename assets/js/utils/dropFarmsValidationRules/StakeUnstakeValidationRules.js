@@ -12,17 +12,6 @@ class StakeUnstakeValidationRules {
                         args: {data: data.mainTokenAmount},
                         desiredResult: true,
                         errMsg: 'REQUIRED'////Сообщение, что не определен главный токен
-                    },
-                    {
-                        method: 'moreOrEqualThan',
-                        args: {value: data.mainTokenAmount, max: data.actionCost},
-                        desiredResult: true,
-                        errMsg: {
-                                    msg: 'MUST_BE_GREATER_THAN',/////Текст сообщения, что мейнтокена не хватает для оплаты операции
-                                    params: {
-                                        minValue: data.actionCost
-                                    }
-                                }
                     } 
                 ]
             },
@@ -35,7 +24,17 @@ class StakeUnstakeValidationRules {
                         errMsg: 'REQUIRED_STAKE'////Сообщение, что должен быть определен баланс стейк токена
                     }
                 ]
-            },               
+            },
+            actionCost : {
+                checks : [
+                    {
+                        method: 'isSet',
+                        args: {data: data.actionCost},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED_PRICE'////Сообщение, что нет информации о стоимости контракта
+                    },
+                ]
+            },                           
             stakeValue : {
                 checks: [
                     {
@@ -58,24 +57,32 @@ class StakeUnstakeValidationRules {
 /////////////////////////
     getSpecialValidationRules(action, data) {
         let validationRules = {
-            stakeValue : {
-                checks: [
+            mainTokenBalance : {
+                checks : [
                     {
-                        requireToCheck: data.stakeValue,
-                        method: 'strExeedMaxLength',
-                        args: {dataStr: data.stakeValue.fractionalPart, maxLength: data.stake_token_decimals},
-                        desiredResult: false,
-                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: etmState.tokenData.decimals}}                                
-                    },                
+                        method: 'moreOrEqualThan',
+                        args: {value: BigInt(data.mainTokenAmount), max: BigInt(data.actionCost)},
+                        desiredResult: true,
+                        errMsg: {
+                            msg: 'MUST_BE_GREATER_THAN',/////Текст сообщения, что мейнтокена не хватает для оплаты операции
+                            params: {
+                                minValue: data.actionCost
+                            }
+                        }
+                    }
+                ]
+            },
+            stakeValue : {
+                checks: [                
                     {
                         requireToCheck: data.mainToken !== data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
-                        args: {value: data.stakeValue.completeValue, max: data.stakeTokenBalance},
+                        args: {value: data.stakeValue.value, max: data.stakeTokenAmount},
                         desiredResult: true,
                         errMsg: {
-                                    msg: 'EXEED_MAX_VALUE_IN_TOKENS',
+                                    msg: 'EXEED_MAX_VALUE_IN_TOKENS1',
                                     params: {
-                                        maxValue: data.stakeTokenBalance,////   BIGINT!!!! сообщение, что стейк превышает баланс стейк токена
+                                        maxValue: data.stakeTokenAmount,////   BIGINT!!!! сообщение, что стейк превышает баланс стейк токена
                                         ticker: ''
                                     }
                                 }
@@ -83,16 +90,23 @@ class StakeUnstakeValidationRules {
                     {
                         requireToCheck: data.mainToken === data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
-                        args: {value: data.stakeValue.completeValue, max: data.actionCost + data.mainTokenAmount},
+                        args: {value: data.stakeValue.value, max: data.mainTokenAmount - data.actionCost},
                         desiredResult: true,
                         errMsg: {
-                                    msg: 'EXEED_MAX_VALUE_IN_TOKENS',
+                                    msg: 'EXEED_MAX_VALUE_IN_TOKENS2',
                                     params: {
                                         maxValue: data.mainTokenAmount - data.actionCost,////   BIGINT!!!! сообщение, что сумма превышает баланс главного токена (стейк плюс стоимость операции больше баланса главнго токена)
                                         ticker: ''
                                     }
                                 }
-                    },                     
+                    },
+                    {
+                        method: 'strExeedMaxLength',
+                        args: {dataStr: data.stakeValue.rawFractionalPart, maxLength: data.stake_token_decimals},
+                        desiredResult: false,
+                        errMsg: {msg: 'TOO_LONG_FRACTIONAL_PART', params: {decimals: data.stake_token_decimals}}                                
+                    }
+
                 ]
             }
         }

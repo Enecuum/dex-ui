@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-import actionsValidationRules from '../utils/dropFarmsValidationRules/StakeUnstakeValidationRules';
+import FarmValidationRules from '../utils/dropFarmsValidationRules/StakeUnstakeValidationRules';
 import Validator from  '../utils/Validator';
 
 import '../../css/confirm-supply.css';
@@ -16,56 +16,88 @@ const valueProcessor = new ValueProcessor();
 
 class StakeModal extends React.Component {
     constructor(props) {
-        super(props);
-        // this.tokenTypesTitles = {
-        //     'type_0' : 'etm.nonReissuable',
-        //     'type_1' : 'etm.reissuable',
-        //     'type_2' : 'etm.mineable',
-        // }        
+      super(props);
 
-        // this.tokenFeeTypesTitles = {
-        //     'type_0' : 'etm.nonReissuable',
-        //     'type_1' : 'etm.reissuable'
-        // }
-
-        // this.rmPercents = 50;
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.modifyStakeRanges = {
-            ranges : [
-                {
-                    value : 25,
-                    alias : '25%'
-                },
-                {
-                    value : 50,
-                    alias : '50%'
-                },
-                {
-                    value : 75,
-                    alias : '75%'
-                },
-                {
-                    value : 100,
-                    alias : 'MAX'
-                }
-            ]
-        };
+      this.handleInputChange = this.handleInputChange.bind(this);
+      this.valueProcessor = new ValueProcessor;
+      this.modifyStakeRanges = {
+          ranges : [
+              {
+                  value : 25,
+                  alias : '25%'
+              },
+              {
+                  value : 50,
+                  alias : '50%'
+              },
+              {
+                  value : 75,
+                  alias : '75%'
+              },
+              {
+                  value : 100,
+                  alias : 'MAX'
+              }
+          ]
+      };
     }
 
     closeModal () {
         this.props.updShowStakeModal({
             value : false
         });
+        this.props.updateStakeData({
+          field : 'stakeValue',
+          value : 0
+        });        
     };
 
     sendIssueTokenTx() {
         return true;
     }
 
-    handleInputChange() {
+    handleInputChange(event) {
+      const target = event.target;
+      let value = target.value;
 
+      let paramsForValidation = {
+        //farmId           : this.props.expandedRow,
+        mainToken            : this.props.mainToken,
+        stakeTokenAmount     : BigInt(this.props.stakeData.stakeTokenAmount),
+        stakeValue           : value,
+        mainTokenAmount      : BigInt(this.props.mainTokenAmount),
+        actionCost           : BigInt(this.props.stakeData.actionCost),
+        stake_token_decimals : this.props.managedFarmData.stake_token_decimals,
+        stake_token_hash     : this.props.managedFarmData.stake_token_hash,
+      }
+
+      let validationRules = new FarmValidationRules(this.props.t)
+      let validator = new Validator;
+      let commonValidationRules = validationRules.getCommonValidationRules(this.props.currentAction, paramsForValidation);
+      let commonCheck = validator.batchValidate(paramsForValidation, commonValidationRules);
+      let dataValid = commonCheck.dataValid;
+
+      this.props.updateStakeData({
+          field : 'msgData',
+          value : commonCheck.propsArr
+      });
+
+      if (commonCheck.dataValid) {
+        paramsForValidation.stakeValue = this.valueProcessor.valueToBigInt(value, this.props.managedFarmData.stake_token_decimals);
+        console.log(paramsForValidation)
+        let specialValidationRules = validationRules.getSpecialValidationRules(this.props.currentAction, paramsForValidation);
+        let validatonResult = validator.batchValidate(paramsForValidation, specialValidationRules);
+        dataValid = validatonResult.dataValid;
+        this.props.updateStakeData({
+            field : 'msgData',
+            value : validatonResult.propsArr
+        });
+        this.props.updateStakeData({
+          field : 'stakeValue',
+          value : paramsForValidation.stakeValue
+        });
+      }
     }
-
 
     render() {
         const t = this.props.t;

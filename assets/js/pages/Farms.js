@@ -357,11 +357,11 @@ class Farms extends React.Component {
                 result.json().then(resultFarmsList => {
                     this.updateMainTokenAmount();
                     this.farms = resultFarmsList;
-                    // if (this.props.expandedRow !== null) {
-                    //     this.props.updateManagedFarmData({
-                    //         value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
-                    //     });  
-                    // }
+                    if (this.props.expandedRow !== null) {
+                        this.props.updateManagedFarmData({
+                            value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
+                        });  
+                    }
                 })
             }
         }, () => {

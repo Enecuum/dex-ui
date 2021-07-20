@@ -189,3 +189,15 @@
     background-color: var(--color2);
     color: var(--color1);
 }
+
+.stake-input, .stake-input.form-control:focus {
+    padding: 0px;
+    background: transparent;
+    color: var(--color1);
+    opacity: 1;
+    border: none;
+    font-size: 17px;
+    height: auto;
+    line-height: 0.7rem;
+    box-shadow: none;
+}

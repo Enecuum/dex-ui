@@ -131,12 +131,12 @@ const initialState = {
         showStakeModal    : false,
         currentAction     : undefined,
         stakeData         : {
-            stakedTokenName    : '',
-            stakedTokenBalance : '',
+            actionCost         : 0,
             stakeValue         : 0,  
             stakeTxStatus      : '',
             stakeValid         : true,
-            stakeValidationMsg : ''
+            msgData            : {},
+            stakeTokenAmount   : undefined
         }
     }
 };

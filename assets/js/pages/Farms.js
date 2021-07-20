@@ -63,6 +63,7 @@ class Farms extends React.Component {
 
         this.updateMainTokenInfo();
         this.updatePricelist();
+
     };
 
     handleChange(action, param, event) {
@@ -128,9 +129,12 @@ class Farms extends React.Component {
             if (mainTokenBalance !== undefined) {
                 mainTokenAmount = mainTokenBalance.amount;
             }
-            this.props.updateMainTokenAmount({
-                value : mainTokenAmount
-            });
+
+            if (this.props.mainTokenAmount != mainTokenAmount) {
+                this.props.updateMainTokenAmount({
+                    value : mainTokenAmount
+                });
+            }    
         }    
     }
 
@@ -215,7 +219,7 @@ class Farms extends React.Component {
                 {<Button
                     className={attributes[buttonState].className}                   
                     disabled={!active}
-                    onClick={(e) => this.showStakeModal('stake', e)}
+                    onClick={(e) => this.showStakeModal('farm_increase_stake', e)}
                 >
                     Stake LP
                 </Button>}                
@@ -236,14 +240,14 @@ class Farms extends React.Component {
                         <Button
                             className="btn outline-border-color3-button btn btn-primary mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
                             disabled={!decreaseStakeActive}
-                            onClick={(e) => this.showStakeModal('unstake', e)}
+                            onClick={(e) => this.showStakeModal('farm_decrease_stake', e)}
                         >
                             -
                         </Button>
                         <Button
                             className="btn outline-border-color3-button btn btn-primary increase-decrease-btn zero-flex text-center"
                             disabled={!increaseStakeActive}
-                            onClick={(e) => this.showStakeModal('stake', e)}                            
+                            onClick={(e) => this.showStakeModal('farm_increase_stake', e)}                            
                         >
                             +
                         </Button>                                                
@@ -280,19 +284,66 @@ class Farms extends React.Component {
     }
 
     showStakeModal (action) {
-        let farmId = this.props.expandedRow;
-        // let farmData = this.farms.find(item => item.farm_id === farmId);
 
-        // this.props.updateManagedFarmData({
-        //     value : farmData !== undefined ? farmData : null
-        // });
-
-        this.props.updShowStakeModal({
-            value : true
-        });
         this.props.updateCurrentAction({
             value : action
         });
+
+        if (action === 'farm_increase_stake') {
+            this.props.updateCurrentAction({
+                value : action
+            });
+
+            this.props.updateStakeData({
+                field : 'actionCost',
+                value : BigInt(this.props.mainTokenFee) + BigInt(this.props.pricelist[action])
+            });
+
+            let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.managedFarmData.stake_token_hash);
+
+            if (stakeTokenBalance !== undefined && BigInt(stakeTokenBalance.amount) > 0n) {
+                this.props.updateStakeData({
+                    field : 'stakeTokenAmount',
+                    value : stakeTokenBalance.amount
+                });                
+            } else {
+                this.props.updateStakeData({
+                    field : 'stakeTokenAmount',
+                    value : 0n
+                });
+            }
+            this.props.updShowStakeModal({
+                value : true
+            });            
+        }
+
+
+
+      // if (this.props.currentAction === 'stake') {
+      //   let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.stake_token_hash);
+      //   if (stakeTokenBalance !== undefined && stakeTokenBalance > 0) {
+      //     this.props.stakeTokenBalance = stakeTokenBalance;
+      //     if (this.props.stake_token_hash)
+
+
+      //     if (stakeTokenBalance < (this.props.mainTokenFee + this.props.pricelist.farm_increase_stake)) {
+      //       //валидация false
+      //       //сообщение об ошибке, что нет денег на оплату комиссий            
+      //     } else {
+      //       //валидация true
+      //       //сообщение об ошибке - пустая строка
+      //     }
+
+      //   } else {
+      //     this.props.stakeTokenBalance = '---';
+      //       //валидация false
+      //       //сообщение об ошибке, что нет денег
+      //   }
+      // }
+
+
+
+        
     }
 
     getFarmsTable() {
@@ -302,16 +353,15 @@ class Farms extends React.Component {
         let farmsList = networkApi.getDexFarms(this.props.pubkey);
 
         farmsList.then(result => {
-
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
                     this.updateMainTokenAmount();
                     this.farms = resultFarmsList;
-                    if (this.props.expandedRow !== null) {
-                        this.props.updateManagedFarmData({
-                            value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
-                        });  
-                    }
+                    // if (this.props.expandedRow !== null) {
+                    //     this.props.updateManagedFarmData({
+                    //         value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
+                    //     });  
+                    // }
                 })
             }
         }, () => {
@@ -346,7 +396,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none" id="farmActions">
+<div className="d-none1" id="farmActions">
     <div className="h2">
         Actions
     </div>

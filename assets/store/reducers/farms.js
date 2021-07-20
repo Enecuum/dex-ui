@@ -2,9 +2,38 @@ import initialState from '../initialState';
 import actionPack from '../actions/actions';
 
 const actions = actionPack.farms;
+function getKeyValueObj(action) {
+    console.log(action)
+    let field = action.payload.field;
+    if (field == 'actionCost')
+        return { actionCost: action.payload.value };
+    else if (field == 'stakeValue')
+        return { stakeValue: action.payload.value };
+    else if (field == 'stakeTokenAmount')
+        return { stakeTokenAmount: action.payload.value };
+    else if (field == 'stakeTxStatus')
+        return { stakeTxStatus: action.payload.value };
+    else if (field == 'stakeValid')
+        return { stakeValid: action.payload.value };
+    else if (field == 'msgData')
+        return { msgData: action.payload.value };                                             
+    else 
+        return { unknownProperty: action.payload.value };
+}
 
+function assignStakeDataProperty(state, fragment, action) {
+    return {
+        ...state[fragment],
+        ...getKeyValueObj(action)
+    }
+}
 export default function farmsReducer (state = initialState.farms, action) {
     switch (action.type) {
+        case actions.UPDATE_STAKE_DATA:
+            return {
+                ...state,
+                stakeData : assignStakeDataProperty(state, 'stakeData', action)
+            };        
         case actions.UPDATE_EXPANDED_ROW:
             return {
                 ...state,

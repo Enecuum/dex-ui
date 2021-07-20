@@ -56,6 +56,12 @@ const actionCreators = {
             type : actions.UPDATE_CURRENT_ACTION,
             payload : payload.value 
         };
+    },
+    updateStakeData (payload) {
+        return {
+            type : actions.UPDATE_STAKE_DATA,
+            payload : payload 
+        };
     }
 };
 

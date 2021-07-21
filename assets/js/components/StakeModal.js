@@ -68,12 +68,14 @@ class StakeModal extends React.Component {
     }
 
     processData(value, purpose = '') { //if purpose == 'sendTx' will send stake/unstake transaction
-      let paramsForValidation = {
+      let commonDataSet = {
+        currentAction        : this.props.currentAction,
         mainToken            : this.props.mainToken,
         stakeTokenAmount     : BigInt(this.props.stakeData.stakeTokenAmount),
         stakeValue           : {
                                   numberValue : value
                                 },
+        initialStake         : this.props.managedFarmData.stake !== undefined && this.props.managedFarmData.stake !== null ? BigInt(this.props.managedFarmData.stake) : 0n,                        
         mainTokenAmount      : BigInt(this.props.mainTokenAmount),
         actionCost           : BigInt(this.props.stakeData.actionCost),
         stake_token_decimals : this.props.managedFarmData.stake_token_decimals,
@@ -82,8 +84,8 @@ class StakeModal extends React.Component {
 
       let validationRules = new FarmValidationRules(this.props.t)
       let validator = new Validator;
-      let commonValidationRules = validationRules.getCommonValidationRules(this.props.currentAction, paramsForValidation);
-      let commonCheck = validator.batchValidate(paramsForValidation, commonValidationRules);
+      let commonValidationRules = validationRules.getCommonValidationRules(commonDataSet);
+      let commonCheck = validator.batchValidate(commonDataSet, commonValidationRules);
       let dataValid = commonCheck.dataValid;
 
       this.props.updateStakeData({
@@ -93,10 +95,10 @@ class StakeModal extends React.Component {
 
       if (commonCheck.dataValid) {
         let bigIntValue = this.valueProcessor.valueToBigInt(value, this.props.managedFarmData.stake_token_decimals);
-        paramsForValidation.stakeValue.bigIntValue = bigIntValue.value;
-        paramsForValidation.stakeValue.rawFractionalPart = bigIntValue.rawFractionalPart;
-        let specialValidationRules = validationRules.getSpecialValidationRules(this.props.currentAction, paramsForValidation);
-        let validatonResult = validator.batchValidate(paramsForValidation, specialValidationRules);
+        commonDataSet.stakeValue.bigIntValue = bigIntValue.value;
+        commonDataSet.stakeValue.rawFractionalPart = bigIntValue.rawFractionalPart;
+        let specialValidationRules = validationRules.getSpecialValidationRules(commonDataSet);
+        let validatonResult = validator.batchValidate(commonDataSet, specialValidationRules);
         dataValid = validatonResult.dataValid;
         this.props.updateStakeData({
             field : 'msgData',
@@ -104,7 +106,7 @@ class StakeModal extends React.Component {
         });
         this.props.updateStakeData({
           field : 'stakeValue',
-          value : paramsForValidation.stakeValue
+          value : commonDataSet.stakeValue
         });
       }
 
@@ -116,7 +118,7 @@ class StakeModal extends React.Component {
       if (purpose === 'sendTx') {
         let obj = {
           farm_id : this.props.managedFarmData.farm_id,
-          amount : paramsForValidation.stakeValue.bigIntValue
+          amount : commonDataSet.stakeValue.bigIntValue
         }
 
         extRequests.farmAction(this.props.pubkey, this.props.currentAction, obj)        
@@ -130,10 +132,9 @@ class StakeModal extends React.Component {
         },
         error => {
             console.log('Error')
-            this.props.changeWaitingStateType('rejected');
+            //this.props.changeWaitingStateType('rejected');
         });
       }
-
     }
 
     render() {

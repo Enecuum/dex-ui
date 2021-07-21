@@ -156,7 +156,6 @@ class Farms extends React.Component {
 
     updatePricelist() {
         let contractPricelist = networkApi.getContractPricelist();
-
         contractPricelist.then(result => {
             if (!result.lock) {
                 result.json().then(pricelist => {
@@ -289,7 +288,7 @@ class Farms extends React.Component {
             value : action
         });
 
-        if (action === 'farm_increase_stake') {
+        //if (action === 'farm_increase_stake') {
             this.props.updateCurrentAction({
                 value : action
             });
@@ -315,35 +314,7 @@ class Farms extends React.Component {
             this.props.updShowStakeModal({
                 value : true
             });            
-        }
-
-
-
-      // if (this.props.currentAction === 'stake') {
-      //   let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.stake_token_hash);
-      //   if (stakeTokenBalance !== undefined && stakeTokenBalance > 0) {
-      //     this.props.stakeTokenBalance = stakeTokenBalance;
-      //     if (this.props.stake_token_hash)
-
-
-      //     if (stakeTokenBalance < (this.props.mainTokenFee + this.props.pricelist.farm_increase_stake)) {
-      //       //валидация false
-      //       //сообщение об ошибке, что нет денег на оплату комиссий            
-      //     } else {
-      //       //валидация true
-      //       //сообщение об ошибке - пустая строка
-      //     }
-
-      //   } else {
-      //     this.props.stakeTokenBalance = '---';
-      //       //валидация false
-      //       //сообщение об ошибке, что нет денег
-      //   }
-      // }
-
-
-
-        
+        //}      
     }
 
     getFarmsTable() {

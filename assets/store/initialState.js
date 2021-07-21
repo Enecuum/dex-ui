@@ -132,6 +132,7 @@ const initialState = {
         currentAction     : undefined,
         stakeData         : {
             actionCost         : 0,
+            initialStake       : 0,
             stakeValue         : {
                 numberValue : 0
             },  

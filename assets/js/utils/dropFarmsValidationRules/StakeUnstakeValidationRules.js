@@ -3,7 +3,7 @@ class StakeUnstakeValidationRules {
         this.t = translateFunction;
     }
 
-    getCommonValidationRules(action, data) {
+    getCommonValidationRules(data) {
         let validationRules = {
             mainTokenBalance: {
                 checks: [
@@ -18,10 +18,22 @@ class StakeUnstakeValidationRules {
             stakeTokenBalance: {
                 checks: [
                     {
+                        requireToCheck: data.currentAction === 'farm_increase_stake' ? true : false,
                         method: 'isSet',
                         args: {data: data.stakeTokenAmount},
                         desiredResult: true,
                         errMsg: 'REQUIRED_STAKE'////Сообщение, что должен быть определен баланс стейк токена
+                    }
+                ]
+            },
+            initialStake: {
+                checks: [
+                    {
+                        requireToCheck: data.currentAction === 'farm_decrease_stake' ? true : false,
+                        method: 'isSet',
+                        args: {data: data.initialStake},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED_INITIAL_STAKE'////Сообщение, что должен быть определен баланс стейк токена
                     }
                 ]
             },
@@ -55,7 +67,7 @@ class StakeUnstakeValidationRules {
         return validationRules;
     }
 /////////////////////////
-    getSpecialValidationRules(action, data) {
+    getSpecialValidationRules(data) {
         let validationRules = {
             mainTokenBalance : {
                 checks : [
@@ -75,7 +87,7 @@ class StakeUnstakeValidationRules {
             stakeValue : {
                 checks: [                
                     {
-                        requireToCheck: data.mainToken !== data.stake_token_hash ? true : false,
+                        requireToCheck: data.currentAction === 'farm_increase_stake' && data.mainToken !== data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
                         args: {value: data.stakeValue.bigIntValue, max: data.stakeTokenAmount},
                         desiredResult: true,
@@ -88,7 +100,7 @@ class StakeUnstakeValidationRules {
                                 }
                     },                  
                     {
-                        requireToCheck: data.mainToken === data.stake_token_hash ? true : false,
+                        requireToCheck: data.currentAction === 'farm_increase_stake' && data.mainToken === data.stake_token_hash ? true : false,
                         method: 'lessOrEqualThan',
                         args: {value: data.stakeValue.bigIntValue, max: data.mainTokenAmount - data.actionCost},
                         desiredResult: true,
@@ -97,6 +109,18 @@ class StakeUnstakeValidationRules {
                                     params: {
                                         maxValue: data.mainTokenAmount - data.actionCost,////   BIGINT!!!! сообщение, что сумма превышает баланс главного токена (стейк плюс стоимость операции больше баланса главнго токена)
                                         ticker: ''
+                                    }
+                                }
+                    },                  
+                    {
+                        requireToCheck: data.currentAction === 'farm_decrease_stake'? true : false,
+                        method: 'lessOrEqualThan',
+                        args: {value: data.stakeValue.bigIntValue, max: data.initialStake},
+                        desiredResult: true,
+                        errMsg: {
+                                    msg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE',
+                                    params: {
+                                        name: this.t('dropFarms.stake')
                                     }
                                 }
                     },

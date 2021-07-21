@@ -386,7 +386,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none1" id="farmActions">
+<div className="d-none" id="farmActions">
     <div className="h2">
         Actions
     </div>

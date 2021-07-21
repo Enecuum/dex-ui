@@ -175,8 +175,8 @@ class StakeModal extends React.Component {
                                   onChange={this.handleInputChange.bind(this)}
                                   autoFocus/>
                                 <div className="d-flex flex-nowrap">
-                                    <div className="mr-2 set-max text-color3 hover-pointer">{t('max')}</div>
-                                    <div className="text-nowrap">{this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : '---'} LP</div>
+                                    <div className="mr-2 set-max text-color3 hover-pointer d-none">{t('max')}</div>
+                                    <div className="text-nowrap">{this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : '---'}</div>
                                 </div>
                             </div>                                                         
                         </div>
@@ -185,9 +185,9 @@ class StakeModal extends React.Component {
                             {this.props.stakeData.stakeValidationMsg}
                         </div>                        
 
-                        <div className="d-flex align-items-center justify-content-between mb-4">
+                        <div className="d-none align-items-center justify-content-between mb-4">
                             {this.modifyStakeRanges.ranges.map((item, index) => (
-                                <button key={index+''} className="btn btn-secondary px-3 py-1 text-color4" >{item.alias}</button>
+                                <button key={index+''} className="btn btn-secondary px-3 py-1 text-color4" disabled>{item.alias}</button>
                             ))}
                         </div>
 
@@ -203,7 +203,7 @@ class StakeModal extends React.Component {
                             </Button>                        
                         </div>
  
-                        <div className="text-center ">
+                        <div className="text-center d-none">
                             <a
                                 href = "/"
                                 className="text-color4-link hover-pointer">

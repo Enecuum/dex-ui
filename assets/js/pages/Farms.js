@@ -59,7 +59,8 @@ class Farms extends React.Component {
                 }                
             }
         }
-        this.handleChange = this.handleChange.bind(this);    
+        this.handleChange = this.handleChange.bind(this); 
+        this.executeHarvest = this.executeHarvest.bind(this);    
 
         this.updateMainTokenInfo();
         this.updatePricelist();
@@ -93,6 +94,21 @@ class Farms extends React.Component {
         error => {
             console.log('Error')
             this.props.changeWaitingStateType('rejected');
+        });
+    }
+
+    executeHarvest() {
+        extRequests.farmAction(this.props.pubkey, 'farm_get_reward', {farm_id  : this.props.expandedRow})        
+        .then(result => {
+            console.log('Success', result.hash);
+            //this.closeModal();
+            //this.props.updCurrentTxHash(result.hash);
+            // this.props.changeWaitingStateType('submitted');
+            // this.props.resetStore();
+        },
+        error => {
+            console.log('Error')
+            //this.props.changeWaitingStateType('rejected');
         });
     }
 
@@ -167,10 +183,12 @@ class Farms extends React.Component {
         });        
     }
 
+
+
     getStakeControl(farmTitle, basic=true) {
         const t = this.props.t;
         let params = {
-            lpTokenName : farmTitle + ' LP'
+            lpTokenName : farmTitle //+ ' LP'
         }
 
     	return (
@@ -275,6 +293,7 @@ class Farms extends React.Component {
 					className={attributes[buttonState].className}
 					variant={attributes[buttonState].variant}
 					disabled={!active}
+                    onClick={() => this.executeHarvest()}
 				>
 					Harvest
 				</Button>
@@ -544,7 +563,7 @@ class Farms extends React.Component {
 						<Table hover variant="dark" style={{tableLayout : 'auto'}}>
 							<tbody>
 						        {this.farms.map(( farm, index ) => {
-                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
+                                    let farmTitle = farm.stake_token_name //+ '-' + farm.reward_token_name;
 						        	return (
 							          	<>
 								            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
@@ -594,7 +613,7 @@ class Farms extends React.Component {
 																	<div className="d-flex align-items-center justify-content-start mb-2">
 																		{farm.earned !== undefined && farm.earned > 0 && 
 																			<div className="text-color3 mr-2">
-																				{farm.stake_token_name}
+																				{farm.reward_token_name}
 																			</div>
 																		}
 																		<div className="color-2">

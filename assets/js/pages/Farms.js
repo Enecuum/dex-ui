@@ -64,7 +64,6 @@ class Farms extends React.Component {
 
         this.updateMainTokenInfo();
         this.updatePricelist();
-
     };
 
     handleChange(action, param, event) {
@@ -138,7 +137,7 @@ class Farms extends React.Component {
     }
 
     updateMainTokenAmount() {
-        let mainTokenAmount = 0;
+        let mainTokenAmount = 0n;
         if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
             let mainTokenBalance = this.props.balances.find(token => token.token === this.props.mainToken);
 
@@ -148,13 +147,14 @@ class Farms extends React.Component {
 
             if (this.props.mainTokenAmount != mainTokenAmount) {
                 this.props.updateMainTokenAmount({
-                    value : mainTokenAmount
+                    value : BigInt(mainTokenAmount)
                 });
             }    
         }    
     }
 
     updateMainTokenInfo() {
+        console.log(this.props.mainToken)
         let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
         tokenInfoRequest.then(result => {
             if (!result.lock) {
@@ -276,6 +276,7 @@ class Farms extends React.Component {
     }
 
     getHarvestButton(active = true) {
+        let enoughMainTokenToHarvest = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_get_reward));
     	let attributes = {
     		active : {
     			className : 'btn btn-info py-3 px-5',
@@ -292,7 +293,7 @@ class Farms extends React.Component {
     			<Button
 					className={attributes[buttonState].className}
 					variant={attributes[buttonState].variant}
-					disabled={!active}
+					disabled={!active || !enoughMainTokenToHarvest}
                     onClick={() => this.executeHarvest()}
 				>
 					Harvest

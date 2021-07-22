@@ -38,6 +38,7 @@ class IndicatorPanel extends React.Component {
     changeNet (name, url) {
         swapApi.updUrl(url);
         this.props.changeNetwork(name, url);
+        this.props.assignMainToken(ENQWeb.Enq.ticker);
     };
 
     renderWalletInfo () {

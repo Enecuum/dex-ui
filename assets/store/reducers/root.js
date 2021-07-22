@@ -20,6 +20,9 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.CHANGE_NET:
             return rootStore(state, { net : action.value });
 
+        case actions.ASSIGN_MAIN_TOKEN:
+            return rootStore(state, { mainToken : action.value });            
+
         case actions.CHANGE_LANG:
             return rootStore(state, { langData : action.value });
 

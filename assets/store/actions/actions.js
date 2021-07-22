@@ -15,7 +15,8 @@ const actionPack =  {
         UPD_PAIRS               : 'UPD_PAIRS',
         ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
         UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH',
-        UPD_RECENT_TXS          : 'UPD_RECENT_TXS'
+        UPD_RECENT_TXS          : 'UPD_RECENT_TXS',
+        ASSIGN_MAIN_TOKEN       : 'ASSIGN_MAIN_TOKEN'
     },
     swapCard : {
         SWAP_FIELDS                         : 'SWAP_FIELDS',

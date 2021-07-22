@@ -62,9 +62,9 @@ class Farms extends React.Component {
         this.handleChange = this.handleChange.bind(this); 
         this.executeHarvest = this.executeHarvest.bind(this);    
 
-        // this.updateMainTokenInfo();
-        // this.updateMainTokenAmount();        
-        // this.updatePricelist();
+        this.updateMainTokenInfo();
+        this.updateMainTokenAmount();        
+        this.updatePricelist();
     };
 
     shouldComponentUpdate(nextProps, nextState) {

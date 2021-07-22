@@ -38,7 +38,6 @@ class IndicatorPanel extends React.Component {
     changeNet (name, url) {
         swapApi.updUrl(url);
         this.props.changeNetwork(name, url);
-        this.props.assignMainToken(ENQWeb.Enq.ticker);
     };
 
     renderWalletInfo () {
@@ -81,6 +80,8 @@ class IndicatorPanel extends React.Component {
         .then(res => {
             if (!res.lock)
                 this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
+                ENQWeb.Enq.provider = res.net; 
+                this.props.assignMainToken(ENQWeb.Enq.ticker)
         },
         err => console.log('cannot make getProvider request'));
     };

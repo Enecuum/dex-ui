@@ -114,11 +114,13 @@ function mapStoreToProps(component) {
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
+                    ...state.root,
                     ...state.indicatorPanel,
                     pubkey                  : state.root.pubkey,
                     pendingIndicator        : state.root.pendingIndicator,
                     balances                : state.root.balances,
-                    net                     : state.root.net
+                    net                     : state.root.net,
+                    coinAmount              : state.indicatorPanel.coinAmount
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -265,12 +267,13 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.farms,
-                    mainToken         : state.root.mainToken,
+                    //pubkey            : state.root.pubkey,
+                    //mainToken         : state.root.mainToken,
                     mainTokenAmount   : state.farms.mainTokenAmount,
                     mainTokenDecimals : state.farms.mainTokenDecimals,
                     mainTokenFee      : state.farms.mainTokenFee,
                     pricelist         : state.farms.pricelist,                    
-                    connectionStatus  : state.root.connectionStatus,
+                    //connectionStatus  : state.root.connectionStatus,
                     balances          : state.root.balances,
                     tokens            : state.root.tokens,
                     showStakeModal    : state.farms.showStakeModal,

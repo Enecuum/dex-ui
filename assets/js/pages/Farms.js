@@ -62,9 +62,41 @@ class Farms extends React.Component {
         this.handleChange = this.handleChange.bind(this); 
         this.executeHarvest = this.executeHarvest.bind(this);    
 
-        this.updateMainTokenInfo();
-        this.updatePricelist();
+        // this.updateMainTokenInfo();
+        // this.updateMainTokenAmount();        
+        // this.updatePricelist();
     };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        let that = this;
+        let update = false;
+        let stateProps = [
+            'pubkey',
+            'connectionStatus',
+            'mainToken',
+            'mainTokenAmount',
+            'mainTokenDecimals',
+            'mainTokenFee',
+            'pricelist',
+            'expandedRow',
+            'managedFarmData',
+            'sortType',
+            'showStakeModal',
+            'currentAction',
+            'stakeData',
+            'balances'
+        ]
+
+        function compare(name) {
+            if (JSON.stringify(that.props[name]) !== JSON.stringify(nextProps[name])) {                
+                update = true;
+            }            
+        }
+
+        stateProps.forEach(element => compare(element));
+
+        return update;
+    }
 
     handleChange(action, param, event) {
         console.log(action, param)
@@ -138,6 +170,7 @@ class Farms extends React.Component {
 
     updateMainTokenAmount() {
         let mainTokenAmount = 0n;
+
         if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
             let mainTokenBalance = this.props.balances.find(token => token.token === this.props.mainToken);
 
@@ -154,8 +187,8 @@ class Farms extends React.Component {
     }
 
     updateMainTokenInfo() {
-        console.log(this.props.mainToken)
-        let tokenInfoRequest = swapApi.getTokenInfo(this.props.mainToken);
+        let mainTokenHash = this.props.mainToken
+        let tokenInfoRequest = swapApi.getTokenInfo(mainTokenHash);
         tokenInfoRequest.then(result => {
             if (!result.lock) {
                 result.json().then(mainToken => {
@@ -164,7 +197,7 @@ class Farms extends React.Component {
                     });
                     this.props.updateMainTokenFee({
                         value : BigInt(mainToken[0].fee_value)
-                    });                    
+                    });                   
                 });
             }
         });
@@ -182,8 +215,6 @@ class Farms extends React.Component {
             }
         });        
     }
-
-
 
     getStakeControl(farmTitle, basic=true) {
         const t = this.props.t;
@@ -340,19 +371,22 @@ class Farms extends React.Component {
     getFarmsTable() {
     	const t = this.props.t;
     	let that = this;
-
+        this.updateMainTokenInfo();                
+        this.updatePricelist();
         let farmsList = networkApi.getDexFarms(this.props.pubkey);
 
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
-                    this.updateMainTokenAmount();
+                    
                     this.farms = resultFarmsList;
                     if (this.props.expandedRow !== null) {
                         this.props.updateManagedFarmData({
                             value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
-                        });  
+                        });
+                        this.updateMainTokenAmount();                          
                     }
+                    
                 })
             }
         }, () => {
@@ -649,7 +683,7 @@ class Farms extends React.Component {
 
     render() {
 		const t = this.props.t;
-		//this.pairsArr = this.populateTable();        
+       
     	return (
     		<div className="row">    		
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			

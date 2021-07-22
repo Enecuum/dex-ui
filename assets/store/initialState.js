@@ -73,7 +73,7 @@ const initialState = {
         nativeToken : presets.network.nativeToken.hash,
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
-        coinAmount  : 0,
+//        coinAmount  : 0,
         enx         : 0
     },
     etm : {
@@ -120,7 +120,9 @@ const initialState = {
         possibleToIssueToken : false
     },
     farms : {
-        mainToken         : presets.network.nativeToken.hash,
+        // pubkey            : '',
+        // connectionStatus  : false,
+        //mainToken         : undefined,
         mainTokenAmount   : undefined,
         mainTokenDecimals : undefined,
         mainTokenFee      : presets.network.nativeToken.fee,

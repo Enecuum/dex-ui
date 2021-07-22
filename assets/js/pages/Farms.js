@@ -38,8 +38,8 @@ class Farms extends React.Component {
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
-                    "stake_token": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "reward_token": "1111111111111111111111111111111111111111111111111111111111111111",
+                    "stake_token": "0000000000000000000000000000000000000000000000000000000000000001",
+                    "reward_token": "0000000000000000000000000000000000000000000000000000000000000001",
                     "block_reward": 1,
                     "emission": 100                
                 },
@@ -378,8 +378,11 @@ class Farms extends React.Component {
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
-                    
+                    console.log(resultFarmsList);
                     this.farms = resultFarmsList;
+                        this.props.updateManagedFarmData({
+                            value : 1
+                        });                    
                     if (this.props.expandedRow !== null) {
                         this.props.updateManagedFarmData({
                             value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
@@ -421,7 +424,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none" id="farmActions">
+<div className="d-no1ne" id="farmActions">
     <div className="h2">
         Actions
     </div>

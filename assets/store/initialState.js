@@ -73,7 +73,7 @@ const initialState = {
         nativeToken : presets.network.nativeToken.hash,
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
-//        coinAmount  : 0,
+        coinAmount  : 0,
         enx         : 0
     },
     etm : {

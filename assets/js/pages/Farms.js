@@ -551,7 +551,7 @@ class Farms extends React.Component {
 						<Table hover variant="dark" style={{tableLayout : 'auto'}}>
 							<tbody>
 						        {this.farms.map(( farm, index ) => {
-                                    let farmTitle = farm.stake_token_name //+ '-' + farm.reward_token_name;
+                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
 						        	return (
 							          	<>
 								            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>

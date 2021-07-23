@@ -402,7 +402,7 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-no1ne" id="farmActions">
+<div className="d-none" id="farmActions">
     <div className="h2">
         Actions
     </div>
@@ -510,34 +510,6 @@ class Farms extends React.Component {
                             onClick={this.executeDropFarmAction.bind(this, 'farm_decrease_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_decrease_stake)}>
                                 Unstake (farm_decrease_stake)
                               </Button>                        
-                       </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-        <Accordion.Toggle as={Card.Header} eventKey="3"  style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           borderBottom: '2px solid #454d55'
-                       }}
-                       className="hover-pointer">
-         Unstake and receive rewards (farm_close_stake)
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="3">
-          <Card.Body className="pt-4" style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           opacity: '0.9'
-                       }}>
-                            <Form>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_close_stake.farm_id} onChange={(e) => this.handleChange('farm_close_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                            </Form>
-                            <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'farm_close_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_close_stake)}>
-                                Unstake and receive rewards (farm_close_stake)
-                              </Button>                          
                        </Card.Body>
         </Accordion.Collapse>
       </Card>

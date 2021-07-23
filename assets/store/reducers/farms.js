@@ -39,6 +39,11 @@ export default function farmsReducer (state = initialState.farms, action) {
                 ...state,
                 expandedRow : action.payload
             };
+        case actions.UPDATE_FARMS_LIST:
+            return {
+                ...state,
+                farmsList : action.payload
+            };        
         case actions.UPDATE_MANAGED_FARM_DATA:
             return {
                 ...state,

@@ -120,9 +120,6 @@ const initialState = {
         possibleToIssueToken : false
     },
     farms : {
-        // pubkey            : '',
-        // connectionStatus  : false,
-        //mainToken         : undefined,
         mainTokenAmount   : undefined,
         mainTokenDecimals : undefined,
         mainTokenFee      : presets.network.nativeToken.fee,
@@ -132,6 +129,7 @@ const initialState = {
         sortType          : 'liquidity',
         showStakeModal    : false,
         currentAction     : undefined,
+        farmsList         : [],
         stakeData         : {
             actionCost         : 0,
             initialStake       : 0,

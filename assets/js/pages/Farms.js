@@ -35,6 +35,9 @@ class Farms extends React.Component {
             'farm_get_reward'
         ];
 
+        this.circleUpd();
+
+
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
@@ -61,42 +64,16 @@ class Farms extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this); 
         this.executeHarvest = this.executeHarvest.bind(this);    
-
-        this.updateMainTokenInfo();
-        this.updateMainTokenAmount();        
-        this.updatePricelist();
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        let that = this;
-        let update = false;
-        let stateProps = [
-            'pubkey',
-            'connectionStatus',
-            'mainToken',
-            'mainTokenAmount',
-            'mainTokenDecimals',
-            'mainTokenFee',
-            'pricelist',
-            'expandedRow',
-            'managedFarmData',
-            'sortType',
-            'showStakeModal',
-            'currentAction',
-            'stakeData',
-            'balances'
-        ]
-
-        function compare(name) {
-            if (JSON.stringify(that.props[name]) !== JSON.stringify(nextProps[name])) {                
-                update = true;
-            }            
-        }
-
-        stateProps.forEach(element => compare(element));
-
-        return update;
-    }
+    circleUpd () {
+        setInterval(() => {
+            this.updateMainTokenInfo();
+            this.updateMainTokenAmount();        
+            this.updatePricelist();
+            this.updateFarms();
+        }, 3000);
+    };
 
     handleChange(action, param, event) {
         console.log(action, param)
@@ -143,6 +120,28 @@ class Farms extends React.Component {
         });
     }
 
+    updateFarms() {
+        let farmsList = networkApi.getDexFarms(this.props.pubkey);
+
+        farmsList.then(result => {
+            if (!result.lock) {
+                result.json().then(resultFarmsList => {
+                    this.farms = resultFarmsList;
+                    this.props.updateFarmsList({
+                        value : resultFarmsList
+                    });                                       
+                    if (this.props.expandedRow !== null) {
+                        this.props.updateManagedFarmData({
+                            value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
+                        });                       
+                    }                    
+                })
+            }
+        }, () => {
+            this.farms = [];
+        })
+    }    
+
     updateExpandedRow(event) {
     	const target = event.target;        
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
@@ -169,21 +168,24 @@ class Farms extends React.Component {
     }
 
     updateMainTokenAmount() {
-        let mainTokenAmount = 0n;
-
         if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
             let mainTokenBalance = this.props.balances.find(token => token.token === this.props.mainToken);
 
             if (mainTokenBalance !== undefined) {
-                mainTokenAmount = mainTokenBalance.amount;
-            }
-
-            if (this.props.mainTokenAmount != mainTokenAmount) {
-                this.props.updateMainTokenAmount({
+               let mainTokenAmount = mainTokenBalance.amount;
+               this.props.updateMainTokenAmount({
                     value : BigInt(mainTokenAmount)
                 });
-            }    
-        }    
+            } else {
+               this.props.updateMainTokenAmount({
+                    value : 0n
+                });                
+            }  
+        } else {
+           this.props.updateMainTokenAmount({
+                value : 0n
+            });                
+        }     
     }
 
     updateMainTokenInfo() {
@@ -371,30 +373,6 @@ class Farms extends React.Component {
     getFarmsTable() {
     	const t = this.props.t;
     	let that = this;
-        this.updateMainTokenInfo();                
-        this.updatePricelist();
-        let farmsList = networkApi.getDexFarms(this.props.pubkey);
-
-        farmsList.then(result => {
-            if (!result.lock) {
-                result.json().then(resultFarmsList => {
-                    console.log(resultFarmsList);
-                    this.farms = resultFarmsList;
-                        this.props.updateManagedFarmData({
-                            value : 1
-                        });                    
-                    if (this.props.expandedRow !== null) {
-                        this.props.updateManagedFarmData({
-                            value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
-                        });
-                        this.updateMainTokenAmount();                          
-                    }
-                    
-                })
-            }
-        }, () => {
-            this.farms = [];
-        })
 
     	return (
     		<>
@@ -693,7 +671,7 @@ class Farms extends React.Component {
 					<Card className="c-card-1 pt-4" id="farmsCard">
 					  <Card.Body>
 					    <Card.Text as="div">
-						    {this.props.connectionStatus ? this.getFarmsTable() : this.getTmpErrorElement() /*проверка на пустой массив списка ферм*/}				    
+						    {this.props.connectionStatus && this.farms !== undefined && this.farms.length > 0 ? this.getFarmsTable() : this.getTmpErrorElement() /*проверка на пустой массив списка ферм*/}				    
 					    </Card.Text>
 					  </Card.Body>
 					</Card>    			

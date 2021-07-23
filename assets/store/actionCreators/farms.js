@@ -9,6 +9,12 @@ const actionCreators = {
             payload : payload.value 
         };
     },
+    updateFarmsList (payload) {
+        return {
+            type : actions.UPDATE_FARMS_LIST,
+            payload : payload.value 
+        };
+    },    
     updateManagedFarmData (payload) {
         return {
             type : actions.UPDATE_MANAGED_FARM_DATA,

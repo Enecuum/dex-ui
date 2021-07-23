@@ -267,15 +267,11 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.farms,
-                    //pubkey            : state.root.pubkey,
-                    //mainToken         : state.root.mainToken,
+                    farmsList         : state.farms.farmsList,
                     mainTokenAmount   : state.farms.mainTokenAmount,
                     mainTokenDecimals : state.farms.mainTokenDecimals,
                     mainTokenFee      : state.farms.mainTokenFee,
                     pricelist         : state.farms.pricelist,                    
-                    //connectionStatus  : state.root.connectionStatus,
-                    balances          : state.root.balances,
-                    tokens            : state.root.tokens,
                     showStakeModal    : state.farms.showStakeModal,
                     managedFarmData   : state.farms.managedFarmData,
                     currentAction     : state.farms.currentAction,
@@ -446,6 +442,7 @@ function mapDispatchToProps(component) {
         case components.FARMS:
             return function (dispatch) {
                 return bindActionCreators({
+                    updateFarmsList         : farmsCreator.updateFarmsList,
                     updateExpandedRow       : farmsCreator.updateExpandedRow,
                     updateManagedFarmData   : farmsCreator.updateManagedFarmData,
                     updateSortType          : farmsCreator.updateSortType,

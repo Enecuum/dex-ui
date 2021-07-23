@@ -169,6 +169,10 @@
     "noConnection" : "Отсутствует соединение.",
     "clickConnect" : "Пожалуйста, нажмите кнопку \"Подключение\" в навигационном меню",
     "tokens" : "Токены",
+    "mainToken": "Основной токен",
+    "stakeToken": "Stake токен",
+    "farmStake": "Стейк фермы",
+    "actionCost" : "Стоимость операции",
     "errorMsg" : {
         "REQUIRED": "Обязательное значение",
         "TOO_LONG_STRING": "Слишком длинная строка. Должно быть не более {{strLength}} символов",
@@ -176,6 +180,7 @@
         "NOT_IN_RANGE": "Неверное значение. Должно быть в пределе от {{min}} до {{max}}",
         "FEE_WRONG_TYPE": "Неверный тип комиссии",        
         "INVALID_SYMBOLS_IN_DIGITAL_VALUE": "Недопустимые символы. Введненное значение не является целым или десятичным числом.",
+        "INVALID_SYMBOLS_IN_NAMED_DIGITAL_VALUE": "Недопустимые символы. Введненное значение \"{{name}}\" не является целым или десятичным числом.",
         "TOO_LONG_FRACTIONAL_PART": "Число знаков в десятичной части не должно превышать {{decimals}}",
         "EXEED_MAX_VALUE_IN_TOKENS": "Не должно превышать {{maxValue}} {{ticker}}",
         "INTEGER_REQUIRED": "Значение должно быть целым числом",
@@ -184,12 +189,14 @@
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть больше или равно, чем {{name}}",
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Недостаточно средств для выполнения операции {{operationName}}.",
-        "TOP_UP_BALANCE": "Пожалуйста, пополните баланс до {{value}} {{ticker}}."
+        "TOP_UP_BALANCE": "Пожалуйста, пополните баланс до {{value}} {{ticker}}.",
+        "NAMED_VALUE_UNDEFINED" : "Не удалось определить {{name}}"
     },
     "dropFarms" : {
-        "stakeLPTokens" : "Stake LP tokens",
-        "stake"         : "Stake",  
-        "getLPToken"    : "Get {{tokenName}} LP"      
+        "stakeLPTokens"   : "Stake LP tokens",
+        "unstakeLPTokens" : "Unstake LP tokens",
+        "stake"           : "Stake",  
+        "getLPToken"      : "Get {{tokenName}} LP"      
     },
     "max" : "MAX",
     "balance" : "Balance",

@@ -11,7 +11,12 @@ class StakeUnstakeValidationRules {
                         method: 'isSet',
                         args: {data: data.mainTokenAmount},
                         desiredResult: true,
-                        errMsg: 'REQUIRED'////Сообщение, что не определен главный токен
+                        errMsg: {
+                            msg: 'NAMED_VALUE_UNDEFINED',
+                            params: {
+                                name: this.t('mainToken')
+                            }
+                        }
                     } 
                 ]
             },
@@ -22,7 +27,12 @@ class StakeUnstakeValidationRules {
                         method: 'isSet',
                         args: {data: data.stakeTokenAmount},
                         desiredResult: true,
-                        errMsg: 'REQUIRED_STAKE'////Сообщение, что должен быть определен баланс стейк токена
+                       errMsg: {
+                            msg: 'NAMED_VALUE_UNDEFINED',
+                            params: {
+                                name: this.t('stakeToken')
+                            }
+                        }
                     }
                 ]
             },
@@ -33,7 +43,12 @@ class StakeUnstakeValidationRules {
                         method: 'isSet',
                         args: {data: data.initialStake},
                         desiredResult: true,
-                        errMsg: 'REQUIRED_INITIAL_STAKE'////Сообщение, что должен быть определен баланс стейк токена
+                        errMsg: {
+                            msg: 'NAMED_VALUE_UNDEFINED',
+                            params: {
+                                name: this.t('farmStake')
+                            }
+                        }
                     }
                 ]
             },
@@ -43,7 +58,12 @@ class StakeUnstakeValidationRules {
                         method: 'isSet',
                         args: {data: data.actionCost},
                         desiredResult: true,
-                        errMsg: 'REQUIRED_PRICE'////Сообщение, что нет информации о стоимости контракта
+                        errMsg: {
+                            msg: 'NAMED_VALUE_UNDEFINED',
+                            params: {
+                                name: this.t('actionCost')
+                            }
+                        }
                     },
                 ]
             },                           
@@ -53,13 +73,23 @@ class StakeUnstakeValidationRules {
                         method: 'isSet',
                         args: {data: data.stakeValue.numberValue},
                         desiredResult: true,
-                        errMsg: 'REQUIRED_STAKE'////Сообщение, что должен быть определен стейк
+                        errMsg: {
+                            msg: 'NAMED_VALUE_UNDEFINED',
+                            params: {
+                                name: this.t('dropFarms.stake')
+                            }
+                        }
                     },                    
                     {
                         method: 'execTheRegExp',
                         args: {str: data.stakeValue.numberValue, regExpObj: /^([0-9]*\.?([0-9]*)){1}$/},
                         desiredResult: true,
-                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'                                
+                        errMsg: {
+                            msg: 'INVALID_SYMBOLS_IN_NAMED_DIGITAL_VALUE',
+                            params: {
+                                name: this.t('dropFarms.stake')
+                            }
+                        }                               
                     }
                 ]
             }

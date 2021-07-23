@@ -40,6 +40,10 @@ class StakeModal extends React.Component {
               }
           ]
       };
+      this.actionTypesAliases = {
+        farm_increase_stake : 'stakeLPTokens',
+        farm_decrease_stake : 'unstakeLPTokens'
+      }
     }
 
     closeModal () {
@@ -153,7 +157,7 @@ class StakeModal extends React.Component {
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
                                 <span>
-                                    {t('dropFarms.stakeLPTokens')}
+                                    {t(this.props.currentAction !== undefined ? 'dropFarms.' + this.actionTypesAliases[this.props.currentAction] : 'dropFarms.stakeLPTokens')}
                                 </span>
                             </div>
                         </Modal.Title>

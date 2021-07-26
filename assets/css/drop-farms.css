@@ -225,6 +225,8 @@ main.aside-closed .dropfarms-controls-wrapper {
 
     .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 370px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .dropfarms-controls-wrapper .dropfarm-control .value-and-control {
@@ -253,6 +255,12 @@ main.aside-closed .dropfarms-controls-wrapper {
 }
 
 @media (min-width: 576px) and (max-width: 991.98px) {
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }  
+
     .dropfarms-controls-wrapper .dropfarm-control:first-child {
         margin-bottom: 20px;
     }
@@ -295,6 +303,12 @@ main.aside-closed .dropfarms-controls-wrapper {
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }  
+
     .dropfarms-controls-wrapper .dropfarm-control:first-child {
         margin-bottom: 20px;
     }
@@ -343,6 +357,11 @@ main.aside-closed .dropfarms-controls-wrapper {
     .dropfarms-controls-wrapper .dropfarm-control:first-child {
         margin-bottom: 20px;
     }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
 
     main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 722px;

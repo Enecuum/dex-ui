@@ -127,8 +127,8 @@
 
 .increase-decrease-btn  {
     height: 58px;
-    width: 70px;
-    flex-basis: 70px;
+/*    width: 70px;
+    flex-basis: 70px;*/
     font-size: 30px;
 }
 
@@ -201,3 +201,311 @@
     line-height: 0.7rem;
     box-shadow: none;
 }
+
+.dropfarms-controls-wrapper {
+    display: block;
+}
+
+main.aside-open .dropfarms-controls-wrapper {
+
+}
+
+main.aside-closed .dropfarms-controls-wrapper {
+
+}
+
+.value-and-control {
+/*d-flex align-items-center justify-content-between */
+}
+
+@media (max-width: 575.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 370px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .value-and-control {
+        display: block;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 447px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 311px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }        
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;                
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 20px;
+    }       
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 512px;
+    } 
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper {
+        display: flex;
+        -ms-flex-pack: justify!important;
+        justify-content: space-between!important;
+        -ms-flex-align: center!important;
+        align-items: center!important; 
+    }   
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+               
+    }
+    .dropfarm-control .stake-value {
+        margin-bottom: 15px; 
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }       
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 842px;
+    }    
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }       
+}
+
+@media (min-width: 1400px)  and (max-width: 1599.98px) {
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-right: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:last-child {
+        margin-left: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }     
+
+    .dropfarms-controls-wrapper {
+        display: flex;
+        -ms-flex-pack: distribute!important;
+        justify-content: space-around!important;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        width: 49%;
+        flex-basis: 49%;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 27px;
+    }
+}
+
+@media (min-width: 1600px)   and (max-width: 2099.98px) {
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-right: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:last-child {
+        margin-left: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }    
+
+    .dropfarms-controls-wrapper {
+        display: flex;
+        -ms-flex-pack: center!important;
+        justify-content: center!important;       
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        width: 49%;
+        flex-basis: 49%;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }
+}
+
+@media (min-width: 2100px) {
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;        
+    }    
+
+    .value-and-control {
+        display: flex;
+        -ms-flex-pack: justify!important;
+        justify-content: space-between!important;
+        -ms-flex-align: center!important;
+        align-items: center!important;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-right: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:last-child {
+        margin-left: 20px;
+    }
+
+    .dropfarms-controls-wrapper {
+        display: flex;
+        -ms-flex-pack: center!important;
+        justify-content: center!important;       
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        width: 700px;
+        flex-basis: 700px;
+    }
+
+
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }
+}
+

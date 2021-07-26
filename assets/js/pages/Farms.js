@@ -282,11 +282,11 @@ class Farms extends React.Component {
         let decreaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_close_stake));
         return (
             <>
-                <div className="d-flex align-items-center justify-content-between">
+                <div className="value-and-control">
                     <div className="stake-value">
                         {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), 10, 10)}
                     </div>
-                    <div className="d-flex align-items-center justify-content-between">
+                    <div className="d-flex align-items-center">
                         <Button
                             className="btn outline-border-color3-button btn btn-primary mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
                             disabled={!decreaseStakeActive}
@@ -595,8 +595,8 @@ class Farms extends React.Component {
 								            {this.props.expandedRow === farm.farm_id &&
 												<tr className="mb-3 farm-controls-wrapper">
 													<td colSpan="6" className="py-4">
-														<div className="row mx-0 px-0">
-															<div className="col-12 col-lg-6 col-xl-5 offset-xl-1 pr-xl-5">
+														<div className="dropfarms-controls-wrapper mx-0 px-0">
+															<div className="dropfarm-control">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
 																	<div className="d-flex align-items-center justify-content-start mb-2">
 																		{farm.earned !== undefined && farm.earned > 0 && 
@@ -608,13 +608,13 @@ class Farms extends React.Component {
 																			Earned
 																		</div>																	
 																	</div>
-																	<div className="d-flex align-items-center justify-content-between">
+																	<div className="value-and-control harvest-wrapper">
 																		<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
 																		{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
 																	</div>
 																</div>
 															</div>
-															<div className="col-12 col-lg-6 col-xl-5 pl-xl-5">
+															<div className="dropfarm-control">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
 																	{this.getStakeControl(farmTitle, !(farm.stake !== null && farm.stake > 0))}
 																</div>

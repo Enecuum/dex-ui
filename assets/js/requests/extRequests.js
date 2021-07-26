@@ -14,10 +14,10 @@ BigInt.prototype.toJSON = function () {
 };
 
 const requestType = {
-    CREATE       : 'create_pool',
-    SWAP         : 'swap',
-    ADD          : 'add_liquidity',
-    REMOVE       : 'remove_liquidity',
+    CREATE       : 'pool_create',
+    SWAP         : 'pool_swap',
+    ADD          : 'pool_add_liquidity',
+    REMOVE       : 'pool_remove_liquidity',
     ISSUE_TOKEN :  'create_token'
 };
 
@@ -114,6 +114,7 @@ class ExtRequests {
     };
 
     sendTx (pubKey, reqType, params) {
+        console.log(params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,

@@ -565,7 +565,7 @@ class Farms extends React.Component {
     </Accordion>
 </div>
             <div className="h2">
-                Farms
+                {t('navbars.left.farms')}
             </div>
 		    	<div className="drop-farms-table-wrapper">
 			    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	

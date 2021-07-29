@@ -7,10 +7,10 @@
         "left" : {
             "home" : "Домой",
             "exchange" : "Обмен",
-            "liquidity" : "Ликвидность",
+            "liquidity" : "Пулы",
             "ido" : "IDO",
-            "farms" : "Farms",
-            "pools" : "Пулы",
+            "farms" : "Space Harvest Farms",
+            "pools" : "Space Drop",
             "etm" : "ETM",
             "info" : "Информация",
             "topPairs" : "Торговые пары",
@@ -31,7 +31,7 @@
         },
         "switch" : {
             "mode0" : "Обмен",
-            "mode1" : "Ликвидность"
+            "mode1" : "Пулы"
         },
         "swapCard" : {
             "inputField" : {
@@ -45,7 +45,7 @@
                 "input1" : "В"
             },
             "liquidity" : {
-                "header" : "Ликвидность",
+                "header" : "Пулы",
                 "secondHeader" : "Добавить Ликвидность",
                 "description" : "Добавить ликвидность для получения LP токенов",
                 "addButton" : "Добавить",

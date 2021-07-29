@@ -56,7 +56,7 @@ main.aside-closed #aside {
 }
 
 #aside .menu-item:hover .aside-menu-text {
-    font-size: 30px;
+    font-size: 23px;
 }
 
 #aside .aside-toggle {
@@ -71,7 +71,7 @@ main.aside-closed #aside {
 #aside .aside-menu-text,
 #aside .exchange-rate,
 #aside .lang-switcher button {
-    font-size: 25px;
+    font-size: 23px;
 }
 
 #aside .lang-switcher .dropdown-toggle::after {

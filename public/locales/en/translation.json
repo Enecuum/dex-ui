@@ -9,8 +9,8 @@
             "exchange" : "Exchange",
             "liquidity" : "Liquidity",
             "ido" : "IDO",
-            "farms" : "Farms",
-            "pools" : "Pools",
+            "farms" : "Space Harvest Farms",
+            "pools" : "Space Drop",
             "etm" : "ETM",
             "info" : "Info",
             "topPairs" : "Top Pairs",
@@ -46,8 +46,8 @@
             "header" : "LP tokens in your wallet"
         },
         "switch" : {
-            "mode0" : "Exchange",
-            "mode1" : "Liquidity"
+            "mode0" : "Swap",
+            "mode1" : "Pool"
         },
         "swapCard" : {
             "inputField" : {
@@ -55,13 +55,13 @@
                 "selectToken" : "Select a token"
             },
             "exchange" : {
-                "header" : "Exchange",
+                "header" : "Swap",
                 "description" : "Trade tokens in an instant",
                 "input0" : "From",
                 "input1" : "To"
             },
             "liquidity" : {
-                "header" : "Liquidity",
+                "header" : "Pool",
                 "secondHeader" : "Add Liquidity",
                 "description" : "Add liquidity to receive LP tokens",
                 "addButton" : "Add liquidity",

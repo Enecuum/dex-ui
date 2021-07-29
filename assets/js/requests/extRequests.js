@@ -131,11 +131,11 @@ class ExtRequests {
         return trafficController.sendTransaction(data);
     };
 
-    farmAction (pubKey, reqType, params) {
+    farmAction (pubKey, reqType, farmActionCost, params) {
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
-            value : presets.network.nativeToken.fee,
+            value : farmActionCost.toString(),
             tokenHash : presets.network.nativeToken.hash,
             nonce : Math.floor(Math.random() * 1e15),
             data : ENQweb3lib.serialize({

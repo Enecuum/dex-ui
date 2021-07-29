@@ -207,10 +207,16 @@
         "NAMED_VALUE_UNDEFINED" : "{{name}} is undefined"
     },
     "dropFarms" : {
-        "stakeLPTokens"   : "Stake LP tokens",
-        "unstakeLPTokens" : "Unstake LP tokens",
-        "stake"           : "Stake",  
-        "getLPToken"      : "Get {{tokenName}} LP"      
+        "stakeNamedToken"              : "Stake {{tokenName}}",
+        "unstakeNamedToken"            : "Unstake {{tokenName}}",
+        "stakeLPTokens"                : "Stake LP tokens",
+        "unstakeLPTokens"              : "Unstake LP tokens",
+        "stake"                        : "Stake",
+        "unstake"                      : "Unstake",  
+        "getLPToken"                   : "Get {{tokenName}} LP",
+        "nBlocksLeft"                  : "{{blocksLeft}} blocks left",
+        "finished"                     : "Finished",
+        "pausedFarmStatusDescription"  : "Paused. Stake {{stakeTokenName}} to enable"
     },
     "confirm" : "Confirm",
     "max" : "MAX",

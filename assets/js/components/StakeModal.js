@@ -41,8 +41,8 @@ class StakeModal extends React.Component {
           ]
       };
       this.actionTypesAliases = {
-        farm_increase_stake : 'stakeLPTokens',
-        farm_decrease_stake : 'unstakeLPTokens'
+        farm_increase_stake : 'stakeNamedToken',
+        farm_decrease_stake : 'unstakeNamedToken'
       }
     }
 
@@ -125,7 +125,7 @@ class StakeModal extends React.Component {
           amount : commonDataSet.stakeValue.bigIntValue
         }
 
-        extRequests.farmAction(this.props.pubkey, this.props.currentAction, obj)        
+        extRequests.farmAction(this.props.pubkey, this.props.currentAction, commonDataSet.actionCost, obj)        
         .then(result => {
             console.log(obj)
             console.log('Success', result.hash);
@@ -139,6 +139,13 @@ class StakeModal extends React.Component {
             //this.props.changeWaitingStateType('rejected');
         });
       }
+    }
+
+    getModalTitle(t) {      
+      if (this.props.currentAction !== undefined && this.props.managedFarmData !== null && this.props.managedFarmData.stake_token_name !== undefined) {
+        return t('dropFarms.' + this.actionTypesAliases[this.props.currentAction], {tokenName: this.props.managedFarmData.stake_token_name});
+      } else        
+        return t('dropFarms.stakeLPTokens');
     }
 
     render() {
@@ -157,7 +164,7 @@ class StakeModal extends React.Component {
                         <Modal.Title id="example-custom-modal-styling-title">
                             <div className="d-flex align-items-center justify-content-start">
                                 <span>
-                                    {t(this.props.currentAction !== undefined ? 'dropFarms.' + this.actionTypesAliases[this.props.currentAction] : 'dropFarms.stakeLPTokens')}
+                                    {this.getModalTitle(t)}
                                 </span>
                             </div>
                         </Modal.Title>
@@ -165,10 +172,25 @@ class StakeModal extends React.Component {
                     <Modal.Body>
                         <div className="stake-input-area px-3 py-3 mb-4">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{t('dropFarms.stake')}</div>
+                                {this.props.currentAction === 'farm_increase_stake' &&
+                                  <div>{t('dropFarms.stake')}</div>
+                                }
+                                {this.props.currentAction === 'farm_decrease_stake' &&
+                                  <div>{t('dropFarms.unstake')}</div>
+                                }                                 
                                 <div className="d-flex flex-nowrap">
-                                    <div className="mr-2">{t('balance')}:</div>
-                                    <div>{(this.props.stakeData.stakeTokenAmount !== null && this.props.stakeData.stakeTokenAmount !== undefined) ? valueProcessor.usCommasBigIntDecimals(this.props.stakeData.stakeTokenAmount, this.props.managedFarmData.stake_token_decimals) + ' ' + this.props.managedFarmData.stake_token_name : '---'} </div>
+                                  {this.props.currentAction === 'farm_increase_stake' &&
+                                    <>
+                                      <div className="mr-2">{t('balance')}:</div>
+                                      <div>{(this.props.stakeData !== null && this.props.managedFarmData !== null && this.props.stakeData.stakeTokenAmount !== undefined) ? valueProcessor.usCommasBigIntDecimals(this.props.stakeData.stakeTokenAmount, this.props.managedFarmData.stake_token_decimals) + ' ' + this.props.managedFarmData.stake_token_name : '---'} </div>
+                                    </>
+                                  }
+                                  {this.props.currentAction === 'farm_decrease_stake' &&
+                                    <>
+                                      <div className="mr-2">{t('dropFarms.stake')}:</div>
+                                      <div>{(this.props.managedFarmData !== null && this.props.managedFarmData.stake !== undefined) ? valueProcessor.usCommasBigIntDecimals(this.props.managedFarmData.stake, this.props.managedFarmData.stake_token_decimals) + ' ' + this.props.managedFarmData.stake_token_name : '---'} </div>
+                                    </>
+                                  }                                    
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between">

@@ -127,9 +127,16 @@
 
 .increase-decrease-btn  {
     height: 58px;
-/*    width: 70px;
-    flex-basis: 70px;*/
     font-size: 30px;
+}
+
+
+.dropfarms-controls-wrapper .dropfarm-control .btn-primary.outline-border-color3-button.increase-decrease-btn:disabled,
+.dropfarms-controls-wrapper .dropfarm-control .btn-primary.outline-border-color3-button.increase-decrease-btn.disabled {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    opacity: .65;
 }
 
 .zero-flex {
@@ -367,7 +374,7 @@ main.aside-closed .dropfarms-controls-wrapper {
         max-width: 722px;
     }
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
-        max-width: 842px;
+        max-width: 681px;
     }    
 
     .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {

@@ -37,7 +37,6 @@ class Farms extends React.Component {
 
         this.circleUpd();
 
-
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
@@ -69,7 +68,8 @@ class Farms extends React.Component {
     circleUpd () {
         setInterval(() => {
             this.updateMainTokenInfo();
-            this.updateMainTokenAmount();        
+            this.updateMainTokenAmount();
+            this.updateStakeTokenBalance();        
             this.updatePricelist();
             this.updateFarms();
         }, 3000);
@@ -145,9 +145,15 @@ class Farms extends React.Component {
     updateExpandedRow(event) {
     	const target = event.target;        
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
-		this.props.updateExpandedRow({
-			value : farmId
-		});      
+        let managedFarm = this.farms.find(farm => farm.farm_id === farmId);
+
+        this.props.updateManagedFarmData({
+            value : managedFarm !== undefined ? managedFarm : null
+        });                       
+
+        this.props.updateExpandedRow({
+            value : farmId
+        });               
     }
 
     getTmpErrorElement() {
@@ -229,7 +235,7 @@ class Farms extends React.Component {
                 <div className="d-flex align-items-center justify-content-start mb-2">
                     {'placeholder' !== undefined && 1 > 0 && 
                         <div className="text-color3 mr-2">
-                            Stake
+                            My Stake
                         </div>
                     }
                     <div className="color-2">
@@ -254,7 +260,7 @@ class Farms extends React.Component {
 
     getStakeButton() {
         const t = this.props.t;
-        let active = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake));
+        let active = (this.props.managedFarmData.blocks_left > 0) && (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
         let attributes = {
             active : {
                 className : 'btn py-3 px-5 w-100 outline-border-color3-button'
@@ -271,14 +277,14 @@ class Farms extends React.Component {
                     disabled={!active}
                     onClick={(e) => this.showStakeModal('farm_increase_stake', e)}
                 >
-                    Stake LP
+                    {t('dropFarms.stakeNamedToken', {tokenName: this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : ''})}
                 </Button>}                
             </>
         )
     }
 
     getIncreaseDecreaseStakeButtons(){
-        let increaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake));
+        let increaseStakeActive = (this.props.managedFarmData.blocks_left > 0) && (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
         let decreaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_close_stake));
         return (
             <>
@@ -288,14 +294,14 @@ class Farms extends React.Component {
                     </div>
                     <div className="d-flex align-items-center">
                         <Button
-                            className="btn outline-border-color3-button btn btn-primary mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
+                            className="btn outline-border-color3-button mr-2 increase-decrease-btn zero-flex text-center" style={{paddingTop : '2px'}}
                             disabled={!decreaseStakeActive}
                             onClick={(e) => this.showStakeModal('farm_decrease_stake', e)}
                         >
                             -
                         </Button>
                         <Button
-                            className="btn outline-border-color3-button btn btn-primary increase-decrease-btn zero-flex text-center"
+                            className="btn outline-border-color3-button increase-decrease-btn zero-flex text-center"
                             disabled={!increaseStakeActive}
                             onClick={(e) => this.showStakeModal('farm_increase_stake', e)}                            
                         >
@@ -335,22 +341,8 @@ class Farms extends React.Component {
     	)
     }
 
-    showStakeModal (action) {
-
-        this.props.updateCurrentAction({
-            value : action
-        });
-
-        //if (action === 'farm_increase_stake') {
-            this.props.updateCurrentAction({
-                value : action
-            });
-
-            this.props.updateStakeData({
-                field : 'actionCost',
-                value : BigInt(this.props.mainTokenFee) + BigInt(this.props.pricelist[action])
-            });
-
+    updateStakeTokenBalance() {
+        if (this.props.managedFarmData !== null) {
             let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.managedFarmData.stake_token_hash);
 
             if (stakeTokenBalance !== undefined && BigInt(stakeTokenBalance.amount) > 0n) {
@@ -363,11 +355,40 @@ class Farms extends React.Component {
                     field : 'stakeTokenAmount',
                     value : 0n
                 });
-            }
-            this.props.updShowStakeModal({
-                value : true
-            });            
-        //}      
+            }             
+        }       
+    }
+
+    showStakeModal (action) {
+
+        this.props.updateCurrentAction({
+            value : action
+        });
+
+        this.props.updateStakeData({
+            field : 'actionCost',
+            value : BigInt(this.props.mainTokenFee) + BigInt(this.props.pricelist[action])
+        });
+
+        this.updateStakeTokenBalance();
+
+        this.props.updShowStakeModal({
+            value : true
+        });
+    }
+
+    getFarmStatus(farm) {
+        let status = '---';
+        if (farm !== undefined) {
+            const t = this.props.t;
+            if (farm.blocks_left === null)
+                status = t('dropFarms.pausedFarmStatusDescription', {stakeTokenName : farm.stake_token_name});            
+            else if (farm.blocks_left <= 0)
+                status = t('dropFarms.finished');
+            else if (farm.blocks_left > 0)
+                status = t('dropFarms.nBlocksLeft', {blocksLeft : farm.blocks_left});         
+        }
+        return status;
     }
 
     getFarmsTable() {
@@ -551,15 +572,22 @@ class Farms extends React.Component {
 						<Table hover variant="dark" style={{tableLayout : 'auto'}}>
 							<tbody>
 						        {this.farms.map(( farm, index ) => {
-                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
+                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
 						        	return (
 							          	<>
 								            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
-												<td className="text-nowrap">
-													<div className="cell-wrapper d-flex align-items-center justify-content-center">
-														{farmTitle}
+												<td className="text-nowrap">                                                    
+													<div className="cell-wrapper text-center">
+                                                        <div className="text-color4">Stake-Earn</div>
+														<div>{farmTitle}</div>
 													</div>
 												</td>
+                                                <td className="text-nowrap">                                                    
+                                                    <div className="cell-wrapper">
+                                                        <div className="text-color4">Status</div>
+                                                        <div>{this.getFarmStatus(farm)}</div>
+                                                    </div>
+                                                </td>                                                
 												<td>
 													<div className="cell-wrapper">
 														<div className="text-color4">Earned</div>
@@ -580,7 +608,7 @@ class Farms extends React.Component {
 												</td>
 												<td>
 													<div className="cell-wrapper">
-														<div className="text-color4">Reward</div>
+														<div className="text-color4">Reward per block</div>
 														<div>{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), 10, 10)}</div>
 													</div>	
 												</td>
@@ -594,7 +622,7 @@ class Farms extends React.Component {
 								            </tr>
 								            {this.props.expandedRow === farm.farm_id &&
 												<tr className="mb-3 farm-controls-wrapper">
-													<td colSpan="6" className="py-4">
+													<td colSpan="7" className="py-4">
 														<div className="dropfarms-controls-wrapper mx-0 px-0">
 															<div className="dropfarm-control">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
@@ -616,7 +644,7 @@ class Farms extends React.Component {
 															</div>
 															<div className="dropfarm-control">
 																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																	{this.getStakeControl(farmTitle, !(farm.stake !== null && farm.stake > 0))}
+																	{this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
 																</div>
 															</div>
 														</div>

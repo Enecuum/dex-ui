@@ -193,13 +193,19 @@
         "NAMED_VALUE_UNDEFINED" : "Не удалось определить {{name}}"
     },
     "dropFarms" : {
-        "stakeLPTokens"   : "Stake LP tokens",
-        "unstakeLPTokens" : "Unstake LP tokens",
-        "stake"           : "Stake",  
-        "getLPToken"      : "Get {{tokenName}} LP"      
+        "stakeNamedToken"              : "Stake {{tokenName}}",
+        "unstakeNamedToken"            : "Unstake {{tokenName}}",
+        "stakeLPTokens"                : "Stake LP tokens",
+        "unstakeLPTokens"              : "Unstake LP tokens",
+        "stake"                        : "Stake",
+        "unstake"                      : "Unstake",  
+        "getLPToken"                   : "Get {{tokenName}} LP",
+        "nBlocksLeft"                  : "Осталось блоков: {{blocksLeft}}",
+        "finished"                     : "Работа завершена",
+        "pausedFarmStatusDescription"  : "Пауза. Для возобновления работы сделайте стейк {{stakeTokenName}}"      
     },
     "max" : "MAX",
-    "balance" : "Balance",
-    "cancel" : "Cancel",
+    "balance" : "Баланс",
+    "cancel" : "Отменить",
     "checkingMainTokenBalance" : "Проверка баланса нативного токена..."
 }

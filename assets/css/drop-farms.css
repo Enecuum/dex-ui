@@ -331,15 +331,18 @@
     }
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 512px;
+    }
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
     } 
 
-    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper {
+/*    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper {
         display: flex;
         -ms-flex-pack: justify!important;
         justify-content: space-between!important;
         -ms-flex-align: center!important;
         align-items: center!important; 
-    }   
+    }  */ 
 
     .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
         width: 100px;
@@ -382,7 +385,9 @@
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 681px;
     }    
-
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    } 
     .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
         width: 150px;
         flex-basis: 150px;
@@ -421,7 +426,9 @@
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 681px;
     }    
-
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    } 
     .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
         width: 150px;
         flex-basis: 150px;
@@ -459,7 +466,11 @@
     }
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
         max-width: 681px;
-    }    
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }
 
     .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
         width: 150px;
@@ -546,6 +557,17 @@
         height: auto;
     }
 
+    .long-value {
+        text-overflow: ellipsis;
+        overflow: visible;
+        max-width: 100%;
+        min-width: 0px;        
+    }
+
+    .farm-status {
+        white-space: normal;
+        max-width: 100%;
+    }
     table.table-to-cards tr {
         display: flex;
         flex-direction: column;

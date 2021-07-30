@@ -6,8 +6,8 @@
     "navbars" : {
         "left" : {
             "home" : "Home",
-            "exchange" : "Exchange",
-            "liquidity" : "Liquidity",
+            "exchange" : "Swap",
+            "liquidity" : "Pool",
             "ido" : "IDO",
             "farms" : "Space Harvest Farms",
             "pools" : "Space Drop",

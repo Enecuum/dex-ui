@@ -11,11 +11,16 @@
 #farmsCard .drop-farms-table-wrapper .table {
     margin-bottom: 0px;
     background-color: transparent;
+    height: 1px;
+}
+#farmsCard .drop-farms-table-wrapper .table tr {
+    height: 1px;
 }
 
 #farmsCard .drop-farms-table-wrapper th,
 #farmsCard .drop-farms-table-wrapper td {
     white-space: nowrap;
+    height: 100%;
 }
 
 #farmsCard .drop-farms-table-wrapper .table thead th {
@@ -30,7 +35,8 @@
 
 .drop-farms-table-wrapper .table-dark td .cell-wrapper, .drop-farms-table-wrapper .table-dark th .cell-wrapper, .drop-farms-table-wrapper .table-dark thead th .cell-wrapper {
     border-width: 2px;
-    height: 80px;
+    /*height: 80px;*/
+    height: 100%;
     width: 100%;
     border-top: 2px solid var(--color2);
 /*    border-bottom: 2px solid var(--color2);*/
@@ -213,16 +219,16 @@
     display: block;
 }
 
-main.aside-open .dropfarms-controls-wrapper {
-
+.farm-status {
+    white-space: normal;
+    max-width: 200px;
 }
 
-main.aside-closed .dropfarms-controls-wrapper {
-
-}
-
-.value-and-control {
-/*d-flex align-items-center justify-content-between */
+.long-value {
+    text-overflow: ellipsis;
+    overflow: auto;
+    max-width: 150px;
+    min-width: 100px;
 }
 
 @media (max-width: 575.98px) {
@@ -400,76 +406,70 @@ main.aside-closed .dropfarms-controls-wrapper {
 }
 
 @media (min-width: 1400px)  and (max-width: 1599.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 681px;
+    }    
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
     .dropfarm-control .earned-value,
     .dropfarm-control .stake-value {
         overflow: hidden;
         margin-bottom: 15px;         
     }
 
-    .dropfarms-controls-wrapper .dropfarm-control:first-child {
-        margin-right: 20px;
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control:last-child {
-        margin-left: 20px;
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
-        width: 100px;
-        flex-basis: 100px;
-    }     
-
-    .dropfarms-controls-wrapper {
-        display: flex;
-        -ms-flex-pack: distribute!important;
-        justify-content: space-around!important;        
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control {
-        width: 49%;
-        flex-basis: 49%;
-    }
-
     main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
     main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
-        font-size: 25px;
+        font-size: 30px;
     }        
 
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
-        font-size: 27px;
-    }
+        font-size: 25px;
+    } 
 }
 
 @media (min-width: 1600px)   and (max-width: 2099.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 681px;
+    }    
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
     .dropfarm-control .earned-value,
     .dropfarm-control .stake-value {
         overflow: hidden;
         margin-bottom: 15px;         
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control:first-child {
-        margin-right: 20px;
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control:last-child {
-        margin-left: 20px;
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
-        width: 100px;
-        flex-basis: 100px;
-    }    
-
-    .dropfarms-controls-wrapper {
-        display: flex;
-        -ms-flex-pack: center!important;
-        justify-content: center!important;       
-    }
-
-    .dropfarms-controls-wrapper .dropfarm-control {
-        width: 49%;
-        flex-basis: 49%;
     }
 
     main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
@@ -479,8 +479,8 @@ main.aside-closed .dropfarms-controls-wrapper {
 
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
     main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
-        font-size: 30px;
-    }
+        font-size: 25px;
+    } 
 }
 
 @media (min-width: 2100px) {
@@ -535,3 +535,48 @@ main.aside-closed .dropfarms-controls-wrapper {
     }
 }
 
+@media (max-width: 1800px) {
+
+    #farmsCard {
+        max-width: 500px;
+        margin: auto;
+    }
+
+    #farmsCard .drop-farms-table-wrapper .table, #farmsCard .drop-farms-table-wrapper .table tr, #farmsCard .drop-farms-table-wrapper .table tr td {
+        height: auto;
+    }
+
+    table.table-to-cards tr {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td .cell-wrapper {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: none;
+        border-bottom: none;
+        border-radius: 0px;
+        border-left-style: solid;
+        border-left: 2px solid var(--color2); 
+        border-right-style: solid;
+        border-right: 2px solid var(--color2);
+/*        height: 80px; */        
+    }
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td:first-child .cell-wrapper {
+        padding-top: 25px;
+        border-top-right-radius: var(--border-radius2);
+        border-top-left-radius: var(--border-radius2);
+        border-top-style: solid;
+        border-top: 2px solid var(--color2);        
+    }
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td:last-child .cell-wrapper {
+        border-bottom-right-radius: var(--border-radius2);
+        border-bottom-left-radius: var(--border-radius2);
+        border-bottom-style: solid;
+        border-bottom: 2px solid var(--color2);
+        padding-bottom: 25px;        
+    }
+
+
+}

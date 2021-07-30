@@ -464,7 +464,6 @@ class SwapCard extends React.Component {
         let res;
         if (valueObj.text !== undefined)
             if (valueObj.text !== '') {
-                console.log(valueObj.text)
                 res = valueObj.text //res = utils.removeEndZeros(valueObj.text);
             }
         else

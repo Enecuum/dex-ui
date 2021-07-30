@@ -565,99 +565,97 @@ class Farms extends React.Component {
       </Card>          
     </Accordion>
 </div>
-            <div className="h2">
+            <div className="h2 mb-5">
                 {t('navbars.left.farms')}
             </div>
-		    	<div className="drop-farms-table-wrapper">
-			    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	
-						<Table hover variant="dark" style={{tableLayout : 'auto'}}>
-							<tbody>
-						        {this.farms.map(( farm, index ) => {
-                                    let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
-						        	return (
-							          	<>
-								            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
-												<td className="text-nowrap">                                                    
-													<div className="cell-wrapper text-center">
-                                                        <div className="text-color4">{t('dropFarms.stake')}-{t('dropFarms.earn')}</div>
-														<div>{farmTitle}</div>
-													</div>
-												</td>
-                                                <td className="text-nowrap">                                                    
-                                                    <div className="cell-wrapper">
-                                                        <div className="text-color4">{t('status')}</div>
-                                                        <div>{this.getFarmStatus(farm)}</div>
-                                                    </div>
-                                                </td>                                                
-												<td>
-													<div className="cell-wrapper">
-														<div className="text-color4">{t('dropFarms.earned')}</div>
-														<div>{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
-													</div>	
-												</td>
-												<td>
-													<div className="cell-wrapper">
-														<div className="text-color4">{t('dropFarms.apy')}</div>
-														<div>{valueProcessor.usCommasBigIntDecimals((farm.apy !== undefined ? farm.apy : '---'), 2, 2)}%</div>
-													</div>	
-												</td>
-												<td>
-													<div className="cell-wrapper">
-														<div className="text-color4">{t('dropFarms.liquidity')}</div>
-														<div>${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
-													</div>	
-												</td>
-												<td>
-													<div className="cell-wrapper">
-														<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
-														<div>{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), 10, 10)}</div>
-													</div>	
-												</td>
+		    	<div className="drop-farms-table-wrapper">			    		
+					<Table hover variant="dark" className="table-to-cards">
+						<tbody>
+					        {this.farms.map(( farm, index ) => {
+                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
+					        	return (
+						          	<>
+							            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
+											<td className="text-nowrap">                                                    
+												<div className="cell-wrapper text-center">
+                                                    <div className="text-color4">{t('dropFarms.stake')}-{t('dropFarms.earn')}</div>
+													<div>{farmTitle}</div>
+												</div>
+											</td>
+                                            <td className="">                                                    
+                                                <div className="cell-wrapper">
+                                                    <div className="text-color4">{t('status')}</div>
+                                                    <div className="farm-status">{this.getFarmStatus(farm)}</div>
+                                                </div>
+                                            </td>                                                
+											<td>
+												<div className="cell-wrapper">
+													<div className="text-color4">{t('dropFarms.earned')}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
+												</div>	
+											</td>
+											<td>
+												<div className="cell-wrapper">
+													<div className="text-color4">{t('dropFarms.apy')}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.apy !== undefined ? farm.apy : '---'), 2, 2)}%</div>
+												</div>	
+											</td>
+											<td>
+												<div className="cell-wrapper">
+													<div className="text-color4">{t('dropFarms.liquidity')}</div>
+													<div className="long-value">${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
+												</div>	
+											</td>
+											<td>
+												<div className="cell-wrapper">
+													<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), 10, 10)}</div>
+												</div>	
+											</td>
 
-												<td>
-													<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.updateExpandedRow.bind(that)}>
-														<div className="mr-2">{t('dropFarms.details')}</div>
-														<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
-													</div>	
-												</td>										
-								            </tr>
-								            {this.props.expandedRow === farm.farm_id &&
-												<tr className="mb-3 farm-controls-wrapper">
-													<td colSpan="7" className="py-4">
-														<div className="dropfarms-controls-wrapper mx-0 px-0">
-															<div className="dropfarm-control">
-																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																	<div className="d-flex align-items-center justify-content-start mb-2">
-																		{farm.earned !== undefined && farm.earned > 0 && 
-																			<div className="text-color3 mr-2">
-																				{farm.reward_token_name}
-																			</div>
-																		}
-																		<div className="color-2">
-																			{t('dropFarms.earned')}
-																		</div>																	
-																	</div>
-																	<div className="value-and-control harvest-wrapper">
-																		<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
-																		{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
-																	</div>
+											<td>
+												<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.updateExpandedRow.bind(that)}>
+													<div className="mr-2">{t('dropFarms.details')}</div>
+													<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
+												</div>	
+											</td>										
+							            </tr>
+							            {this.props.expandedRow === farm.farm_id &&
+											<tr className="mb-3 farm-controls-wrapper">
+												<td colSpan="7" className="py-4">
+													<div className="dropfarms-controls-wrapper mx-0 px-0">
+														<div className="dropfarm-control">
+															<div className="border-solid-2 c-border-radius2 border-color2 p-4">
+																<div className="d-flex align-items-center justify-content-start mb-2">
+																	{farm.earned !== undefined && farm.earned > 0 && 
+																		<div className="text-color3 mr-2">
+																			{farm.reward_token_name}
+																		</div>
+																	}
+																	<div className="color-2">
+																		{t('dropFarms.earned')}
+																	</div>																	
 																</div>
-															</div>
-															<div className="dropfarm-control">
-																<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																	{this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
+																<div className="value-and-control harvest-wrapper">
+																	<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
+																	{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
 																</div>
 															</div>
 														</div>
-													</td>
-												</tr>
-								    		}
-							            </>
-						         	);
-						        })}
-						  	</tbody>
-						</Table>
-					</SimpleBar>
+														<div className="dropfarm-control">
+															<div className="border-solid-2 c-border-radius2 border-color2 p-4">
+																{this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
+															</div>
+														</div>
+													</div>
+												</td>
+											</tr>
+							    		}
+						            </>
+					         	);
+					        })}
+					  	</tbody>
+					</Table>					
 				</div>
 			</>					
     	)

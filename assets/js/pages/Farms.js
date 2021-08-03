@@ -106,7 +106,7 @@ class Farms extends React.Component {
     }
 
     executeHarvest() {
-        extRequests.farmAction(this.props.pubkey, 'farm_get_reward', {farm_id  : this.props.expandedRow})        
+        extRequests.farmAction(this.props.pubkey, 'farm_get_reward', this.props.mainTokenFee + BigInt(this.props.pricelist.farm_get_reward), {farm_id  : this.props.expandedRow})        
         .then(result => {
             console.log('Success', result.hash);
             //this.closeModal();

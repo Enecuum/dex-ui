@@ -24,6 +24,7 @@
                 "clue" : "Get Enecuum browser extension"
             },
             "accountShortInfo" : {
+                "header" : "Account",
                 "txListInternals" : {
                     "swap" : {
                         "completePhrase" : "Swapped {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"

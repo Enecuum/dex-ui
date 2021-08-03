@@ -188,7 +188,7 @@ class Root extends React.Component {
     };
 
     filterEnexTxs (pendingArray) {
-        let enexTypes = ['create_pool', 'swap', 'add_liquidity', 'remove_liquidity'];
+        let enexTypes = ['pool_create', 'pool_swap', 'pool_add_liquidity', 'pool_remove_liquidity'];
         for (let i in pendingArray) {
             let data = objectFromData.parse(pendingArray[i].data);
             if (enexTypes.indexOf(data.type) === -1)

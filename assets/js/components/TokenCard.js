@@ -17,6 +17,10 @@ class TokenCard extends React.Component {
         this.updTokens();
     };
 
+    componentDidMount () {
+        document.getElementById("token-filter-field").focus()
+    }
+
     updTokens() {
         this.props.assignTokenList(this.makeList());
     };

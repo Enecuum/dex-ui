@@ -39,7 +39,7 @@ class AccountShortInfo extends React.Component {
     renderHeader () {
         return (
             <>
-                <strong className="mr-auto text-white">Account</strong> {/* TODO - i18 translation */}
+                <strong className="mr-auto text-white">{this.props.t('navbars.top.accountShortInfo.header')}</strong>
             </>
         )
     }

@@ -5,7 +5,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 import { withTranslation } from "react-i18next";
 
 import Socials from './Socials';
-import swapApi from '../requests/swapApi';
+import utils from '../utils/swapUtils';
 
 import img from '../../img/ENEXlogo.png';
 import '../../css/font-style.css';
@@ -105,8 +105,7 @@ class Aside extends React.Component {
         fetch(coinPriceUrl)
         .then(async res => {
             res = await res.json();
-            res = res[coinName].usd;
-            this.props.updExchangeRate(res.toFixed(3));
+            this.props.updExchangeRate(res[coinName].usd);
         },
         err => {
             console.log(err);
@@ -159,7 +158,7 @@ class Aside extends React.Component {
                         <div className='exchange-rate d-flex justify-content-between'>
                             <img src={img} width='30px' height='30px'/>
                             <div>
-                                ${this.props.exchangeRate}
+                                ${utils.removeEndZeros(this.props.exchangeRate, 5)}
                             </div>
                         </div>
                         <div className="dropup lang-switcher d-flex align-items-center justify-content-between">

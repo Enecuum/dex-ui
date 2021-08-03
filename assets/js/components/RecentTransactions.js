@@ -104,6 +104,7 @@ class RecentTransactions extends React.Component {
                 promises = [];
                 for (let result of results) {
                     try {
+                        console.log(result)
                         promises.push(
                             result.value.json()
                                 .then(res => {
@@ -113,6 +114,7 @@ class RecentTransactions extends React.Component {
                                         text: this.generateTxText(res.data)
                                     })
                                 })
+                                .catch(err => {/* pending transaction */})
                         )
                     } catch (err) { /* pending transaction */ }
                 }

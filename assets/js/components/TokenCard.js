@@ -17,6 +17,10 @@ class TokenCard extends React.Component {
         this.updTokens();
     };
 
+    componentDidMount () {
+        document.getElementById("token-filter-field").focus()
+    }
+
     updTokens() {
         this.props.assignTokenList(this.makeList());
     };
@@ -125,7 +129,7 @@ class TokenCard extends React.Component {
                                 onChange={this.changeList.bind(this)}
                                 className='text-input-1 form-control'
                                 type='text'
-                                placeholder={t('trade.tokenCard.search')} />
+                                placeholder={t('trade.tokenCard.search')}/>
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between mb-4">

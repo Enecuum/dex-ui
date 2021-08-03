@@ -111,53 +111,15 @@ class Root extends React.Component {
         let promises = [];
         let indexes = [];
         let iCounter = 0;
-        // for (let i in subset) {
-        //     if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
-        //         tokens[i].decimals = this.props.tokens[i].decimals;
-        //         tokens[i].total_supply = this.props.tokens[i].total_supply;
-        //         continue;
-        //     }
-        //     indexes[iCounter++] = i;
-        //     promises.push(swapApi.getTokenInfo(tokens[i].hash));
-        // }
+
         subset.forEach(elem => {
             let isInTokensArr = tokens.find(token => token.hash === elem.hash);
             if (isInTokensArr) {
                 let j = tokens.indexOf(isInTokensArr)
                 if (j !== -1) {
 
-                    // if (this.props.tokens[j] && this.props.tokens[j].decimals !== undefined) {
-                    //     tokens[j].decimals = this.props.tokens[j].decimals;
-                    //     tokens[j].total_supply = this.props.tokens[j].total_supply;                   
-                    // }
-                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
-                    // if (isInRootProps) {
-
-                    //     indexes[iCounter++] = j;
-                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash)); 
-                    // }
-
-                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
-                    // if (!isInRootProps) {
-                    //     indexes[iCounter++] = j;
-                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                          
-                    // } else {
-                    //     this.props.tokens.forEach(function(item, i, arr) {
-                    //         console.log(item)
-                    //         // if (item.hash === elem.hash && (arr[i].decimals === undefined || arr[i].total_supply === undefined)) {
-                    //         //     indexes[iCounter++] = j;
-                    //         //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
-                    //         // }
-                    //     });                          
-                    // }
-                            // this.props.tokens.forEach(function(item, i, arr) {
-                            //     if (arr[i] === elem.hash || (arr[i].decimals === undefined && arr[i].total_supply === undefined)) {
-                            //         indexes[iCounter++] = j;
-                            //         promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
-                            //     }
-                            // });
                     let inRootProps = this.props.tokens.find(token => token.hash === elem.hash);
-                    //console.log(inRootProps)
+
                     if (!inRootProps) {
                         indexes[iCounter++] = j;
                         promises.push(swapApi.getTokenInfo(tokens[j].hash));                          
@@ -192,7 +154,6 @@ class Root extends React.Component {
             }
             Promise.all(promises)
             .then(() => {
-                console.log(tokens)
                 this.props.assignAllTokens(tokens);
             });
         });

@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
-
+import Form from 'react-bootstrap/Form';
 import utils from '../utils/swapUtils';
 import Tooltip from '../elements/Tooltip';
 
@@ -108,6 +108,7 @@ class TokenCard extends React.Component {
                 aria-labelledby="example-custom-modal-styling-title"
                 onHide={this.closeTokenList.bind(this)}
                 centered
+                animation={false}
               >
                 <Modal.Header closeButton className="pb-0">
                   <Modal.Title id="example-custom-modal-styling-title">
@@ -121,11 +122,13 @@ class TokenCard extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="mb-4">
-                        <input  id='token-filter-field'
-                                onChange={this.changeList.bind(this)}
-                                className='text-input-1 form-control'
-                                type='text'
-                                placeholder={t('trade.tokenCard.search')} />
+                        <Form.Control
+                            id='token-filter-field'
+                            onChange={this.changeList.bind(this)}
+                            className='text-input-1 form-control'
+                            type='text'
+                            placeholder={t('trade.tokenCard.search')}
+                            autoFocus/>
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between mb-4">

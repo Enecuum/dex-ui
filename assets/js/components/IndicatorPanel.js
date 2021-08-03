@@ -76,7 +76,6 @@ class IndicatorPanel extends React.Component {
     };
 
     updNetwork () {
-
         extRequests.getProvider(true)
         .then(res => {
             if (!res.lock) {

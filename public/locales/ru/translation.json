@@ -22,6 +22,23 @@
             "connectionCard" : {
                 "header" : "Подключить кошелёк",
                 "clue" : "Получить расширение Enecuum"
+            },
+            "accountShortInfo" : {
+                "header" : "Аккаунт",
+                "txListInternals" : {
+                    "swap" : {
+                        "completePhrase" : "Обмен {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
+                    },
+                    "addLiquidity" : {
+                        "completePhrase" : "Добавление ликвидности {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
+                    },
+                    "createPool" : {
+                        "completePhrase" : "Создание пула {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+                    },
+                    "removeLiquidity" : {
+                        "completePhrase" : "Удаление ликвидности {{value0}} {{ticker0}}"
+                    }
+                }
             }
         }
     },

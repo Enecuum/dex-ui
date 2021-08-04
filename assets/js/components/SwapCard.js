@@ -465,10 +465,12 @@ class SwapCard extends React.Component {
         if (valueObj.text !== undefined)
             if (valueObj.text !== '') {
                 res = valueObj.text //res = utils.removeEndZeros(valueObj.text);
+            } else {
+                res = ''
             }
         else
-            res = '';
-        return res;
+            res = ''
+        return res
     }
 
     showPoolShare () {

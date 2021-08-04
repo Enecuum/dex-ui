@@ -41,12 +41,15 @@ function fieldStore(state, mode, field, changingProperty) {
 };
 
 function swapFields(state, mode) {
-    let field0 = state[mode].field0;
+    let field0 = {...state[mode].field1}
+    field0.id = state[mode].field0.id
+    let field1 = {...state[mode].field0}
+    field1.id = state[mode].field1.id
     return swapCardStore(state, {
         ...convertIntoMode(mode, {
             ...state[mode],
-            field0: state[mode].field1,
-            field1: field0
+            field0: field0,
+            field1: field1
         })
     });
 };

@@ -19,6 +19,14 @@ class NetworkApi {
         );
     };
 
+    getDexFarms (farmer_id = '', url = this.url) {        
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/get_dex_farms?farmer_id=${farmer_id}`,
+            {
+                method : 'GET'
+            }
+        );
+    };    
+
     // ---------------------------------------------------------------------
 };
 

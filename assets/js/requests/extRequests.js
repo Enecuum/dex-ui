@@ -14,10 +14,10 @@ BigInt.prototype.toJSON = function () {
 };
 
 const requestType = {
-    CREATE       : 'create_pool',
-    SWAP         : 'swap',
-    ADD          : 'add_liquidity',
-    REMOVE       : 'remove_liquidity',
+    CREATE       : 'pool_create',
+    SWAP         : 'pool_swap',
+    ADD          : 'pool_add_liquidity',
+    REMOVE       : 'pool_remove_liquidity',
     ISSUE_TOKEN :  'create_token'
 };
 
@@ -114,6 +114,7 @@ class ExtRequests {
     };
 
     sendTx (pubKey, reqType, params) {
+        console.log(params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
@@ -130,8 +131,24 @@ class ExtRequests {
         return trafficController.sendTransaction(data);
     };
 
+    farmAction (pubKey, reqType, farmActionCost, params) {
+        let data = {
+            from : pubKey,
+            to : presets.network.genesisPubKey,
+            value : farmActionCost.toString(),
+            tokenHash : presets.network.nativeToken.hash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : ENQweb3lib.serialize({
+                type : reqType,
+                parameters : params
+            })
+        };
+        // console.log(data);      
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+    };
+
     issueToken (pubKey, issueTokenCost, params) {
-        console.log(pubKey, issueTokenCost, params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,

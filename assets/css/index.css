@@ -23,6 +23,7 @@
     --color5 : #435163; /*темный текст в инпуте карточки выбора токена rgb(67, 81, 99)*/
     --color6 : #242D3C; /*граница строк в таблице топ пар rgb(36, 45, 60)*/
     --color7 : #3b4455; /*цвет поля выбора пар*/
+    --color8 : rgb(44, 55, 75);
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
@@ -37,6 +38,9 @@
     --border-radius2: 3px;
     --aside-width-open: 320px;
     --aside-width-closed: 70px;
+    --font-face-regular: "Ska Sans Regular";
+    --font-face-condensed: "Ska Sans Condensed";
+    --font-face-black: "Ska Sans Black";
 }
 
 body {
@@ -46,7 +50,7 @@ body {
 }
 
 body, p, .btn {
-    font-family: 'Ska Sans Regular', sans-serif;
+    font-family: var(--font-face-regular), sans-serif;
 }
 
 main {
@@ -74,10 +78,14 @@ main.aside-closed #contentWrapper {
     border-radius: var(--border-radius1);
 }
 
+.border-solid-1 {
+    border-style: solid;
+    border-width: 1px;
+}
+
 .border-solid-2 {
     border-style: solid;
-    border-width: 2px; 
-
+    border-width: 2px;
 }
 
 .c-border-radius2 {
@@ -316,7 +324,18 @@ right: 0;
     right: 0;    
     background-color: var(--bg-color-1)!important;
 }
+.unselectable-text {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
 
 .toast-header {
     margin-top: 5px;
+}
+
+.err-msg {
+    color: #e03266;
+    font-size: 13px;
 }

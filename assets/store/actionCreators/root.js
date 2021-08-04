@@ -59,6 +59,13 @@ const actionCreators = {
         };
     },
 
+    assignMainToken(hash) {
+        return {
+            type : actions.ASSIGN_MAIN_TOKEN,
+            value : hash
+        };
+    },    
+
     updActiveLocale(locale) {
         return {
             type : actions.UPD_ACTIVE_LOCALE,

@@ -9,8 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import i18n from "./utils/i18n";
 import { withTranslation,I18nextProvider } from "react-i18next";
 
-import { Navbar, Aside, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation,
-         WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, SwapCard } from './components/entry';
+import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms } from './components/entry';
 
 import BlankPage from './pages/blankPage';
 import swapApi from './requests/swapApi';
@@ -51,9 +50,9 @@ class Root extends React.Component {
     // --------------------------------------- upd dex data
 
     updDexData (pubkey) {
-        this.updBalances(pubkey);
-        this.updTokens();
+        this.updBalances(pubkey);        
         this.updPools();
+        this.updTokens();
     };
 
     intervalUpdDexData () {
@@ -84,24 +83,98 @@ class Root extends React.Component {
         .then(res => {
             if (!res.lock)
                 res.json()
-                .then(tokens => {
-                    this.addOptionalTokenInfo(tokens);
+                .then(tokens => {                    
+                    let tokenHashArr = [];
+                    this.props.balances.forEach(balance => {
+                        tokenHashArr.push({hash : balance.token})
+                    });
+                    this.props.pairs.forEach(pair => {
+                        const keys = Object.keys(pair);
+                        for (const key of keys) {
+                            let hash = undefined;               
+                            if (key === 'token_0' || key === 'token_1')
+                                hash = pair[key].hash;
+                            else if (key === 'lt')
+                                hash = pair[key];
+                            if (hash !== undefined) {
+                                let isInArr = tokenHashArr.find(elem => elem.hash === hash)
+                                if (!isInArr)
+                                    tokenHashArr.push({hash : hash})                                
+                            }                                 
+                        }                        
+                    });                    
+                    this.addOptionalTokenInfo(tokens, tokenHashArr);
                 });
         });
     };
-    addOptionalTokenInfo (tokens) {
+    addOptionalTokenInfo (tokens, subset) {
         let promises = [];
         let indexes = [];
         let iCounter = 0;
-        for (let i in tokens) {
-            if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
-                tokens[i].decimals = this.props.tokens[i].decimals;
-                tokens[i].total_supply = this.props.tokens[i].total_supply;
-                continue;
+        // for (let i in subset) {
+        //     if (this.props.tokens[i] && this.props.tokens[i].decimals !== undefined) {
+        //         tokens[i].decimals = this.props.tokens[i].decimals;
+        //         tokens[i].total_supply = this.props.tokens[i].total_supply;
+        //         continue;
+        //     }
+        //     indexes[iCounter++] = i;
+        //     promises.push(swapApi.getTokenInfo(tokens[i].hash));
+        // }
+        subset.forEach(elem => {
+            let isInTokensArr = tokens.find(token => token.hash === elem.hash);
+            if (isInTokensArr) {
+                let j = tokens.indexOf(isInTokensArr)
+                if (j !== -1) {
+
+                    // if (this.props.tokens[j] && this.props.tokens[j].decimals !== undefined) {
+                    //     tokens[j].decimals = this.props.tokens[j].decimals;
+                    //     tokens[j].total_supply = this.props.tokens[j].total_supply;                   
+                    // }
+                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
+                    // if (isInRootProps) {
+
+                    //     indexes[iCounter++] = j;
+                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash)); 
+                    // }
+
+                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
+                    // if (!isInRootProps) {
+                    //     indexes[iCounter++] = j;
+                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                          
+                    // } else {
+                    //     this.props.tokens.forEach(function(item, i, arr) {
+                    //         console.log(item)
+                    //         // if (item.hash === elem.hash && (arr[i].decimals === undefined || arr[i].total_supply === undefined)) {
+                    //         //     indexes[iCounter++] = j;
+                    //         //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
+                    //         // }
+                    //     });                          
+                    // }
+                            // this.props.tokens.forEach(function(item, i, arr) {
+                            //     if (arr[i] === elem.hash || (arr[i].decimals === undefined && arr[i].total_supply === undefined)) {
+                            //         indexes[iCounter++] = j;
+                            //         promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
+                            //     }
+                            // });
+                    let inRootProps = this.props.tokens.find(token => token.hash === elem.hash);
+                    //console.log(inRootProps)
+                    if (!inRootProps) {
+                        indexes[iCounter++] = j;
+                        promises.push(swapApi.getTokenInfo(tokens[j].hash));                          
+                    } else {
+                        if(inRootProps.decimals === undefined || inRootProps.total_supply === undefined) {
+                            indexes[iCounter++] = j;
+                            promises.push(swapApi.getTokenInfo(inRootProps.hash));                            
+                        } else {
+                            tokens[j].decimals = inRootProps.decimals;
+                            tokens[j].total_supply = inRootProps.total_supply;                            
+                        }
+                    }        
+  
+                
+                }
             }
-            indexes[iCounter++] = i;
-            promises.push(swapApi.getTokenInfo(tokens[i].hash));
-        }
+        });        
         Promise.allSettled(promises)
         .then(results => {
             promises = [];
@@ -119,6 +192,7 @@ class Root extends React.Component {
             }
             Promise.all(promises)
             .then(() => {
+                // console.log(tokens)
                 this.props.assignAllTokens(tokens);
             });
         });
@@ -153,7 +227,7 @@ class Root extends React.Component {
     };
 
     filterEnexTxs (pendingArray) {
-        let enexTypes = ['create_pool', 'swap', 'add_liquidity', 'remove_liquidity'];
+        let enexTypes = ['pool_create', 'pool_swap', 'pool_add_liquidity', 'pool_remove_liquidity'];
         for (let i in pendingArray) {
             let data = objectFromData.parse(pendingArray[i].data);
             if (enexTypes.indexOf(data.type) === -1)
@@ -264,7 +338,13 @@ class Root extends React.Component {
                     <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <TopPairs  useSuspense={false}/>
                     </div>                    
-                );    
+                );
+            case 'farms':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <Farms useSuspense={false}/>
+                    </div>                    
+                );                    
             default:
                 return (
                     <BlankPage text="Coming soon"/>

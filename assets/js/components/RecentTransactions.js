@@ -33,8 +33,8 @@ class RecentTransactions extends React.Component {
     generateTxText (strData) {
         let objData = objectFromData.parse(strData)
         let descriptionPhrase = "", interpolateParams = {}
-
-        if (objData.type === "swap") {
+        console.log(objData)
+        if (objData.type === "pool_swap") {
             descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.swap.completePhrase'
             let poolObj = swapUtils.searchSwap(this.props.pairs, [
                 {hash : objData.parameters.asset_in},
@@ -61,7 +61,7 @@ class RecentTransactions extends React.Component {
                 value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(amount_out.value, amount_out.decimals)),
                 ticker1 : tokenObj_1.ticker
             }
-        } else if (objData.type === "create_pool") {
+        } else if (objData.type === "pool_create") {
             descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.createPool.completePhrase'
             interpolateParams = {
                 value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
@@ -69,7 +69,7 @@ class RecentTransactions extends React.Component {
                 value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
                 ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
             }
-        } else if (objData.type === "add_liquidity") {
+        } else if (objData.type === "pool_add_liquidity") {
             descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.addLiquidity.completePhrase'
             interpolateParams = {
                 value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
@@ -77,7 +77,7 @@ class RecentTransactions extends React.Component {
                 value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
                 ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
             }
-        } else if (objData.type === "remove_liquidity") {
+        } else if (objData.type === "pool_remove_liquidity") {
             descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.removeLiquidity.completePhrase'
             interpolateParams = {
                 value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount)),
@@ -104,6 +104,7 @@ class RecentTransactions extends React.Component {
                 promises = [];
                 for (let result of results) {
                     try {
+                        console.log(result)
                         promises.push(
                             result.value.json()
                                 .then(res => {
@@ -113,6 +114,7 @@ class RecentTransactions extends React.Component {
                                         text: this.generateTxText(res.data)
                                     })
                                 })
+                                .catch(err => {/* pending transaction */})
                         )
                     } catch (err) { /* pending transaction */ }
                 }
@@ -145,7 +147,7 @@ class RecentTransactions extends React.Component {
             else
                 yPadding = (i === "0") ? "pt-3" : (i === String(recentTxList.length-1)) ? "pb-3" : ""
 
-            if (recentTxList[i].text) {
+            if (recentTxList[i].text !== undefined) {
                 let iconNumber = (recentTxList[i].status == 3) ? 5 : 7
                 txsForRender.push((
                     <p className={`${yPadding} px-3 d-flex justify-content-between`} key={i}>

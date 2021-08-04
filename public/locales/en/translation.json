@@ -6,11 +6,11 @@
     "navbars" : {
         "left" : {
             "home" : "Home",
-            "exchange" : "Exchange",
-            "liquidity" : "Liquidity",
+            "exchange" : "Swap",
+            "liquidity" : "Pool",
             "ido" : "IDO",
-            "farms" : "Farms",
-            "pools" : "Pools",
+            "farms" : "Space Harvest Farms",
+            "pools" : "Space Drop",
             "etm" : "ETM",
             "info" : "Info",
             "topPairs" : "Top Pairs",
@@ -24,6 +24,7 @@
                 "clue" : "Get Enecuum browser extension"
             },
             "accountShortInfo" : {
+                "header" : "Account",
                 "txListInternals" : {
                     "swap" : {
                         "completePhrase" : "Swapped {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
@@ -46,8 +47,8 @@
             "header" : "LP tokens in your wallet"
         },
         "switch" : {
-            "mode0" : "Exchange",
-            "mode1" : "Liquidity"
+            "mode0" : "Swap",
+            "mode1" : "Pool"
         },
         "swapCard" : {
             "inputField" : {
@@ -55,13 +56,13 @@
                 "selectToken" : "Select a token"
             },
             "exchange" : {
-                "header" : "Exchange",
+                "header" : "Swap",
                 "description" : "Trade tokens in an instant",
                 "input0" : "From",
                 "input1" : "To"
             },
             "liquidity" : {
-                "header" : "Liquidity",
+                "header" : "Pool",
                 "secondHeader" : "Add Liquidity",
                 "description" : "Add liquidity to receive LP tokens",
                 "addButton" : "Add liquidity",
@@ -183,6 +184,10 @@
     "noConnection" : "No connection.",
     "clickConnect" : "Please click the \"Connect\" button in the navigation menu",
     "tokens" : "Tokens",
+    "mainToken": "Main token",
+    "stakeToken": "Stake token",
+    "farmStake" : "Stake on farm",
+    "actionCost" : "Action's cost",
     "errorMsg" : {
         "REQUIRED":"Required",
         "TOO_LONG_STRING":"Sting too long. Must be {{strLength}} characters or less",
@@ -190,6 +195,7 @@
         "NOT_IN_RANGE":"Incorrect value. Must be in the range of {{min}} to {{max}}",
         "FEE_WRONG_TYPE":"Wrong type of fee",        
         "INVALID_SYMBOLS_IN_DIGITAL_VALUE":"Invalid symbols. Value must be integer or decimal value.",
+        "INVALID_SYMBOLS_IN_NAMED_DIGITAL_VALUE": "Invalid symbols in \"{{name}}\".  Value must be integer or decimal value.",
         "TOO_LONG_FRACTIONAL_PART":"Fractional part too long. Must be {{decimals}} digits or less.",
         "EXEED_MAX_VALUE_IN_TOKENS":"Value must not exceed {{maxValue}} {{ticker}}",
         "INTEGER_REQUIRED":"Integer required",
@@ -198,7 +204,33 @@
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE":"The value must be greater or equal than {{name}}",
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",
-        "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}."
+        "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}.",
+        "NAMED_VALUE_UNDEFINED" : "{{name}} is undefined"
     },
+    "dropFarms" : {
+        "stakeNamedToken"              : "Stake {{tokenName}}",
+        "unstakeNamedToken"            : "Unstake {{tokenName}}",
+        "stakeLPTokens"                : "Stake LP tokens",
+        "unstakeLPTokens"              : "Unstake LP tokens",
+        "stake"                        : "Stake",
+        "myStake"                      : "My stake",
+        "unstake"                      : "Unstake",  
+        "getLPToken"                   : "Get {{tokenName}} LP",
+        "nBlocksLeft"                  : "{{blocksLeft}} blocks left",
+        "finished"                     : "Finished",
+        "pausedFarmStatusDescription"  : "Paused. Stake {{stakeTokenName}} to enable",
+        "liquidity"                    : "Liquidity",
+        "earn"                         : "Earn",
+        "earned"                       : "Earned",
+        "apy"                          : "APY",
+        "rewardPerBlock"               : "Reward per block",
+        "details"                      : "Details",
+        "harvest"                      : "Harvest"
+    },
+    "confirm" : "Confirm",
+    "status" : "Status",
+    "max" : "MAX",
+    "balance" : "Balance",
+    "cancel" : "Cancel",
     "checkingMainTokenBalance" : "Сhecking the balance of the native token..."
 }

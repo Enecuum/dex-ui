@@ -15,7 +15,8 @@ const actionPack =  {
         UPD_PAIRS               : 'UPD_PAIRS',
         ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
         UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH',
-        UPD_RECENT_TXS          : 'UPD_RECENT_TXS'
+        UPD_RECENT_TXS          : 'UPD_RECENT_TXS',
+        ASSIGN_MAIN_TOKEN       : 'ASSIGN_MAIN_TOKEN'
     },
     swapCard : {
         SWAP_FIELDS                         : 'SWAP_FIELDS',
@@ -60,6 +61,19 @@ const actionPack =  {
         UPDATE_MAIN_TOKEN_TICKER       : 'UPDATE_MAIN_TOKEN_TICKER',
         UPDATE_MAIN_TOKEN_DECIMALS     : 'UPDATE_MAIN_TOKEN_DECIMALS',
         RESET_STORE                    : 'RESET_STORE'
+    },
+    farms : {
+        UPDATE_EXPANDED_ROW         : 'UPDATE_EXPANDED_ROW',
+        UPDATE_MANAGED_FARM_DATA    : 'UPDATE_MANAGED_FARM_DATA',
+        UPDATE_SORT_TYPE            : 'UPDATE_SORT_TYPE',
+        UPDATE_SHOW_STAKE_MODAL     : 'UPDATE_SHOW_STAKE_MODAL',
+        UPDATE_MAIN_TOKEN_AMOUNT    : 'UPDATE_MAIN_TOKEN_AMOUNT',
+        UPDATE_MAIN_TOKEN_DECIMALS  : 'UPDATE_MAIN_TOKEN_DECIMALS',
+        UPDATE_MAIN_TOKEN_FEE       : 'UPDATE_MAIN_TOKEN_FEE',
+        UPDATE_PRICELIST            : 'UPDATE_PRICELIST',
+        UPDATE_CURRENT_ACTION       : 'UPDATE_CURRENT_ACTION',
+        UPDATE_STAKE_DATA           : 'UPDATE_STAKE_DATA',
+        UPDATE_FARMS_LIST           : 'UPDATE_FARMS_LIST'
     }
 };
 

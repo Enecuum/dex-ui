@@ -76,10 +76,14 @@ class IndicatorPanel extends React.Component {
     };
 
     updNetwork () {
+
         extRequests.getProvider(true)
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
                 this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
+                ENQWeb.Enq.provider = res.net; 
+                this.props.assignMainToken(ENQWeb.Enq.ticker)
+            }    
         },
         err => console.log('cannot make getProvider request'));
     };

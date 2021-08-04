@@ -463,8 +463,9 @@ class SwapCard extends React.Component {
         // make rules for showing numbers acording to national standarts
         let res;
         if (valueObj.text !== undefined)
-            if (valueObj.text !== '')
-                res = utils.removeEndZeros(valueObj.text);
+            if (valueObj.text !== '') {
+                res = valueObj.text //res = utils.removeEndZeros(valueObj.text);
+            }
         else
             res = '';
         return res;
@@ -763,7 +764,7 @@ class SwapCard extends React.Component {
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (subtraction1.value < 0)
+        if (subtraction1.value < 0 && this.props.menuItem !== 'exchange')
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

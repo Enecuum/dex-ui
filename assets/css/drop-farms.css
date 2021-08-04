@@ -1,0 +1,604 @@
+.c-card-1 {
+    background-color: var(--bg-color-1);
+    box-shadow: var(--box-shadow2);
+    border-radius: var(--border-radius1);
+}
+
+#farmsCard .drop-farms-table-wrapper td {
+     background-color: var(--color8);
+}
+
+#farmsCard .drop-farms-table-wrapper .table {
+    margin-bottom: 0px;
+    background-color: transparent;
+    height: 1px;
+}
+#farmsCard .drop-farms-table-wrapper .table tr {
+    height: 1px;
+}
+
+#farmsCard .drop-farms-table-wrapper th,
+#farmsCard .drop-farms-table-wrapper td {
+    white-space: nowrap;
+    height: 100%;
+}
+
+#farmsCard .drop-farms-table-wrapper .table thead th {
+    border-top: none;
+}
+
+.drop-farms-table-wrapper .table-dark td, .drop-farms-table-wrapper .table-dark th, .drop-farms-table-wrapper .table-dark thead th {
+    padding: 0px;
+    border-top: none;
+    min-height: 30px;
+}
+
+.drop-farms-table-wrapper .table-dark td .cell-wrapper, .drop-farms-table-wrapper .table-dark th .cell-wrapper, .drop-farms-table-wrapper .table-dark thead th .cell-wrapper {
+    border-width: 2px;
+    /*height: 80px;*/
+    height: 100%;
+    width: 100%;
+    border-top: 2px solid var(--color2);
+/*    border-bottom: 2px solid var(--color2);*/
+    padding: .75rem;
+}
+
+.drop-farms-table-wrapper .table-dark [data-expanded-row="true"] td  .cell-wrapper {
+    border-bottom: 2px solid var(--color2);    
+}
+
+.drop-farms-table-wrapper .table-dark tr td:first-child .cell-wrapper {
+    border-top-left-radius: var(--border-radius2);
+    border-bottom-left-radius: var(--border-radius2);
+    border-left-style: solid;
+    border-left: 2px solid var(--color2);
+}
+
+.drop-farms-table-wrapper .table-dark tr td:last-child .cell-wrapper {
+    border-top-right-radius: var(--border-radius2);
+    border-bottom-right-radius: var(--border-radius2);
+    border-right-style: solid;
+    border-right: 2px solid var(--color2);
+}
+
+.drop-farms-table-wrapper .table-dark tr:last-child .cell-wrapper {
+    border-bottom: 2px solid var(--color2);
+}
+
+#farmsCard .drop-farms-table-wrapper .details-control:hover {
+    cursor: pointer;
+    color: var(--color3);
+}
+
+#farmsCard .drop-farms-table-wrapper .details-control span.icon-Icon26 {
+    font-size: 9px;
+}
+
+#farmsCard .simplebar-track.simplebar-horizontal {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+#farmsCard .simplebar-track.simplebar-horizontal  .simplebar-scrollbar:before {
+    background: var(--color4);
+}
+
+#farmsCard .simplebar-track.simplebar-horizontal  .simplebar-scrollbar.simplebar-visible:before {
+    opacity: 1;
+}
+
+.farm-controls-wrapper td {
+  background-color: transparent!important;
+}
+
+.table-dark.table-hover tbody tr.farm-controls-wrapper:hover {
+    background-color: transparent;
+}
+
+.color-2 {
+    color: var(--color2);
+}
+
+.earned-value, .stake-value {
+    font-family: var(--font-face-black), sans-serif;
+    color: var(--color1);
+    font-size: 30px;
+}
+
+.outline-border-color2-button {
+    color: var(--color2);
+    border: 1px solid var(--color2)!important;
+    border-radius: var(--border-radius2);
+    background-color: transparent!important;
+}
+
+.outline-border-color2-button:hover, .outline-border-color2-button:focus, .outline-border-color2-button:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color2)!important;
+    background-color: var(--color2)!important;
+    color: var(--color1);
+}
+
+.outline-border-color3-button {
+    color: var(--color3);
+    border: 1px solid var(--color3);
+    border-radius: var(--border-radius2);
+    background-color: transparent;
+}
+
+.outline-border-color3-button:hover, .outline-border-color3-button:focus, .outline-border-color3-button:not(:disabled):not(.disabled):active {
+    border: 1px solid var(--color3);
+    background-color: var(--color3);
+    color: var(--color1);    
+}
+
+.increase-decrease-btn  {
+    height: 58px;
+    font-size: 30px;
+}
+
+
+.dropfarms-controls-wrapper .dropfarm-control .btn-primary.outline-border-color3-button.increase-decrease-btn:disabled,
+.dropfarms-controls-wrapper .dropfarm-control .btn-primary.outline-border-color3-button.increase-decrease-btn.disabled {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    opacity: .65;
+}
+
+.zero-flex {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.stake-input-area {
+    border-radius: var(--border-radius2);
+    background: var(--color6);
+}
+
+.set-max {
+    opacity: 0.9;
+}
+
+.set-max:hover {
+    opacity: 1;
+}
+
+.text-color4-link {
+    color: var(--color4);    
+}
+
+.text-color4-link:hover {
+    color: var(--color3);
+    text-decoration: none;
+}
+
+.sort-by button {
+    background-color: transparent;
+    border-color: var(--color2);
+    border-radius: var(--border-radius2);
+}
+
+.sort-by button.dropdown-toggle::after {
+    margin-left: 50px;
+}
+
+.sort-by:hover button, .sort-by.show .btn-success:not(:disabled):not(.disabled).active, .sort-by.show .btn-success:not(:disabled):not(.disabled):active, .sort-by.show>.btn-success.dropdown-toggle, .sort-by .btn-success.focus, .sort-by .btn-success:focus {
+    border-color: var(--color4);
+    background-color: var(--color2);
+    box-shadow: none;
+}
+
+.sort-by .dropdown-menu {
+    background-color: var(--color8);
+    box-shadow: 0px 0px 38px 0px rgba(26, 31, 46, 0.004);
+    border-radius: var(--border-radius2);
+}
+
+.sort-by .dropdown-menu .dropdown-item {
+    color: var(--color1);
+}
+
+.sort-by .dropdown-menu .dropdown-item:focus, .sort-by .dropdown-menu .dropdown-item:hover {
+    background-color: var(--color2);
+    color: var(--color1);
+}
+
+.stake-input, .stake-input.form-control:focus {
+    padding: 0px;
+    background: transparent;
+    color: var(--color1);
+    opacity: 1;
+    border: none;
+    font-size: 17px;
+    height: auto;
+    line-height: 0.7rem;
+    box-shadow: none;
+}
+
+.dropfarms-controls-wrapper {
+    display: block;
+}
+
+.farm-status {
+    white-space: normal;
+    max-width: 200px;
+}
+
+.long-value {
+    text-overflow: ellipsis;
+    overflow: auto;
+    max-width: 150px;
+    min-width: 100px;
+}
+
+@media (max-width: 575.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 370px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .value-and-control {
+        display: block;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }  
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 447px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 311px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }        
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 50%;
+        flex-basis: 50%;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;                
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 20px;
+    }       
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }  
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 512px;
+    }
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    } 
+
+/*    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper {
+        display: flex;
+        -ms-flex-pack: justify!important;
+        justify-content: space-between!important;
+        -ms-flex-align: center!important;
+        align-items: center!important; 
+    }  */ 
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+               
+    }
+    .dropfarm-control .stake-value {
+        margin-bottom: 15px; 
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }       
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 681px;
+    }    
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    } 
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    }       
+}
+
+@media (min-width: 1400px)  and (max-width: 1599.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 681px;
+    }    
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    } 
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    } 
+}
+
+@media (min-width: 1600px)   and (max-width: 2099.98px) {
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-bottom: 20px;
+    }
+
+    .dropfarm-control {
+        margin-left: auto;
+        margin-right: auto;
+    }    
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 722px;
+    }
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control {
+        max-width: 681px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .harvest-wrapper button {
+        width: 100%;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 150px;
+        flex-basis: 150px;
+    }
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;
+        margin-bottom: 15px;         
+    }
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 25px;
+    } 
+}
+
+@media (min-width: 2100px) {
+
+    .dropfarm-control .earned-value,
+    .dropfarm-control .stake-value {
+        overflow: hidden;        
+    }    
+
+    .value-and-control {
+        display: flex;
+        -ms-flex-pack: justify!important;
+        justify-content: space-between!important;
+        -ms-flex-align: center!important;
+        align-items: center!important;        
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control .increase-decrease-btn {
+        width: 100px;
+        flex-basis: 100px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:first-child {
+        margin-right: 20px;
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control:last-child {
+        margin-left: 20px;
+    }
+
+    .dropfarms-controls-wrapper {
+        display: flex;
+        -ms-flex-pack: center!important;
+        justify-content: center!important;       
+    }
+
+    .dropfarms-controls-wrapper .dropfarm-control {
+        width: 700px;
+        flex-basis: 700px;
+    }
+
+
+
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-closed .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }        
+
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .earned-value,
+    main.aside-open .dropfarms-controls-wrapper .dropfarm-control .stake-value {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 1800px) {
+
+    #farmsCard {
+        max-width: 500px;
+        margin: auto;
+    }
+
+    #farmsCard .drop-farms-table-wrapper .table, #farmsCard .drop-farms-table-wrapper .table tr, #farmsCard .drop-farms-table-wrapper .table tr td {
+        height: auto;
+    }
+
+    .long-value {
+        text-overflow: ellipsis;
+        overflow: visible;
+        max-width: 100%;
+        min-width: 0px;        
+    }
+
+    .farm-status {
+        white-space: normal;
+        max-width: 100%;
+    }
+    table.table-to-cards tr {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td .cell-wrapper {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: none;
+        border-bottom: none;
+        border-radius: 0px;
+        border-left-style: solid;
+        border-left: 2px solid var(--color2); 
+        border-right-style: solid;
+        border-right: 2px solid var(--color2);
+/*        height: 80px; */        
+    }
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td:first-child .cell-wrapper {
+        padding-top: 25px;
+        border-top-right-radius: var(--border-radius2);
+        border-top-left-radius: var(--border-radius2);
+        border-top-style: solid;
+        border-top: 2px solid var(--color2);        
+    }
+    .drop-farms-table-wrapper table.table-to-cards.table-dark td:last-child .cell-wrapper {
+        border-bottom-right-radius: var(--border-radius2);
+        border-bottom-left-radius: var(--border-radius2);
+        border-bottom-style: solid;
+        border-bottom: 2px solid var(--color2);
+        padding-bottom: 25px;        
+    }
+
+
+}

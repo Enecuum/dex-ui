@@ -8,14 +8,15 @@ function pairExists (pair) {
     return !(pair.lt === undefined || pair.pool_fee === undefined);
 }
 
-function removeEndZeros (value) {
-    if (value === '0')
-        return '0';
-    if ((/\.[0-9]*0+$/).test(value)) {
+function removeEndZeros (value, strLength=10) {
+    value = String(value)
+    if ((/\.[0-9]*0+$/).test(value) && value !== '0') {
         value = value.replace(/0*$/, '');
         if (value[value.length-1] === '.')
             value = value.slice(0, value.length-1);
     }
+    if (value.length > strLength)
+        value = value.substring(0, strLength)
     return value;
 }
 

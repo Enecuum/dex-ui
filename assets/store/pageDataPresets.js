@@ -4,11 +4,13 @@ const presets =  {
         nativeToken   : {
             ticker : 'BIT',
             hash   : '0000000000000000000000000000000000000000000000000000000000000001',
+            //hash : '1111111111111111111111111111111111111111111111111111111111111111',
             fee    : 1000000000
         },
         defaultNet : {
             name : 'BIT',
-            url  : 'http://bit.enecuum.com/'
+            //url  : 'http://bit-dev.enecuum.com/',
+            url  : 'https://bit.enecuum.com/'
         }
     },
 

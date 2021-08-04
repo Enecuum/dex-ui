@@ -6,27 +6,29 @@ import tokenCardCreator from './actionCreators/tokenCard';
 import asideCreator from './actionCreators/aside';
 import indicatorPanelCreator from './actionCreators/indicatorPanel';
 import etmCreator from './actionCreators/etm';
+import farmsCreator from './actionCreators/farms';
 
 const components = {
-    ROOT                    : 0x0,
-    SWAP_CARD               : 0x1,
-    SWITCH                  : 0x2,
-    TOKEN_CARD              : 0x3,
-    ASIDE                   : 0x4,
-    CONNECTION_SERVICE      : 0x5,
-    NAVBAR                  : 0x6,
-    CONNECT                 : 0x7,
-    INDICATOR_PANEL         : 0x8,
-    CONFIRM_SUPPLY          : 0x9,
-    WAITING_CONFIRMATION    : 0xA,
-    LIQUIDITY_TOKEN_ZONE    : 0xB,
-    LP_WALLET_INFO          : 0xC,
-    TOP_PAIRS               : 0xD,
-    ETM                     : 0xE,
-    CONFIRM_ISSUE_TOKEN     : 0xF,
-    ACCOUNT_SHORT_INFO      : 0x10,
-    RECENT_TXS_LIST         : 0x11,
-    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12
+    ROOT                             : 0x0,
+    SWAP_CARD                        : 0x1,
+    SWITCH                           : 0x2,
+    TOKEN_CARD                       : 0x3,
+    ASIDE                            : 0x4,
+    CONNECTION_SERVICE               : 0x5,
+    NAVBAR                           : 0x6,
+    CONNECT                          : 0x7,
+    INDICATOR_PANEL                  : 0x8,
+    CONFIRM_SUPPLY                   : 0x9,
+    WAITING_CONFIRMATION             : 0xA,
+    LIQUIDITY_TOKEN_ZONE             : 0xB,
+    LP_WALLET_INFO                   : 0xC,
+    TOP_PAIRS                        : 0xD,
+    ETM                              : 0xE,
+    CONFIRM_ISSUE_TOKEN              : 0xF,
+    ACCOUNT_SHORT_INFO               : 0x10,
+    RECENT_TXS_LIST                  : 0x11,
+    WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12,
+    FARMS                            : 0x13
 };
 
 function mapStoreToProps(component) {
@@ -39,7 +41,8 @@ function mapStoreToProps(component) {
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
                     removeLiquidity : state.swapCard.removeLiquidity,
-                    topPairs        : state.topPairs
+                    topPairs        : state.topPairs,
+                    mainToken       : state.mainToken
                 }
             };
         case components.SWAP_CARD:
@@ -111,11 +114,13 @@ function mapStoreToProps(component) {
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
+                    ...state.root,
                     ...state.indicatorPanel,
                     pubkey                  : state.root.pubkey,
                     pendingIndicator        : state.root.pendingIndicator,
                     balances                : state.root.balances,
-                    net                     : state.root.net
+                    net                     : state.root.net,
+                    coinAmount              : state.indicatorPanel.coinAmount
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -236,6 +241,8 @@ function mapStoreToProps(component) {
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };
             };
+
+                       
         case components.ACCOUNT_SHORT_INFO:
             return function (state) {
                 return {
@@ -255,6 +262,29 @@ function mapStoreToProps(component) {
                     net                   : state.root.net
                 }
             }
+        case components.FARMS:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.farms,
+                    farmsList         : state.farms.farmsList,
+                    mainTokenAmount   : state.farms.mainTokenAmount,
+                    mainTokenDecimals : state.farms.mainTokenDecimals,
+                    mainTokenFee      : state.farms.mainTokenFee,
+                    pricelist         : state.farms.pricelist,                    
+                    showStakeModal    : state.farms.showStakeModal,
+                    managedFarmData   : state.farms.managedFarmData,
+                    currentAction     : state.farms.currentAction,
+                    stakeData         : {
+                        actionCost         : state.farms.stakeData.actionCost,
+                        stakeValue         : state.farms.stakeData.stakeValue,  
+                        stakeTxStatus      : state.farms.stakeData.stakeTxStatus,
+                        stakeValid         : state.farms.stakeData.stakeValid,
+                        msgData            : state.farms.stakeData.msgData,
+                        stakeTokenAmount   : state.farms.stakeData.stakeTokenAmount
+                    }
+                };
+            }; 
         default:
             return undefined;
 
@@ -267,7 +297,7 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...rootCreator,
-                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch)
+                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch)                    
                 }, dispatch);
             };
         case components.SWAP_CARD:
@@ -326,7 +356,8 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     ...indicatorPanelCreator,
                     assignPubkey    : rootCreator.assignPubkey,
-                    changeNetwork   : rootCreator.changeNetwork
+                    changeNetwork   : rootCreator.changeNetwork,
+                    assignMainToken : rootCreator.assignMainToken
                 }, dispatch);
             };
         case components.CONFIRM_SUPPLY:
@@ -394,7 +425,6 @@ function mapDispatchToProps(component) {
                     resetStore                  : etmCreator.resetStore
                 }, dispatch); 
             };
-
         case components.ACCOUNT_SHORT_INFO:
             return function (dispatch) {
                 return bindActionCreators({
@@ -409,7 +439,23 @@ function mapDispatchToProps(component) {
                     updRecentTxs : rootCreator.updRecentTxs
                 }, dispatch);
             };
-
+        case components.FARMS:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updateFarmsList         : farmsCreator.updateFarmsList,
+                    updateExpandedRow       : farmsCreator.updateExpandedRow,
+                    updateManagedFarmData   : farmsCreator.updateManagedFarmData,
+                    updateSortType          : farmsCreator.updateSortType,
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updShowStakeModal       : farmsCreator.updShowStakeModal,
+                    updateMainTokenAmount   : farmsCreator.updateMainTokenAmount,
+                    updateMainTokenDecimals : farmsCreator.updateMainTokenDecimals,
+                    updateMainTokenFee      : farmsCreator.updateMainTokenFee,
+                    updatePricelist         : farmsCreator.updatePricelist,
+                    updateCurrentAction     : farmsCreator.updateCurrentAction,
+                    updateStakeData         : farmsCreator.updateStakeData
+                }, dispatch); 
+            };            
         default:
             return undefined;
     }

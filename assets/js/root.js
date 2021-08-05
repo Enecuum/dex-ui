@@ -28,6 +28,9 @@ class Root extends React.Component {
         this.intervalUpdDexData();
         this.circleBalanceUpd();
         this.updPendingSpinner();
+        if (window.location.pathname === '/swap') {
+            this.props.changeMenuItem('exchange');            
+        }
     };
 
     convertPools (pools) {

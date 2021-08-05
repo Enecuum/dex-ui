@@ -297,14 +297,17 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...rootCreator,
-                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch)                    
+                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
+                    changeMenuItem  : rootCreator.changeMenuItem                    
                 }, dispatch);
             };
         case components.SWAP_CARD:
             return function (dispatch) {
                 return bindActionCreators({
                     ...swapCardCreator,
-                    updCurrentTxHash : rootCreator.updCurrentTxHash
+                    updCurrentTxHash : rootCreator.updCurrentTxHash,
+                    assignTokenValue : swapCardCreator.assignTokenValue,
+
                 }, dispatch);
             };
         case components.SWITCH:

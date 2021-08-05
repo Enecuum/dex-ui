@@ -37,6 +37,8 @@
     "regenerator-runtime": "^0.13.7",
     "simplebar-react": "^2.3.2",
     "style-loader": "^2.0.0",
+    "webpack-dev-middleware": "^5.0.0",
+    "webpack-hot-middleware": "^2.25.0",
     "yargs": "^16.2.0"
   },
   "devDependencies": {

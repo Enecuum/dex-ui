@@ -32,11 +32,13 @@ module.exports = {
             }
         ]
     },
+    plugins : [],
     mode : 'development',
     devServer : {
         contentBase : outPath,
         port : 1234,
         watchContentBase : true,
+        hot : true,
         before: (app) => {
             app.get('/getLanguage/*', (req, res) => {
                 let urlArr = req.url.split('/');

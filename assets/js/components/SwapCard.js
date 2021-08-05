@@ -585,6 +585,8 @@ class SwapCard extends React.Component {
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];
         fieldObj.value = newValObj;
+        this.countCounterField(fieldObj, this.getFieldName(fieldProps.id, true), mode === 'removeLiquidity', field);
+        this.establishReadiness();        
     }    
 
     changeField (fieldId) {

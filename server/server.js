@@ -205,10 +205,20 @@ class TestServer {
             res.writeHead(200, {
                 'Content-Type': 'text/html',
             });
+
             let data = fs.readFileSync(path.join(wconf.output.path, 'index.html'));
             res.write(data);
             res.end();
         });
+
+        this.app.get('/swap', (req, res) => {
+            res.writeHead(200, {
+                'Content-Type': 'text/html',
+            });
+            let data = fs.readFileSync(path.join(wconf.output.path, 'index.html'));
+            res.write(data);
+            res.end();
+        });        
 
         this.app.get('/*\.(otf|ttf|png|svg|eot|woff)$', (req, res) => {
             let urlArr = req.url.split('/');

@@ -57,6 +57,41 @@ class SwapCard extends React.Component {
         };
     };
 
+
+    componentDidUpdate(prevProps){
+      const hasAChanged = ((this.props.tokens !== prevProps.tokens));
+
+      if (hasAChanged && this.props.connectionStatus === true) {
+          this.setSwapTokensFromRequest();
+        }
+    }
+
+    setSwapTokensFromRequest() {
+        if (window.location.pathname === '/swap') {
+            let paramsObj = this.parseFromToTokensRequest();
+            this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
+            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));                    
+        }       
+    }
+
+    parseFromToTokensRequest() {        
+        let requestParamsObj = {
+            pair : undefined,
+            from : undefined,
+            to   : undefined
+        };
+
+        window.location.search
+        .split('&')
+        .map(elem => {
+            elem = elem.replace('?', '');
+            let tmpArr = elem.split('=');
+            if (requestParamsObj.hasOwnProperty(tmpArr[0]))
+                requestParamsObj[tmpArr[0]] = tmpArr[1];
+        });
+        return requestParamsObj;
+    }
+
     swapPair() {
         this.props.swapFields(this.props.menuItem);
     };
@@ -98,6 +133,7 @@ class SwapCard extends React.Component {
         let dp = 'trade.swapCard'; // default place (in translation file)
         let mode        = this.getMode();
         let modeStruct  = this.props[mode];
+
         let firstToken  = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
         let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
         return (
@@ -358,8 +394,9 @@ class SwapCard extends React.Component {
         if (this.props.connectionStatus === false)
             buttonName = 'beforeConnection';
         else {
-            if (this.props.menuItem === 'exchange')
-                buttonName = 'swap';
+            if (this.props.menuItem === 'exchange') {
+                buttonName = 'swap';              
+            }
             else if (this.props.menuItem === 'liquidity')
                 buttonName = 'addLiquidity';
             if (!this.readyToSubmit)
@@ -413,6 +450,7 @@ class SwapCard extends React.Component {
     };
 
     getInputField(props) {
+
         let ticker = props.fieldData.token.ticker;
         if (ticker === undefined)
             ticker = this.props.t('trade.swapCard.inputField.selectToken');
@@ -782,13 +820,14 @@ class SwapCard extends React.Component {
     };
 
     /* ================================== main rendering function ================================== */
-    render() {
+    render() {       
         this.establishReadiness();
         this.establishPairExistence();
         return (
             <div>
                 { this.renderSwapCard()  }
                 { this.renderTokenCard() }
+
                 <Suspense fallback={<div>---</div>}>
                     <ConfirmSupply />
                 </Suspense>    

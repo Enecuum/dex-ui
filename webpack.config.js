@@ -70,7 +70,8 @@ module.exports = {
             });
             app.get('/swap', (req, res) => {
                 let data = fs.readFileSync(path.resolve('./public/index.html'));
-                res.send(data);
+                res.write(data);
+                res.end();
             });
         }
     }

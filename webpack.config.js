@@ -68,6 +68,11 @@ module.exports = {
                 let data = fs.readFileSync(path.resolve('./public/favicon.ico'));
                 res.send(data);
             });
+            app.get('/swap', (req, res) => {
+                let data = fs.readFileSync(path.resolve('./public/index.html'));
+                res.write(data);
+                res.end();
+            });            
         }
     }
 };

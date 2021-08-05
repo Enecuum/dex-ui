@@ -46,6 +46,13 @@ class StakeModal extends React.Component {
       }
     }
 
+    getLinkToPair() {
+      if (this.props.managedFarmData !== null) {
+        let data = this.props.managedFarmData;
+        return "/swap?pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + data.stake_token_hash + "&to=" + data.reward_token_hash;
+      } 
+    }
+    
     closeModal () {
         this.props.updShowStakeModal({
             value : false
@@ -228,15 +235,17 @@ class StakeModal extends React.Component {
                                 {t('confirm')}
                             </Button>                        
                         </div>
- 
-                        <div className="text-center d-none">
-                            <a
-                                href = "/"
-                                className="text-color4-link hover-pointer">
-                                <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : 'CAKE-BNB'})}</span>
-                                <span className="icon-Icon11"/>                                
-                            </a>
-                        </div>
+                        
+                        {this.props.managedFarmData !== null &&
+                          <div className="text-center">
+                              <a
+                                  href = {this.getLinkToPair()}
+                                  className="text-color4-link hover-pointer">
+                                  <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
+                                  <span className="icon-Icon11"/>                                
+                              </a>
+                          </div>
+                        }
                     </Modal.Body>
                 </Modal>
             </>

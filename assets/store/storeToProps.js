@@ -50,6 +50,7 @@ function mapStoreToProps(component) {
                 return {
                     ...state.swapCard,
                     pubkey                     : state.root.pubkey,
+                    mainToken                  : state.root.mainToken,
                     connectionStatus           : state.root.connectionStatus,
                     langData                   : state.root.langData.trade.swapCard,
                     menuItem                   : state.root.menuItem,
@@ -456,7 +457,8 @@ function mapDispatchToProps(component) {
                     updateMainTokenFee      : farmsCreator.updateMainTokenFee,
                     updatePricelist         : farmsCreator.updatePricelist,
                     updateCurrentAction     : farmsCreator.updateCurrentAction,
-                    updateStakeData         : farmsCreator.updateStakeData
+                    updateStakeData         : farmsCreator.updateStakeData,
+                    changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch); 
             };            
         default:

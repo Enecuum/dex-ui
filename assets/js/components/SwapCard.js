@@ -55,23 +55,27 @@ class SwapCard extends React.Component {
                 }
             ]
         };
+        this.initByGetRequestParams = true;
     };
 
 
     componentDidUpdate(prevProps){
       const hasAChanged = ((this.props.tokens !== prevProps.tokens));
 
-      if (hasAChanged && this.props.connectionStatus === true) {
+      if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
           this.setSwapTokensFromRequest();
+          this.initByGetRequestParams = false;
         }
     }
 
     setSwapTokensFromRequest() {
-        if (window.location.pathname === '/swap') {
-            let paramsObj = this.parseFromToTokensRequest();
+        let paramsObj = this.parseFromToTokensRequest();
+        if (window.location.hash !== '' && paramsObj.from !== undefined && paramsObj.to !== undefined) {            
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
-            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));                    
-        }       
+            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));                 
+        } else {
+            this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
+        }      
     }
 
     parseFromToTokensRequest() {        
@@ -81,10 +85,10 @@ class SwapCard extends React.Component {
             to   : undefined
         };
 
-        window.location.search
+        window.location.hash
         .split('&')
         .map(elem => {
-            elem = elem.replace('?', '');
+            elem = elem.replace('#!', '');
             let tmpArr = elem.split('=');
             if (requestParamsObj.hasOwnProperty(tmpArr[0]))
                 requestParamsObj[tmpArr[0]] = tmpArr[1];
@@ -464,7 +468,7 @@ class SwapCard extends React.Component {
                         {this.showBalance(valueProcessor.usCommasBigIntDecimals(props.fieldData.balance.amount, props.fieldData.balance.decimals, 3))}
                     </div>
                 </div>
-                <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center justify-content-between">                    
                     <input id={props.id}
                         onChange={this.changeField.bind(this, props.id)}
                         className='c-input-field mr-2'
@@ -474,10 +478,18 @@ class SwapCard extends React.Component {
                         autoComplete='off'
                         style={this.getBalanceColor(props.id)}>
                     </input>
-                    <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
-                        <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>
-                        <span className='icon-Icon26 d-flex align-items-center chevron-down'></span>
-                    </div>                
+                    <div className="d-flex align-items-center justify-content-end">
+                        {props.fieldData.balance.amount > 0 &&
+                            <div
+                                className="text-color3 mr-2 hover-pointer hover-color4"
+                                onClick={this.setMax.bind(this, props)}
+                                >MAX</div>
+                        }    
+                        <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
+                            <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>
+                            <span className='icon-Icon26 d-flex align-items-center chevron-down'></span>
+                        </div>                     
+                    </div>               
                 </div>
             </div>
         );
@@ -559,6 +571,21 @@ class SwapCard extends React.Component {
         else
             return (counter) ? 'field0' : 'field1';
     };
+
+    setMax(fieldProps) {
+        let mode = this.getMode();
+        let field = this.getFieldName(fieldProps.id);
+        let decimals = this.props[mode][field].token.decimals;
+
+        let newValObj = {
+                            value    : fieldProps.fieldData.balance.amount,
+                            decimals : decimals,
+                            text     : valueProcessor.usCommasBigIntDecimals (fieldProps.fieldData.balance.amount, decimals, decimals).replace(',','') 
+                        };
+        this.props.assignCoinValue(mode, field, newValObj);
+        let fieldObj = this.props[mode][field];
+        fieldObj.value = newValObj;
+    }    
 
     changeField (fieldId) {
         let mode = this.getMode();

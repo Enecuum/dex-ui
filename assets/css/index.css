@@ -309,6 +309,10 @@ right: 0;
     color: var(--color3);
 }
 
+.hover-color4:hover {
+    color: var(--color4);
+}
+
 .regular-page {
     margin-top: var(--top-menu-height);
     width: 100%;

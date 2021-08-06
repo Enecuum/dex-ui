@@ -132,7 +132,11 @@ class TopPairs extends React.Component {
 	    		}	    		 
 	    	</div>
 	    )	
-    } 
+    }
+
+    switchToSwap() {
+      this.props.changeMenuItem('exchange');      
+    }
 
     getPairsTable() {
     	const t = this.props.t;
@@ -157,7 +161,14 @@ class TopPairs extends React.Component {
 					          return (
 					            <tr key={index}>
 									<td>{index + 1}</td>
-									<td className="text-nowrap">{pair.token_0.ticker}-{pair.token_1.ticker}</td>
+									<td className="text-nowrap">
+										<a
+											href = {"/#!action=swap&pair=" + pair.token_0.ticker + "-" + pair.token_1.ticker + '&from=' + pair.token_0.hash + "&to=" + pair.token_1.hash}
+											onClick={this.switchToSwap.bind(this)}
+											className="text-color4-link hover-pointer">
+											{pair.token_0.ticker}-{pair.token_1.ticker}
+										</a>
+									</td>
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
 									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>

@@ -49,7 +49,7 @@ class StakeModal extends React.Component {
     getLinkToPair() {
       if (this.props.managedFarmData !== null) {
         let data = this.props.managedFarmData;
-        return "/swap?pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + data.stake_token_hash + "&to=" + data.reward_token_hash;
+        return "/#!action=swap&pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + data.stake_token_hash + "&to=" + data.reward_token_hash;
       } 
     }
     
@@ -155,6 +155,11 @@ class StakeModal extends React.Component {
         return t('dropFarms.stakeLPTokens');
     }
 
+    switchToSwap() {
+      this.closeModal();
+      this.props.changeMenuItem('exchange');      
+    }
+
     render() {
         const t = this.props.t;
 
@@ -240,6 +245,7 @@ class StakeModal extends React.Component {
                           <div className="text-center">
                               <a
                                   href = {this.getLinkToPair()}
+                                  onClick={this.switchToSwap.bind(this)}
                                   className="text-color4-link hover-pointer">
                                   <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
                                   <span className="icon-Icon11"/>                                

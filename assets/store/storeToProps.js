@@ -460,6 +460,12 @@ function mapDispatchToProps(component) {
                     updateStakeData         : farmsCreator.updateStakeData,
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch); 
+            };
+        case components.TOP_PAIRS:
+            return function (dispatch) {
+                return bindActionCreators({
+                    changeMenuItem          : rootCreator.changeMenuItem
+                }, dispatch); 
             };            
         default:
             return undefined;

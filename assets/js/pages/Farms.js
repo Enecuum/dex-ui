@@ -35,8 +35,6 @@ class Farms extends React.Component {
             'farm_get_reward'
         ];
 
-        this.circleUpd();
-
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
@@ -64,6 +62,21 @@ class Farms extends React.Component {
         this.handleChange = this.handleChange.bind(this); 
         this.executeHarvest = this.executeHarvest.bind(this);    
     };
+
+
+    componentDidMount() {
+      this.interval = setInterval(() => {
+                            this.updateMainTokenInfo();
+                            this.updateMainTokenAmount();
+                            this.updateStakeTokenBalance();        
+                            this.updatePricelist();
+                            this.updateFarms();
+                        }, 3000);
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.interval);
+    }
 
     circleUpd () {
         setInterval(() => {
@@ -129,12 +142,16 @@ class Farms extends React.Component {
                     this.farms = resultFarmsList;
                     this.props.updateFarmsList({
                         value : resultFarmsList
-                    });                                       
+                    });
                     if (this.props.expandedRow !== null) {
                         this.props.updateManagedFarmData({
                             value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
                         });                       
-                    }                    
+                    } else {
+                        this.props.updateManagedFarmData({
+                            value : null
+                        });                        
+                    }                                      
                 })
             }
         }, () => {
@@ -146,7 +163,6 @@ class Farms extends React.Component {
     	const target = event.target;        
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
         let managedFarm = this.farms.find(farm => farm.farm_id === farmId);
-
         this.props.updateManagedFarmData({
             value : managedFarm !== undefined ? managedFarm : null
         });                       
@@ -394,7 +410,6 @@ class Farms extends React.Component {
 
     getFarmsTable() {
     	const t = this.props.t;
-    	let that = this;
 
     	return (
     		<>
@@ -614,7 +629,7 @@ class Farms extends React.Component {
 											</td>
 
 											<td>
-												<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={that.updateExpandedRow.bind(that)}>
+												<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedRow.bind(this)}>
 													<div className="mr-2">{t('dropFarms.details')}</div>
 													<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
 												</div>	

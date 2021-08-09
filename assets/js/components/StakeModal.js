@@ -155,8 +155,8 @@ class StakeModal extends React.Component {
         return t('dropFarms.stakeLPTokens');
     }
 
-    switchToSwap() {
-      this.closeModal();
+    switchToSwap() {          
+      this.closeModal();       
       this.props.changeMenuItem('exchange');      
     }
 

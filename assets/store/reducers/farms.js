@@ -3,7 +3,6 @@ import actionPack from '../actions/actions';
 
 const actions = actionPack.farms;
 function getKeyValueObj(action) {
-    console.log(action)
     let field = action.payload.field;
     if (field == 'actionCost')
         return { actionCost: action.payload.value };

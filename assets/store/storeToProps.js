@@ -276,6 +276,7 @@ function mapStoreToProps(component) {
                     showStakeModal    : state.farms.showStakeModal,
                     managedFarmData   : state.farms.managedFarmData,
                     currentAction     : state.farms.currentAction,
+                    expandedRow       : state.farms.expandedRow,
                     stakeData         : {
                         actionCost         : state.farms.stakeData.actionCost,
                         stakeValue         : state.farms.stakeData.stakeValue,  

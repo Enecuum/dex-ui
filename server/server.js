@@ -254,7 +254,7 @@ class TestServer {
 
     run () {
         // https.createServer({
-        //     key: fs.readFileSync('../https/key.pem', { encoding: 'utf8' }),
+        //     key: fs.readFileSync('../https/server.key', { encoding: 'utf8' }),
         //     cert: fs.readFileSync('../https/server.crt', { encoding: 'utf8' })
         // }, this.app)
         this.app.listen(config.host_port);

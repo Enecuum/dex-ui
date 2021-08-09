@@ -35,7 +35,7 @@ class IdManager {
 
     completeRequestId(id) {
         this.ids = this.ids.map(el => {
-            if (el.id == id)
+            if (el.id === id)
                 el.type = this.type.DONE;
             return el;
         });

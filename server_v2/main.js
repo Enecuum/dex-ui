@@ -3,11 +3,10 @@ const fs = require("fs")
 
 const express = require("express")
 const app = express()
-const bodyParser = express.json()
 
 const webpack = require("webpack")
 const webpackDevMiddleware = require("webpack-dev-middleware")
-const webpackHotMiddleware = require("webpack-hot-middleware")
+// const webpackHotMiddleware = require("webpack-hot-middleware")
 const w_config = require("../webpack.config")
 
 const config = require("../config.json")
@@ -23,13 +22,15 @@ if (config.mode === "dev") {
     app.use(webpackDevMiddleware(
         compiler,
         {
-            publicPath : w_config.output.path
+            publicPath : w_config.output.path,
+            writeToDisk : true
         }
     ))
-    app.use(webpackHotMiddleware(compiler))
+    // app.use(webpackHotMiddleware(compiler))
 }
 
-app.use(express.static("../public"))
+app.use(express.static(w_config.output.path))
+app.use(express.json())
 
 app.get('/enqlib', (req, res) => {
     res.writeHead(200, {
@@ -66,7 +67,7 @@ function filterLocale (locale) {
     return locale;
 }
 
-app.get(`/locales/*/translation.json`, bodyParser, (req, res) => {
+app.get(`/locales/*/translation.json`, (req, res) => {
     let urlArr = req.url.split('/');
     let lang = urlArr[urlArr.length - 2];
     let language = filterLocale(lang);

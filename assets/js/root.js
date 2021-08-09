@@ -125,37 +125,6 @@ class Root extends React.Component {
             if (isInTokensArr) {
                 let j = tokens.indexOf(isInTokensArr)
                 if (j !== -1) {
-
-                    // if (this.props.tokens[j] && this.props.tokens[j].decimals !== undefined) {
-                    //     tokens[j].decimals = this.props.tokens[j].decimals;
-                    //     tokens[j].total_supply = this.props.tokens[j].total_supply;                   
-                    // }
-                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
-                    // if (isInRootProps) {
-
-                    //     indexes[iCounter++] = j;
-                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash)); 
-                    // }
-
-                    // let isInRootProps = this.props.tokens.find(token => token.hash === elem.hash);
-                    // if (!isInRootProps) {
-                    //     indexes[iCounter++] = j;
-                    //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                          
-                    // } else {
-                    //     this.props.tokens.forEach(function(item, i, arr) {
-                    //         console.log(item)
-                    //         // if (item.hash === elem.hash && (arr[i].decimals === undefined || arr[i].total_supply === undefined)) {
-                    //         //     indexes[iCounter++] = j;
-                    //         //     promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
-                    //         // }
-                    //     });                          
-                    // }
-                            // this.props.tokens.forEach(function(item, i, arr) {
-                            //     if (arr[i] === elem.hash || (arr[i].decimals === undefined && arr[i].total_supply === undefined)) {
-                            //         indexes[iCounter++] = j;
-                            //         promises.push(swapApi.getTokenInfo(tokens[j].hash));                            
-                            //     }
-                            // });
                     let inRootProps = this.props.tokens.find(token => token.hash === elem.hash);
                     //console.log(inRootProps)
                     if (!inRootProps) {

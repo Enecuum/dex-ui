@@ -63,6 +63,24 @@ class JSONRPCUtil {
         return res.data.error !== undefined
     }
 
+    isValidJSONRPCRequest (body) {
+        const requiredFields = ["method", "params", "id"]
+        let bodyProps = Object.keys(body)
+        if (!bodyProps.length)
+            return false
+        return bodyProps.every(el => {
+            return requiredFields.indexOf(el) + 1
+        })
+    }
+
+    makeResponseObject (r_id, result, data) {
+        return {
+            jsonrpc : this.version,
+            [result ? "result" : "error"] : data,
+            id : r_id
+        }
+    }
+
     execRequest (method, params) {
         return new Promise((resolve, reject) => {
             let data = {

@@ -7,12 +7,13 @@ const fs       = require("fs")
 
 const JSONRPCUtil = require("./JSONRPCUtil")
 const AxiosUtil   = require("./AxiosUtil")
+const IPScanner   = require("./IPScanner")
 
 
-class D_service {
+class Service_Client {
     constructor (args, config) {
         this.peer = this._setPeer(args.peer, config)
-        this.port = this._setPort(args.port)
+        this.port = this._setPort(args.port, config)
         this.name = this._setName(args.name)
         this.cnfg = config
         this.app  = express()
@@ -23,9 +24,11 @@ class D_service {
         this.authToken = null
     }
 
-    _setPort (port) {
+    _setPort (port, config) {
         if (port)
             return port
+        if (config.local_service_port)
+            return config.local_service_port
         return 0 // 'express' auto search
     }
 
@@ -45,9 +48,9 @@ class D_service {
     }
 
     _generateName () {
-        let hash = crypto.createHash('md5')
+        let hash = crypto.createHash("md5")
         hash.update(new Date().getTime() + Math.random() * Math.pow(2, 64))
-        return `ds_${hash.digest('hex')}`
+        return `ds_${hash.digest("hex")}`
     }
 
     _readFiles (filePaths) {
@@ -98,11 +101,13 @@ class D_service {
 
     _sendConnectionRequest (filesData) {
         // filesData - {crt, key, ca}
+        this.ipScanner = new IPScanner()
         this.axiosUtil = new AxiosUtil(this.peer,  new https.Agent({
             ...filesData
         }))
         this.jsonrpcUtil = new JSONRPCUtil(this.cnfg, this.peer, this.axiosUtil)
-        return this.axiosUtil.post({ name : this.name })
+        let ip = this.ipScanner.getHostAddress()
+        return this.jsonrpcUtil.execRequest("connect", [ this.name, ip, this.port ])
     }
 
     _authenticateService (response) {
@@ -110,9 +115,10 @@ class D_service {
             let data = response.data.result
             if (data && data.auth)
                 this.rl.question("Enter passphrase: ", (passphrase) => {
-                    this.jsonrpcUtil.execRequest("authentication", [ passphrase ])
+                    this.jsonrpcUtil.execRequest("authentication", [ this.name, passphrase ])
                         .then(res => {
                             this.authToken = res.token
+                            this.refreshToken = res.refresh_token
                             resolve()
                         })
                         .catch(err => reject(err))
@@ -156,7 +162,7 @@ class D_service {
         return true
     }
 
-    async start () {
+    async startClientSteps () {
         let configReadiness = this._checkConfiguration()
         if (configReadiness.err) {
             console.log(configReadiness.err)
@@ -165,21 +171,8 @@ class D_service {
         let connectionStatus = await this._connectToService()
         if (!connectionStatus){
             console.log("Stop service", this.name, "connection")
-            return
         }
-
-        this.app.listen(this.port, (err, res) => {
-            if (err) {
-                console.log("Error:", err)
-                return
-            }
-            let s_ip = res.socket.remoteAddress
-            let s_port = (this.port) ? this.port : res.socket.remotePort
-            console.log("Service '", this.name, "' is running on port:", s_port)
-
-            // create service connection
-        })
     }
 }
 
-export default D_service
+export default Service_Client

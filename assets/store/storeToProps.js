@@ -7,6 +7,7 @@ import asideCreator from './actionCreators/aside';
 import indicatorPanelCreator from './actionCreators/indicatorPanel';
 import etmCreator from './actionCreators/etm';
 import farmsCreator from './actionCreators/farms';
+import dropsCreator from './actionCreators/drops';
 
 const components = {
     ROOT                             : 0x0,
@@ -28,7 +29,8 @@ const components = {
     ACCOUNT_SHORT_INFO               : 0x10,
     RECENT_TXS_LIST                  : 0x11,
     WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12,
-    FARMS                            : 0x13
+    FARMS                            : 0x13,
+    DROPS                            : 0x14
 };
 
 function mapStoreToProps(component) {
@@ -286,7 +288,31 @@ function mapStoreToProps(component) {
                         stakeTokenAmount   : state.farms.stakeData.stakeTokenAmount
                     }
                 };
-            }; 
+            };
+        case components.DROPS:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.drops,
+                    farmsList         : state.drops.farmsList,
+                    mainTokenAmount   : state.drops.mainTokenAmount,
+                    mainTokenDecimals : state.drops.mainTokenDecimals,
+                    mainTokenFee      : state.drops.mainTokenFee,
+                    pricelist         : state.drops.pricelist,                    
+                    showStakeModal    : state.drops.showStakeModal,
+                    managedFarmData   : state.drops.managedFarmData,
+                    currentAction     : state.drops.currentAction,
+                    expandedRow       : state.drops.expandedRow,
+                    stakeData         : {
+                        actionCost         : state.drops.stakeData.actionCost,
+                        stakeValue         : state.drops.stakeData.stakeValue,  
+                        stakeTxStatus      : state.drops.stakeData.stakeTxStatus,
+                        stakeValid         : state.drops.stakeData.stakeValid,
+                        msgData            : state.drops.stakeData.msgData,
+                        stakeTokenAmount   : state.drops.stakeData.stakeTokenAmount
+                    }
+                };
+            };             
         default:
             return undefined;
 
@@ -462,6 +488,24 @@ function mapDispatchToProps(component) {
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch); 
             };
+        case components.DROPS:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updateFarmsList         : dropsCreator.updateFarmsList,
+                    updateExpandedRow       : dropsCreator.updateExpandedRow,
+                    updateManagedFarmData   : dropsCreator.updateManagedFarmData,
+                    updateSortType          : dropsCreator.updateSortType,
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updShowStakeModal       : dropsCreator.updShowStakeModal,
+                    updateMainTokenAmount   : dropsCreator.updateMainTokenAmount,
+                    updateMainTokenDecimals : dropsCreator.updateMainTokenDecimals,
+                    updateMainTokenFee      : dropsCreator.updateMainTokenFee,
+                    updatePricelist         : dropsCreator.updatePricelist,
+                    updateCurrentAction     : dropsCreator.updateCurrentAction,
+                    updateStakeData         : dropsCreator.updateStakeData,
+                    changeMenuItem          : rootCreator.changeMenuItem
+                }, dispatch); 
+            };            
         case components.TOP_PAIRS:
             return function (dispatch) {
                 return bindActionCreators({

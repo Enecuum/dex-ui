@@ -12,6 +12,7 @@ import IndicatorPanel from './IndicatorPanel';
 import TopPairs from './TopPairs';
 import Etm from '../pages/Etm';
 import Farms from '../pages/Farms';
+import Drops from '../pages/Drops';
 
 export {
     Navbar,
@@ -27,5 +28,6 @@ export {
     IndicatorPanel,
     TopPairs,
     Etm,
-    Farms
+    Farms,
+    Drops
 };

@@ -22,7 +22,7 @@ import 'simplebar/dist/simplebar.min.css';
 
 const valueProcessor = new ValueProcessor();
 
-class Farms extends React.Component {
+class Drops extends React.Component {
     constructor(props) {
         super(props);
         this.farms = [];
@@ -60,7 +60,7 @@ class Farms extends React.Component {
             }
         }
         this.handleChange = this.handleChange.bind(this); 
-        this.executeHarvest = this.executeHarvest.bind(this);
+        this.executeHarvest = this.executeHarvest.bind(this);    
         this.getDataSet();     
     };
 
@@ -73,13 +73,13 @@ class Farms extends React.Component {
     }
 
     componentDidMount() {
-      this.interval = setInterval(() => {
+      this.intervalDrops = setInterval(() => {
                             this.getDataSet();
                         }, 3000);
     }
 
     componentWillUnmount() {
-      clearInterval(this.interval);
+      clearInterval(this.intervalDrops);
     }
 
     handleChange(action, param, event) {
@@ -575,7 +575,7 @@ class Farms extends React.Component {
     </Accordion>
 </div>
             <div className="h2 mb-5">
-                {t('navbars.left.farms')}
+                {t('navbars.left.drops')}
             </div>
 		    	<div className="drop-farms-table-wrapper">			    		
 					<Table hover variant="dark" className="table-to-cards">
@@ -692,6 +692,6 @@ class Farms extends React.Component {
     }        
 };
 
-const WFarms = connect(mapStoreToProps(components.FARMS), mapDispatchToProps(components.FARMS))(withTranslation()(Farms));
+const WDrops = connect(mapStoreToProps(components.DROPS), mapDispatchToProps(components.DROPS))(withTranslation()(Drops));
 
-export default WFarms;    
+export default WDrops;    

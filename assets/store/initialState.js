@@ -141,6 +141,29 @@ const initialState = {
             msgData            : {},
             stakeTokenAmount   : undefined
         }
+    },
+    drops : {
+        mainTokenAmount   : undefined,
+        mainTokenDecimals : undefined,
+        mainTokenFee      : presets.network.nativeToken.fee,
+        pricelist         : {},
+        expandedRow       : null,
+        managedFarmData   : null,
+        sortType          : 'liquidity',
+        showStakeModal    : false,
+        currentAction     : undefined,
+        farmsList         : [],
+        stakeData         : {
+            actionCost         : 0,
+            initialStake       : 0,
+            stakeValue         : {
+                numberValue : 0
+            },  
+            stakeTxStatus      : '',
+            stakeValid         : true,
+            msgData            : {},
+            stakeTokenAmount   : undefined
+        }
     }
 };
 

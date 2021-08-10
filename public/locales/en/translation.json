@@ -14,7 +14,8 @@
             "etm" : "ETM",
             "info" : "Info",
             "topPairs" : "Top Pairs",
-            "docs" : "Docs"
+            "docs" : "Docs",
+            "drops" : "Space Drops"
         },
         "top" : {
             "header" : "Enecuum",

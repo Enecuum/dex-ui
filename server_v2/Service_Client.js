@@ -22,6 +22,8 @@ class Service_Client {
             output: process.stdout
         })
         this.authToken = null
+
+        this.app.use(express.json())
     }
 
     _setPort (port, config) {
@@ -49,7 +51,7 @@ class Service_Client {
 
     _generateName () {
         let hash = crypto.createHash("md5")
-        hash.update(new Date().getTime() + Math.random() * Math.pow(2, 64))
+        hash.update((new Date().getTime() + Math.random() * Math.pow(2, 64)).toString())
         return `ds_${hash.digest("hex")}`
     }
 
@@ -66,7 +68,7 @@ class Service_Client {
                     console.log("Error: can't read file:", filePath, "Info:", err)
                     reject()
                 } else {
-                    filePaths = filePaths.splice(0, 1)
+                    filePaths.splice(0, 1)
                     this._readFiles(filePaths)
                         .then(res => {
                             let fileDataObj = { [Object.keys(filePathObj)[0]] : data }
@@ -84,9 +86,9 @@ class Service_Client {
     _getTLSRequirements () {
         return new Promise((resolve, reject) => {
             let files = [
-                { cert: path.resolve(__dirname, "../https/server.crt") },
-                { key: path.resolve(__dirname, "../https/server.key") },
-                { ca: path.resolve(__dirname, "../https/ca.crt") }
+                { cert : path.resolve(__dirname, "../https/server1.crt") },
+                { key : path.resolve(__dirname, "../https/server1.key") },
+                { ca : path.resolve(__dirname, "../https/rootCA.crt") }
             ]
             this._readFiles(files)
                 .then(filesData => {
@@ -99,21 +101,25 @@ class Service_Client {
         })
     }
 
-    _sendConnectionRequest (filesData) {
-        // filesData - {crt, key, ca}
-        this.ipScanner = new IPScanner()
+    _setNetUtils (filesData) {
         this.axiosUtil = new AxiosUtil(this.peer,  new https.Agent({
+            rejectUnauthorized : false,
             ...filesData
         }))
         this.jsonrpcUtil = new JSONRPCUtil(this.cnfg, this.peer, this.axiosUtil)
+    }
+
+    _sendConnectionRequest (filesData) {
+        // filesData - {crt, key, ca}
+        this.ipScanner = new IPScanner()
+        this._setNetUtils(filesData)
         let ip = this.ipScanner.getHostAddress()
         return this.jsonrpcUtil.execRequest("connect", [ this.name, ip, this.port ])
     }
 
     _authenticateService (response) {
         return new Promise((resolve, reject) => {
-            let data = response.data.result
-            if (data && data.auth)
+            if (response.auth)
                 this.rl.question("Enter passphrase: ", (passphrase) => {
                     this.jsonrpcUtil.execRequest("authentication", [ this.name, passphrase ])
                         .then(res => {
@@ -124,17 +130,18 @@ class Service_Client {
                         .catch(err => reject(err))
                 })
             else
-                reject(response.data.error)
-            this.rl.close()
+                reject(response)
         })
     }
 
     _connectToService () {
         return new Promise((resolve) => {
+            console.log("_sendConnectionRequest")
             this._getTLSRequirements()
                 .then(filesData => {
                     this._sendConnectionRequest(filesData)
                         .then(res => {
+                            console.log("_authenticateService")
                             this._authenticateService(res)
                                 .then(() => {
                                     console.log("Service", this.name, "successfully authenticated!")
@@ -162,17 +169,23 @@ class Service_Client {
         return true
     }
 
-    async startClientSteps () {
+    async startClientSteps (root) {
         let configReadiness = this._checkConfiguration()
         if (configReadiness.err) {
             console.log(configReadiness.err)
-            return
+            this.rl.close()
+            return -1
         }
-        let connectionStatus = await this._connectToService()
-        if (!connectionStatus){
-            console.log("Stop service", this.name, "connection")
+        if (!root) {
+            let connectionStatus = await this._connectToService()
+            if (!connectionStatus)
+                console.log("Stop service", this.name, "connection")
+        } else {
+            this._getTLSRequirements()
+                .then(filesData => this._setNetUtils(filesData))
         }
+        this.rl.close()
     }
 }
 
-export default Service_Client
+module.exports = Service_Client

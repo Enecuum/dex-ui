@@ -47,7 +47,7 @@ class JSONRPCUtil {
     constructor (config, url, axiosUtil) {
         this.requestsManager = new RequestsManager(config)
         this.clearSeconds = 5
-        this.version = json_rcp_version
+        this.version = config.json_rcp_version
         this.axiosUtil = axiosUtil
         this.url = url
         this._clearCycle()
@@ -108,4 +108,4 @@ class JSONRPCUtil {
     }
 }
 
-export default JSONRPCUtil
+module.exports = JSONRPCUtil

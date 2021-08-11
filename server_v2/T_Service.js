@@ -9,12 +9,12 @@ const Service_Client = require("./Service_Client")
 
 
 class T_Service extends Service_Client {
-    constructor () {
-        super()
+    constructor (args, config) {
+        super(args, config)
 
         this.commonAuthData = {
-            hash : "must write interface to create passwords and share hashes",
-            salt : "must write interface to create passwords and share hashes"
+            hash : "42b8753abba111e953cd5633966e1794",
+            salt : "0123456789"
         }
         this.peers = {
             // [name] : {
@@ -22,21 +22,16 @@ class T_Service extends Service_Client {
             //     refresh_token: ...,
             //     host         : ...,
             //     port         : ...,
-            //     status       : ... (0 - just created, 1 - authenticated, 2 - token must be refreshed)
+            //     status       : (0 - just created, 1 - authenticated, 2 - token must be refreshed)
             // }
         }
-
-        this.app.use((req, res, next) => {
-            if (req.method === "POST" && req.body.jsonrpc)
-                this._handleJSONRPCRequests(req, res)
-            else
-                next()
-        })
     }
 
     _handleJSONRPCRequests (req, res) {
-        if (!this.jsonrpcUtil.isValidJSONRPCRequest(req.body) && Array.isArray(req.body.params)) {
+        if (!this.jsonrpcUtil.isValidJSONRPCRequest(req.body) && !Array.isArray(req.body.params)) {
+            console.log(req.body)
             this._jsonrpcResponse(res, false, jsonrpcErrors.doNotSatisfyJSONRPC, req.body.id)
+            return
         }
         let body = req.body, opRes
         if (body.method === "connect") {
@@ -101,17 +96,22 @@ class T_Service extends Service_Client {
     }
 
     _createPassphraseHash (passphrase) {
+        let passphraseHash, saltLength = this.commonAuthData.salt.length
         passphrase = passphrase.toString()
-        let hash = crypto.createHash("md5")
-        let saltLength = this.commonAuthData.salt.length
-        hash.update(passphrase + this.commonAuthData.salt.substring(0, saltLength / 2))
-        hash.update(hash.digest("hex") + this.commonAuthData.salt.substring(saltLength / 2, saltLength-1))
-        return hash.digest("base64")
+
+        const cycles = 2
+        let offset = saltLength / cycles
+        for (let i = 0; i < cycles; ) {
+            let hash = crypto.createHash("md5")
+            hash.update(passphrase + this.commonAuthData.salt.substring(i * offset, ++i * offset - 1))
+            passphraseHash = hash.digest("hex")
+        }
+        return passphraseHash
     }
 
     _jsonrpcResponse (res, isResult, data, r_id) {
-        res.status(200)
         res.setHeader('Content-Type', 'application/json')
+        res.status(200)
         res.end(JSON.stringify(this.jsonrpcUtil.makeResponseObject(
             r_id,
             isResult,
@@ -134,17 +134,25 @@ class T_Service extends Service_Client {
         return {auth : true}
     }
 
+    _setServerLogic () {
+        this.app.use((req, res, next) => {
+            if (req.method === "POST" && req.body.jsonrpc)
+                this._handleJSONRPCRequests(req, res)
+            else
+                next()
+        })
+    }
+
     startServer () {
+        this._setServerLogic()
+        console.log("Start server at port:", this.port)
         https.createServer({
             requestCert : true,
-            rejectUnauthorized : true,
-            ca : fs.readFileSync(path.resolve(__dirname, "../https/ca.crt"))
-        }, /* (req, res) => {
-            if (!req.client.authorized) {
-                res.writeHead(401)
-                return res.end('Invalid client certificate authentication.')
-            }
-        },*/ this.app).listen(this.port)
+            rejectUnauthorized : false,
+            cert : fs.readFileSync(path.resolve(__dirname, "../https/server1.crt")),
+            key : fs.readFileSync(path.resolve(__dirname, "../https/server1.key")),
+            ca : fs.readFileSync(path.resolve(__dirname, "../https/rootCA.crt"))
+        }, this.app).listen(this.port)
     }
 }
 
@@ -153,4 +161,4 @@ class T_Service extends Service_Client {
 // server get passphrase
 // server write token and send to clientService
 
-export default T_Service
+module.exports = T_Service

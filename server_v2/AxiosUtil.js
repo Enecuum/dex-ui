@@ -20,4 +20,4 @@ class AxiosUtil {
     }
 }
 
-export default AxiosUtil
+module.exports = AxiosUtil

@@ -11,4 +11,4 @@ class IPScanner {
     }
 }
 
-export default IPScanner
+module.exports = IPScanner

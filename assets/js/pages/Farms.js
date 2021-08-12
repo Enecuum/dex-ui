@@ -76,7 +76,7 @@ class Farms extends React.Component {
     componentDidMount() {
       this.interval = setInterval(() => {
                             this.getDataSet();
-                        }, 3000);
+                        }, 5000);
     }
 
     componentWillUnmount() {

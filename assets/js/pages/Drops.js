@@ -39,7 +39,7 @@ class Drops extends React.Component {
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
-                    "stake_token": "0000000000000000000000000000000000000000000000000000000000000001",
+                    "stake_token": "824e7b171c01e971337c1b25a055023dd53c003d4aa5aa8b58a503d7c622651e",
                     "reward_token": "0000000000000000000000000000000000000000000000000000000000000001",
                     "block_reward": 1,
                     "emission": 100                
@@ -76,7 +76,7 @@ class Drops extends React.Component {
     componentDidMount() {
       this.intervalDrops = setInterval(() => {
                             this.getDataSet();
-                        }, 3000);
+                        }, 5000);
     }
 
     componentWillUnmount() {

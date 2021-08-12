@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import presets from '../../store/pageDataPresets';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
-import StakeModal from '../components/StakeModal';
+import StakeModalDrops from '../components/StakeModalDrops';
 import { withTranslation } from "react-i18next";
 import networkApi from '../requests/networkApi';
 import swapApi from '../requests/swapApi';
@@ -23,7 +23,7 @@ import 'simplebar/dist/simplebar.min.css';
 
 const valueProcessor = new ValueProcessor();
 
-class Farms extends React.Component {
+class Drops extends React.Component {
     constructor(props) {
         super(props);
         this.farms = [];
@@ -39,7 +39,7 @@ class Farms extends React.Component {
         this.state = {
             dropFarmActionsParams : {
                 farm_create : {
-                    "stake_token": "0000000000000000000000000000000000000000000000000000000000000001",
+                    "stake_token": "824e7b171c01e971337c1b25a055023dd53c003d4aa5aa8b58a503d7c622651e",
                     "reward_token": "0000000000000000000000000000000000000000000000000000000000000001",
                     "block_reward": 1,
                     "emission": 100                
@@ -61,7 +61,7 @@ class Farms extends React.Component {
             }
         }
         this.handleChange = this.handleChange.bind(this); 
-        this.executeHarvest = this.executeHarvest.bind(this);
+        this.executeHarvest = this.executeHarvest.bind(this);    
         this.getDataSet();     
     };
 
@@ -74,13 +74,13 @@ class Farms extends React.Component {
     }
 
     componentDidMount() {
-      this.interval = setInterval(() => {
+      this.intervalDrops = setInterval(() => {
                             this.getDataSet();
                         }, 5000);
     }
 
     componentWillUnmount() {
-      clearInterval(this.interval);
+      clearInterval(this.intervalDrops);
     }
 
     handleChange(action, param, event) {
@@ -99,7 +99,7 @@ class Farms extends React.Component {
                      obj[param] = params[param]    
         }
 
-        extRequests.farmAction(pubkey, actionType, BigInt(presets.network.nativeToken.fee), obj)        
+        extRequests.farmAction(pubkey, actionType, obj)        
         .then(result => {
             console.log(obj)
             console.log('Success', result.hash)
@@ -129,7 +129,7 @@ class Farms extends React.Component {
     }
 
     updateFarms() {
-        let whiteList = presets.dropFarms.spaceHarvestFarms.whiteList;
+        let whiteList = presets.dropFarms.spaceDrops.whiteList;        
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {
@@ -301,8 +301,11 @@ class Farms extends React.Component {
         return (
             <>
                 <div className="value-and-control">
-                    <div className="stake-value">
-                        {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
+                    <div className="stake-value-wrapper">
+                        <div className="stake-value">
+                            {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
+                        </div>
+                        <div className="color-2 stake-value-usd">≈ {this.getValueInUSD()} USD</div>
                     </div>
                     <div className="d-flex align-items-center">
                         <Button
@@ -324,6 +327,29 @@ class Farms extends React.Component {
 
             </>
         )        
+    }
+
+    getValueInUSD() {
+        let res;
+        let price = this.props.exchangeRate !== undefined ? this.props.exchangeRate : 0;
+        let stringPrice = price.toString();
+        let priceDecimalsPart = stringPrice.split('.')[1];
+        let priceDecimals = priceDecimalsPart !== undefined ? priceDecimalsPart.length : 0;
+        let priceToBigint = valueProcessor.valueToBigInt(price, priceDecimals).value;
+
+        let op0 = {
+            value    : this.props.managedFarmData.stake,
+            decimals : this.props.managedFarmData.stake_token_decimals
+        };
+
+        let op1 = {
+            value    : priceToBigint,
+            decimals : priceDecimals
+        };        
+
+        res = valueProcessor.mul(op0, op1);
+        return valueProcessor.usCommasBigIntDecimals(res.value, res.decimals, 5);
+
     }
 
     getHarvestButton(active = true) {
@@ -577,7 +603,7 @@ class Farms extends React.Component {
     </Accordion>
 </div>
             <div className="h2 mb-5">
-                {t('navbars.left.farms')}
+                {t('navbars.left.drops')}
             </div>
 		    	<div className="drop-farms-table-wrapper">			    		
 					<Table hover variant="dark" className="table-to-cards">
@@ -613,14 +639,14 @@ class Farms extends React.Component {
 											</td>
 											<td>
 												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.liquidity')}</div>
-													<div className="long-value">${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
+													<div className="text-color4">{t('dropFarms.totalStaked')}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.total_stake !== undefined ? farm.total_stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
 												</div>	
 											</td>
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
 												</div>	
 											</td>
 
@@ -648,8 +674,11 @@ class Farms extends React.Component {
 																	</div>																	
 																</div>
 																<div className="value-and-control harvest-wrapper">
-																	<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
-																	{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
+                                                                    <div className="harvest-value-wrapper">
+																	    <div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
+																	    <div className="color-2 earned-value-usd">≈ 0.00000 USD</div>
+                                                                    </div>
+                                                                    {this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
 																</div>
 															</div>
 														</div>
@@ -687,13 +716,13 @@ class Farms extends React.Component {
 					</Card>    			
     			</div>
                 <Suspense fallback={<div>---</div>}>
-                    <StakeModal />
+                    <StakeModalDrops/>
                 </Suspense>
     		</div>
         )
     }        
 };
 
-const WFarms = connect(mapStoreToProps(components.FARMS), mapDispatchToProps(components.FARMS))(withTranslation()(Farms));
+const WDrops = connect(mapStoreToProps(components.DROPS), mapDispatchToProps(components.DROPS))(withTranslation()(Drops));
 
-export default WFarms;    
+export default WDrops;    

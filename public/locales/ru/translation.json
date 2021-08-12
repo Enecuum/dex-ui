@@ -218,7 +218,8 @@
         "stake"                        : "Стейк",
         "myStake"                      : "Мой стейк",
         "unstake"                      : "Отозвать",  
-        "getLPToken"                   : "Получить {{tokenName}} LP",
+        "getLPToken"                   : "Получить {{tokenName}} LP",  
+        "getNamedToken"                : "Получить {{tokenName}}",
         "nBlocksLeft"                  : "Осталось блоков: {{blocksLeft}}",
         "finished"                     : "Работа завершена",
         "pausedFarmStatusDescription"  : "Пауза. Для возобновления работы сделайте стейк {{stakeTokenName}}",
@@ -228,7 +229,8 @@
         "apy"                          : "APY",
         "rewardPerBlock"               : "Награда за блок",
         "details"                      : "Подробнее",
-        "harvest"                      : "Собрать урожай"
+        "harvest"                      : "Собрать урожай",
+        "totalStaked"                  : "Общий стейк"
     },
     "confirm" : "Подтвердить",
     "status" : "Статус",

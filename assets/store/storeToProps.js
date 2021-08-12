@@ -303,6 +303,7 @@ function mapStoreToProps(component) {
                     managedFarmData   : state.drops.managedFarmData,
                     currentAction     : state.drops.currentAction,
                     expandedRow       : state.drops.expandedRow,
+                    exchangeRate      : state.aside.exchangeRate,
                     stakeData         : {
                         actionCost         : state.drops.stakeData.actionCost,
                         stakeValue         : state.drops.stakeData.stakeValue,  

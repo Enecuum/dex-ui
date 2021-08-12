@@ -216,7 +216,8 @@
         "stake"                        : "Stake",
         "myStake"                      : "My stake",
         "unstake"                      : "Unstake",  
-        "getLPToken"                   : "Get {{tokenName}} LP",
+        "getLPToken"                   : "Get {{tokenName}} LP",  
+        "getNamedToken"                : "Get {{tokenName}}",
         "nBlocksLeft"                  : "{{blocksLeft}} blocks left",
         "finished"                     : "Finished",
         "pausedFarmStatusDescription"  : "Paused. Stake {{stakeTokenName}} to enable",
@@ -226,7 +227,8 @@
         "apy"                          : "APY",
         "rewardPerBlock"               : "Reward per block",
         "details"                      : "Details",
-        "harvest"                      : "Harvest"
+        "harvest"                      : "Harvest",
+        "totalStaked"                  : "Total staked"
     },
     "confirm" : "Confirm",
     "status" : "Status",

@@ -153,6 +153,7 @@ const initialState = {
         showStakeModal    : false,
         currentAction     : undefined,
         farmsList         : [],
+        exchangeRate      : 0,
         stakeData         : {
             actionCost         : 0,
             initialStake       : 0,

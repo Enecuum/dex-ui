@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -7,8 +7,9 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
+import presets from '../../store/pageDataPresets';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
-import StakeModal from '../components/StakeModal';
+import StakeModalDrops from '../components/StakeModalDrops';
 import { withTranslation } from "react-i18next";
 import networkApi from '../requests/networkApi';
 import swapApi from '../requests/swapApi';
@@ -128,7 +129,8 @@ class Drops extends React.Component {
     }
 
     updateFarms() {
-        let farmsList = networkApi.getDexFarms(this.props.pubkey);
+        let whiteList = presets.dropFarms.spaceDrops.whiteList;        
+        let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {
             if (!result.lock) {
@@ -299,8 +301,11 @@ class Drops extends React.Component {
         return (
             <>
                 <div className="value-and-control">
-                    <div className="stake-value">
-                        {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), 10, 10)}
+                    <div className="stake-value-wrapper">
+                        <div className="stake-value">
+                            {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
+                        </div>
+                        <div className="color-2 stake-value-usd">≈ {this.getValueInUSD()} USD</div>
                     </div>
                     <div className="d-flex align-items-center">
                         <Button
@@ -322,6 +327,29 @@ class Drops extends React.Component {
 
             </>
         )        
+    }
+
+    getValueInUSD() {
+        let res;
+        let price = this.props.exchangeRate !== undefined ? this.props.exchangeRate : 0;
+        let stringPrice = price.toString();
+        let priceDecimalsPart = stringPrice.split('.')[1];
+        let priceDecimals = priceDecimalsPart !== undefined ? priceDecimalsPart.length : 0;
+        let priceToBigint = valueProcessor.valueToBigInt(price, priceDecimals).value;
+
+        let op0 = {
+            value    : this.props.managedFarmData.stake,
+            decimals : this.props.managedFarmData.stake_token_decimals
+        };
+
+        let op1 = {
+            value    : priceToBigint,
+            decimals : priceDecimals
+        };        
+
+        res = valueProcessor.mul(op0, op1);
+        return valueProcessor.usCommasBigIntDecimals(res.value, res.decimals, 5);
+
     }
 
     getHarvestButton(active = true) {
@@ -600,7 +628,7 @@ class Drops extends React.Component {
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.earned')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
 												</div>	
 											</td>
 											<td>
@@ -611,14 +639,14 @@ class Drops extends React.Component {
 											</td>
 											<td>
 												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.liquidity')}</div>
-													<div className="long-value">${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
+													<div className="text-color4">{t('dropFarms.totalStaked')}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.total_stake !== undefined ? farm.total_stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
 												</div>	
 											</td>
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), 10, 10)}</div>
+													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
 												</div>	
 											</td>
 
@@ -646,8 +674,11 @@ class Drops extends React.Component {
 																	</div>																	
 																</div>
 																<div className="value-and-control harvest-wrapper">
-																	<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), 10, 10)}</div>
-																	{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
+                                                                    <div className="harvest-value-wrapper">
+																	    <div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
+																	    <div className="color-2 earned-value-usd">≈ 0.00000 USD</div>
+                                                                    </div>
+                                                                    {this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
 																</div>
 															</div>
 														</div>
@@ -685,7 +716,7 @@ class Drops extends React.Component {
 					</Card>    			
     			</div>
                 <Suspense fallback={<div>---</div>}>
-                    <StakeModal />
+                    <StakeModalDrops/>
                 </Suspense>
     		</div>
         )

@@ -45,7 +45,7 @@ class TrafficController {
         else
             return new Promise((resolve) => resolve({ lock : true }));  
     };
-};
+}
 
 let trafficController = new TrafficController();
 

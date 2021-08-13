@@ -81,7 +81,7 @@ class JSONRPCUtil {
         }
     }
 
-    execRequest (method, params) {
+    execRequest (method, params, anotherUrl) {
         return new Promise((resolve, reject) => {
             let data = {
                 method : method,
@@ -92,7 +92,7 @@ class JSONRPCUtil {
                 jsonrpc : this.version,
                 ...data,
                 id : id
-            })
+            }, anotherUrl)
                 .then(res => {
                     this.requestsManager.completeRequest(res.data.id)
                     if (this._isError(res))

@@ -2,21 +2,16 @@
 FROM node:slim
 
 # Create directory for server node.js files
-WORKDIR /server
+WORKDIR /app
 
 # Copy all project files except ignored in .dockerignore
-COPY . ../
+ADD . /app
 
 # Upgrade all system dependencies
 RUN apt update && apt upgrade
 
 # Install pm2 and project dependencies
-RUN npm i pm2 && npm i
+RUN npm i
+RUN npm install pm2 -g
 
-# TODO - build webpack bundle
-
-RUN pm2 start testServiceFile.js -- --root --port 1234
-RUN sleep 10
-RUN pm2 start testServiceFile.js -- --port 2345
-
-# TODO - need reminisc what TODO
+RUN cd server_v2 && pm2 start testServiceFile.js -- --root --port 1234

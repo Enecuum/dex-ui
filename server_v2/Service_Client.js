@@ -9,9 +9,11 @@ const JSONRPCUtil = require("./JSONRPCUtil")
 const AxiosUtil   = require("./AxiosUtil")
 const IPScanner   = require("./IPScanner")
 
+const serviceType = require("server_v2/service_type.json")
 
 class Service_Client {
     constructor (args, config) {
+        this.serviceType = this._setServiceType(args.type, config)
         this.peer = this._setPeer(args.peer, config)
         this.port = this._setPort(args.port, config)
         this.name = this._setName(args.name)
@@ -22,8 +24,27 @@ class Service_Client {
             output: process.stdout
         })
         this.authToken = null
+        this.commonAuthData = {
+            hash : "",
+            salt : ""
+        }
 
         this.app.use(express.json())
+    }
+
+    _validateServiceType (type) {
+        if (Object.keys(serviceType).indexOf(type))
+            return type
+        else
+            return null
+    }
+
+    _setServiceType (type, config) {
+        if (type)
+            return this._validateServiceType(type)
+        if (config.local_service_type)
+            return this._validateServiceType(config.local_service_type)
+        return null
     }
 
     _setPort (port, config) {
@@ -114,7 +135,7 @@ class Service_Client {
         this.ipScanner = new IPScanner()
         this._setNetUtils(filesData)
         let ip = this.ipScanner.getHostAddress()
-        return this.jsonrpcUtil.execRequest("connect", [ this.name, ip, this.port ])
+        return this.jsonrpcUtil.execRequest("connect", [ this.name, ip, this.port, this.serviceType ])
     }
 
     _authenticateService (response) {
@@ -169,6 +190,31 @@ class Service_Client {
         return true
     }
 
+    _countPassphraseHash (passphrase) {
+        let passphraseHash, saltLength = this.commonAuthData.salt.length
+        passphrase = passphrase.toString()
+
+        const cycles = 2
+        let offset = saltLength / cycles
+        for (let i = 0; i < cycles; ) {
+            let hash = crypto.createHash("md5")
+            hash.update(passphrase + this.commonAuthData.salt.substring(i * offset, ++i * offset - 1))
+            passphraseHash = hash.digest("hex")
+        }
+        return passphraseHash
+    }
+
+    _generateSalt () {
+        this.commonAuthData = crypto.createHash("md5").update(new Date().getTime()).digest("hex")
+    }
+
+    _handlePassphrase () {
+        return new Promise((resolve => this.rl.question("Create root passphrase: ", (passphrase) => {
+            this.commonAuthData.hash = this._countPassphraseHash(passphrase)
+            resolve()
+        })))
+    }
+
     async startClientSteps (root) {
         let configReadiness = this._checkConfiguration()
         if (configReadiness.err) {
@@ -181,6 +227,8 @@ class Service_Client {
             if (!connectionStatus)
                 console.log("Stop service", this.name, "connection")
         } else {
+            this._generateSalt()
+            await this._handlePassphrase()
             this._getTLSRequirements()
                 .then(filesData => this._setNetUtils(filesData))
         }

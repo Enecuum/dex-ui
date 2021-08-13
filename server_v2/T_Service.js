@@ -3,28 +3,33 @@ const https  = require("https")
 const path   = require("path")
 const fs     = require("fs")
 
-const jsonrpcErrors = require("./json-rpc_errors.json")
-
 const Service_Client = require("./Service_Client")
+
+const jsonrpcErrors = require("./json-rpc_errors.json")
+const serviceType   = require("./service_type.json")
 
 
 class T_Service extends Service_Client {
     constructor (args, config) {
         super(args, config)
 
-        this.commonAuthData = {
-            hash : "42b8753abba111e953cd5633966e1794",
-            salt : "0123456789"
-        }
-        this.peers = {
-            // [name] : {
-            //     token        : ...,
-            //     refresh_token: ...,
-            //     host         : ...,
-            //     port         : ...,
-            //     status       : (0 - just created, 1 - authenticated, 2 - token must be refreshed)
-            // }
-        }
+        this.peers = {}
+        // this.peers = {
+        //     name0 : {
+        //         token        : ...,
+        //         refresh_token: ...,
+        //         host         : ...,
+        //         port         : ...,
+        //         status       : (0 - just created, 1 - authenticated, 2 - token must be refreshed)
+        //     }
+        // }
+        this.peersByType = this.peers = Object.keys(serviceType).reduce((resObject, curType) => {
+            return {...resObject, [curType] : []}
+        }, {})
+        // this.peersByType = {
+        //     ddl : [name0, ...],
+        //     fl : [name1, ...]
+        // }
     }
 
     _handleJSONRPCRequests (req, res) {
@@ -79,7 +84,7 @@ class T_Service extends Service_Client {
     }
 
     _authWithPassphrase (name,passphrase) {
-        let hash = this._createPassphraseHash(passphrase)
+        let hash = this._countPassphraseHash(passphrase)
         if (hash === this.commonAuthData.hash) {
             let authTokens = this._getAuthTokenPair()
             this.peers[name] = {...authTokens}
@@ -93,20 +98,6 @@ class T_Service extends Service_Client {
         let hash = crypto.createHash("md5")
         hash.update(new Date().getTime() + crypto.randomBytes(64))
         return hash.digest("hex")
-    }
-
-    _createPassphraseHash (passphrase) {
-        let passphraseHash, saltLength = this.commonAuthData.salt.length
-        passphrase = passphrase.toString()
-
-        const cycles = 2
-        let offset = saltLength / cycles
-        for (let i = 0; i < cycles; ) {
-            let hash = crypto.createHash("md5")
-            hash.update(passphrase + this.commonAuthData.salt.substring(i * offset, ++i * offset - 1))
-            passphraseHash = hash.digest("hex")
-        }
-        return passphraseHash
     }
 
     _jsonrpcResponse (res, isResult, data, r_id) {
@@ -126,11 +117,14 @@ class T_Service extends Service_Client {
             return jsonrpcErrors.wrongTypeOfParams
         if (Object.keys(this.peers).indexOf(params[0]) + 1)
             return jsonrpcErrors.duplicatedNames
+        if (Object.keys(serviceType).indexOf(params[3]) + 1)
+            return jsonrpcErrors.wrongTypeOfService
         this.peers[params[0]] = {
             host : params[1],
             port : params[2],
             status : 0
         }
+        this.peersByType[params[3]].push(params[0])
         return {auth : true}
     }
 

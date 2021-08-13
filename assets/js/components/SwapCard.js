@@ -102,7 +102,9 @@ class SwapCard extends React.Component {
     }
 
     swapPair() {
-        window.location.hash = '#!action=swap&pair=' + this.props.exchange.field1.token.ticker + '-' + this.props.exchange.field0.token.ticker + '&from=' + this.props.exchange.field1.token.hash + '&to=' +  this.props.exchange.field0.token.hash;
+        if (this.props.exchange.field0.token.hash === 'field0' && this.props.exchange.field1.token.hash !== undefined) {
+            window.location.hash = '#!action=swap&pair=' + this.props.exchange.field1.token.ticker + '-' + this.props.exchange.field0.token.ticker + '&from=' + this.props.exchange.field1.token.hash + '&to=' +  this.props.exchange.field0.token.hash;
+        }
         this.props.swapFields(this.props.menuItem);
     };
 

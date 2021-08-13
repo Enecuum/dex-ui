@@ -77,7 +77,7 @@ const presets =  {
         topPairs  : 'top-pairs',
         etm       : 'etm',
         farms     : 'space-harvest-farms',
-        drops     : 'drops'
+        drops     : 'space-drops'
     },
     etm : {
         totalSupplyDefault : '',

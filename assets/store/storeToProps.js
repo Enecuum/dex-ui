@@ -74,6 +74,7 @@ function mapStoreToProps(component) {
         case components.TOKEN_CARD:
             return function (state) {
                 return {
+                    ...state.swapCard,
                     ...state.tokenCard,
                     activeField : state.swapCard.activeField,
                     menuItem    : state.root.menuItem,

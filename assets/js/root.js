@@ -29,15 +29,19 @@ class Root extends React.Component {
         this.intervalUpdDexData();
         this.circleBalanceUpd();
         this.updPendingSpinner();
-        this.aaa = this.getPathFromURLsHash.bind(this);
+        this.setPath();
         window.addEventListener('hashchange', () => {
-            let action = this.getPathFromURLsHash();
-            if (action !== undefined) 
-                this.props.changeMenuItem(action);
-            else
-                window.location.hash = '#!action=swap'
+            this.setPath();
         });
     };
+
+    setPath() {
+        let action = this.getPathFromURLsHash();
+        if (action !== undefined) 
+            this.props.changeMenuItem(action);
+        else
+            window.location.hash = '#!action=swap'
+    }
 
     getPathFromURLsHash() {
         let res = undefined;

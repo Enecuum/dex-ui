@@ -29,19 +29,23 @@ class Aside extends React.Component {
             },
             exchange : {
                 iconClasses: 'icon-Icon10',
-                action: this.changeMenuItem.bind(this, 'exchange')
+                action: this.changeMenuItem.bind(this, 'exchange'),
+                actionAlias: 'swap' 
             },
             liquidity : {
                 iconClasses: 'icon-Icon18',
-                action: this.changeMenuItem.bind(this, 'liquidity')
+                action: this.changeMenuItem.bind(this, 'liquidity'),
+                actionAlias: 'pool' 
             },
             ido : {
                 iconClasses: 'icon-Icon21',
-                action: this.changeMenuItem.bind(this, 'ido')
+                action: this.changeMenuItem.bind(this, 'ido'),
+                actionAlias: 'ido' 
             },
             farms : {
                 iconClasses: 'icon-Icon20',
-                action: this.changeMenuItem.bind(this, 'farms')
+                action: this.changeMenuItem.bind(this, 'farms'),
+                actionAlias: 'space-harvest-farms' 
             },
             // pools : {
             //     iconClasses: 'icon-Icon22',
@@ -49,11 +53,13 @@ class Aside extends React.Component {
             // },
             drops : {
                 iconClasses: 'icon-Icon22',
-                action: this.changeMenuItem.bind(this, 'drops')
+                action: this.changeMenuItem.bind(this, 'drops'),
+                actionAlias: 'space-drops' 
             },
             etm : {
                 iconClasses: 'icon-Icon25',
-                action: this.changeMenuItem.bind(this, 'etm')
+                action: this.changeMenuItem.bind(this, 'etm'),
+                actionAlias: 'etm' 
             },
             info : {
                 iconClasses: 'icon-Icon24',
@@ -61,7 +67,8 @@ class Aside extends React.Component {
             },
             topPairs : {
                 iconClasses: 'icon-Icon24',
-                action: this.changeMenuItem.bind(this, 'topPairs')
+                action: this.changeMenuItem.bind(this, 'topPairs'),
+                actionAlias: 'top-pairs' 
             },
             docs : {
                 iconClasses: 'icon-Icon19',
@@ -97,6 +104,7 @@ class Aside extends React.Component {
 
     changeMenuItem (newItem) {
         this.props.changeMenuItem(newItem);
+        window.location.hash = "!action=" + this.menuItems[newItem].actionAlias;
         this.toggleNavOpen();
     };
 

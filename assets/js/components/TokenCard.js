@@ -32,6 +32,12 @@ class TokenCard extends React.Component {
     };
 
     assignToken(token) {
+        if (this.props.activeField === 'field0' && this.props.exchange.field1.token.hash !== undefined) {
+            window.location.hash = '#!action=swap&pair=' + token.ticker + '-' + this.props.exchange.field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props.exchange.field1.token.hash;
+        } else if (this.props.activeField === 'field1' && this.props.exchange.field0.token.hash !== undefined) {
+            window.location.hash = '#!action=swap&pair=' + this.props.exchange.field0.token.ticker + '-' + token.ticker + '&from=' + this.props.exchange.field0.token.hash + '&to=' +  token.hash;
+        }
+
         this.props.assignTokenValue(this.props.getMode(), this.props.activeField, utils.getTokenObj(this.props.tokens, token.hash));
         this.props.closeTokenList();
         this.props.changeBalance(this.props.activeField, token.hash);

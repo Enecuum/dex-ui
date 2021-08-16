@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
+import presets from '../store/pageDataPresets';
 import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeToProps';
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
@@ -28,10 +29,36 @@ class Root extends React.Component {
         this.intervalUpdDexData();
         this.circleBalanceUpd();
         this.updPendingSpinner();
-        if (window.location.pathname === '/swap') {
-            this.props.changeMenuItem('exchange');            
-        }
+        this.setPath();
+        window.addEventListener('hashchange', () => {
+            this.setPath();
+        });
     };
+
+    setPath() {
+        let action = this.getPathFromURLsHash();
+        if (action !== undefined) 
+            this.props.changeMenuItem(action);
+        else
+            window.location.hash = '#!action=swap'
+    }
+
+    getPathFromURLsHash() {
+        let res = undefined;
+        window.location.hash
+        .split('&')
+        .map(elem => {
+            elem = elem.replace('#!', '');
+            let tmpArr = elem.split('=');
+            if (tmpArr[0] === 'action') {
+                for (let path in presets.paths) {
+                    if (presets.paths[path] === tmpArr[1])
+                        res = path;
+                }
+            }
+        });
+        return res;
+    }
 
     convertPools (pools) {
         return pools.map(element => {

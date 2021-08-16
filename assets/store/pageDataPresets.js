@@ -71,6 +71,14 @@ const presets =  {
             },
         }
     },
+    paths : {
+        exchange  : 'swap',
+        liquidity : 'pool',
+        topPairs  : 'top-pairs',
+        etm       : 'etm',
+        farms     : 'space-harvest-farms',
+        drops     : 'space-drops'
+    },
     etm : {
         totalSupplyDefault : '',
         feeValueDefault : '',

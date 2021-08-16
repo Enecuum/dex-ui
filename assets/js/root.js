@@ -37,9 +37,9 @@ class Root extends React.Component {
 
     setPath() {
         let action = this.getPathFromURLsHash();
-        if (action !== undefined) 
+        if (action !== undefined) {
             this.props.changeMenuItem(action);
-        else
+        } else
             window.location.hash = '#!action=swap'
     }
 

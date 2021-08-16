@@ -76,7 +76,7 @@ class SwapCard extends React.Component {
 
         if (paramsObj.action === 'swap' && paramsObj.from !== undefined && paramsObj.to !== undefined) {            
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
-            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));                 
+            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));
         } else if (paramsObj.action === 'swap' && this.props.exchange.field0.token.hash !== undefined && this.props.exchange.field1.token.hash !== undefined) {        
             window.location.hash = '#!action=swap&pair=' + this.props.exchange.field0.token.ticker + '-' + this.props.exchange.field1.token.ticker + '&from=' + this.props.exchange.field0.token.hash + '&to=' +  this.props.exchange.field1.token.hash;
         } else if (paramsObj.action !== 'swap') {

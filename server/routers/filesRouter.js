@@ -12,7 +12,7 @@ const pubDir         = webpack_config.output.path
 function readAndSend (req, res, cType) {
     cReadFiles([{data: path.join(pubDir, req.url)}], "base64")
         .then(file => {
-            res.send(jsonrpcResponse(req.body.id, true, file.data, cType))
+            res.send(jsonrpcResponse(req.body.id, true, {content : file.data, base64encoding : true}, cType))
         })
         .catch(() => {
             res.send(jsonrpcResponse(req.body.id, false, jsonrpcErrors.noContent))
@@ -29,16 +29,8 @@ router.post(`/(*\.eot$)|(site\.webmanifest)`, (req, res, next) => {
     readAndSend(req, res, "application/x-font-ttf")
 }).post(`/*\.otf$`, (req, res, next) => {
     readAndSend(req, res, "font/opentype")
-})
-
-router.post(`/*\.(png|jpeg|jpg)$`, (req, res, next) => {
-    cReadFiles([{data: path.join(pubDir, req.url)}], "base64")
-        .then(file => {
-            res.send(jsonrpcResponse(req.body.id, true, {content : file.data, image : true}, "image/png"))
-        })
-        .catch(() => {
-            res.send(jsonrpcResponse(req.body.id, false, jsonrpcErrors.noContent))
-        })
+}).post(`/*\.(png|jpeg|jpg)$`, (req, res, next) => {
+    readAndSend(req, res, "image/png")
 })
 
 module.exports = router

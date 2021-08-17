@@ -10,7 +10,7 @@ const config = require("../../config.json")
 router.post(`/`, (req, res, next) => {
     cReadFiles([{data : path.resolve(__dirname, "../../", config.web3_enq_path)}])
         .then(file => {
-            res.send(jsonrpcResponse(req.body.id, true, file.data, "text/html"))
+            res.send(jsonrpcResponse(req.body.id, true, file.data, "application/javascript"))
         })
 })
 

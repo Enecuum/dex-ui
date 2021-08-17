@@ -28,6 +28,7 @@ const valueProcessor = new ValueProcessor();
 
 class SwapCard extends React.Component {
     constructor(props) {
+
         super(props);
         this.pairExists = false;
         this.readyToSubmit = false;
@@ -55,10 +56,8 @@ class SwapCard extends React.Component {
                 }
             ]
         };
-        this.initByGetRequestParams = true;
-        window.addEventListener('hashchange', () => {
-            this.setSwapTokensFromRequest();
-        });        
+        this.resolveURLHash = this.setSwapTokensFromRequest.bind(this);
+        this.initByGetRequestParams = true;               
     };
 
 
@@ -71,16 +70,27 @@ class SwapCard extends React.Component {
         }
     }
 
+    componentDidMount() {
+      window.addEventListener('hashchange', this.resolveURLHash);
+    }
+
+    componentWillUnmount() {
+       window.removeEventListener('hashchange', this.resolveURLHash);
+    }
+
     setSwapTokensFromRequest() {
         let paramsObj = this.parseFromToTokensRequest();
+        let mode;
+        if (paramsObj.action === 'swap')
+            mode = 'exchange';
+        else if (paramsObj.action === 'pool')
+            mode = 'liquidity';
 
-        if (paramsObj.action === 'swap' && paramsObj.from !== undefined && paramsObj.to !== undefined) {            
-            this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
-            this.props.assignTokenValue(this.getMode(), 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));
-        } else if (paramsObj.action === 'swap' && this.props.exchange.field0.token.hash !== undefined && this.props.exchange.field1.token.hash !== undefined) {        
-            window.location.hash = '#!action=swap&pair=' + this.props.exchange.field0.token.ticker + '-' + this.props.exchange.field1.token.ticker + '&from=' + this.props.exchange.field0.token.hash + '&to=' +  this.props.exchange.field1.token.hash;
-        } else if (paramsObj.action !== 'swap') {
-             window.location.hash = '#!action=' + paramsObj.action;
+        if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && paramsObj.from !== undefined && paramsObj.to !== undefined) {
+            this.props.assignTokenValue(mode, 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
+            this.props.assignTokenValue(mode, 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));
+        } else if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {        
+            window.location.hash = '#!action='+ paramsObj.action +'&pair=' + this.props[mode].field0.token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else {
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
         }      
@@ -106,8 +116,9 @@ class SwapCard extends React.Component {
     }
 
     swapPair() {
-        if (this.props.exchange.field0.token.hash !== undefined && this.props.exchange.field1.token.hash !== undefined) {
-            window.location.hash = '#!action=swap&pair=' + this.props.exchange.field1.token.ticker + '-' + this.props.exchange.field0.token.ticker + '&from=' + this.props.exchange.field1.token.hash + '&to=' +  this.props.exchange.field0.token.hash;
+        let mode = this.getMode();
+        if (this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {
+            window.location.hash = '#!action=' + presets.paths[mode] + '&pair=' + this.props[mode].field1.token.ticker + '-' + this.props[mode].field0.token.ticker + '&from=' + this.props[mode].field1.token.hash + '&to=' +  this.props[mode].field0.token.hash;
         }
         this.props.swapFields(this.props.menuItem);
     };
@@ -777,10 +788,11 @@ class SwapCard extends React.Component {
     }
 
     changeAddRemoveCards(mode) {
-        if (mode === 'liquidity')
+        if (mode === 'liquidity') 
             this.props.changeLiquidityMode();
         else if (mode === 'removeLiquidity')
             this.props.changeRemoveLiquidityVisibility();
+        window.location.hash = '#!action=pool';
     };
 
     openConfirmCard() {

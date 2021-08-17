@@ -13,6 +13,7 @@ class T_Service extends Service_Client {
     constructor (args, config) {
         super(args, config)
 
+        this.serviceType = "" // must be assigned in extended classes
         this.peers = {}
         // this.peers = {
         //     name0 : {
@@ -23,7 +24,7 @@ class T_Service extends Service_Client {
         //         status       : (0 - just created, 1 - authenticated, 2 - token must be refreshed)
         //     }
         // }
-        this.peersByType = this.peers = Object.keys(serviceType).reduce((resObject, curType) => {
+        this.peersByType = Object.keys(serviceType).reduce((resObject, curType) => {
             return {...resObject, [curType] : []}
         }, {})
         // this.peersByType = {
@@ -34,7 +35,6 @@ class T_Service extends Service_Client {
 
     _handleJSONRPCRequests (req, res) {
         if (!this.jsonrpcUtil.isValidJSONRPCRequest(req.body) && !Array.isArray(req.body.params)) {
-            console.log(req.body)
             this._jsonrpcResponse(res, false, jsonrpcErrors.doNotSatisfyJSONRPC, req.body.id)
             return
         }
@@ -52,7 +52,7 @@ class T_Service extends Service_Client {
     _authenticateServiceOnServer (params) {
         if (!params.length)
             return jsonrpcErrors.emptyFieldParams
-        if (typeof params[0] !== "string" || typeof params[1] !== "string")
+        if (typeof params[0] !== "string" || (typeof params[1] !== "string"))
             return jsonrpcErrors.wrongTypeOfParams
         let name = params[0], passphrase = params[1]
         if (!this.peers[name])
@@ -77,7 +77,8 @@ class T_Service extends Service_Client {
     _refreshToken (name, refreshToken) {
         if (this.peers[name].refresh_token === refreshToken) {
             let authTokens = this._getAuthTokenPair()
-            this.peers[name] = {...authTokens}
+            this.peers[name] = {...this.peers[name], ...authTokens}
+            this.peers[name].status = 1
             return authTokens
         } else
             return jsonrpcErrors.wrongRefreshToken
@@ -87,7 +88,8 @@ class T_Service extends Service_Client {
         let hash = this._countPassphraseHash(passphrase)
         if (hash === this.commonAuthData.hash) {
             let authTokens = this._getAuthTokenPair()
-            this.peers[name] = {...authTokens}
+            this.peers[name] = {...this.peers[name], ...authTokens}
+            this.peers[name].status = 1
             return authTokens
         }
         else
@@ -115,9 +117,9 @@ class T_Service extends Service_Client {
             return jsonrpcErrors.emptyFieldParams
         if (typeof params[0] !== "string")
             return jsonrpcErrors.wrongTypeOfParams
-        if (Object.keys(this.peers).indexOf(params[0]) + 1)
+        if (Object.keys(this.peers).indexOf(params[0]) !== -1)
             return jsonrpcErrors.duplicatedNames
-        if (Object.keys(serviceType).indexOf(params[3]) + 1)
+        if (Object.keys(serviceType).indexOf(params[3]) === -1)
             return jsonrpcErrors.wrongTypeOfService
         this.peers[params[0]] = {
             host : params[1],
@@ -138,14 +140,22 @@ class T_Service extends Service_Client {
     }
 
     startServer () {
+        const httpsPath = "../../https/"
+
+        if (!this.connectionStatus && !this.rootFlag) {
+            console.log(`Stop launching internal command exchange server of service -> '${this.name}'`)
+            return
+        } else {
+            console.log("Launching internal command exchange server at port:", this.port)
+        }
+
         this._setServerLogic()
-        console.log("Start server at port:", this.port)
         https.createServer({
             requestCert : true,
             rejectUnauthorized : false,
-            cert : fs.readFileSync(path.resolve(__dirname, "../https/server1.crt")),
-            key : fs.readFileSync(path.resolve(__dirname, "../https/server1.key")),
-            ca : fs.readFileSync(path.resolve(__dirname, "../https/rootCA.crt"))
+            cert : fs.readFileSync(path.resolve(__dirname, httpsPath + "server1.crt")),
+            key : fs.readFileSync(path.resolve(__dirname, httpsPath + "server1.key")),
+            ca : fs.readFileSync(path.resolve(__dirname, httpsPath + "rootCA.crt"))
         }, this.app).listen(this.port)
     }
 }

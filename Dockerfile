@@ -14,4 +14,4 @@ RUN apt update && apt upgrade
 RUN npm i
 RUN npm install pm2 -g
 
-RUN cd server_v2 && pm2 start testServiceFile.js -- --root --port 1234
+RUN cd server_v2 && pm2 start hotDev.js -- --root --port 1234

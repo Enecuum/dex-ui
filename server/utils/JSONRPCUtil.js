@@ -69,7 +69,7 @@ class JSONRPCUtil {
         if (!bodyProps.length)
             return false
         return bodyProps.every(el => {
-            return requiredFields.indexOf(el) + 1
+            return requiredFields.indexOf(el) !== -1
         })
     }
 

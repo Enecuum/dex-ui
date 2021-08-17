@@ -1,14 +1,21 @@
 const express = require("express")
 const router  = express.Router()
+const path    = require("path")
+
+const cReadFiles = require("../utils/readFiles")
+const jsonrpcResponse = require("../utils/jsonrpcResponceCreator")
 
 const webpack_config = require("../../webpack.config")
 const pubDir         = webpack_config.output.path
 
-router.get(`/*`, (req, res, next) => {
-    if (req.baseUrl === "/index.html") {
-        res.render(pubDir + "index.html", {title: "Enex"})
+router.post(`/*`, (req, res, next) => {
+    if (req.url === "/index.html") {
+        cReadFiles([{data : path.resolve(pubDir, "index.html")}])
+            .then(file => {
+                res.send(jsonrpcResponse(req.body.id, true, file.data, "text/html"))
+            })
     } else {
-        res.redirect(301, "/index.html'")
+        res.redirect(307, req.baseUrl + "/index.html")
     }
 })
 

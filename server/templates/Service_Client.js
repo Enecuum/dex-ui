@@ -10,20 +10,21 @@ const AxiosUtil   = require("../utils/AxiosUtil")
 const IPScanner   = require("../utils/IPScanner")
 const cReadFiles   = require("../utils/readFiles")
 
-const serviceType = require("server/service_type.json")
+const serviceType = require("../service_type.json")
+
+let oldConsole = console.log.bind(console)
+console.log = (...args) => oldConsole("* ", args)
+
 
 class Service_Client {
     constructor (args, config) {
-        this.serviceType = this._setServiceType(args.type, config)
+        this.rootFlag = args.root
+        this.p = args.p
         this.peer = this._setPeer(args.peer, config)
         this.port = this._setPort(args.port, config)
         this.name = this._setName(args.name)
         this.cnfg = config
         this.app  = express()
-        this.rl   = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        })
         this.authToken = null
         this.commonAuthData = {
             hash : "",
@@ -78,11 +79,12 @@ class Service_Client {
     }
 
     _getTLSRequirements () {
+        const httpsPath = "../../https/"
         return new Promise((resolve, reject) => {
             let files = [
-                { cert : path.resolve(__dirname, "../https/server1.crt") },
-                { key : path.resolve(__dirname, "../https/server1.key") },
-                { ca : path.resolve(__dirname, "../https/rootCA.crt") }
+                { cert : path.resolve(__dirname, httpsPath + "server1.crt") },
+                { key : path.resolve(__dirname, httpsPath + "server1.key") },
+                { ca : path.resolve(__dirname, httpsPath + "rootCA.crt") }
             ]
             cReadFiles(files)
                 .then(filesData => {
@@ -91,7 +93,7 @@ class Service_Client {
                     else
                         resolve(filesData)
                 })
-                .catch(() => reject())
+                .catch((err) => {reject(err)})
         })
     }
 
@@ -111,18 +113,30 @@ class Service_Client {
         return this.jsonrpcUtil.execRequest("connect", [ this.name, ip, this.port, this.serviceType ])
     }
 
+    _executeAuthenticationRequest (resolve, reject, passphrase) {
+        this.jsonrpcUtil.execRequest("authentication", [ this.name, passphrase ])
+            .then(res => {
+                this.authToken = res.token
+                this.refreshToken = res.refresh_token
+                resolve()
+            })
+            .catch(err => reject(err))
+    }
+
+
     _authenticateService (response) {
         return new Promise((resolve, reject) => {
-            if (response.auth)
-                this.rl.question("Enter passphrase: ", (passphrase) => {
-                    this.jsonrpcUtil.execRequest("authentication", [ this.name, passphrase ])
-                        .then(res => {
-                            this.authToken = res.token
-                            this.refreshToken = res.refresh_token
-                            resolve()
-                        })
-                        .catch(err => reject(err))
-                })
+            if (response.auth) {
+                if (this.p) {
+                    this._executeAuthenticationRequest(resolve, reject, this.p)
+                } else if (this.cnfg.passphrase) {
+                    this._executeAuthenticationRequest(resolve, reject, this.cnfg.passphrase)
+                } else {
+                    this.rl.question("Enter passphrase: ", (passphrase) => {
+                        this._executeAuthenticationRequest(resolve, reject, passphrase)
+                    })
+                }
+            }
             else
                 reject(response)
         })
@@ -130,15 +144,16 @@ class Service_Client {
 
     _connectToService () {
         return new Promise((resolve) => {
-            console.log("_sendConnectionRequest")
+            console.log("_getTLSRequirement")
             this._getTLSRequirements()
                 .then(filesData => {
+                    console.log("_sendConnectionRequest")
                     this._sendConnectionRequest(filesData)
                         .then(res => {
                             console.log("_authenticateService")
                             this._authenticateService(res)
                                 .then(() => {
-                                    console.log("Service", this.name, "successfully authenticated!")
+                                    console.log(`Service -> '${this.name}' <- successfully authenticated!`)
                                     resolve(true)
                                 })
                                 .catch(err => {
@@ -151,6 +166,7 @@ class Service_Client {
                             resolve(false)
                         })
                 })
+                .catch(err => console.log(err))
         })
     }
 
@@ -178,34 +194,49 @@ class Service_Client {
     }
 
     _generateSalt () {
-        this.commonAuthData = crypto.createHash("md5").update(new Date().getTime()).digest("hex")
+        this.commonAuthData.salt = crypto.createHash("md5").update(new Date().getTime().toString()).digest("hex")
     }
 
     _handlePassphrase () {
-        return new Promise((resolve => this.rl.question("Create root passphrase: ", (passphrase) => {
-            this.commonAuthData.hash = this._countPassphraseHash(passphrase)
-            resolve()
-        })))
+        return new Promise(resolve => {
+            if (this.p) {
+                this.commonAuthData.hash = this._countPassphraseHash(this.p)
+                resolve()
+            } else if (this.cnfg.passphrase) {
+                this.commonAuthData.hash = this._countPassphraseHash(this.cnfg.passphrase)
+                resolve()
+            } else
+                this.rl.question("Create root passphrase: ", (passphrase) => {
+                    this.commonAuthData.hash = this._countPassphraseHash(passphrase)
+                    resolve()
+                })
+        })
     }
 
-    async startClientSteps (root) {
+    async startClientSteps () {
         let configReadiness = this._checkConfiguration()
         if (configReadiness.err) {
             console.log(configReadiness.err)
-            this.rl.close()
             return -1
         }
-        if (!root) {
-            let connectionStatus = await this._connectToService()
-            if (!connectionStatus)
-                console.log("Stop service", this.name, "connection")
+        this.rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        })
+        if (!this.rootFlag) {
+            this.connectionStatus = await this._connectToService()
+            if (!this.connectionStatus)
+                console.log(`Stop service connection: service name -> '${this.name}'`)
         } else {
             this._generateSalt()
             await this._handlePassphrase()
             this._getTLSRequirements()
                 .then(filesData => this._setNetUtils(filesData))
         }
-        this.rl.close()
+
+        // crutch - i don't know "why?", but in "hotDev.js" you mustn't use config or args for passphrase (asynchronous things)
+        // type passphrase in console when you run all services without isolated docker containers
+        // this.rl.close()
     }
 }
 

@@ -9,5 +9,6 @@
   "doNotSatisfyJSONRPC" : {"code" : -7,   "stateCode" : 400, "message" : "Parameters don't satisfy json-rpc rules"},
   "wrongTypeOfService"  : {"code" : -8,   "stateCode" : 400, "message" : "Wrong type of service"},
   "needInternalMethod"  : {"code" : -9,   "stateCode" : 400, "message" : "Wrong method, service require the 'internal' method"},
-  "notImplemented"      : {"code" : -10,  "stateCode" : 501, "message" : "Service is not implemented"}
+  "notImplemented"      : {"code" : -10,  "stateCode" : 501, "message" : "Service is not implemented"},
+  "noContent"           : {"code" : -11,  "stateCode" : 400, "message" : "Bad request, there is no files here"}
 }

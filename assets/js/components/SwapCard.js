@@ -85,15 +85,26 @@ class SwapCard extends React.Component {
             mode = 'exchange';
         else if (paramsObj.action === 'pool')
             mode = 'liquidity';
-
         if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && paramsObj.from !== undefined && paramsObj.to !== undefined) {
             this.props.assignTokenValue(mode, 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
             this.props.assignTokenValue(mode, 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));
-        } else if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {        
+            this.setTickersFromURLsHash(paramsObj);
+        } else if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {            
             window.location.hash = '#!action='+ paramsObj.action +'&pair=' + this.props[mode].field0.token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else {
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
         }      
+    }
+
+    setTickersFromURLsHash(paramsObj) {
+        let fromToken = this.props.tokens.find(token => token.hash === paramsObj.from);
+        let toToken = this.props.tokens.find(token => token.hash === paramsObj.to);
+        if (fromToken !== undefined && toToken !== undefined) {
+            let windowLocationStr = window.location.hash;
+            let re = /\&pair\=[A-Z]{1,6}\-[A-Z]{1,6}\&from/;
+            let newStr = '&pair=' + fromToken.ticker + '-' + toToken.ticker + '&from';
+            window.location.hash = windowLocationStr.replace(re, newStr);
+        }
     }
 
     parseFromToTokensRequest() {        

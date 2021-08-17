@@ -65,7 +65,7 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance('field0', fToken.hash);
         this.props.assignTokenValue(this.props.menuItem, 'field1', sToken);
         this.changeBalance('field1', sToken.hash);
-        window.location.hash = '#!action=pool';
+        window.location.hash = '#!action=pool&pair=' + fToken.ticker + '-' + sToken.ticker + '&from=' + fToken.hash + '&to=' +  sToken.hash;
     };
 
     countPooledAmount (pair, index) {

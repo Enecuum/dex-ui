@@ -5,8 +5,8 @@ const fs     = require("fs")
 
 const Service_Client = require("./Service_Client")
 
-const jsonrpcErrors = require("./json-rpc_errors.json")
-const serviceType   = require("./service_type.json")
+const jsonrpcErrors = require("../json-rpc_errors.json")
+const serviceType   = require("../service_type.json")
 
 
 class T_Service extends Service_Client {

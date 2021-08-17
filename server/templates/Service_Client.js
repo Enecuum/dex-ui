@@ -5,11 +5,12 @@ const https    = require("https")
 const path     = require("path")
 const fs       = require("fs")
 
-const JSONRPCUtil = require("./JSONRPCUtil")
-const AxiosUtil   = require("./AxiosUtil")
-const IPScanner   = require("./IPScanner")
+const JSONRPCUtil = require("../utils/JSONRPCUtil")
+const AxiosUtil   = require("../utils/AxiosUtil")
+const IPScanner   = require("../utils/IPScanner")
+const cReadFiles   = require("../utils/readFiles")
 
-const serviceType = require("server_v2/service_type.json")
+const serviceType = require("server/service_type.json")
 
 class Service_Client {
     constructor (args, config) {
@@ -76,34 +77,6 @@ class Service_Client {
         return `ds_${hash.digest("hex")}`
     }
 
-    _readFiles (filePaths) {
-        return new Promise((resolve, reject) => {
-            if (filePaths.length === 0) {
-                resolve(null)
-                return
-            }
-            let filePathObj = filePaths[0]                          // { key: "string" }
-            let filePath = filePathObj[Object.keys(filePathObj)[0]] // get string from object
-            fs.readFile(filePath, (err, data) => {
-                if (err) {
-                    console.log("Error: can't read file:", filePath, "Info:", err)
-                    reject()
-                } else {
-                    filePaths.splice(0, 1)
-                    this._readFiles(filePaths)
-                        .then(res => {
-                            let fileDataObj = { [Object.keys(filePathObj)[0]] : data }
-                            if (res === null)
-                                resolve(fileDataObj)
-                            else
-                                resolve({...res, ...fileDataObj})
-                        })
-                        .catch(() => reject())
-                }
-            })
-        })
-    }
-
     _getTLSRequirements () {
         return new Promise((resolve, reject) => {
             let files = [
@@ -111,7 +84,7 @@ class Service_Client {
                 { key : path.resolve(__dirname, "../https/server1.key") },
                 { ca : path.resolve(__dirname, "../https/rootCA.crt") }
             ]
-            this._readFiles(files)
+            cReadFiles(files)
                 .then(filesData => {
                     if (filesData === null) // array 'files' is empty
                         reject()

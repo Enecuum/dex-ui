@@ -1,6 +1,6 @@
 const express = require("express")
 
-const T_Service = require("./T_Service")
+const T_Service = require("./templates/T_Service")
 
 
 class RequestsDivisor extends T_Service {
@@ -24,6 +24,10 @@ class RequestsDivisor extends T_Service {
         })
     }
 
+    _pullApiMethod (url) {
+        return url.substring(url.match(/https?:\/\/[a-z|0-9]+(:[0-9]+)?/)[0].length)
+    }
+
     _execRequestToSpecialService (services, res, req) {
         if (!services.length) {
             res.status(500)
@@ -31,7 +35,7 @@ class RequestsDivisor extends T_Service {
             return
         }
         let sName = services[Math.floor(Math.random() * services.length)]
-        this.jsonrpcUtil.execRequest("internal_request", [req.url], this._countUrl(sName))
+        this.jsonrpcUtil.execRequest("internal_request", [this._pullApiMethod(req.url)], this._countUrl(sName))
             .then(result => {
                 res.setHeader('Content-Type', result.contentType)
                 res.status(200)
@@ -39,10 +43,10 @@ class RequestsDivisor extends T_Service {
             })
             .catch(error => {
                 if (error.stateCode)
-                    res.status(stateCode)
+                    res.status(error.stateCode)
                 else
                     res.status(500)
-                res.end()
+                res.end(error)
             })
     }
 

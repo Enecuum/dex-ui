@@ -15,7 +15,7 @@ class AxiosUtil {
         return axios.post(this._chooseUrl(anotherUrl), data, this.options)
     }
 
-    get (data, anotherUrl) {
+    get (anotherUrl) {
         return axios.get(this._chooseUrl(anotherUrl), this.options)
     }
 }

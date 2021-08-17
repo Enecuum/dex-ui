@@ -1,0 +1,13 @@
+{
+  "emptyFieldParams"    : {"code" : -1,   "stateCode" : 400, "message" : "Empty field 'params'"},
+  "wrongTypeOfParams"   : {"code" : -2,   "stateCode" : 400, "message" : "Wrong types of parameters"},
+  "duplicatedNames"     : {"code" : -3,   "stateCode" : 400, "message" : "Names are duplicated"},
+  "notIdentified"       : {"code" : -3,   "stateCode" : 401, "message" : "Service not identified"},
+  "wrongPassphrase"     : {"code" : -4,   "stateCode" : 403, "message" : "Wrong passphrase"},
+  "alreadyAuthenticated": {"code" : -5,   "stateCode" : 403, "message" : "Service already authenticated"},
+  "wrongRefreshToken"   : {"code" : -6,   "stateCode" : 403, "message" : "Wrong refresh-token"},
+  "doNotSatisfyJSONRPC" : {"code" : -7,   "stateCode" : 400, "message" : "Parameters don't satisfy json-rpc rules"},
+  "wrongTypeOfService"  : {"code" : -8,   "stateCode" : 400, "message" : "Wrong type of service"},
+  "needInternalMethod"  : {"code" : -9,   "stateCode" : 400, "message" : "Wrong method, service require the 'internal' method"},
+  "notImplemented"      : {"code" : -10,  "stateCode" : 501, "message" : "Service is not implemented"}
+}

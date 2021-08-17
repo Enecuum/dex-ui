@@ -24,7 +24,6 @@ const objectFromData = new ObjectFromData();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        this.updLanguage();
         this.intervalUpdDexData();
         this.circleBalanceUpd();
         this.updPendingSpinner();
@@ -250,17 +249,6 @@ class Root extends React.Component {
             this.updBalanceObj('removeLiquidity', 'field1');
             this.updBalanceObj('removeLiquidity', 'ltfield');
         }
-    };
-
-    updLanguage () {
-        let locale = this.props.activeLocale;
-        swapApi.getLanguage(locale)
-        .then(res => {
-            res.json()
-            .then(langData => {
-                this.props.changeLanguage(langData);
-            });
-        })
     };
 
     menuViewController () {

@@ -27,7 +27,6 @@
     "css-loader": "^5.2.0",
     "express": "^4.17.1",
     "glob-parent": "^6.0.0",
-    "i18n": "^0.13.3",
     "i18next": "^20.2.2",
     "i18next-browser-languagedetector": "^6.1.0",
     "i18next-xhr-backend": "^3.2.2",

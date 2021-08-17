@@ -1,6 +1,6 @@
 const fs = require("fs")
 
-module.exports = function cReadFiles (filePaths, enc="binary") {
+module.exports = function cReadFiles (filePaths, enc="utf-8") {
     return new Promise((resolve, reject) => {
         if (filePaths.length === 0) {
             resolve(null)

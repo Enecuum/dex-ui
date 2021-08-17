@@ -10,7 +10,7 @@ const pubDir         = webpack_config.output.path
 
 router.post(`/*`, (req, res, next) => {
     if (req.url === "/index.html") {
-        cReadFiles([{data : path.resolve(pubDir, "index.html")}])
+        cReadFiles([{data : path.resolve(pubDir, "index.html")}], "utf-8")
             .then(file => {
                 res.send(jsonrpcResponse(req.body.id, true, file.data, "text/html"))
             })

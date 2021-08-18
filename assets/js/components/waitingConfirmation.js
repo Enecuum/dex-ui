@@ -26,31 +26,33 @@ class WaitingConfirmation extends React.Component {
     }
 
     getDescription () {
-        let descriptionPhrase = '';
-        let v0 = this.props[this.props.menuItem].field0.value.text;
-        let v1 = this.props[this.props.menuItem].field1.value.text;
-        let t0 = this.props[this.props.menuItem].field0.token.ticker;
-        let t1 = this.props[this.props.menuItem].field1.token.ticker;
-        let interpolateParams = {
-            value0  : (v0 == undefined) ? '' : v0,
-            ticker0 : (t0 == undefined) ? '' : t0,
-            value1  : (v1 == undefined) ? '' : v1,
-            ticker1 : (t1 == undefined) ? '' : t1,
-        }
-
-        if (!this.props.createPool) {
-            if (this.props.menuItem == 'exchange') {
-                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.swap.completePhrase';
-            } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityRemove) {
-                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.addLiquidity.completePhrase';
-            } else if (this.props.menuItem == 'liquidity') {
-                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.removeLiquidity.completePhrase';
+        if (this.props[this.props.menuItem] !== undefined) {
+            let descriptionPhrase = '';
+            let v0 = this.props[this.props.menuItem].field0.value.text;
+            let v1 = this.props[this.props.menuItem].field1.value.text;
+            let t0 = this.props[this.props.menuItem].field0.token.ticker;
+            let t1 = this.props[this.props.menuItem].field1.token.ticker;
+            let interpolateParams = {
+                value0  : (v0 == undefined) ? '' : v0,
+                ticker0 : (t0 == undefined) ? '' : t0,
+                value1  : (v1 == undefined) ? '' : v1,
+                ticker1 : (t1 == undefined) ? '' : t1,
             }
-        } else {
-            descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.createPool.completePhrase';
-        }
 
-        return this.props.t(descriptionPhrase, interpolateParams);
+            if (!this.props.createPool) {
+                if (this.props.menuItem == 'exchange') {
+                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.swap.completePhrase';
+                } else if (this.props.menuItem == 'liquidity' && !this.props.liquidityRemove) {
+                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.addLiquidity.completePhrase';
+                } else if (this.props.menuItem == 'liquidity') {
+                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.removeLiquidity.completePhrase';
+                }
+            } else {
+                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.createPool.completePhrase';
+            }
+
+            return this.props.t(descriptionPhrase, interpolateParams);            
+        }
     };
 
     getContentByType() {

@@ -52,7 +52,7 @@ class LiquidityTokensZone extends React.Component {
 
     openRmLiquidityCard (pool) {
         this.fillRmLiquidityFields(pool);
-        this.props.changeRemoveLiquidityVisibility();
+        this.props.changeRemoveLiquidityVisibility();        
     };
     
     getYourPoolToken (ltHash) {
@@ -65,6 +65,7 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance('field0', fToken.hash);
         this.props.assignTokenValue(this.props.menuItem, 'field1', sToken);
         this.changeBalance('field1', sToken.hash);
+        window.location.hash = '#!action=pool&pair=' + fToken.ticker + '-' + sToken.ticker + '&from=' + fToken.hash + '&to=' +  sToken.hash;
     };
 
     countPooledAmount (pair, index) {
@@ -108,14 +109,17 @@ class LiquidityTokensZone extends React.Component {
                 }
             }
         }, 'ltfield');
+        let t0 = this.getTokenByHash(pool.token_0.hash);
+        let t1 = this.getTokenByHash(pool.token_1.hash);
         this.assignDataForRemoveLiquidity('field0', {
-            token : this.getTokenByHash(pool.token_0.hash),
+            token : t0,
             coinValue : counted.t0
         });
         this.assignDataForRemoveLiquidity('field1', {
-            token : this.getTokenByHash(pool.token_1.hash),
+            token : t1,
             coinValue : counted.t1
         });
+        window.location.hash = '#!action=pool&pair=' + t0.ticker + '-' + t1.ticker + '&from=' + t0.hash + '&to=' +  t1.hash;
     };
 
 

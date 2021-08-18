@@ -58,7 +58,7 @@ class ConfirmSupply extends React.Component {
 
     render() {
         const t = this.props.t;        
-        let modeStruct = this.props[this.props.menuItem];
+        let modeStruct = this.props.menuItem === 'exchange' || this.props.menuItem === 'liquidity' ? this.props[this.props.menuItem] : this.props.exchange;
         let firstToken = modeStruct.field0.token;
         let secondToken = modeStruct.field1.token;
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token]);

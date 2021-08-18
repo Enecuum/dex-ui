@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import presets from '../../store/pageDataPresets';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
 import Form from 'react-bootstrap/Form';
@@ -32,10 +33,13 @@ class TokenCard extends React.Component {
     };
 
     assignToken(token) {
-        if (this.props.activeField === 'field0' && this.props.exchange.field1.token.hash !== undefined) {
-            window.location.hash = '#!action=swap&pair=' + token.ticker + '-' + this.props.exchange.field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props.exchange.field1.token.hash;
-        } else if (this.props.activeField === 'field1' && this.props.exchange.field0.token.hash !== undefined) {
-            window.location.hash = '#!action=swap&pair=' + this.props.exchange.field0.token.ticker + '-' + token.ticker + '&from=' + this.props.exchange.field0.token.hash + '&to=' +  token.hash;
+        let mode = this.props.getMode();
+        let modeAlias = presets.paths[mode];
+        console.log(mode)
+        if (this.props.activeField === 'field0' && this.props[mode].field1.token.hash !== undefined) {
+            window.location.hash = '#!action=' + modeAlias + '&pair=' + token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props[mode].field1.token.hash;
+        } else if (this.props.activeField === 'field1' && this.props[mode].field0.token.hash !== undefined) {
+            window.location.hash = '#!action=' + modeAlias + '&pair=' + this.props[mode].field0.token.ticker + '-' + token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  token.hash;
         }
 
         this.props.assignTokenValue(this.props.getMode(), this.props.activeField, utils.getTokenObj(this.props.tokens, token.hash));

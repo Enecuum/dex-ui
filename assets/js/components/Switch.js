@@ -2,12 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
+import presets from '../../store/pageDataPresets';
 
 import '../../css/switch.css';
 
 class Switch extends React.Component {
     switchMode (mode) {
         this.props.changeMenuItem(mode);
+        window.location.hash = '#!action=' + presets.paths[mode];
     };
 
     render () {

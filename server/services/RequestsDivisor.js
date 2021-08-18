@@ -38,7 +38,7 @@ class RequestsDivisor extends T_Service {
             return
         }
         let sName = services[Math.floor(Math.random() * services.length)]
-        this.jsonrpcUtil.execRequest("internal_request", [req.url], this._countUrl(sName))
+        this.jsonrpcUtil.execRequest("internal_request", [this.peers[sName].token, req.url], this._countUrl(sName))
             .then(result => {
                 res.status(200)
                 res.setHeader('Content-Type', result.contentType)

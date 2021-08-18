@@ -31,14 +31,20 @@ class T_Service extends Service_Client {
         //     ddl : [name0, ...],
         //     fl : [name1, ...]
         // }
+
+        this.app.use((req, res, next) => {
+            if (req.method === "POST" && req.body.jsonrpc)
+                this._handleJSONRPCRequests(req, res, next)
+        })
     }
 
-    _handleJSONRPCRequests (req, res) {
+    _handleJSONRPCRequests (req, res, next) {
         if (!this.jsonrpcUtil.isValidJSONRPCRequest(req.body) && !Array.isArray(req.body.params)) {
             this._jsonrpcResponse(res, false, jsonrpcErrors.doNotSatisfyJSONRPC, req.body.id)
             return
         }
         let body = req.body, opRes
+
         if (body.method === "connect") {
             opRes = this._saveNewServiceData(body.params)
             this._jsonrpcResponse(res, opRes.code === undefined, opRes, body.id)
@@ -46,6 +52,9 @@ class T_Service extends Service_Client {
         } else if (body.method === "authentication") {
             opRes = this._authenticateServiceOnServer(body.params)
             this._jsonrpcResponse(res, opRes.code === undefined, opRes, body.id)
+        } else if (body.method === "internal_request") {
+            if (body.params[0] === this.authToken)
+                next()
         }
     }
 
@@ -59,7 +68,7 @@ class T_Service extends Service_Client {
             return  jsonrpcErrors.notIdentified
         let status = this.peers[name].status
 
-        if      (status === 0)
+        if (status === 0)
             return this._authWithPassphrase(name, passphrase)
         else if (status === 1)
             return jsonrpcErrors.alreadyAuthenticated
@@ -91,8 +100,7 @@ class T_Service extends Service_Client {
             this.peers[name] = {...this.peers[name], ...authTokens}
             this.peers[name].status = 1
             return authTokens
-        }
-        else
+        } else
             return jsonrpcErrors.wrongPassphrase
     }
 
@@ -130,15 +138,6 @@ class T_Service extends Service_Client {
         return {auth : true}
     }
 
-    _setServerLogic () {
-        this.app.use((req, res, next) => {
-            if (req.method === "POST" && req.body.jsonrpc)
-                this._handleJSONRPCRequests(req, res)
-            else
-                next()
-        })
-    }
-
     startServer () {
         const httpsPath = "../../https/"
 
@@ -149,7 +148,6 @@ class T_Service extends Service_Client {
             console.log("Launching internal command exchange server at port:", this.port)
         }
 
-        this._setServerLogic()
         https.createServer({
             requestCert : true,
             rejectUnauthorized : false,
@@ -159,10 +157,5 @@ class T_Service extends Service_Client {
         }, this.app).listen(this.port)
     }
 }
-
-// server get name
-// server write name
-// server get passphrase
-// server write token and send to clientService
 
 module.exports = T_Service

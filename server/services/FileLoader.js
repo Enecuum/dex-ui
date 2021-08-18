@@ -5,10 +5,9 @@ const router  = express.Router()
 const T_Service = require("../templates/T_Service")
 
 const localesRouter = require("../routers/localesRouter")
-const filesRouter = require("../routers/filesRouter")
-const htmlRouter  = require("../routers/htmlRouter")
-const libRouter   = require("../routers/libRouter")
-const jsRouter    = require("../routers/jsRouter")
+const filesRouter   = require("../routers/filesRouter")
+const htmlRouter    = require("../routers/htmlRouter")
+const jsRouter      = require("../routers/jsRouter")
 
 const jsonrpcErrors = require("../json-rpc_errors.json")
 
@@ -19,12 +18,11 @@ class FileLoader extends T_Service {
 
         this.serviceType = "fl" // file loader
 
-        this.app.use("/", this._getMainRouter())
-        this.app.use("/enqlib/{0,}", libRouter)
-        this.app.use("/html/{0,}", htmlRouter)
-        this.app.use("/enex.webpack.js/{0,}", jsRouter)
-        this.app.use(["/img/{0,}", "/file/{0,}", "/{0,}"], filesRouter)
+        this.app.use("/{0,}", this._getMainRouter())
         this.app.use("/locales", localesRouter)
+        this.app.use("/html/{0,}", htmlRouter)
+        this.app.use(["/enex.webpack.js/{0,}", "/enqlib/{0,}"], jsRouter)
+        this.app.use(["/img/{0,}", "/file/{0,}"], filesRouter)
     }
 
     _sendError (req, res, errorMsg) {
@@ -42,7 +40,7 @@ class FileLoader extends T_Service {
                 return
             }
 
-            let urlPath = req.body.params[0]
+            let urlPath = req.body.params[1]
             let allowedPaths = ["img", "html", "enex.webpack.js", "enqlib", "file", "locales"]
 
             if (urlPath === "/") {

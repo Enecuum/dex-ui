@@ -19,7 +19,7 @@ function readAndSend (req, res, cType) {
         })
 }
 
-router.post(`/(*\.eot$)|(site\.webmanifest)`, (req, res, next) => {
+router.post(`/site\.webmanifest`, (req, res, next) => {
     readAndSend(req, res, "text/html")
 }).post(`/*\.woff$`, (req, res, next) => {
     readAndSend(req, res, "application/font-woff")
@@ -27,10 +27,14 @@ router.post(`/(*\.eot$)|(site\.webmanifest)`, (req, res, next) => {
     readAndSend(req, res, "image/svg+xml")
 }).post(`/*\.ttf$`, (req, res, next) => {
     readAndSend(req, res, "application/x-font-ttf")
+}).post(`/*\.eot$`, (req, res, next) => {
+    readAndSend(req, res, "application/vnd.ms-fontobject")
 }).post(`/*\.otf$`, (req, res, next) => {
     readAndSend(req, res, "font/opentype")
-}).post(`/*\.(png|jpeg|jpg)$`, (req, res, next) => {
+}).post(`/*\.png$`, (req, res, next) => {
     readAndSend(req, res, "image/png")
+}).post(`/*\.(jpeg|jpg)$`, (req, res, next) => {
+    readAndSend(req, res, "image/jpeg")
 })
 
 module.exports = router

@@ -22,6 +22,15 @@ const requestType = {
 };
 
 class ExtRequests { 
+    constructor (nth) {
+        if (!nth)
+            nth = presets.network.nativeToken.hash
+        this.updNativeTokenHash(nth)
+    }
+
+    updNativeTokenHash (nth) {
+        this.nativeTokenHash = nth
+    }
 
     getBigIntAmount (field) { // utility
         let diff = field.balance.decimals - field.value.decimals;
@@ -119,7 +128,7 @@ class ExtRequests {
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : presets.network.nativeToken.fee,
-            tokenHash : presets.network.nativeToken.hash,
+            tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e10),
             data : ENQweb3lib.serialize({
                 type : reqType,
@@ -136,7 +145,7 @@ class ExtRequests {
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : farmActionCost.toString(),
-            tokenHash : presets.network.nativeToken.hash,
+            tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
             data : ENQweb3lib.serialize({
                 type : reqType,
@@ -153,7 +162,7 @@ class ExtRequests {
             from : pubKey,
             to : presets.network.genesisPubKey,
             value : issueTokenCost.toString(),
-            tokenHash : presets.network.nativeToken.hash,
+            tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
             data : ENQweb3lib.serialize({
                 type : requestType.ISSUE_TOKEN,

@@ -83,6 +83,10 @@ class IndicatorPanel extends React.Component {
         extRequests.getProvider(true)
         .then(res => {
             if (!res.lock) {
+                let actualNativeToken = ENQWeb.Enq.token[ENQWeb.Enq.provider]
+                if (extRequests.nativeTokenHash !== actualNativeToken)
+                    extRequests.updNativeTokenHash(actualNativeToken)
+                console.log(ENQWeb.Enq.token[ENQWeb.Enq.provider])
                 this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
                 ENQWeb.Enq.provider = res.net; 
                 this.props.assignMainToken(ENQWeb.Enq.ticker)

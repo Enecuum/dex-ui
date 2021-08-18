@@ -76,11 +76,10 @@ class Aside extends React.Component {
             }
         };
         this.exchRateUpdRate = 5 * sec;
-        this.monitorExchangeRate();
+        this.intervalDescriptor = this.monitorExchangeRate();
 
         this.state = {windowWidth: window.innerWidth};
     };
-
 
     toggleNavOpen() {
         if (window.innerWidth <= 767) {            
@@ -99,6 +98,7 @@ class Aside extends React.Component {
     }
 
     componentWillUnmount() {
+        clearInterval(this.intervalDescriptor)
         window.removeEventListener('resize', this.updateDimensions);
     }
 
@@ -110,7 +110,7 @@ class Aside extends React.Component {
 
     monitorExchangeRate () {
         this.updExchangeRate();
-        setInterval(() => this.updExchangeRate(), this.exchRateUpdRate);
+        return setInterval(() => this.updExchangeRate(), this.exchRateUpdRate);
     };
 
     updExchangeRate () {

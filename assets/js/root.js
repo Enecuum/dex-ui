@@ -26,14 +26,19 @@ class Root extends React.Component {
     constructor (props) {
         super(props);
         this.updLanguage();
-        this.intervalUpdDexData();
-        this.circleBalanceUpd();
-        this.updPendingSpinner();
+        this.intervalDescriptors = []
+        this.intervalDescriptors.push(this.intervalUpdDexData())
+        this.intervalDescriptors.push(this.circleBalanceUpd())
+        this.intervalDescriptors.push(this.updPendingSpinner())
         this.setPath();
         window.addEventListener('hashchange', () => {
             this.setPath();
         });
     };
+
+    componentWillUnmount () {
+        this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
+    }
 
     setPath() {
         let action = this.getPathFromURLsHash();
@@ -86,7 +91,7 @@ class Root extends React.Component {
     };
 
     intervalUpdDexData () {
-        setInterval(() => {
+        return setInterval(() => {
             if (this.props.connectionStatus)
                 this.updDexData(this.props.pubkey);
         }, 5000);
@@ -228,7 +233,7 @@ class Root extends React.Component {
     };
 
     updPendingSpinner () {
-        setInterval(() => {
+        return setInterval(() => {
             if (this.props.pubkey) {
                 swapApi.pendingTxAccount(this.props.pubkey)
                 .then(res => {
@@ -251,7 +256,7 @@ class Root extends React.Component {
 
     circleBalanceUpd () {
         this.updBalanceForms();
-        setInterval(() => {
+        return setInterval(() => {
             this.updBalanceForms();
         }, 2000);
     }

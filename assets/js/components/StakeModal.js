@@ -86,7 +86,7 @@ class StakeModal extends React.Component {
         stakeValue           : {
                                   numberValue : value
                                 },
-        initialStake         : this.props.managedFarmData.stake !== undefined && this.props.managedFarmData.stake !== null ? BigInt(this.props.managedFarmData.stake) : '0n',                        
+        initialStake         : this.props.managedFarmData.stake !== undefined && this.props.managedFarmData.stake !== null ? BigInt(this.props.managedFarmData.stake) : 0n,                        
         mainTokenAmount      : BigInt(this.props.mainTokenAmount),
         actionCost           : BigInt(this.props.stakeData.actionCost),
         stake_token_decimals : this.props.managedFarmData.stake_token_decimals,

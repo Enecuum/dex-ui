@@ -86,7 +86,7 @@ class StakeModal extends React.Component {
         stakeValue           : {
                                   numberValue : value
                                 },
-        initialStake         : this.props.managedFarmData.stake !== undefined && this.props.managedFarmData.stake !== null ? BigInt(this.props.managedFarmData.stake) : 0n,                        
+        initialStake         : this.props.managedFarmData.stake !== undefined && this.props.managedFarmData.stake !== null ? BigInt(this.props.managedFarmData.stake) : '0n',                        
         mainTokenAmount      : BigInt(this.props.mainTokenAmount),
         actionCost           : BigInt(this.props.stakeData.actionCost),
         stake_token_decimals : this.props.managedFarmData.stake_token_decimals,
@@ -119,7 +119,17 @@ class StakeModal extends React.Component {
           field : 'stakeValue',
           value : commonDataSet.stakeValue
         });
-      }
+
+      } else if (value === '' || value === undefined) { 
+        this.props.updateStakeData({
+          field : 'stakeValue',
+          value : {
+            numberValue : '',
+            bigIntValue : '',
+            rawFractionalPart : ''
+          }
+        });
+      }  
 
       this.props.updateStakeData({
         field : 'stakeValid',
@@ -146,6 +156,23 @@ class StakeModal extends React.Component {
             //this.props.changeWaitingStateType('rejected');
         });
       }
+    }
+
+    setValue(percentage = 1) {
+      //TODO: Engage percentage to set a fraction of stake/unstake
+      let action = this.props.currentAction;
+      let value = 0n;
+      if (action === 'farm_increase_stake') {
+        value = BigInt(this.props.stakeData.stakeTokenAmount);
+        if (this.props.managedFarmData.stake_token_hash === this.props.mainToken) {
+          value -= BigInt(this.props.stakeData.actionCost)
+        }
+      } else if (action === 'farm_decrease_stake') {
+        value = BigInt(this.props.managedFarmData.stake);
+      }
+
+      let max = valueProcessor.usCommasBigIntDecimals(value, this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals).replace(',','')
+      this.processData(max);     
     }
 
     getModalTitle(t) {      
@@ -210,10 +237,15 @@ class StakeModal extends React.Component {
                                   type="text"
                                   placeholder="0"
                                   className="mr-4 stake-input"
+                                  value = {this.props.stakeData.stakeValue.numberValue ? this.props.stakeData.stakeValue.numberValue : ''}
                                   onChange={this.handleInputChange.bind(this)}
                                   autoFocus/>
                                 <div className="d-flex flex-nowrap">
-                                    <div className="mr-2 set-max text-color3 hover-pointer d-none">{t('max')}</div>
+                                    <div
+                                      className="mr-2 set-max text-color3 hover-pointer hover-color4"
+                                      onClick={this.setValue.bind(this)}>
+                                      {t('max')}
+                                    </div>
                                     <div className="text-nowrap">{this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : '---'}</div>
                                 </div>
                             </div>                                                         
@@ -244,11 +276,11 @@ class StakeModal extends React.Component {
                         {this.props.managedFarmData !== null &&
                           <div className="text-center">
                               <a
-                                  href = {this.getLinkToPair()}
-                                  onClick={this.switchToSwap.bind(this)}
-                                  className="text-color4-link hover-pointer">
-                                  <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
-                                  <span className="icon-Icon11"/>                                
+                                href = {this.getLinkToPair()}
+                                onClick={this.switchToSwap.bind(this)}
+                                className="text-color4-link hover-pointer">
+                                <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
+                                <span className="icon-Icon11"/>                                
                               </a>
                           </div>
                         }

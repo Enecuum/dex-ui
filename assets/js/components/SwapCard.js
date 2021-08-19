@@ -57,7 +57,8 @@ class SwapCard extends React.Component {
             ]
         };
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this);
-        this.initByGetRequestParams = true;               
+        this.initByGetRequestParams = true;
+        this.handBack = false;               
     };
 
 
@@ -86,6 +87,12 @@ class SwapCard extends React.Component {
         else if (paramsObj.action === 'pool')
             mode = 'liquidity';
         if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && paramsObj.from !== undefined && paramsObj.to !== undefined) {
+            if (paramsObj.action === 'pool') {                
+                if (this.props.liquidityMain === true && this.handBack === false && !this.requestPairIsExist(paramsObj)) {
+                    this.props.changeLiquidityMode();
+                }
+                this.handBack = false;
+            }
             this.props.assignTokenValue(mode, 'field0', utils.getTokenObj(this.props.tokens, paramsObj.from));
             this.props.assignTokenValue(mode, 'field1', utils.getTokenObj(this.props.tokens, paramsObj.to));
             this.setTickersFromURLsHash(paramsObj);
@@ -94,6 +101,17 @@ class SwapCard extends React.Component {
         } else {
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
         }      
+    }
+
+    requestPairIsExist(paramsObj) {
+        let myPairs = [];
+        for (let pool of this.props.pairs)
+            for (let balance of this.props.balances)
+                if (balance.token === pool.lt)
+                    myPairs.push(pool);
+        let pairIsExist = myPairs.find(elem => (elem.token_0.hash === paramsObj.from) && (elem.token_1.hash === paramsObj.to));
+
+        return pairIsExist !== undefined ? true : false;                   
     }
 
     setTickersFromURLsHash(paramsObj) {
@@ -799,8 +817,10 @@ class SwapCard extends React.Component {
     }
 
     changeAddRemoveCards(mode) {
-        if (mode === 'liquidity') 
+        if (mode === 'liquidity') {
+            this.handBack = true;
             this.props.changeLiquidityMode();
+        }
         else if (mode === 'removeLiquidity')
             this.props.changeRemoveLiquidityVisibility();
         window.location.hash = '#!action=pool';

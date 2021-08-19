@@ -18,8 +18,67 @@ class LiquidityTokensZone extends React.Component {
         this.changeBalance = this.props.changeBalance;
         this.pooled = {};
         this.state = {activeId: ''};
-
+        this.initByGetRequestParams = true;
+        this.resolveURLHash = this.setActiveKey.bind(this);
     };
+
+    componentDidMount() {
+      window.addEventListener('hashchange', this.resolveURLHash);
+    }
+
+    componentWillUnmount() {
+       window.removeEventListener('hashchange', this.resolveURLHash);
+    }    
+
+    componentDidUpdate(prevProps, prevState){
+        const hasAChanged = ((this.props.tokens !== prevProps.tokens));
+        if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
+            this.setActiveKey();
+            this.initByGetRequestParams = false;
+        }
+
+        if (this.state.activeId !== prevState.activeId) {
+            let activeId = this.state.activeId;
+            let ltList = this.getLtData();
+
+            if (ltList[activeId] !== undefined && this.state.activeId !== undefined) {
+                let ticker0 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_0.hash)).ticker;
+                let ticker1 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_1.hash)).ticker;
+                window.location.hash = '#!action=pool&pair=' + ticker0 + '-' + ticker1 + '&from=' + ltList[activeId].token_0.hash + '&to=' +  ltList[activeId].token_1.hash;
+            }
+        }
+    }
+
+    setActiveKey() {
+        let activeKey = '';
+        let paramsObj = this.parseFromToTokensRequest(); 
+        let ltList = this.getLtData();
+        if (paramsObj.action === 'pool' && paramsObj.from !== undefined && paramsObj.to !== undefined && ltList.length > 0) {
+            let index = ltList.findIndex(elem => (elem.token_0.hash === paramsObj.from) && (elem.token_1.hash === paramsObj.to));
+            if (index !== -1)
+                activeKey = index;
+        }
+        this.setState({ activeId: activeKey.toString()});
+    }
+
+    parseFromToTokensRequest() {        
+        let requestParamsObj = {
+            action : undefined,
+            pair   : undefined,
+            from   : undefined,
+            to     : undefined
+        };
+
+        window.location.hash
+        .split('&')
+        .map(elem => {
+            elem = elem.replace('#!', '');
+            let tmpArr = elem.split('=');
+            if (requestParamsObj.hasOwnProperty(tmpArr[0]))
+                requestParamsObj[tmpArr[0]] = tmpArr[1];
+        });
+        return requestParamsObj;
+    }
 
     getTokenByHash (hash) {
         let empty = { ticker : '-', hash : undefined };
@@ -122,7 +181,6 @@ class LiquidityTokensZone extends React.Component {
         window.location.hash = '#!action=pool&pair=' + t0.ticker + '-' + t1.ticker + '&from=' + t0.hash + '&to=' +  t1.hash;
     };
 
-
     renderLtList () {
         let ltList = this.getLtData();
         if (ltList.length === 0)
@@ -136,6 +194,7 @@ class LiquidityTokensZone extends React.Component {
                 let sToken  = this.getTokenByHash(el.token_1.hash);
                 let balance = utils.getBalanceObj(this.props.balances, el.lt)
                 this.userPoolToken = this.getYourPoolToken(el.lt);
+
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
                         <Card.Header>
@@ -143,7 +202,7 @@ class LiquidityTokensZone extends React.Component {
                                 eventKey={index+''}
                                 as="div"
                                 className="d-flex align-items-center justify-content-between hover-pointer py-2"
-                                onClick={() => this.setState({ activeId: this.state.activeId !== index ? index : '' })}
+                                onClick={() => this.setState({ activeId: this.state.activeId.toString() !== index.toString() ? index.toString() : '' })}
                                 data-active-accordion-elem = {index === this.state.activeId ? 'active' : 'inactive'} >
                                     <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
                                     <i className="fas fa-chevron-down accordion-chevron"/>
@@ -186,10 +245,10 @@ class LiquidityTokensZone extends React.Component {
         }
     };
 
-    render () {
+    render () {        
         return(
             <>
-                <Accordion>
+                <Accordion activeKey={this.state.activeId}>
                     { this.renderLtList() }
                 </Accordion>
             </>

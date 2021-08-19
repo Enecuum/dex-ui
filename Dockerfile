@@ -7,11 +7,33 @@ WORKDIR /app
 # Copy all project files except ignored in .dockerignore
 ADD . /app
 
+# Establish args
+ARG SERVICE_TYPE
+ARG CONTAINER_PORT
+ARG PEER_PORT
+ARG CLIENTS_PORT
+ARG ADDR
+ARG PASSWORD
+
 # Upgrade all system dependencies
-RUN apt update && apt upgrade
+RUN apt-get update && apt-get upgrade -y
+
+# create config.json
+RUN mv config.json.example config.json
 
 # Install pm2 and project dependencies
 RUN npm i
 RUN npm install pm2 -g
 
-RUN cd server_v2 && pm2 start hotDev.js -- --root --port 1234
+# remove useless files
+RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
+
+# point out ports
+EXPOSE $CONTAINER_PORT
+EXPOSE $CLIENTS_PORT
+
+ENV S_TYPE  $SERVICE_TYPE
+ENV ADDRESS $ADDR
+ENV P_PORT  $PEER_PORT
+ENV C_PORT  $CONTAINER_PORT
+ENV PASSW   $PASSWORD

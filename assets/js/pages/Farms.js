@@ -35,7 +35,7 @@ class Farms extends React.Component {
             'farm_get_reward'
         ];
 
-        this.circleUpd();
+        this.intervalDescriptor = this.circleUpd();
 
         this.state = {
             dropFarmActionsParams : {
@@ -65,8 +65,12 @@ class Farms extends React.Component {
         this.executeHarvest = this.executeHarvest.bind(this);    
     };
 
+    componentWillUnmount() {
+        clearInterval(this.intervalDescriptor)
+    }
+
     circleUpd () {
-        setInterval(() => {
+        return setInterval(() => {
             this.updateMainTokenInfo();
             this.updateMainTokenAmount();
             this.updateStakeTokenBalance();        

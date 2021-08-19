@@ -4,10 +4,8 @@
   "description": "swap service",
   "main": "server.js",
   "scripts": {
-    "dev": "pm2 start ./ecosystem.config.js --only dev",
-    "test_prod": "pm2 start ./ecosystem.config.js --only test_prod",
-    "prod": "pm2 start ./ecosystem.config.js --only prod",
-    "make": "node node_modules/webpack/bin/webpack.js build --config webpack.config.js"
+    "make": "node node_modules/webpack/bin/webpack.js build --config webpack.config.js",
+    "dev": "pm2 start ./ecosystem.config.js --only hot_dev"
   },
   "repository": {
     "type": "git",

@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import i18n from "./utils/i18n";
-import { withTranslation,I18nextProvider } from "react-i18next";
+import { withTranslation, I18nextProvider } from "react-i18next";
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms } from './components/entry';
 
@@ -24,10 +24,15 @@ const objectFromData = new ObjectFromData();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        this.intervalUpdDexData();
-        this.circleBalanceUpd();
-        this.updPendingSpinner();
+        this.intervalDescriptors = []
+        this.intervalDescriptors.push(this.intervalUpdDexData())
+        this.intervalDescriptors.push(this.circleBalanceUpd())
+        this.intervalDescriptors.push(this.updPendingSpinner())
     };
+
+    componentWillUnmount() {
+        this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
+    }
 
     convertPools (pools) {
         return pools.map(element => {
@@ -55,7 +60,7 @@ class Root extends React.Component {
     };
 
     intervalUpdDexData () {
-        setInterval(() => {
+        return setInterval(() => {
             if (this.props.connectionStatus)
                 this.updDexData(this.props.pubkey);
         }, 5000);
@@ -205,7 +210,7 @@ class Root extends React.Component {
     };
 
     updPendingSpinner () {
-        setInterval(() => {
+        return setInterval(() => {
             if (this.props.pubkey) {
                 swapApi.pendingTxAccount(this.props.pubkey)
                 .then(res => {
@@ -228,7 +233,7 @@ class Root extends React.Component {
 
     circleBalanceUpd () {
         this.updBalanceForms();
-        setInterval(() => {
+        return setInterval(() => {
             this.updBalanceForms();
         }, 2000);
     }

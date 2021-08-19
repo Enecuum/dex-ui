@@ -15,11 +15,15 @@ class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
         this.updData();
-        this.circleUpd();
+        this.intervalDescriptor = this.circleUpd();
         this.state = {
             accountInfoVisibility : false
         };
     };
+
+    componentWillUnmount() {
+        clearInterval(this.intervalDescriptor)
+    }
 
     renderPendingIndicator () {
         if (this.props.pendingIndicator)
@@ -70,7 +74,7 @@ class IndicatorPanel extends React.Component {
     };
 
     circleUpd () {
-        setInterval(() => {
+        return setInterval(() => {
             this.updData();
         }, 2000);
     };

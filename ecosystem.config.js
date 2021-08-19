@@ -1,32 +1,39 @@
+const path = require("path")
+
+const logDir = path.join(__dirname, "logs")
+
 module.exports = {
     apps : [
         {
-            name : "prod",
-            script : "server.js",
-            cwd : "./server",
-            args : "--run --filter error",
+            name : "hot_dev",
+            script : path.join(__dirname, "server/scripts/hotDev.js"),
             exec_mode : "fork",
             merge_logs: true,
-            log_file : '../logs/prod.log',
+            log_file : path.join(logDir, "dev.log"),
             watch : false
         },
         {
-            name : "test_prod",
-            script : "server.js",
-            cwd : "./server",
-            args : "--run --filter full",
+            name : "fl",
+            script : path.join(__dirname, "server/scripts/fl.js"),
             exec_mode : "fork",
             merge_logs: true,
-            log_file : '../logs/test_prod.log',
+            log_file : path.join(logDir, "fl.log"),
             watch : false
         },
         {
-            name : "dev",
-            script : "./node_modules/webpack/bin/webpack.js",
-            args : "serve --host 0.0.0.0 --config webpack.config.js",
+            name : "rd",
+            script : path.join(__dirname, "server/scripts/rd.js"),
             exec_mode : "fork",
             merge_logs: true,
-            log_file : 'logs/dev.log',
+            log_file : path.join(logDir, "rd.log"),
+            watch : false
+        },
+        {
+            name : "ddl",
+            script : path.join(__dirname, "server/scripts/ddl.js"),
+            exec_mode : "fork",
+            merge_logs: true,
+            log_file : path.join(logDir, "ddl.log"),
             watch : false
         }
     ]

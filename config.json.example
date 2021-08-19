@@ -3,9 +3,9 @@
     "mode"          : "dev",
 
     "local_service_port" : 7070,
-    "passphrase"         : "secret",
+    "passphrase"         : "",
 
-    "remote_service_url"  : "https://localhost",
+    "remote_service_url"  : "https://0.0.0.0",
     "remote_service_port" : "1234",
 
     "dex_url"   : "dex_url",

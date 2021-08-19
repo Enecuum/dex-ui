@@ -18,9 +18,6 @@ ARG PASSWORD
 # Upgrade all system dependencies
 RUN apt-get update && apt-get upgrade -y
 
-# create config.json
-RUN mv config.json.example config.json
-
 # Install pm2 and project dependencies
 RUN npm i
 RUN npm install pm2 -g
@@ -37,3 +34,13 @@ ENV ADDRESS $ADDR
 ENV P_PORT  $PEER_PORT
 ENV C_PORT  $CONTAINER_PORT
 ENV PASSW   $PASSWORD
+ENV O_PORT  $CLIENTS_PORT
+
+CMD cd server/scripts/ ;\
+if [ "$S_TYPE" = "rd" ] ; then \
+    pm2-runtime start rd.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} --o_port ${O_PORT} ;\
+elif [ "$S_TYPE" = "fl" ] ; then \
+    pm2-runtime start fl.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} ;\
+elif [ "$S_TYPE" = "ddl" ] ; then \
+    pm2-runtime start ddl.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} ;\
+fi

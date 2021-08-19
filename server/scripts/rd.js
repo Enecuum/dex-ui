@@ -9,7 +9,7 @@ const requestsDivisor = new RequestsDivisor({
     port : argv.port,
     name : "rd(root)"
 }, config)
-
+console.log(argv)
 let run = function () {
     requestsDivisor.startClientSteps()
         .then(res => {

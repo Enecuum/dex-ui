@@ -171,7 +171,7 @@ class Service_Client {
     }
 
     _checkConfiguration () {
-        let netRule = /^https?:\/\/[a-z|0-9]+:[0-9]+/
+        let netRule = /^https?:\/\/[0-9|a-z|\.]+:[0-9]+/
         if (!netRule.test(this.peer))
             return {
                 err : `Error: wrong peer '${this.peer}', url must satisfy the expression '${netRule}'`

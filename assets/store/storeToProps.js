@@ -165,12 +165,13 @@ function mapStoreToProps(component) {
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (state) {
                 return {
-                    pubkey      : state.root.pubkey,
-                    menuItem    : state.root.menuItem,
-                    tList       : state.root.tokens,
-                    pairs       : state.root.pairs,
-                    tokens      : state.root.tokens,
-                    balances    : state.root.balances,
+                    connectionStatus : state.root.connectionStatus,
+                    pubkey           : state.root.pubkey,
+                    menuItem         : state.root.menuItem,
+                    tList            : state.root.tokens,
+                    pairs            : state.root.pairs,
+                    tokens           : state.root.tokens,
+                    balances         : state.root.balances,
                 };
             };
         case components.LP_WALLET_INFO:

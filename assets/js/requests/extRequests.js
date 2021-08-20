@@ -22,14 +22,17 @@ const requestType = {
 };
 
 class ExtRequests { 
-    constructor (nth) {
+    constructor (nth, fee) {
         if (!nth)
             nth = presets.network.nativeToken.hash
-        this.updNativeTokenHash(nth)
+        if (!fee)
+            fee = presets.network.nativeToken.fee
+        this.updNativeTokenData(nth, fee)
     }
 
-    updNativeTokenHash (nth) {
+    updNativeTokenData (nth, fee) {
         this.nativeTokenHash = nth
+        this.nativeTokenFee  = fee
     }
 
     getBigIntAmount (field) { // utility
@@ -127,7 +130,7 @@ class ExtRequests {
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
-            value : presets.network.nativeToken.fee,
+            value : this.nativeTokenFee,
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e10),
             data : ENQweb3lib.serialize({

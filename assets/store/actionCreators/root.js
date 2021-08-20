@@ -118,6 +118,14 @@ const actionCreators = {
             type : actions.UPD_RECENT_TXS,
             value : txs
         }
+    },
+
+    updMainTokenData (hash, fee) {
+        return {
+            type : actions.UPD_MAIN_TOKEN_DATA,
+            hash : hash,
+            fee  : fee
+        }
     }
 };
 

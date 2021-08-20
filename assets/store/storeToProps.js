@@ -120,11 +120,13 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.indicatorPanel,
-                    pubkey                  : state.root.pubkey,
-                    pendingIndicator        : state.root.pendingIndicator,
-                    balances                : state.root.balances,
-                    net                     : state.root.net,
-                    coinAmount              : state.indicatorPanel.coinAmount
+                    pubkey          : state.root.pubkey,
+                    pendingIndicator: state.root.pendingIndicator,
+                    balances        : state.root.balances,
+                    net             : state.root.net,
+                    coinAmount      : state.indicatorPanel.coinAmount,
+                    mainToken       : state.root.mainToken,
+                    mainTokenFee    : state.root.mainTokenFee
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -391,7 +393,8 @@ function mapDispatchToProps(component) {
                     ...indicatorPanelCreator,
                     assignPubkey    : rootCreator.assignPubkey,
                     changeNetwork   : rootCreator.changeNetwork,
-                    assignMainToken : rootCreator.assignMainToken
+                    assignMainToken : rootCreator.assignMainToken,
+                    updMainTokenData: rootCreator.updMainTokenData
                 }, dispatch);
             };
         case components.CONFIRM_SUPPLY:

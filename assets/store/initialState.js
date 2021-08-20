@@ -15,7 +15,8 @@ function getDefaultField(id) {
 const initialState = {
     root : {
         net                     : presets.network.defaultNet,
-        mainToken               : presets.network.nativeToken.hash,
+        mainToken               : presets.network.nativeToken.hash, // <-
+        mainTokenFee            : presets.network.nativeToken.fee,  // <-
         langData                : presets.langData,
         connecionListOpened     : false,
         navOpened               : window.innerWidth > 757,

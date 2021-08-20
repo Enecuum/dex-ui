@@ -65,6 +65,9 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.UPD_RECENT_TXS:
             return rootStore(state, { recentTxs: action.value })
 
+        case actions.UPD_MAIN_TOKEN_DATA:
+            return rootStore(state, { mainToken: action.hash , mainTokenFee : action.fee })
+
         default:
             return state;
     }

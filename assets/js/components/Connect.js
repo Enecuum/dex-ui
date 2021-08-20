@@ -15,7 +15,7 @@ class Connect extends React.Component {
                 type='submit'
                 style={{
                     backgroundColor: 'var(--color3)'
-                }}>
+                }}>asd
                 { t('navbars.top.connect') }
             </button>
         );

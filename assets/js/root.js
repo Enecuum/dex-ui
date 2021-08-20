@@ -1,3 +1,9 @@
+// code for manual reloading in dev-mode
+if (module.hot) {
+    module.hot.accept()
+}
+// =====================================
+
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';

@@ -2,6 +2,11 @@ const express = require("express")
 
 const T_Service = require("../templates/T_Service")
 
+const webpack              = require("webpack")
+const webpackDevMiddleware = require("webpack-dev-middleware")
+const webpackHotMiddleware = require('webpack-hot-middleware')
+const w_config             = require("../../webpack.config")
+
 
 class RequestsDivisor extends T_Service {
     constructor (args, config) {
@@ -12,6 +17,30 @@ class RequestsDivisor extends T_Service {
         this.CRH_app = express() // handler for outer clients requests (CRH - client request handler)
 
         this.CRH_app.use(express.json())
+
+        // this.CRH_app.use((req, res, next) => {
+        //     console.log(req.url)
+        //     next()
+        // })
+
+        if (this.mode === "dev") {
+            let hmr_plugin = new webpack.HotModuleReplacementPlugin()
+            w_config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000')
+            if (w_config.plugins && Array.isArray(w_config.plugins))
+                w_config.plugins.push(hmr_plugin)
+            else
+                w_config.plugins = [ hmr_plugin ]
+            let compiler = webpack(w_config)
+
+            this.CRH_app.use(webpackDevMiddleware(
+                compiler,
+                {
+                    publicPath : w_config.output.path,
+                    writeToDisk : true
+                }
+            ))
+            this.CRH_app.use(webpackHotMiddleware(compiler));
+        }
 
         // for ddl-service
         this.CRH_app.get(`/api/${this.cnfg.api_version}*`, (req, res) => {

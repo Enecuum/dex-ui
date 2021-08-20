@@ -1,17 +1,18 @@
-const path   = require('path')
-const WriteFilePlugin = require('write-file-webpack-plugin')
+const path = require('path')
 
 const outPath = path.resolve(__dirname, 'public');
 
 module.exports = {
     entry : {
-        main : [
+        app : [
             path.resolve(__dirname, 'assets/js/root.js'),
         ]
     },
     output : {
         path : outPath,
         filename : 'enex.webpack.js',
+        hotUpdateChunkFilename: 'hot/hot-update.js',
+        hotUpdateMainFilename: 'hot/hot-update.json'
     },
     module : {
         rules : [
@@ -40,7 +41,8 @@ module.exports = {
     },
     plugins : [
     ],
-    mode : 'production',
+    devtool: 'inline-source-map',
+    mode : 'development',
     devServer : {
         contentBase : outPath
     }

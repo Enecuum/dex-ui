@@ -635,7 +635,7 @@ class SwapCard extends React.Component {
           if (value < 0) {
             value = 0n
           }
-        }        
+        }
 
         let newValObj = {
                             value    : value,

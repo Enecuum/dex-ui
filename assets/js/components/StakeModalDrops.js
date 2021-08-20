@@ -155,7 +155,6 @@ class StakeModalDrops extends React.Component {
     }
 
     setValue(percentage = 100) {
-      //TODO: Engage percentage to set a fraction of stake/unstake
       let action = this.props.currentAction;
       let value = 0n;
       if (action === 'farm_increase_stake') {
@@ -185,6 +184,36 @@ class StakeModalDrops extends React.Component {
       let max = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals, this.props.managedFarmData.stake_token_decimals).replace(',','')
       this.processData(max);     
     }
+
+    getPercentage(stake) {
+      let res = 0;
+
+      if (this.props.stakeData.stakeValid && this.props.managedFarmData !== null && stake !== undefined) {
+        let action = this.props.currentAction;
+        let decimals = this.props.managedFarmData ? this.props.managedFarmData.stake_token_decimals : 0;
+        let numerator = {
+          value: BigInt(stake) * 100n,
+          decimals: decimals
+        };
+        let denominator;        
+
+        if (action === 'farm_increase_stake') {
+          denominator = {
+            value    : BigInt(this.props.stakeData.stakeTokenAmount),
+            decimals : decimals
+          }
+        } else if (action === 'farm_decrease_stake') {
+          denominator = {
+            value    : BigInt(this.props.managedFarmData.stake),
+            decimals : decimals
+          }
+        }
+        let divRes = valueProcessor.div(numerator, denominator);
+        res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(',','');
+
+      }
+      return res;
+    }    
 
     getModalTitle(t) {      
       if (this.props.currentAction !== undefined && this.props.managedFarmData !== null && this.props.managedFarmData.stake_token_name !== undefined) {
@@ -264,8 +293,19 @@ class StakeModalDrops extends React.Component {
 
                         <div className={`err-msg mb-4 ${this.props.stakeData.stakeValid ? 'd-none' : 'd-block'}`}>
                             {this.props.stakeData.stakeValidationMsg}
-                        </div>                        
+                        </div> 
 
+                        <Form.Group className="pb-2">
+                          <Form.Control                            
+                            value = {this.getPercentage(this.props.stakeData.stakeValue.bigIntValue)}
+                            type="range"
+                            onChange={e => this.setValue(e.target.value.toString())}
+                            variant='danger'
+                            min={0}
+                            max={100}
+                          />
+                        </Form.Group>
+                        
                         <div className="d-flex align-items-center justify-content-between mb-4">
                             {this.modifyStakeRanges.ranges.map((item, index) => (
                               <button

@@ -23,7 +23,7 @@ class RequestsDivisor extends T_Service {
         //     next()
         // })
 
-        if (this.mode === "dev") {
+        if (w_config.mode === "development") {
             let hmr_plugin = new webpack.HotModuleReplacementPlugin()
             w_config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000')
             if (w_config.plugins && Array.isArray(w_config.plugins))

@@ -12,8 +12,8 @@ const cReadFiles   = require("../utils/readFiles")
 
 const serviceType = require("../service_type.json")
 
-let oldConsole = console.log.bind(console)
-console.log = (...args) => oldConsole("* ", args)
+// let oldConsole = console.log.bind(console)
+// console.log = (...args) => oldConsole("* ", args)
 
 
 class Service_Client {
@@ -23,7 +23,6 @@ class Service_Client {
         this.peer = this._setPeer(args.peer, config)
         this.port = this._setPort(args.port, config)
         this.name = this._setName(args.name)
-        this.mode = this._setMode(args.mode, config)
         this.cnfg = config
         this.app  = express()
         this.authToken = null

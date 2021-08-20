@@ -628,11 +628,19 @@ class SwapCard extends React.Component {
         let mode = this.getMode();
         let field = this.getFieldName(fieldProps.id);
         let decimals = this.props[mode][field].token.decimals;
+        let value = BigInt(fieldProps.fieldData.balance.amount)
+
+        if (fieldProps.fieldData.token.hash === this.props.mainToken) {
+          value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee);
+          if (value < 0) {
+            value = 0n
+          }
+        }
 
         let newValObj = {
-                            value    : fieldProps.fieldData.balance.amount,
+                            value    : value,
                             decimals : decimals,
-                            text     : valueProcessor.usCommasBigIntDecimals (fieldProps.fieldData.balance.amount, decimals, decimals).replace(',','') 
+                            text     : valueProcessor.usCommasBigIntDecimals (value, decimals, decimals).replace(',','') 
                         };
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];

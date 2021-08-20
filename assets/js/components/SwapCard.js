@@ -631,7 +631,7 @@ class SwapCard extends React.Component {
         let value = BigInt(fieldProps.fieldData.balance.amount)
 
         if (fieldProps.fieldData.token.hash === this.props.mainToken) {
-          value -= BigInt(presets.network.nativeToken.fee);
+          value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee);
           if (value < 0) {
             value = 0n
           }

@@ -695,7 +695,7 @@ class SwapCard extends React.Component {
     };
 
     countPrice(activeField, counterField, pair) {
-        let decimals = [activeField.balance.decimals, counterField.balance.decimals];
+        let decimals = [activeField.token.decimals, counterField.token.decimals];
         if (activeField.token.hash !== pair.token_0.hash)
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
         let volume0  = {

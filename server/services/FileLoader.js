@@ -1,6 +1,9 @@
-const path    = require("path")
 const express = require("express")
 const router  = express.Router()
+
+const webpack              = require("webpack")
+const webpackDevMiddleware = require("webpack-dev-middleware")
+const w_config             = require("../../webpack.config")
 
 const T_Service = require("../templates/T_Service")
 
@@ -17,6 +20,23 @@ class FileLoader extends T_Service {
         super(args, config)
 
         this.serviceType = "fl" // file loader
+
+        if (this.mode === "dev") {
+            let hmr_plugin = new webpack.HotModuleReplacementPlugin()
+            if (w_config.plugins && Array.isArray(w_config.plugins))
+                w_config.plugins.push(hmr_plugin)
+            else
+                w_config.plugins = [ hmr_plugin ]
+            let compiler = webpack(w_config)
+
+            this.app.use(webpackDevMiddleware(
+                compiler,
+                {
+                    publicPath : w_config.output.path,
+                    writeToDisk : true
+                }
+            ))
+        }
 
         this.app.use("/{0,}", this._getMainRouter())
         this.app.use("/locales", localesRouter)

@@ -32,25 +32,25 @@ do
                 --build-arg CONTAINER_PORT=${PORTS[$i]}    \
                 --build-arg PEER_PORT="${PORTS[0]}"        \
                 --build-arg CLIENTS_PORT=$CLIENTS_PORT     \
-                --build-arg ADDR=https://${ROOT_IP}           \
+                --build-arg ADDR=https://${ROOT_IP}        \
                 --build-arg PASSWORD=$PASSWORD             \
                 -t ${IMG_TAG}_"${SERVICES[$i]}"            \
                 ./
 done
 
-docker run -d --name "${SERVICES[0]}" \
-              --publish ${PORTS[0]}:${PORTS[0]} \
+docker run -d --name "${SERVICES[0]}"                         \
+              --publish ${PORTS[0]}:${PORTS[0]}               \
               --publish ${SERVER_ENTRY_PORT}:${CLIENTS_PORT}  \
-              --net=${NET} \
-              --ip ${ROOT_IP} \
+              --net=${NET}                                    \
+              --ip ${ROOT_IP}                                 \
               ${IMG_TAG}_"${SERVICES[0]}"
 sleep 5
-docker run -d --name "${SERVICES[1]}" \
+docker run -d --name "${SERVICES[1]}"           \
               --publish ${PORTS[1]}:${PORTS[1]} \
-              --net=${NET} \
+              --net=${NET}                      \
               ${IMG_TAG}_"${SERVICES[1]}"
 sleep 5
-docker run -d --name "${SERVICES[2]}" \
+docker run -d --name "${SERVICES[2]}"           \
               --publish ${PORTS[2]}:${PORTS[2]} \
-              --net=${NET} \
+              --net=${NET}                      \
               ${IMG_TAG}_"${SERVICES[2]}"

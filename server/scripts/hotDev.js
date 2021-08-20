@@ -6,21 +6,25 @@ const RequestsDivisor = require("../services/RequestsDivisor")
 const FilesLoader     = require("../services/FileLoader")
 const DexDataLoader   = require("../services/DexDataLoader")
 
+const clientsGate = 1234
 const requestsDivisor = new RequestsDivisor({
     root : true,
-    port : 1234,
-    name : "root"
+    port : 1235,
+    name : "root",
+    p : "root"
 }, config)
 const filesLoader     = new FilesLoader({
-    peer: "https://localhost:1234",
-    port : 1235,
-    name : "file_loader"
+    peer: "https://localhost:1235",
+    port : 1236,
+    name : "file_loader",
+    p : "root",
+    mode : "dev"
 }, config)
 const dexDataLoader   = new DexDataLoader({
-    peer: "https://localhost:1234",
-    port : 1236
+    peer: "https://localhost:1235",
+    port : 1237,
+    p : "root"
 }, config)
-const clientsGate = 1237
 
 function startService (service) {
     return new Promise((resolve => {

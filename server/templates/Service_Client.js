@@ -23,6 +23,7 @@ class Service_Client {
         this.peer = this._setPeer(args.peer, config)
         this.port = this._setPort(args.port, config)
         this.name = this._setName(args.name)
+        this.mode = this._setMode(args.mode, config)
         this.cnfg = config
         this.app  = express()
         this.authToken = null
@@ -32,6 +33,19 @@ class Service_Client {
         }
 
         this.app.use(express.json())
+    }
+
+    _isValidMode(mode) {
+        return (mode === "dev" || mode === "prod")
+    }
+
+    _setMode (mode, config) {
+        if (this._isValidMode(mode))
+            return mode
+        if (this._isValidMode(config.mode))
+            return config.mode
+        console.log("The mode wasn't established. Run the service in the 'dev' mode")
+        return "prod"
     }
 
     _validateServiceType (type) {

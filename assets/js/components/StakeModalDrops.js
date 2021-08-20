@@ -187,9 +187,8 @@ class StakeModalDrops extends React.Component {
 
     getPercentage(stake) {
       let res = 0;
-
-      if (this.props.stakeData.stakeValid && this.props.managedFarmData !== null && stake !== undefined) {
-        let action = this.props.currentAction;
+      let action = this.props.currentAction;
+      if (this.props.stakeData.stakeValid && this.props.managedFarmData !== null && stake !== undefined) {        
         let decimals = this.props.managedFarmData ? this.props.managedFarmData.stake_token_decimals : 0;
         let numerator = {
           value: BigInt(stake) * 100n,
@@ -208,10 +207,20 @@ class StakeModalDrops extends React.Component {
             decimals : decimals
           }
         }
+
         let divRes = valueProcessor.div(numerator, denominator);
         res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(',','');
+      } else if (!this.props.stakeData.stakeValid) {
+        if (action === 'farm_increase_stake') {
+          if (this.props.stakeData.stakeValue.bigIntValue > BigInt(this.props.stakeData.stakeTokenAmount))
+            res = 100;
 
-      }
+        } else if (action === 'farm_decrease_stake') {
+          if (this.props.stakeData.stakeValue.bigIntValue > BigInt(this.props.managedFarmData.stake))
+            res = 100;
+        }
+      }   
+
       return res;
     }    
 
@@ -303,9 +312,10 @@ class StakeModalDrops extends React.Component {
                             variant='danger'
                             min={0}
                             max={100}
+                            style={{opacity : !this.props.stakeData.stakeValid ?  0.3 : 1}}
                           />
                         </Form.Group>
-                        
+
                         <div className="d-flex align-items-center justify-content-between mb-4">
                             {this.modifyStakeRanges.ranges.map((item, index) => (
                               <button

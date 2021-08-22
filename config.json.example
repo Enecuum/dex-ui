@@ -1,6 +1,5 @@
 {
     "web3_enq_path" : "web3-enq/dist/enqweb3lib.node.min.js",
-    "mode"          : "dev",
 
     "local_service_port" : 7070,
     "passphrase"         : "",

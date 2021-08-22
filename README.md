@@ -1,7 +1,7 @@
 # Dex
 
 #### Intro 
-This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. Here you cand find all information about frontend part of that project.
+This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. Here you can find all information about frontend part of that project.
     
 #### Technologies
 * Language: JavaScript
@@ -57,50 +57,23 @@ All settings for webpack module locates into [./webpack.config.js][2].
 Essential roperties:
 * [entry][3] - root file, which imports all scripts, styles and other assets
 * [output][4] - property for specifying output bundle
-* [module.rules][5] - amount of modules and their rools for creating right imports
+* [module.rules][5] - amount of modules and their rules for creating right imports
 * [devServer][6] - configuration field with server deployment properties (read more about in on https://webpack.js.org/configuration/dev-server/)
 
 #### Develop mode
 
-Use webpack dev server for more convenient development. It is the best to create stubs inside the {before} property in webpack.config.js just like in the example:
-```
-    before: (app) => {
-        app.get('/getLanguage/*', (req, res) => {
-            ...
-            res.json(JSON.parse(fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' })));
-        });
-        app.get('/getTokens', (req, res) => {
-            ...
-            res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
-        });
-        app.get('/enqlib', (req, res) => {
-            ...
-            res.send(fs.readFileSync(`./web-enq/prebuild/enqweb3.min.js`, { encoding : 'utf-8' }));
-        });
-        ...
-    }
-```
-It is easy to use because of similarity to express node-module.
 
-Run dev server:
-```
-    npm run dev
-```
 
 #### Redux
 
-We use Redux for more comfortable supervising of components states. You can find contatiner inside the [./assets/store][7] directory. There is introduced seven main files and directories for creating main redux structure:
+We use Redux for more comfortable supervising of components states. You can find container inside the [./assets/store][7] directory. There is introduced seven main files and directories for creating main redux structure:
 * store.js - main assembly file
 * initialState.js and pageDataPresets.js - describe main state structure of the project
 * [./actions][8] and [./actionCreators][9] - directories with rules and methods for using redux store
-* [./reducers][10] - middle layer for store control, change state object acording the actions
+* [./reducers][10] - middle layer for store control, change state object according the actions
 * storetoProps.js - node for states and methods distribution across the components (react-redux connect())
 
-#### Frontend scheme
 
-User interactions scheme. Red border page is the start page.
-
-![front_scheme](doc_img/front_scheme.png)
 
 #### Enecuum AMM DEX documentation 
 

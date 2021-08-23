@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "make": "node node_modules/webpack/bin/webpack.js build --config webpack.config.js",
-    "prod": "bash standart_build.bash"
+    "prod": "bash standard_build.bash",
+    "dev": "pm2 start ecosystem.config.js --only hot_dev",
+    "stop_d": "pm2 stop hot_dev",
+    "stop_p": "docker stop $(docker ps -a -q)"
   },
   "repository": {
     "type": "git",
@@ -18,7 +21,6 @@
   },
   "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
   "dependencies": {
-    "@mermaid-js/mermaid-cli": "^8.11.4",
     "axios": "^0.21.1",
     "babel-watch": "^7.5.0",
     "bootstrap": "^4.6.0",

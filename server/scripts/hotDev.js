@@ -10,15 +10,14 @@ const clientsGate = 1234
 const requestsDivisor = new RequestsDivisor({
     root : true,
     port : 1235,
-    name : "root",
+    // name : "root", use webpack development mode
     p : "root"
 }, config)
 const filesLoader     = new FilesLoader({
     peer: "https://localhost:1235",
     port : 1236,
     name : "file_loader",
-    p : "root",
-    mode : "dev"
+    p : "root"
 }, config)
 const dexDataLoader   = new DexDataLoader({
     peer: "https://localhost:1235",

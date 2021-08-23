@@ -30,7 +30,7 @@
         subgraph Dex_Test_Plug
         end
 
-        subgraph Dex_Data_Сaching_Module
+        subgraph Dex_Data_Сaching_Module-unnesessary-now
         end
 
     lr      --> locales(locales)
@@ -42,8 +42,8 @@
 
     rd -->|JSON-RPC| File_Loader
     rd -->|JSON-RPC| Dex_Test_Plug
-    rd -->|JSON-RPC| Dex_Data_Сaching_Module
+    rd -->|JSON-RPC| Dex_Data_Сaching_Module-unnesessary-now
 
-    style Dex_Data_Сaching_Module stroke-width:1px, stroke-dasharray: 10 10
+    style Dex_Data_Сaching_Module-unnesessary-now stroke-width:1px, stroke-dasharray: 10 10
     style Dex_Test_Plug stroke-width:1px, stroke-dasharray: 10 10
 ```

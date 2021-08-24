@@ -33,8 +33,10 @@ class RequestsManager {
 
     deleteOldRequests () {
         this.requests = this.requests.map(el => {
-            if (new Date() - el.date < this.timeBorder)
-                return el;
+            try {
+                if (new Date() - el.date < this.timeBorder)
+                    return el;
+            } catch (e) {}
         });
     }
 

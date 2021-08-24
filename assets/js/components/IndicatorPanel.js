@@ -68,15 +68,17 @@ class IndicatorPanel extends React.Component {
     };
 
     updData () {
-        this.updNetwork();
-        let tokenObj = utils.getBalanceObj(this.props.balances, this.props.nativeToken);
-        this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals));
+        this.updNetwork()
+        let tokenObj = utils.getBalanceObj(this.props.balances, this.props.mainToken)
+        let tokenName = utils.getTokenObj(this.props.tokens, this.props.mainToken)
+        this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals))
+        this.props.updCoinName(tokenName.ticker)
     };
 
     circleUpd () {
         return setInterval(() => {
             this.updData();
-        }, 2000);
+        }, 1000);
     };
 
     updMainTokenData () {
@@ -96,9 +98,8 @@ class IndicatorPanel extends React.Component {
         .then(res => {
             if (!res.lock) {
                 this.updMainTokenData()
-                this.changeNet(res.net.replace(/https?:\/\//, '').replace(/.enecuum.com/, ''), res.net + '/');
-                ENQWeb.Enq.provider = res.net;
-                this.props.assignMainToken(ENQWeb.Enq.ticker)
+                this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
+                ENQWeb.Enq.provider = res.net
             }    
         },
         err => console.log('cannot make getProvider request'));

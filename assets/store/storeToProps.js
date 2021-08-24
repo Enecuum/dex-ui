@@ -43,8 +43,7 @@ function mapStoreToProps(component) {
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
                     removeLiquidity : state.swapCard.removeLiquidity,
-                    topPairs        : state.topPairs,
-                    mainToken       : state.mainToken
+                    topPairs        : state.topPairs
                 }
             };
         case components.SWAP_CARD:
@@ -123,6 +122,7 @@ function mapStoreToProps(component) {
                     pubkey          : state.root.pubkey,
                     pendingIndicator: state.root.pendingIndicator,
                     balances        : state.root.balances,
+                    tokens          : state.root.tokens,
                     net             : state.root.net,
                     coinAmount      : state.indicatorPanel.coinAmount,
                     mainToken       : state.root.mainToken,
@@ -331,7 +331,8 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     ...rootCreator,
                     assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
-                    changeMenuItem  : rootCreator.changeMenuItem                    
+                    changeMenuItem  : rootCreator.changeMenuItem,
+                    assignTokenValue: swapCardCreator.assignTokenValue
                 }, dispatch);
             };
         case components.SWAP_CARD:
@@ -393,7 +394,6 @@ function mapDispatchToProps(component) {
                     ...indicatorPanelCreator,
                     assignPubkey    : rootCreator.assignPubkey,
                     changeNetwork   : rootCreator.changeNetwork,
-                    assignMainToken : rootCreator.assignMainToken,
                     updMainTokenData: rootCreator.updMainTokenData
                 }, dispatch);
             };

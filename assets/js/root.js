@@ -262,12 +262,20 @@ class Root extends React.Component {
         this.updBalanceForms();
         return setInterval(() => {
             this.updBalanceForms();
-        }, 2000);
+        }, 1000);
     }
 
     updBalanceObj (menuItem, field) {
-        this.props.assignBalanceObj(menuItem, field, utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash));
-    };
+        let balanceObj = utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash)
+        let tokenObj = utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash)
+        if (tokenObj.ticker === '---') {
+            if (field === 'field0')
+                this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props.mainToken))
+            else
+                this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
+        }
+        this.props.assignBalanceObj(menuItem, field, balanceObj)
+    }
 
     updBalanceForms () {
         if (this.props.menuItem === 'exchange') {

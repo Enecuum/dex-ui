@@ -87,7 +87,7 @@ class SwapCard extends React.Component {
         else if (paramsObj.action === 'pool')
             mode = 'liquidity';
         if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && paramsObj.from !== undefined && paramsObj.to !== undefined) {
-            if (paramsObj.action === 'pool') {                
+            if (paramsObj.action === 'pool') {
                 if (this.props.liquidityMain === true && this.handBack === false && !this.requestPairIsExist(paramsObj)) {
                     this.props.changeLiquidityMode();
                 }
@@ -638,10 +638,10 @@ class SwapCard extends React.Component {
         }
 
         let newValObj = {
-                            value    : value,
-                            decimals : decimals,
-                            text     : valueProcessor.usCommasBigIntDecimals (value, decimals, decimals).replace(',','') 
-                        };
+            value    : value,
+            decimals : decimals,
+            text     : valueProcessor.usCommasBigIntDecimals (value, decimals, decimals).replace(',','')
+        };
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];
         fieldObj.value = newValObj;

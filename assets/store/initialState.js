@@ -71,7 +71,6 @@ const initialState = {
     },
     indicatorPanel : {
         accountInfoVisibility : false,
-        nativeToken : presets.network.nativeToken.hash,
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
         coinAmount  : 0,

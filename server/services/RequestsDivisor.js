@@ -71,10 +71,9 @@ class RequestsDivisor extends T_Service {
             .then(result => {
                 res.status(200)
                 res.setHeader('Content-Type', result.contentType)
-                if (result.data.base64encoding) {
-                    res.setHeader('Content-Length', result.data.content.length)
-                    res.send(Buffer.from(result.data.content, 'base64'))
-                } else
+                if (result.data.JSONToBufferEncoding)
+                    res.send(Buffer.from(JSON.parse(result.data.content).data))
+                else
                     res.send(result.data)
             })
             .catch(error => {

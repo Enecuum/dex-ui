@@ -11,7 +11,7 @@ function delete_files_folders() {
 
 cd ..
 
-MUST_BE_DELETED=('assets' 'data' 'doc_img' 'logs' '.gitignore' '.gitmodules' 'config.json.example' 'README.md')
+MUST_BE_DELETED=('assets' 'data' 'doc_img' 'logs' '.gitignore' '.gitmodules' 'config.json' 'README.md')
 delete_files_folders MUST_BE_DELETED
 
 if [ "$2" == "rd" ]; then

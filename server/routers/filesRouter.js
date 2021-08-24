@@ -10,9 +10,9 @@ const webpack_config = require("../../webpack.config")
 const pubDir         = webpack_config.output.path
 
 function readAndSend (req, res, cType) {
-    cReadFiles([{data: path.join(pubDir, req.url)}], "base64")
+    cReadFiles([{data: path.join(pubDir, req.url)}], null)
         .then(file => {
-            res.send(jsonrpcResponse(req.body.id, true, {content : file.data, base64encoding : true}, cType))
+            res.send(jsonrpcResponse(req.body.id, true, {content : JSON.stringify(file.data), JSONToBufferEncoding : true}, cType))
         })
         .catch(() => {
             res.send(jsonrpcResponse(req.body.id, false, jsonrpcErrors.noContent))

@@ -58,13 +58,13 @@ class SwapApi {
             }
         );
     };
-    getLanguage (language) {    // to the host
-        return trafficController.simpleRequest(`${this.hostUrl}getLanguage/${language}`,
-            {
-                method : 'GET'
-            }
-        );
-    };
+    // getLanguage (language) {    // to the host
+    //     return trafficController.simpleRequest(`${this.hostUrl}getLanguage/${language}`,
+    //         {
+    //             method : 'GET'
+    //         }
+    //     );
+    // };
     getEnqLib () {              // to the host
         return trafficController.simpleRequest(`${this.hostUrl}enqlib`,
             {

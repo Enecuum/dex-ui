@@ -1,3 +1,9 @@
+// code for manual reloading in dev-mode
+if (module.hot) {
+    module.hot.accept()
+}
+// =====================================
+
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, connect } from 'react-redux';
@@ -8,7 +14,7 @@ import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import i18n from "./utils/i18n";
-import { withTranslation,I18nextProvider } from "react-i18next";
+import { withTranslation, I18nextProvider } from "react-i18next";
 
 import { Navbar, Aside, SwapCard, Switch, ConnectionService, ConfirmSupply, WaitingConfirmation, WaitingIssueTokenConfirmation, IndicatorPanel, TopPairs, Etm, Farms, Drops } from './components/entry';
 
@@ -25,7 +31,6 @@ const objectFromData = new ObjectFromData();
 class Root extends React.Component {
     constructor (props) {
         super(props);
-        this.updLanguage();
         this.intervalDescriptors = []
         this.intervalDescriptors.push(this.intervalUpdDexData())
         this.intervalDescriptors.push(this.circleBalanceUpd())
@@ -152,7 +157,6 @@ class Root extends React.Component {
             if (isInTokensArr) {
                 let j = tokens.indexOf(isInTokensArr)
                 if (j !== -1) {
-
                     let inRootProps = this.props.tokens.find(token => token.hash === elem.hash);
 
                     if (!inRootProps) {
@@ -277,17 +281,6 @@ class Root extends React.Component {
             this.updBalanceObj('removeLiquidity', 'field1');
             this.updBalanceObj('removeLiquidity', 'ltfield');
         }
-    };
-
-    updLanguage () {
-        let locale = this.props.activeLocale;
-        swapApi.getLanguage(locale)
-        .then(res => {
-            res.json()
-            .then(langData => {
-                this.props.changeLanguage(langData);
-            });
-        })
     };
 
     menuViewController () {

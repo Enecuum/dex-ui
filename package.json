@@ -1,62 +1,68 @@
 {
-    "name": "enq-swap",
-    "version": "1.0.0",
-    "description": "swap service",
-    "main": "server.js",
-    "scripts": {
-      "dev": "pm2 start ./ecosystem.config.js --only dev",
-      "test_prod": "pm2 start ./ecosystem.config.js --only test_prod",
-      "prod": "pm2 start ./ecosystem.config.js --only prod",
-      "make": "node node_modules/webpack/bin/webpack.js build --config webpack.config.js",
-      "stop": "pm2 stop all"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/enecuum-dev-team/enq-swap.git"
-    },
-    "author": "wWrongName",
-    "license": "ISC",
-    "bugs": {
-      "url": "https://github.com/enecuum-dev-team/enq-swap/issues"
-    },
-    "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
-    "dependencies": {
-      "axios": "^0.21.1",
-      "bootstrap": "^4.6.0",
-      "chokidar": "^3.5.2",
-      "css-loader": "^5.2.0",
-      "express": "^4.17.1",
-      "glob-parent": "^6.0.0",
-      "i18next": "^20.2.2",
-      "i18next-browser-languagedetector": "^6.1.0",
-      "i18next-xhr-backend": "^3.2.2",
-      "react-bootstrap": "^1.5.2",
-      "react-cookie": "^4.0.3",
-      "react-i18next": "^11.8.13",
-      "react-redux": "^7.2.3",
-      "redux": "^4.0.5",
-      "regenerator-runtime": "^0.13.7",
-      "simplebar-react": "^2.3.2",
-      "style-loader": "^2.0.0",
-      "yargs": "^16.2.0"
-    },
-    "devDependencies": {
-      "@babel/core": "^7.13.13",
-      "@babel/preset-env": "^7.13.12",
-      "@babel/preset-react": "^7.13.13",
-      "babel-loader": "^8.2.2",
-      "file-loader": "^6.2.0",
-      "html-webpack-plugin": "^5.3.1",
-      "react": "^17.0.2",
-      "react-dom": "^17.0.2",
-      "webpack": "^5.28.0",
-      "webpack-cli": "^4.6.0",
-      "webpack-dev-server": "^3.11.2"
-    },
-    "babel": {
-      "presets": [
-        "@babel/env",
-        "@babel/react"
-      ]
-    }
+  "name": "enq-swap",
+  "version": "1.0.0",
+  "description": "swap service",
+  "main": "server.js",
+  "scripts": {
+    "make": "node node_modules/webpack/bin/webpack.js build --config webpack.config.js",
+    "prod": "bash standard_build.bash",
+    "dev": "pm2 start ecosystem.config.js --only hot_dev",
+    "stop_d": "pm2 stop hot_dev",
+    "stop_p": "docker stop $(docker ps -a -q)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enecuum-dev-team/enq-swap.git"
+  },
+  "author": "wWrongName",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/enecuum-dev-team/enq-swap/issues"
+  },
+  "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "babel-watch": "^7.5.0",
+    "bootstrap": "^4.6.0",
+    "chokidar": "^3.5.2",
+    "css-loader": "^5.2.0",
+    "express": "^4.17.1",
+    "glob-parent": "^6.0.0",
+    "i18next": "^20.2.2",
+    "i18next-browser-languagedetector": "^6.1.0",
+    "i18next-xhr-backend": "^3.2.2",
+    "react-bootstrap": "^1.5.2",
+    "react-cookie": "^4.0.3",
+    "react-i18next": "^11.8.13",
+    "react-redux": "^7.2.3",
+    "redux": "^4.0.5",
+    "regenerator-runtime": "^0.13.7",
+    "simplebar-react": "^2.3.2",
+    "style-loader": "^2.0.0",
+    "webpack-dev-middleware": "^5.0.0",
+    "write-file-webpack-plugin": "^4.5.1",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@types/regenerator-runtime": "^0.13.1",
+    "@types/webpack-hot-middleware": "^2.25.5",
+    "babel-loader": "^8.2.2",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "webpack": "^5.28.0",
+    "webpack-cli": "^4.7.1",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-hot-middleware": "^2.25.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
   }
+}

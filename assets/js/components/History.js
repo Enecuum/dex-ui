@@ -6,6 +6,6 @@ class History extends React.Component {
             <span className='icon-Icon16 swap-card-top-items'/>
         );
     };
-};
+}
 
 export default History;

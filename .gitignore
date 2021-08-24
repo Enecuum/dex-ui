@@ -5,5 +5,8 @@ public/*
 !public/index.html
 !public/locales/*
 !public/favicon.ico
+!public/site.webmanifest
+!public/favicon-16x16.png
+!public/favicon-32x32.png
 package-lock.json
 .idea

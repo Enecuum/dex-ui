@@ -21,7 +21,11 @@ class IndicatorPanel extends React.Component {
         };
     };
 
+<<<<<<< HEAD
     componentWillUnmount () {
+=======
+    componentWillUnmount() {
+>>>>>>> origin/server-refactoring
         clearInterval(this.intervalDescriptor)
     }
 

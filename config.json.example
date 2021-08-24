@@ -1,9 +1,16 @@
 {
-    "host_port": 1234,
-    "dex_url": "dex_url",
-    "dex_port": dex_port,
-    "json_rcp_version" : "2.0",
-    "api_version": "v1",
-    "last_request_id" : 0,
-    "web3_enq_path" : "web3-enq/dist/enqweb3lib.node.min.js"
+    "web3_enq_path" : "web3-enq/dist/enqweb3lib.node.min.js",
+
+    "local_service_port" : 7070,
+    "passphrase"         : "",
+
+    "remote_service_url"  : "https://0.0.0.0",
+    "remote_service_port" : "1234",
+
+    "dex_url"   : "dex_url",
+    "dex_port"  : 1234,
+
+    "json_rcp_version": "2.0",
+    "api_version"     : "v1",
+    "last_request_id" : 0
 }

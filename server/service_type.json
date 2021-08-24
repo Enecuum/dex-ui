@@ -1,0 +1,5 @@
+{
+  "rd"  : "requests divisor service",
+  "ddl" : "dex data loader service",
+  "fl"  : "files loader service"
+}

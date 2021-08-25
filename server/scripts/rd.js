@@ -7,6 +7,7 @@ const RequestsDivisor = require("../services/RequestsDivisor")
 const requestsDivisor = new RequestsDivisor({
     root : true,
     port : argv.port,
+    p    : argv.p,
     name : "rd(root)"
 }, config)
 console.log(argv)

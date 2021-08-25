@@ -5,8 +5,9 @@ const config = require("../../config.json")
 const DexDataLoader = require("../services/DexDataLoader")
 
 const dexDataLoader = new DexDataLoader({
-    peer: argv.peer,
+    peer : argv.peer,
     port : argv.port,
+    p    : argv.p,
     name : "ddl"
 }, config)
 

@@ -5,8 +5,9 @@ const config = require("../../config.json")
 const FilesLoader = require("../services/FileLoader")
 
 const filesLoader = new FilesLoader({
-    peer: argv.peer,
+    peer : argv.peer,
     port : argv.port,
+    p    : argv.p,
     name : "fl"
 }, config)
 

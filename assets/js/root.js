@@ -41,17 +41,20 @@ class Root extends React.Component {
         });
     };
 
-    // componentDidMount() {
-    //     global.asd = ENQweb3lib.reconnect()
-    // }
+    componentDidMount() {
+        ENQweb3lib.reconnect()
+            .then(() => {
+                this.checkConnection()
+            })
+    }
 
     componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
     }
 
-    async checkConnection () {
+    checkConnection () {
         if (ENQweb3lib.connection === true) {
-            await ENQweb3lib.enable()
+            ENQweb3lib.enable()
                 .then(res => {
                     cp.updateSettings(res.pubkey, '/')
                     this.props.assignPubkey(res.pubkey)

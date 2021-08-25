@@ -54,7 +54,7 @@ module.exports = {
     //     }
     // },
     devtool: 'inline-source-map',
-    mode : 'development',
+    mode : 'production',
     devServer : {
         contentBase : outPath
     }

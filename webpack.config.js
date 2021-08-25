@@ -41,6 +41,18 @@ module.exports = {
     },
     plugins : [
     ],
+    // resolve: {
+    //     alias: {
+    //         process: "process/browser"
+    //     },
+    //     fallback: {
+    //         stream  : require.resolve("stream-browserify"),
+    //         fs      : false,
+    //         http    : require.resolve("stream-http"),
+    //         crypto  : require.resolve("crypto-browserify"),
+    //         zlib    : require.resolve("browserify-zlib")
+    //     }
+    // },
     devtool: 'inline-source-map',
     mode : 'development',
     devServer : {

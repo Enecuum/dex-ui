@@ -1,6 +1,4 @@
 // code for manual reloading in dev-mode
-import pageDataPresets from "../store/pageDataPresets";
-
 if (module.hot) {
     module.hot.accept()
 }
@@ -27,6 +25,8 @@ import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 import AccountShortInfo from "./components/AccountShortInfo";
 import {cookieProcessor as cp} from "./utils/cookieProcessor";
 
+import pageDataPresets from "../store/pageDataPresets";
+
 
 class Root extends React.Component {
     constructor (props) {
@@ -41,8 +41,24 @@ class Root extends React.Component {
         });
     };
 
+    // componentDidMount() {
+    //     global.asd = ENQweb3lib.reconnect()
+    // }
+
     componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
+    }
+
+    async checkConnection () {
+        if (ENQweb3lib.connection === true) {
+            await ENQweb3lib.enable()
+                .then(res => {
+                    cp.updateSettings(res.pubkey, '/')
+                    this.props.assignPubkey(res.pubkey)
+                    this.updDexData(res.pubkey)
+                    this.props.setConStatus(true)
+                })
+        }
     }
 
     setPath() {

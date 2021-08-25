@@ -24,21 +24,17 @@ class RequestsManager {
     }
 
     completeRequest (id, success) {
-        this.requests = this.requests.map(el => {
-            try {
-                if (el.id === id)
-                    el.type = (success) ? this.type.DONE : this.type.ERR
-                return el;
-            } catch (e) { console.log(el, e) }
+        this.requests = this.requests.filter(el => {
+            if (el.id === id)
+                el.type = (success) ? this.type.DONE : this.type.ERR
+            return el;
         });
     }
 
     deleteOldRequests () {
-        this.requests = this.requests.map(el => {
-            try {
-                if (new Date() - el.date < this.timeBorder)
-                    return el;
-            } catch (e) { console.log(el, e) }
+        this.requests = this.requests.filter(el => {
+            if (new Date() - el.date < this.timeBorder)
+                return el;
         });
     }
 

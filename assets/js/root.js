@@ -42,10 +42,7 @@ class Root extends React.Component {
     };
 
     componentDidMount() {
-        ENQweb3lib.reconnect()
-            .then(() => {
-                this.checkConnection()
-            })
+        window.onload = this.checkConnection.bind(this)
     }
 
     componentWillUnmount () {

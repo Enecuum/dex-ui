@@ -1,0 +1,16 @@
+{
+    "web3_enq_path" : "node_modules/enq-web3/dist/enqweb3lib.ext.min.js",
+
+    "local_service_port" : 7070,
+    "passphrase"         : "",
+
+    "remote_service_url"  : "https://localhost",
+    "remote_service_port" : "1234",
+
+    "dex_url"   : "dex_url",
+    "dex_port"  : 1234,
+
+    "json_rcp_version": "2.0",
+    "api_version"     : "v1",
+    "last_request_id" : 0
+}

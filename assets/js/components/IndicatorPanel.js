@@ -78,7 +78,7 @@ class IndicatorPanel extends React.Component {
     circleUpd () {
         return setInterval(() => {
             this.updData();
-        }, 1000);
+        }, 500);
     };
 
     updMainTokenData () {
@@ -100,7 +100,7 @@ class IndicatorPanel extends React.Component {
                 this.updMainTokenData()
                 this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
                 ENQWeb.Enq.provider = res.net
-            }    
+            }
         },
         err => console.log('cannot make getProvider request'));
     };

@@ -495,7 +495,7 @@ class SwapCard extends React.Component {
     };
 
     getBalanceColor (id) {
-        let c_color = { danger : '#CD5C5C', simple : '#61c2d0' };
+        let c_color = { danger : '#61c2d077', simple : '#61c2d0' };
         let danger = { color : c_color.danger }, simple = { color : c_color.simple };
         if (id === 4 || id === 5)
             return simple;

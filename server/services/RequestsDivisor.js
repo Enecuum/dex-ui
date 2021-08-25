@@ -77,7 +77,7 @@ class RequestsDivisor extends T_Service {
                     res.send(result.data)
             })
             .catch(error => {
-                if (error.stateCode)
+                if (error && error.stateCode)
                     res.status(error.stateCode)
                 else
                     res.status(500)

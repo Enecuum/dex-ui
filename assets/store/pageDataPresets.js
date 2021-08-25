@@ -1,10 +1,23 @@
 const presets =  {
+    pending : {
+        allowedTxTypes : [
+            'pool_create',
+            'pool_swap',
+            'pool_add_liquidity',
+            'pool_remove_liquidity',
+            'farm_create',
+            'farm_get_reward',
+            'farm_increase_stake',
+            'farm_close_stake',
+            'farm_decrease_stake'
+        ]
+    },
+
     network : {
         genesisPubKey : '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
         nativeToken   : {
             ticker : 'BIT',
             hash   : '0000000000000000000000000000000000000000000000000000000000000001',
-            //hash : '1111111111111111111111111111111111111111111111111111111111111111',
             fee    : 1000000000
         },
         defaultNet : {

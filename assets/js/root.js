@@ -1,4 +1,6 @@
 // code for manual reloading in dev-mode
+import pageDataPresets from "../store/pageDataPresets";
+
 if (module.hot) {
     module.hot.accept()
 }
@@ -227,10 +229,9 @@ class Root extends React.Component {
     };
 
     filterEnexTxs (pendingArray) {
-        let enexTypes = ['pool_create', 'pool_swap', 'pool_add_liquidity', 'pool_remove_liquidity'];
         for (let i in pendingArray) {
             let data = objectFromData.parse(pendingArray[i].data);
-            if (enexTypes.indexOf(data.type) === -1)
+            if (pageDataPresets.pending.allowedTxTypes.indexOf(data.type) === -1)
                 pendingArray.splice(i, 1);
         }
         return pendingArray;
@@ -262,7 +263,7 @@ class Root extends React.Component {
         this.updBalanceForms();
         return setInterval(() => {
             this.updBalanceForms();
-        }, 1000);
+        }, 500);
     }
 
     updBalanceObj (menuItem, field) {

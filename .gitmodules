@@ -1,0 +1,3 @@
+[submodule "web3-enq"]
+	path = web3-enq
+	url = git@github.com:Enecuum/web3-enq.git

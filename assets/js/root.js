@@ -25,10 +25,8 @@ import swapApi from './requests/swapApi';
 import utils from './utils/swapUtils';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 import AccountShortInfo from "./components/AccountShortInfo";
-import ObjectFromData from '../../web3-enq/packages/web3-enq-utils/src/objectFromData';
 import {cookieProcessor as cp} from "./utils/cookieProcessor";
 
-const objectFromData = new ObjectFromData();
 
 class Root extends React.Component {
     constructor (props) {
@@ -230,7 +228,7 @@ class Root extends React.Component {
 
     filterEnexTxs (pendingArray) {
         for (let i in pendingArray) {
-            let data = objectFromData.parse(pendingArray[i].data);
+            let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data);
             if (pageDataPresets.pending.allowedTxTypes.indexOf(data.type) === -1)
                 pendingArray.splice(i, 1);
         }

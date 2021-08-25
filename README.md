@@ -26,11 +26,6 @@ To learn more about web-enq API, visit - https://github.com/Enecuum/web-enq/blob
 ```bash
     npm install
 ```
-* update web-enq submodule
-```bash
-    git submodule init
-    git submodule update
-```
 * create config.json, copy structure from config.example.json, write valid url in 'dex_url' property and valid port in 'dex_port' property (it is necessary for dex stub)
 * install pm2
 

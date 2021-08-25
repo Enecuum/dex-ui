@@ -3,14 +3,12 @@ import {connect} from "react-redux";
 import {components, mapDispatchToProps, mapStoreToProps} from "../../store/storeToProps";
 import {withTranslation} from "react-i18next";
 
-import ObjectFromData from '../../../web3-enq/packages/web3-enq-utils/src/objectFromData';
 import ValueProcessor from "../utils/ValueProcessor";
 import {cookieProcessor as cp} from "../utils/cookieProcessor";
 import swapApi from "../requests/swapApi";
 import swapUtils from "../utils/swapUtils";
 import testFormulas from "../utils/testFormulas";
 
-const objectFromData = new ObjectFromData()
 const vp = new ValueProcessor()
 
 
@@ -31,7 +29,7 @@ class RecentTransactions extends React.Component {
     }
 
     generateTxText (strData) {
-        let objData = objectFromData.parse(strData)
+        let objData = ENQWeb.Utils.ofd.parse(strData)
         let descriptionPhrase = "", interpolateParams = {}
         console.log(objData)
         if (objData.type === "pool_swap") {

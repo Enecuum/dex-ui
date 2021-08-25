@@ -25,9 +25,11 @@ class RequestsManager {
 
     completeRequest (id, success) {
         this.requests = this.requests.map(el => {
-            if (el.id === id)
-                el.type = (success) ? this.type.DONE : this.type.ERR
-            return el;
+            try {
+                if (el.id === id)
+                    el.type = (success) ? this.type.DONE : this.type.ERR
+                return el;
+            } catch (e) { console.log(el, e) }
         });
     }
 
@@ -36,7 +38,7 @@ class RequestsManager {
             try {
                 if (new Date() - el.date < this.timeBorder)
                     return el;
-            } catch (e) {}
+            } catch (e) { console.log(el, e) }
         });
     }
 

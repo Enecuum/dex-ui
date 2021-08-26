@@ -370,7 +370,7 @@ class Root extends React.Component {
                 return (
                     <BlankPage text="Coming soon"/>
                 );
-        };
+        }
     };
 
     changeMenuItem (newItem) {

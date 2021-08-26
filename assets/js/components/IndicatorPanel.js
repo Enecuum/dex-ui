@@ -2,8 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-import AccountShortInfo from "./AccountShortInfo";
-
 import extRequests from '../requests/extRequests';
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
@@ -81,12 +79,11 @@ class IndicatorPanel extends React.Component {
         }, 500);
     };
 
-    updMainTokenData () {
-        let actualNativeToken = ENQWeb.Enq.token[ENQWeb.Enq.provider]
+    updMainTokenData (net) {
+        let actualNativeToken = ENQWeb.Enq.token[net]
         if (extRequests.nativeTokenHash !== actualNativeToken) {
             ENQweb3lib.fee_counter(actualNativeToken)
             .then(fee => {
-                console.log(fee, actualNativeToken)
                 this.props.updMainTokenData(actualNativeToken, fee)
                 extRequests.updNativeTokenData(actualNativeToken, fee)
             }).catch(err => console.log(err))
@@ -96,12 +93,10 @@ class IndicatorPanel extends React.Component {
     updNetwork () {
         extRequests.getProvider(true)
         .then(res => {
-            if (!res.lock) {
-                if (res.net) {
-                    ENQWeb.Enq.provider = res.net
-                    this.updMainTokenData()
-                    this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
-                }
+            if (!res.lock && res.net) {
+                ENQWeb.Enq.provider = res.net
+                this.updMainTokenData(res.net)
+                this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
             }
         },
         err => console.log('cannot make getProvider request'));

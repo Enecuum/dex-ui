@@ -97,8 +97,8 @@ class IndicatorPanel extends React.Component {
         extRequests.getProvider(true)
         .then(res => {
             if (!res.lock) {
-                ENQWeb.Enq.provider = res.net
                 if (res.net) {
+                    ENQWeb.Enq.provider = res.net
                     this.updMainTokenData()
                     this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
                 }

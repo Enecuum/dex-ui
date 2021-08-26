@@ -97,9 +97,11 @@ class IndicatorPanel extends React.Component {
         extRequests.getProvider(true)
         .then(res => {
             if (!res.lock) {
-                this.updMainTokenData()
-                this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
                 ENQWeb.Enq.provider = res.net
+                if (res.net) {
+                    this.updMainTokenData()
+                    this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
+                }
             }
         },
         err => console.log('cannot make getProvider request'));

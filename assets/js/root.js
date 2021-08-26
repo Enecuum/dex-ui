@@ -50,15 +50,18 @@ class Root extends React.Component {
     }
 
     checkConnection () {
-        if (ENQweb3lib.connection === true) {
-            ENQweb3lib.enable()
-                .then(res => {
-                    cp.updateSettings(res.pubkey, '/')
-                    this.props.assignPubkey(res.pubkey)
-                    this.updDexData(res.pubkey)
-                    this.props.setConStatus(true)
-                })
-        }
+        ENQweb3lib.connect()
+        ENQweb3lib.reconnect()
+            .then(res => {
+                if (res.status === true)
+                    ENQweb3lib.enable()
+                        .then(res => {
+                            cp.updateSettings(res.pubkey, '/')
+                            this.props.assignPubkey(res.pubkey)
+                            this.updDexData(res.pubkey)
+                            this.props.setConStatus(true)
+                        })
+            })
     }
 
     setPath() {

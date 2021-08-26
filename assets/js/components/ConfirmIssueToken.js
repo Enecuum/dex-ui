@@ -46,7 +46,7 @@ class ConfirmIssueToken extends React.Component {
                 minable : parseInt(this.props.tokenData.mineable),
                 fee_type : parseInt(this.props.tokenData.fee_type),
                 fee_value : this.props.tokenBigIntData.fee_value.completeValue,
-                fee_min: this.props.tokenData.fee_type === '1' ? this.props.tokenBigIntData.min_fee_for_percent_fee_type : this.props.tokenBigIntData.fee_value.completeValue,
+                fee_min: this.props.tokenData.fee_type === '1' ? this.props.tokenBigIntData.min_fee_for_percent_fee_type.completeValue : this.props.tokenBigIntData.fee_value.completeValue,
                 decimals : BigInt(this.props.tokenData.decimals),
                 total_supply : this.props.tokenBigIntData.total_supply.completeValue,
                 ticker : this.props.tokenData.ticker,

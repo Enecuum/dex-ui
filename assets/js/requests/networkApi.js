@@ -11,6 +11,10 @@ class NetworkApi {
         this.hostUrl = location.href.replace('/#', '/');
     };
 
+    updUrl (url) {
+        this.url = url
+    }
+
     getContractPricelist (url = this.url) {        
         return trafficController.simpleRequest(`${url}api/${config.api_version}/contract_pricelist`,
             {

@@ -189,7 +189,10 @@ function getTokenObj (tokens, hash) {
 }
 
 function packAddressString (addr) {
-    return `0x${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
+    if (addr)
+        return `0x${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
+    else
+        return '---'
 }
 
 /* =================================================================================== */

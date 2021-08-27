@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
 import extRequests from '../requests/extRequests';
+import networkApi from "../requests/networkApi";
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
 import ValueProcessor from '../utils/ValueProcessor';
@@ -96,7 +97,9 @@ class IndicatorPanel extends React.Component {
             if (!res.lock && res.net) {
                 ENQWeb.Enq.provider = res.net
                 this.updMainTokenData(res.net)
+                networkApi.updUrl(res.net + '/')
                 this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
+                networkApi.updUrl()
             }
         },
         err => console.log('cannot make getProvider request'));

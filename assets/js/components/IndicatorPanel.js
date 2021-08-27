@@ -99,7 +99,6 @@ class IndicatorPanel extends React.Component {
                 this.updMainTokenData(res.net)
                 networkApi.updUrl(res.net + '/')
                 this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
-                networkApi.updUrl()
             }
         },
         err => console.log('cannot make getProvider request'));

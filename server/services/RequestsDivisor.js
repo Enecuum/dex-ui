@@ -18,10 +18,10 @@ class RequestsDivisor extends T_Service {
 
         this.CRH_app.use(express.json())
 
-        // this.CRH_app.use((req, res, next) => {
-        //     console.log(req.url)
-        //     next()
-        // })
+        this.CRH_app.use((req, res, next) => {
+            console.log(req.url)
+            next()
+        })
 
         if (w_config.mode === "development") {
             let hmr_plugin = new webpack.HotModuleReplacementPlugin()

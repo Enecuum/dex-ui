@@ -129,7 +129,7 @@ class Drops extends React.Component {
     }
 
     updateFarms() {
-        let whiteList = presets.dropFarms.spaceDrops.whiteList;        
+        let whiteList = presets.dropFarms.spaceDrops.whiteList;
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {

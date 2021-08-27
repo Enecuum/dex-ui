@@ -1,6 +1,7 @@
 // code for manual reloading in dev-mode
 if (module.hot) {
     module.hot.accept()
+    module.hot.dispose(() => location.reload())
 }
 // =====================================
 
@@ -12,7 +13,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../store/storeT
 import store from '../store/store';
 import "regenerator-runtime/runtime.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+//asd
 import i18n from "./utils/i18n";
 import { withTranslation, I18nextProvider } from "react-i18next";
 

@@ -19,11 +19,10 @@ ARG PASSWORD
 RUN apt-get update && apt-get upgrade -y
 
 # Install pm2 and project dependencies
-RUN npm i
 RUN npm install pm2 -g
 
 # remove useless files
-RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
+#RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
 
 # point out ports
 EXPOSE $CONTAINER_PORT

@@ -138,8 +138,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        console.log(data);
-        console.log(params);
+        // console.log(data);
+        // console.log(params);
         return trafficController.sendTransaction(data);
     };
 
@@ -172,7 +172,7 @@ class ExtRequests {
                 parameters : params
             })
         };
-        // console.log(data);      
+        // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
     };

@@ -104,11 +104,11 @@ const presets =  {
             whiteList : []
         },
         spaceDrops : {
-            whiteList :  [
-                            'e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01',
-                            '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
-                            'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
-                        ]
+            whiteList : [
+                'e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01',
+                '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
+                'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
+            ]
         },        
     }
 };

@@ -75,8 +75,8 @@ if [ "$1" == "--build" ] ; then
     fi
     clear_all
     cp config.json.example config.json || echo "config has already been created"
-    npm run make
     npm i
+    node node_modules/webpack/bin/webpack.js build --config webpack.config.js
     docker network create --subnet=${SUBNET} ${NET}
     build_images
 elif [ "$1" == "--run" ] ; then

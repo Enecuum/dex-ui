@@ -1,0 +1,71 @@
+name: dex-ui CI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  dockerhub_build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${GITHUB_REF#refs/*/}
+
+  deploy_on_devapp:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure ssh
+        run: |
+          mkdir ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/devapp
+          chmod 600 ~/.ssh/devapp
+          cat >> ~/.ssh/config << END
+          Host devapp
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/devapp
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: root
+          SSH_KEY: ${{ secrets.SSH_SECRET }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Pull and run docker on server
+        run: |
+          ssh devapp "docker pull $IMG_TAG"
+          ssh devapp "cd $W_DIR; git fetch --tags; git checkout $REPOS_TAG"
+          ssh devapp "cd $W_DIR; npm i; npm run prod -- $IMG_TAG"
+        env:
+          IMG_TAG: enecuum/${{ github.event.repository.name }}:${GITHUB_REF#refs/*/}
+          W_DIR: ${{ github.event.repository.name }}
+          REPOS_TAG: ${GITHUB_REF#refs/*/}

@@ -18,12 +18,12 @@ const serviceType = require("../service_type.json")
 
 class Service_Client {
     constructor (args, config) {
-        this.rootFlag = args.root
-        this.p = args.p
-        this.peer = this._setPeer(args.peer, config)
-        this.port = this._setPort(args.port, config)
-        this.name = this._setName(args.name)
         this.cnfg = config
+        this.rootFlag = args.root
+        this.p    = this._setArgs(args.p, "passphrase", this._passphraseFallback)
+        this.peer = this._setPeer(args.peer, config)
+        this.port = this._setArgs(args.port, "local_service_port", ()=>{return 0})
+        this.name = this._setArgs(args.name, "name", this._nameFallback)
         this.app  = express()
         this.authToken = null
         this.commonAuthData = {
@@ -34,40 +34,12 @@ class Service_Client {
         this.app.use(express.json())
     }
 
-    _isValidMode(mode) {
-        return (mode === "dev" || mode === "prod")
-    }
-
-    _setMode (mode, config) {
-        if (this._isValidMode(mode))
-            return mode
-        if (this._isValidMode(config.mode))
-            return config.mode
-        console.log("The mode wasn't established. Run the service in the 'dev' mode")
-        return "prod"
-    }
-
-    _validateServiceType (type) {
-        if (Object.keys(serviceType).indexOf(type))
-            return type
-        else
-            return null
-    }
-
-    _setServiceType (type, config) {
-        if (type)
-            return this._validateServiceType(type)
-        if (config.local_service_type)
-            return this._validateServiceType(config.local_service_type)
-        return null
-    }
-
-    _setPort (port, config) {
-        if (port)
-            return port
-        if (config.local_service_port)
-            return config.local_service_port
-        return 0 // 'express' auto search
+    _setArgs (arg, confprop, fallback=()=>{return null}) {
+        if (arg)
+            return arg
+        else if (this.cnfg[confprop]) 
+            return this.cnfg[confprop]
+        return fallback()
     }
 
     _setPeer (peer, config) {
@@ -78,14 +50,12 @@ class Service_Client {
         return null
     }
 
-
-    _setName (name) {
-        if (name)
-            return name
-        return this._generateName()
+    _passphraseFallback () {
+        console.log("Warning: no password was detected. Create 'root' password")
+        return "root"
     }
 
-    _generateName () {
+    _nameFallback () {
         let hash = crypto.createHash("md5")
         hash.update((new Date().getTime() + Math.random() * Math.pow(2, 64)).toString())
         return `ds_${hash.digest("hex")}`

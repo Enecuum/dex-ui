@@ -7,14 +7,6 @@ WORKDIR /app
 # Copy all project files except ignored in .dockerignore
 ADD . /app
 
-# Establish args
-ARG SERVICE_TYPE
-ARG CONTAINER_PORT
-ARG PEER_PORT
-ARG CLIENTS_PORT
-ARG ADDR
-ARG PASSWORD
-
 # Upgrade all system dependencies
 RUN apt-get update && apt-get upgrade -y
 
@@ -25,21 +17,20 @@ RUN npm install pm2 -g
 #RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
 
 # point out ports
-EXPOSE $CONTAINER_PORT
-EXPOSE $CLIENTS_PORT
+EXPOSE 7000-8000
 
-ENV S_TYPE  $SERVICE_TYPE
-ENV ADDRESS $ADDR
-ENV P_PORT  $PEER_PORT
-ENV C_PORT  $CONTAINER_PORT
-ENV PASSW   $PASSWORD
-ENV O_PORT  $CLIENTS_PORT
+ENV SERVICE_TYPE    rd
+ENV PEER_HOST       https://0.0.0.0
+ENV PEER_PORT       7001
+ENV CONTAINER_PORT  7071
+ENV PASSWORD        root 
+ENV OPENED_PORT     80
 
 CMD cd server/scripts/ ;\
-if [ "$S_TYPE" = "rd" ] ; then \
-    pm2-runtime start rd.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} --o_port ${O_PORT} ;\
-elif [ "$S_TYPE" = "fl" ] ; then \
-    pm2-runtime start fl.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} ;\
-elif [ "$S_TYPE" = "ddl" ] ; then \
-    pm2-runtime start ddl.js -- --peer ${ADDRESS}:${P_PORT} --port ${C_PORT} --p ${PASSW} ;\
+if [ "$SERVICE_TYPE" = "rd" ] ; then \
+    pm2-runtime start rd.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} --o_port ${OPENED_PORT} ;\
+elif [ "$SERVICE_TYPE" = "fl" ] ; then \
+    pm2-runtime start fl.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} ;\
+elif [ "$SERVICE_TYPE" = "ddl" ] ; then \
+    pm2-runtime start ddl.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} ;\
 fi

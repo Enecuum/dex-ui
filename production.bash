@@ -1,4 +1,4 @@
-IMG_TAG="dex_service"
+IMG_TAG="dex-ui"
 
 SERVER_ENTRY_PORT=80
 CLIENTS_PORT=7071
@@ -7,7 +7,6 @@ PORTS=(7001 7002 7003)
 SUBNET='172.18.0.0/16'
 ROOT_IP='172.18.0.5'
 NET="dex-ui_net"
-PASSWORD=""
 
 warn="\033[31m"
 help="\033[32m"
@@ -20,17 +19,7 @@ function help_msg() {
 }
 
 function build_images() {
-    for ((i=0; i < ${#SERVICES[@]}; i++))
-    do
-      docker build  --build-arg SERVICE_TYPE="${SERVICES[$i]}" \
-                    --build-arg CONTAINER_PORT=${PORTS[$i]}    \
-                    --build-arg PEER_PORT="${PORTS[0]}"        \
-                    --build-arg CLIENTS_PORT=$CLIENTS_PORT     \
-                    --build-arg ADDR=https://${ROOT_IP}        \
-                    --build-arg PASSWORD=$PASSWORD             \
-                    -t ${IMG_TAG}_"${SERVICES[$i]}"            \
-                    ./
-    done
+    docker build -t ${IMG_TAG} ./
 }
 
 function run_images() {
@@ -39,17 +28,23 @@ function run_images() {
                   --publish ${SERVER_ENTRY_PORT}:${CLIENTS_PORT}  \
                   --net=${NET}                                    \
                   --ip ${ROOT_IP}                                 \
-                  ${IMG_TAG}_"${SERVICES[0]}"
-    sleep 5
-    docker run -d --name "${SERVICES[1]}"           \
-                  --publish ${PORTS[1]}:${PORTS[1]} \
-                  --net=${NET}                      \
-                  ${IMG_TAG}_"${SERVICES[1]}"
-    sleep 5
-    docker run -d --name "${SERVICES[2]}"           \
-                  --publish ${PORTS[2]}:${PORTS[2]} \
-                  --net=${NET}                      \
-                  ${IMG_TAG}_"${SERVICES[2]}"
+                  -e SERVICE_TYPE="${SERVICES[0]}"                \
+                  -e CONTAINER_PORT="${PORTS[0]}"                 \
+                  -e OPENED_PORT="${CLIENTS_PORT}"                \
+                  ${IMG_TAG}
+    
+    for ((i=1; i < ${#SERVICES[@]}; i++))
+    do
+        sleep 5
+        docker run -d --name "${SERVICES[$i]}"                    \
+                      --publish ${PORTS[$i]}:${PORTS[$i]}         \
+                      --net=${NET}                                \
+                      -e SERVICE_TYPE="${SERVICES[$i]}"           \
+                      -e CONTAINER_PORT="${PORTS[$i]}"            \
+                      -e PEER_HOST=https://${ROOT_IP}             \
+                      -e PEER_PORT="${PORTS[0]}"                  \
+                      ${IMG_TAG}
+    done
 }
 
 function clear_all() {
@@ -59,7 +54,7 @@ function clear_all() {
     docker volume prune -f
 }
 
-# =================================== ===================================
+# =================================== =================================== #
 
 if [ -z "$1" ] ; then
   echo -e "$warn There must be one argument $end"
@@ -68,17 +63,12 @@ if [ -z "$1" ] ; then
 fi
 
 if [ "$1" == "--build" ] ; then
-    if [ "$PASSWORD" == "" ] ; then
-      echo Create password:
-      read -r -a PASS_ARRAY
-      PASSWORD=${PASS_ARRAY[0]}
-    fi
-    clear_all
     cp config.json.example config.json || echo "config has already been created"
-    npm i
     node node_modules/webpack/bin/webpack.js build --config webpack.config.js
     docker network create --subnet=${SUBNET} ${NET}
     build_images
 elif [ "$1" == "--run" ] ; then
     run_images
+elif [ "$1" == "--clear" ] ; then
+    clear_all
 fi

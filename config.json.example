@@ -2,7 +2,7 @@
     "web3_enq_path" : "node_modules/enq-web3/dist/enqweb3lib.ext.min.js",
 
     "local_service_port" : 7070,
-    "passphrase"         : "",
+    "passphrase"         : "create_passphrase",
 
     "remote_service_url"  : "https://localhost",
     "remote_service_port" : "1234",

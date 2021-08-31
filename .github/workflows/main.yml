@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  dockerhub_build:
+  docker_build_and_deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -35,21 +35,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }}
-
-  deploy_on_devapp:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 16.x ]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        
-      - name: Set var for getting tag or branch
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
       - name: Configure ssh
         run: |

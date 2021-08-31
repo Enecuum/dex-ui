@@ -14,6 +14,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN npm i --force
+RUN node node_modules/webpack/bin/webpack.js build --config webpack.config.js
 
 # remove useless files
 #RUN bash remove_useless_files.bash --stype $SERVICE_TYPE

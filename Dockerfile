@@ -12,6 +12,7 @@ RUN apt-get update && apt-get upgrade -y
 
 # Install pm2 and project dependencies
 RUN npm install pm2 -g
+RUN npm i
 
 # remove useless files
 #RUN bash remove_useless_files.bash --stype $SERVICE_TYPE

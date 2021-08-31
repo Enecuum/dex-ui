@@ -17,6 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set var for getting tag or branch
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -30,7 +34,7 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${GITHUB_REF#refs/*/}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }}
 
   deploy_on_devapp:
     runs-on: ubuntu-latest
@@ -42,6 +46,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Set var for getting tag or branch
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
       - name: Configure ssh
         run: |
@@ -66,6 +74,6 @@ jobs:
           ssh devapp "cd $W_DIR; git fetch --tags; git checkout $REPOS_TAG"
           ssh devapp "cd $W_DIR; npm i; npm run prod -- $IMG_TAG"
         env:
-          IMG_TAG: enecuum/${{ github.event.repository.name }}:${GITHUB_REF#refs/*/}
+          IMG_TAG: enecuum/${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }}
           W_DIR: ${{ github.event.repository.name }}
-          REPOS_TAG: ${GITHUB_REF#refs/*/}
+          REPOS_TAG: ${{ steps.vars.outputs.tag }}

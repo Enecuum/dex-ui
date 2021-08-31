@@ -60,5 +60,13 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_SECRET }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
 
-      - name: Pull docker to the server 
-        run: ssh devapp "cd dex-ui; docker pull enecuum/dex-ui:${GITHUB_REF#refs/*/}"
+      - name: Pull and run docker on server
+        run: |
+          ssh devapp "docker pull $IMG_TAG"
+          ssh devapp "cd $W_DIR; git fetch --tags; git checkout $REPOS_TAG"
+          ssh devapp "cd $W_DIR; npm i; npm run prod -- $IMG_TAG"
+        env:
+          IMG_TAG: enecuum/${{ github.event.repository.name }}:${GITHUB_REF#refs/*/}
+          W_DIR: ${{ github.event.repository.name }}
+          REPOS_TAG: ${GITHUB_REF#refs/*/}
+

@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "make": "bash production.bash --build",
-    "cls" : "bash production.bash --clear",
+    "cls": "bash production.bash --clear",
     "prod": "bash production.bash --run",
-    "dev" : "pm2 start ecosystem.config.js --only hot_dev",
+    "dev": "pm2 start ecosystem.config.js --only hot_dev",
     "stop_d": "pm2 stop hot_dev",
     "stop_p": "docker stop $(docker ps -a -q)"
   },

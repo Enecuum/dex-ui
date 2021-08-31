@@ -65,9 +65,12 @@ fi
 if [ "$1" == "--build" ] ; then
     cp config.json.example config.json || echo "config has already been created"
     node node_modules/webpack/bin/webpack.js build --config webpack.config.js
-    docker network create --subnet=${SUBNET} ${NET}
     build_images
 elif [ "$1" == "--run" ] ; then
+    if [ -n "$2" ] ; then
+        IMG_TAG=$2
+    fi
+    docker network create --subnet=${SUBNET} ${NET}
     run_images
 elif [ "$1" == "--clear" ] ; then
     clear_all

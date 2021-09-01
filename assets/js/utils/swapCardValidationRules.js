@@ -1,5 +1,5 @@
 class SwapCardValidationRules {
-    constructor () {
+    constructor (translationFunction) {
         this.t = translationFunction
     }
 
@@ -55,7 +55,7 @@ class SwapCardValidationRules {
         let validationRules = {
             firstValue : {
                 ...this._getSwapCardBalanceRule({
-                    required : (swapCardData.mode === 'swap' || swapCardData.mode === 'pool') ? true : false,
+                    required : (swapCardData.mode === 'exchange' || swapCardData.mode === 'liquidity') ? true : false,
                     balanceAmount : swapCardData.firstValueBalanceAmount,
                     balanceDecimals : swapCardData.firstValueBalanceDecimals,
                     valueAmount : swapCardData.firstValueValueAmount,
@@ -64,7 +64,7 @@ class SwapCardValidationRules {
             },
             secondValue : {
                 ...this._getSwapCardBalanceRule({
-                    required : (swapCardData.mode === 'pool') ? true : false,
+                    required : (swapCardData.mode === 'liquidity') ? true : false,
                     balanceAmount : swapCardData.secondValueBalanceAmount,
                     balanceDecimals : swapCardData.secondValueBalanceDecimals,
                     valueAmount : swapCardData.secondValueValueAmount,

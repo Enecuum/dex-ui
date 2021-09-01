@@ -18,6 +18,8 @@ import ValueProcessor from '../utils/ValueProcessor';
 import {cookieProcessor as cp} from '../utils/cookieProcessor';
 import swapApi from '../requests/swapApi';
 import extRequests from '../requests/extRequests';
+import SwapCardValidationRules from '../utils/swapCardValidationRules';
+import Validator from  '../utils/Validator';
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
@@ -56,9 +58,10 @@ class SwapCard extends React.Component {
                 }
             ]
         };
-        this.resolveURLHash = this.setSwapTokensFromRequest.bind(this);
-        this.initByGetRequestParams = true;
-        this.handBack = false;               
+        this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
+        this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
+        this.initByGetRequestParams = true
+        this.handBack = false
     };
 
 
@@ -522,7 +525,7 @@ class SwapCard extends React.Component {
                 </div>
                 <div className="d-flex align-items-center justify-content-between">                    
                     <input id={props.id}
-                        onChange={this.changeField.bind(this, props.id)}
+                        onChange={e => this.changeField(props.id, e.target.value.toString())}
                         className='c-input-field mr-2'
                         type='text'
                         value={this.showInputValue(props.fieldData.value)}
@@ -649,39 +652,56 @@ class SwapCard extends React.Component {
         this.establishReadiness();        
     }    
 
-    changeField (fieldId) {
+    changeField (fieldId, newValue) {
         let mode = this.getMode();
         let field = this.getFieldName(fieldId);
         let defaultVal = this.props[mode][field].value.text;
         let value;
 
-        if ('insertText' === event.inputType) {
-            let newVal = document.getElementById(fieldId).value;
-            if ((new RegExp('[0-9|\\.|,]+')).test(event.data)) {
-                if ((new RegExp('^[0-9]+(\\.|,)?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal))
-                    value = newVal.replace(',','.');
-                else if (newVal === '.' || newVal === ',')
-                    value = '0.';
-                else
-                    value = defaultVal
-            } else
-                value = defaultVal;
-        } else if (['deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
-            value = document.getElementById(fieldId).value;
+        let rules = this.swapCardValidationRules.getSwapCardValidationRules({ // draft
+            mode : mode,
+            swapCardData : {
+                firstValueBalanceAmount : this.props[mode][field].balance.amount,
+                firstValueBalanceDecimals : this.props[mode][field].balance.decimals,
+                firstValueValueAmount : this.props[mode][field].value.value,
+                firstValueValueDecimals : this.props[mode][field].value.decimals
+            }
+        })
+
+        let triggeredParamsInRules = {
+            firstValue  : undefined,
+            secondValue : undefined,
+            ltValue     : undefined
         }
-        
+
+        let validator = new Validator
+        let checkResult = validator.batchValidate(triggeredParamsInRules, rules)
+
+        // if ('insertText' === event.inputType) {
+        //     let newVal = document.getElementById(fieldId).value;
+        //     if ((new RegExp('[0-9|\\.|,]+')).test(event.data)) {
+        //         if ((new RegExp('^[0-9]+(\\.|,)?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal))
+        //             value = newVal.replace(',','.');
+        //         else if (newVal === '.' || newVal === ',')
+        //             value = '0.';
+        //         else
+        //             value = defaultVal
+        //     } else
+        //         value = defaultVal;
+        // } else if (['deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
+        //     value = document.getElementById(fieldId).value;
+        // }
+
         let newValObj;
         let decimals = this.props[mode][field].token.decimals;
-        if (value === undefined) {
+        if (!checkResult.dataValid) {
             newValObj = {};
         } else {
-            if (decimals === undefined)
-                decimals = 10;
             newValObj = {
                 value : valueProcessor.valueToBigInt(value, decimals).value,
                 decimals : decimals,
                 text : value
-            };
+            }
         }
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];

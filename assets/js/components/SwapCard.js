@@ -128,7 +128,7 @@ class SwapCard extends React.Component {
         }
     }
 
-    parseFromToTokensRequest() {        
+    parseFromToTokensRequest() {
         let requestParamsObj = {
             action : undefined,
             pair   : undefined,
@@ -653,61 +653,31 @@ class SwapCard extends React.Component {
     }    
 
     changeField (fieldId, newValue) {
-        let mode = this.getMode();
-        let field = this.getFieldName(fieldId);
-        let defaultVal = this.props[mode][field].value.text;
-        let value;
+        let mode = this.getMode(), field = this.getFieldName(fieldId)
+        let modeData = this.props[mode], fieldData = modeData[field]
 
-        let rules = this.swapCardValidationRules.getSwapCardValidationRules({ // draft
-            mode : mode,
-            swapCardData : {
-                firstValueBalanceAmount : this.props[mode][field].balance.amount,
-                firstValueBalanceDecimals : this.props[mode][field].balance.decimals,
-                firstValueValueAmount : this.props[mode][field].value.value,
-                firstValueValueDecimals : this.props[mode][field].value.decimals
-            }
-        })
+        let decimals = fieldData.token.decimals
+        let newValObj = (decimals) ? {
+            value : valueProcessor.valueToBigInt(newValue, decimals).value,
+            decimals : decimals,
+            text : newValue
+        } : {}
+        fieldData.value = newValObj
 
-        let triggeredParamsInRules = {
-            firstValue  : undefined,
-            secondValue : undefined,
-            ltValue     : undefined
+        let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
+        let checkResult = (new Validator).batchValidate(fieldData, rules)
+
+        if (checkResult.dataValid) {
+            this.props.assignCoinValue(mode, field, newValObj)
         }
+        this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
 
-        let validator = new Validator
-        let checkResult = validator.batchValidate(triggeredParamsInRules, rules)
+        rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
+        checkResult = (new Validator).batchValidate(modeData, rules)
 
-        // if ('insertText' === event.inputType) {
-        //     let newVal = document.getElementById(fieldId).value;
-        //     if ((new RegExp('[0-9|\\.|,]+')).test(event.data)) {
-        //         if ((new RegExp('^[0-9]+(\\.|,)?[0-9]*$')).test(newVal) && !(new RegExp('^0(0)+')).test(newVal))
-        //             value = newVal.replace(',','.');
-        //         else if (newVal === '.' || newVal === ',')
-        //             value = '0.';
-        //         else
-        //             value = defaultVal
-        //     } else
-        //         value = defaultVal;
-        // } else if (['deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
-        //     value = document.getElementById(fieldId).value;
-        // }
+        // TODO - replace establishReadiness with actions caused by checkResult
 
-        let newValObj;
-        let decimals = this.props[mode][field].token.decimals;
-        if (!checkResult.dataValid) {
-            newValObj = {};
-        } else {
-            newValObj = {
-                value : valueProcessor.valueToBigInt(value, decimals).value,
-                decimals : decimals,
-                text : value
-            }
-        }
-        this.props.assignCoinValue(mode, field, newValObj);
-        let fieldObj = this.props[mode][field];
-        fieldObj.value = newValObj;
-        this.countCounterField(fieldObj, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field);
-        this.establishReadiness();
+        this.establishReadiness()
     }
 
     isValidPercent (rmPercent) {

@@ -4,109 +4,103 @@ class SwapCardValidationRules {
     }
 
     getSwapFieldValidationRules (fieldData) {
-        let validationRules = {
-            balanceAmount : {
-                checks : [
+        return {
+            balance: {
+                checks: [
                     {
                         method: 'isSet',
-                        args: {data : fieldData.balanceAmount},
+                        args: {data: fieldData.balance.amount},
                         desiredResults: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'checkValidDigitalValue',
-                        args: fieldData.balanceAmount,
+                        args: fieldData.balance.amount,
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE',
-                    }
-                ]
-            },
-            balanceDecimals : {
-                checks : [
+                    },
                     {
                         method: 'isSet',
-                        args: {data : fieldData.balanceDecimals},
+                        args: {data: fieldData.balance.decimals},
                         desiredResult: true,
                         errMsg: 'REQUIRED'
                     }
                 ]
             },
-            valueText : {
-                checks : [
+            value: {
+                checks: [
                     {
                         method: 'isSet',
-                        args: {data : fieldData.valueText},
+                        args: {data: fieldData.value.text},
                         desiredResults: true,
                         errMsg: 'REQUIRED'
                     },
                     {
                         method: 'matchToFixed',
-                        args: {value : valueText, n : balanceDecimals},
+                        args: {value: fieldData.value.text, n: fieldData.balance.decimals},
                         desiredResult: true,
-                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE',
+                        errMsg: 'TOO_LONG_FRACTIONAL_PART',
                     }
                 ]
             }
         }
-        return validationRules
     }
 
-    getSwapCardValidationRules (swapCardData) {
-        let validationRules = {
-            firstValue : {
-                ...this._getSwapCardBalanceRule({
-                    required : (swapCardData.mode === 'exchange' || swapCardData.mode === 'liquidity') ? true : false,
-                    balanceAmount : swapCardData.firstValueBalanceAmount,
-                    balanceDecimals : swapCardData.firstValueBalanceDecimals,
-                    valueAmount : swapCardData.firstValueValueAmount,
-                    valueDecimals : swapCardData.firstValueValueDecimals
+    getSwapCardValidationRules (swapCardData, mode) {
+        return {
+            field0: {
+                ...this._getSwapCardBalanceRules({
+                    required: (mode === 'exchange' || mode === 'liquidity'),
+                    balance: swapCardData.field0.balance,
+                    value: swapCardData.field0.value
                 })
             },
-            secondValue : {
-                ...this._getSwapCardBalanceRule({
-                    required : (swapCardData.mode === 'liquidity') ? true : false,
-                    balanceAmount : swapCardData.secondValueBalanceAmount,
-                    balanceDecimals : swapCardData.secondValueBalanceDecimals,
-                    valueAmount : swapCardData.secondValueValueAmount,
-                    valueDecimals : swapCardData.secondValueValueDecimals
+            field1: {
+                ...this._getSwapCardBalanceRules({
+                    required: (mode === 'liquidity'),
+                    balance: swapCardData.field1.balance,
+                    value: swapCardData.field1.value
                 })
             },
-            ltValue : {
-                ...this._getSwapCardBalanceRule({
-                    required : (swapCardData.mode === 'removeLiquidity') ? true : false,
-                    balanceAmount : swapCardData.ltValueBalanceAmount,
-                    balanceDecimals : swapCardData.ltValueBalanceDecimals,
-                    valueAmount : swapCardData.ltValueValueAmount,
-                    valueDecimals : swapCardData.ltValueValueDecimals
+            ltfield: {
+                ...this._getSwapCardBalanceRules({
+                    required: (mode === 'removeLiquidity'),
+                    balance: swapCardData.ltfield.balance,
+                    value: swapCardData.ltfield.value
                 })
-            }
+            },
             // TODO: check native token balance (should be more or equal than fee)
+            // nativeToken: {
+            //     ...this._getSwapCardBalanceRules({
+            //         required: true,
+            //         balance: swapCardData.nativeToken.balance,   // user balance
+            //         value: swapCardData.nativeToken.value        // network fee
+            //     })
+            // }
         }
-        return validationRules
     }
 
-    _getSwapCardBalanceRules (filedData) {
-        let balanceRules = {
-            checks : [
+    _getSwapCardBalanceRules (fieldData) {
+        return {
+            checks: [
                 {
-                    method : 'isSet',
-                    args: {data : fieldData},
+                    method: 'isSet',
+                    args: {data: fieldData},
                     desiredResults: true,
                     errMsg: 'REQUIRED'
                 },
                 {
-                    requireToCheck: filedData.required,
+                    requireToCheck: fieldData.required,
                     method: 'lessThan',
                     args: {
-                        value : BigInt(filedData.valueAmount) * BigInt(Math.pow(10, filedData.valueDecimals)), 
-                        max : BigInt(filedData.balanceAmount) * BigInt(Math.pow(10, filedData.balanceDecimals))
+                        value: BigInt(fieldData.value.amount) * BigInt(Math.pow(10, fieldData.value.decimals)),
+                        max: BigInt(fieldData.balance.amount) * BigInt(Math.pow(10, fieldData.balance.decimals))
                     },
                     desiredResult: true,
                     errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
                 }
             ]
         }
-        return balanceRules
     }
 
 }

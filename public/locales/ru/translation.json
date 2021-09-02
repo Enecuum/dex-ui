@@ -202,7 +202,6 @@
         "TOO_LONG_FRACTIONAL_PART": "Число знаков в десятичной части не должно превышать {{decimals}}",
         "EXEED_MAX_VALUE_IN_TOKENS": "Не должно превышать {{maxValue}} {{ticker}}",
         "INTEGER_REQUIRED": "Значение должно быть целым числом",
-        "NOT_IN_RANGE": "Неверное значение. Должно быть в пределе от {{min}} до {{max}}",
         "MUST_BE_GREATER_THAN": "Значение должно быть больше {{minValue}}",
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть больше или равно, чем {{name}}",
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}",

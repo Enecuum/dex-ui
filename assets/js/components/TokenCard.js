@@ -35,16 +35,16 @@ class TokenCard extends React.Component {
     assignToken(token) {
         let mode = this.props.getMode();
         let modeAlias = presets.paths[mode];
-        console.log(mode)
         if (this.props.activeField === 'field0' && this.props[mode].field1.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else if (this.props.activeField === 'field1' && this.props[mode].field0.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + this.props[mode].field0.token.ticker + '-' + token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  token.hash;
         }
 
-        this.props.assignTokenValue(this.props.getMode(), this.props.activeField, utils.getTokenObj(this.props.tokens, token.hash));
-        this.props.closeTokenList();
-        this.props.changeBalance(this.props.activeField, token.hash);
+        let tokenObj = utils.getTokenObj(this.props.tokens, token.hash)
+        this.props.assignTokenValue(this.props.getMode(), this.props.activeField, tokenObj)
+        this.props.closeTokenList(tokenObj, this.props.activeField)
+        this.props.changeBalance(this.props.activeField, token.hash)
     };
 
     toggleSortList() {
@@ -109,8 +109,8 @@ class TokenCard extends React.Component {
         }
     };
 
-    closeTokenList () {
-        this.props.closeTokenList();
+    closeTokenList (tokenObj, activeField) {
+        this.props.closeTokenList(tokenObj, activeField);
     };
 
     render() {

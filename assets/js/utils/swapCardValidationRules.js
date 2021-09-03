@@ -10,7 +10,7 @@ class SwapCardValidationRules {
                     {
                         method: 'isSet',
                         args: {data: fieldData.balance.amount},
-                        desiredResults: true,
+                        desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
@@ -32,7 +32,7 @@ class SwapCardValidationRules {
                     {
                         method: 'isSet',
                         args: {data: fieldData.value.text},
-                        desiredResults: true,
+                        desiredResult: true,
                         errMsg: 'REQUIRED'
                     },
                     {
@@ -47,6 +47,10 @@ class SwapCardValidationRules {
     }
 
     getSwapCardValidationRules (swapCardData, mode) {
+        let ltData = {balance : 0, value : 0}
+        if (swapCardData.ltfield)
+            ltData = swapCardData.ltfield
+
         return {
             field0: {
                 ...this._getSwapCardBalanceRules({
@@ -65,8 +69,8 @@ class SwapCardValidationRules {
             ltfield: {
                 ...this._getSwapCardBalanceRules({
                     required: (mode === 'removeLiquidity'),
-                    balance: swapCardData.ltfield.balance,
-                    value: swapCardData.ltfield.value
+                    balance: ltData.balance,
+                    value: ltData.value
                 })
             },
             // TODO: check native token balance (should be more or equal than fee)
@@ -81,20 +85,25 @@ class SwapCardValidationRules {
     }
 
     _getSwapCardBalanceRules (fieldData) {
+        let value = 0, max = 0
+        try {
+            value = BigInt(fieldData.value.value) * BigInt(Math.pow(10, fieldData.value.decimals))
+            max = BigInt(fieldData.balance.amount) * BigInt(Math.pow(10, fieldData.balance.decimals))
+        } catch (e) {}
         return {
             checks: [
                 {
                     method: 'isSet',
                     args: {data: fieldData},
-                    desiredResults: true,
+                    desiredResult: true,
                     errMsg: 'REQUIRED'
                 },
                 {
                     requireToCheck: fieldData.required,
                     method: 'lessThan',
                     args: {
-                        value: BigInt(fieldData.value.amount) * BigInt(Math.pow(10, fieldData.value.decimals)),
-                        max: BigInt(fieldData.balance.amount) * BigInt(Math.pow(10, fieldData.balance.decimals))
+                        value: value,
+                        max: max
                     },
                     desiredResult: true,
                     errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'

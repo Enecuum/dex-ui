@@ -62,6 +62,7 @@ class SwapCard extends React.Component {
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
         this.initByGetRequestParams = true
         this.handBack = false
+        this.validator = new Validator
     };
 
 
@@ -525,7 +526,7 @@ class SwapCard extends React.Component {
                 </div>
                 <div className="d-flex align-items-center justify-content-between">                    
                     <input id={props.id}
-                        onChange={e => this.changeField(props.id, e.target.value.toString())}
+                        onChange={e => this.changeField(props.id, e.target)}
                         className='c-input-field mr-2'
                         type='text'
                         value={this.showInputValue(props.fieldData.value)}
@@ -542,7 +543,7 @@ class SwapCard extends React.Component {
                         }    
                         <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
                             <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>
-                            <span className='icon-Icon26 d-flex align-items-center chevron-down'></span>
+                            <span className='icon-Icon26 d-flex align-items-center chevron-down'/>
                         </div>                     
                     </div>               
                 </div>
@@ -565,7 +566,7 @@ class SwapCard extends React.Component {
     /* ============================ data calculation and filtration ============================= */
 
     showInputValue(valueObj) {
-        // make rules for showing numbers acording to national standarts
+        // make rules for showing numbers according to national standards
         let res;
         if (valueObj.text !== undefined)
             if (valueObj.text !== '') {
@@ -649,12 +650,17 @@ class SwapCard extends React.Component {
         let fieldObj = this.props[mode][field];
         fieldObj.value = newValObj;
         this.countCounterField(fieldObj, this.getFieldName(fieldProps.id, true), mode === 'removeLiquidity', field);
-        this.establishReadiness();        
+
+        let modeData = this.props[mode]
+        modeData[field] = fieldObj
+
+        this.establishReadiness(this.validateSwapCard(modeData))
     }    
 
-    changeField (fieldId, newValue) {
-        let mode = this.getMode(), field = this.getFieldName(fieldId)
+    changeField (fieldId, target) {
+        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
         let modeData = this.props[mode], fieldData = modeData[field]
+        let old = {...fieldData.value}
 
         let decimals = fieldData.token.decimals
         let newValObj = (decimals) ? {
@@ -665,24 +671,22 @@ class SwapCard extends React.Component {
         fieldData.value = newValObj
 
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
-        let checkResult = (new Validator).batchValidate(fieldData, rules)
-
+        let checkResult = (this.validator).batchValidate(fieldData, rules)
+        console.log(checkResult)
         if (checkResult.dataValid) {
             this.props.assignCoinValue(mode, field, newValObj)
+            this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
+            modeData[field] = fieldData
+            this.establishReadiness(this.validateSwapCard(modeData))
+        } else {
+            // TODO - check old value
+            target.value = old
         }
-        this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
-
-        rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
-        checkResult = (new Validator).batchValidate(modeData, rules)
-
-        // TODO - replace establishReadiness with actions caused by checkResult
-
-        this.establishReadiness()
     }
 
     isValidPercent (rmPercent) {
-        return Number(rmPercent) <= 100;
-    };
+        return Number(rmPercent) <= 100
+    }
 
     countPrice(activeField, counterField, pair) {
         let decimals = [activeField.token.decimals, counterField.token.decimals];
@@ -809,9 +813,18 @@ class SwapCard extends React.Component {
         this.props.openTokenList();
     };
 
-    closeTokenList() {
-        this.props.closeTokenList();
-        this.establishReadiness();
+    validateSwapCard(modeData) {
+        let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
+        return (this.validator).batchValidate(modeData, rules)
+    }
+
+    closeTokenList(tokenObj, activeField) {
+        this.props.closeTokenList()
+        let mode = this.getMode(), modeData = this.props[mode]
+        if (tokenObj) {
+            modeData[activeField].token = tokenObj
+            this.establishReadiness(this.validateSwapCard(modeData))
+        }
     }
 
     changeAddRemoveCards(mode) {
@@ -834,9 +847,9 @@ class SwapCard extends React.Component {
     }
 
     /* =========================== rules checking for ConfirmCard opening ========================== */
-    establishReadiness() {
-        this.countBadBalance();
-        this.readyToSubmit = this.getReadinessState();
+    establishReadiness(checkResult) {
+        this.countBadBalance()
+        this.readyToSubmit = checkResult.dataValid
     };
 
     establishPairExistence() {
@@ -902,8 +915,8 @@ class SwapCard extends React.Component {
     };
 
     /* ================================== main rendering function ================================== */
-    render() {       
-        this.establishReadiness();
+    render() {
+        this.establishReadiness(this.validateSwapCard(this.props[this.getMode()]))
         this.establishPairExistence();
         return (
             <div>

@@ -4,7 +4,7 @@ class Validator {
     checkValidDigitalValue (value) {
         return (value !== null && value !== undefined && !Number.isNaN(value)) ? true : false;
     }
-    isSet (dataObj) {            
+    isSet (dataObj) {
         return ((typeof dataObj.data !== 'undefined') && dataObj.data !== null && dataObj.data !== '') ? true : false
     }
     strExeedMaxLength (dataObj) {
@@ -66,7 +66,7 @@ class Validator {
         if (((typeof dataObj.value !== 'undefined') && dataObj.value !== null) && ((typeof dataObj.n !== 'undefined') && dataObj.n !== null)) {
            dataObj.n*=1;
            let decimalPart = dataObj.value.toString().replace(/,/g, '.').split('.')[1];
-            return (decimalPart === undefined || decimalPart.length <= dataObj.n) ? true : false;                           
+           return (decimalPart === undefined || decimalPart.length <= dataObj.n) ? true : false;
         } else
             return null;            
     }
@@ -80,7 +80,7 @@ class Validator {
             return Number.isInteger(dataObj.value);
         }
     }
-    batchValidate (validateObj, rulesObject) {        
+    batchValidate (validateObj, rulesObject) {
         let validationResult = {
             dataValid : true,
             propsArr : {}   
@@ -100,13 +100,14 @@ class Validator {
                                 errMsg = check.errMsg,
                                 result = that[method](argObj)
                             if (desiredResult !== result) {
+                                console.log(desiredResult, result, prop)
                                 propsErr[prop]++;
                                 validationResult.dataValid = false;
                                 validationResult.propsArr[prop] = {
                                     valid  : false,
                                     msg        : errMsg.msg || errMsg,
                                     params     : errMsg.params
-                                } 
+                                }
 
                             }
                         }

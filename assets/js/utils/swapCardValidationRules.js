@@ -3,6 +3,31 @@ class SwapCardValidationRules {
         this.t = translationFunction
     }
 
+    getActivePairValidationRules (activePair) {
+        return {
+            token_0: {
+                checks: [
+                    {
+                        method: 'isSet',
+                        args: {data: activePair.token_0.hash},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED'
+                    }
+                ]
+            },
+            token_1: {
+                checks: [
+                    {
+                        method: 'isSet',
+                        args: {data: activePair.token_1.hash},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED'
+                    }
+                ]
+            }
+        }
+    }
+
     getSwapFieldValidationRules (fieldData) {
         return {
             balance: {
@@ -30,10 +55,16 @@ class SwapCardValidationRules {
             value: {
                 checks: [
                     {
-                        method: 'isSet',
-                        args: {data: fieldData.value.text},
+                        method: 'testTheRegExp',
+                        args: {str: fieldData.value.text, regExpObj: /^([0-9]+(\.|,))?[0-9]*$/},
                         desiredResult: true,
-                        errMsg: 'REQUIRED'
+                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
+                    },
+                    {
+                        method: 'execTheRegExp',
+                        args: {str: fieldData.value.text, regExpObj: /^0(0)+/},
+                        desiredResult: false,
+                        errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
                     },
                     {
                         method: 'matchToFixed',

@@ -660,7 +660,7 @@ class SwapCard extends React.Component {
     changeField (fieldId, target) {
         let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
         let modeData = this.props[mode], fieldData = modeData[field]
-        let old = {...fieldData.value}
+        let oldValObj = {...fieldData.value}
 
         let decimals = fieldData.token.decimals
         let newValObj = (decimals) ? {
@@ -671,16 +671,18 @@ class SwapCard extends React.Component {
         fieldData.value = newValObj
 
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
-        let checkResult = (this.validator).batchValidate(fieldData, rules)
-        console.log(checkResult)
+        let checkResult = this.validator.batchValidate(fieldData, rules)
+
         if (checkResult.dataValid) {
             this.props.assignCoinValue(mode, field, newValObj)
-            this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
+            let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
+            checkResult = this.validator.batchValidate(this.activePair, activePairRules)
+            if (checkResult.dataValid)
+                this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
             modeData[field] = fieldData
             this.establishReadiness(this.validateSwapCard(modeData))
         } else {
-            // TODO - check old value
-            target.value = old
+            this.props.assignCoinValue(mode, field, oldValObj)
         }
     }
 
@@ -815,7 +817,7 @@ class SwapCard extends React.Component {
 
     validateSwapCard(modeData) {
         let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
-        return (this.validator).batchValidate(modeData, rules)
+        return this.validator.batchValidate(modeData, rules)
     }
 
     closeTokenList(tokenObj, activeField) {

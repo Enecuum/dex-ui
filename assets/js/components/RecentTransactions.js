@@ -31,7 +31,6 @@ class RecentTransactions extends React.Component {
     generateTxText (strData) {
         let objData = ENQWeb.Utils.ofd.parse(strData)
         let descriptionPhrase = "", interpolateParams = {}
-        console.log(objData)
         if (objData.type === "pool_swap") {
             descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.swap.completePhrase'
             let poolObj = swapUtils.searchSwap(this.props.pairs, [
@@ -102,7 +101,6 @@ class RecentTransactions extends React.Component {
                 promises = [];
                 for (let result of results) {
                     try {
-                        console.log(result)
                         promises.push(
                             result.value.json()
                                 .then(res => {

@@ -7,6 +7,7 @@ import networkApi from "../requests/networkApi";
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
 import ValueProcessor from '../utils/ValueProcessor';
+import lsdp from "../utils/localStorageDataProcessor";
 
 const valueProcessor = new ValueProcessor();
 
@@ -98,6 +99,7 @@ class IndicatorPanel extends React.Component {
                 ENQWeb.Enq.provider = res.net
                 this.updMainTokenData(res.net)
                 networkApi.updUrl(res.net + '/')
+                lsdp.updNet(res.net)
                 this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
             }
         },

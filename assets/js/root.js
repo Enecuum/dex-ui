@@ -25,6 +25,7 @@ import utils from './utils/swapUtils';
 import LPTokensWalletInfo from './components/LPTokensWalletInfo';
 import AccountShortInfo from "./components/AccountShortInfo";
 import {cookieProcessor as cp} from "./utils/cookieProcessor";
+import lsdp from "./utils/localStorageDataProcessor";
 
 import pageDataPresets from "../store/pageDataPresets";
 
@@ -58,6 +59,7 @@ class Root extends React.Component {
                     ENQweb3lib.enable()
                         .then(res => {
                             cp.updateSettings(res.pubkey, '/')
+                            lsdp.updPubKey(res.pubkey)
                             this.props.assignPubkey(res.pubkey)
                             this.updDexData(res.pubkey)
                             this.props.setConStatus(true)

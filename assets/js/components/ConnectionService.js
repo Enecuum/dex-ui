@@ -5,6 +5,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../store/sto
 import { withTranslation } from "react-i18next";
 
 import {cookieProcessor as cp} from "../utils/cookieProcessor";
+import lsdp from "../utils/localStorageDataProcessor";
 
 import img from '../../img/logo.png';
 import '../../css/close-button.css';
@@ -25,15 +26,16 @@ class ConnectionService extends React.Component {
         await ENQweb3lib.enable()
         .then(res => {            
             cp.updateSettings(res.pubkey, '/')
+            lsdp.updPubKey(res.pubkey)
             this.props.assignPubkey(res.pubkey)
             this.props.updDexData(res.pubkey)
             this.props.setConStatus(true)
             this.props.closeConList()
         },
         () => {
-            this.props.closeConList();
-            this.props.setConStatus(false);
-        });
+            this.props.closeConList()
+            this.props.setConStatus(false)
+        })
     };
 
     render () {

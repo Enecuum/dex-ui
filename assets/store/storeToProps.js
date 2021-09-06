@@ -52,6 +52,7 @@ function mapStoreToProps(component) {
                     ...state.swapCard,
                     pubkey                     : state.root.pubkey,
                     mainToken                  : state.root.mainToken,
+                    mainTokenFee               : state.root.mainTokenFee,
                     connectionStatus           : state.root.connectionStatus,
                     langData                   : state.root.langData.trade.swapCard,
                     menuItem                   : state.root.menuItem,

@@ -104,14 +104,13 @@ class SwapCardValidationRules {
                     value: ltData.value
                 })
             },
-            // TODO: check native token balance (should be more or equal than fee)
-            // nativeToken: {
-            //     ...this._getSwapCardBalanceRules({
-            //         required: true,
-            //         balance: swapCardData.nativeToken.balance,   // user balance
-            //         value: swapCardData.nativeToken.value        // network fee
-            //     })
-            // }
+            nativeToken: {
+                ...this._getSwapCardBalanceRules({
+                    required: true,
+                    balance: swapCardData.nativeToken.balance,   // user balance
+                    value: swapCardData.nativeToken.value        // network fee
+                })
+            }
         }
     }
 

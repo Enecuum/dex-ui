@@ -100,7 +100,6 @@ class Validator {
                                 errMsg = check.errMsg,
                                 result = that[method](argObj)
                             if (desiredResult !== result) {
-                                console.log(desiredResult, result, prop)
                                 propsErr[prop]++;
                                 validationResult.dataValid = false;
                                 validationResult.propsArr[prop] = {

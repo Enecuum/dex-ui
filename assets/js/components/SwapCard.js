@@ -663,7 +663,7 @@ class SwapCard extends React.Component {
         let oldValObj = {...fieldData.value}
 
         let decimals = fieldData.token.decimals
-        let newValObj = (decimals) ? {
+        let newValObj = (fieldData.token.amount !== '---') ? {
             value : valueProcessor.valueToBigInt(newValue, decimals).value,
             decimals : decimals,
             text : newValue
@@ -816,6 +816,11 @@ class SwapCard extends React.Component {
     };
 
     validateSwapCard(modeData) {
+        let nativeBalance = utils.getBalanceObj(this.props.balances, this.props.mainToken)
+        modeData.nativeToken = {
+            balance: nativeBalance,
+            value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
+        }
         let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
         return this.validator.batchValidate(modeData, rules)
     }

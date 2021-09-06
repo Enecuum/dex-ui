@@ -37,7 +37,7 @@ class LocalStorageDataProcessor {
             let data = this._getObjectData(concatenatedKey)
             if (this._isFreshTx(data)) {
                 if (data.net === this._net)
-                    return history[concatenatedKey.substring(this._pubKey.length)] = data.text
+                    return history[concatenatedKey.substring(this._pubKey.length)] = data
             } else {
                 this._removeNote(concatenatedKey, true)
             }
@@ -49,15 +49,16 @@ class LocalStorageDataProcessor {
         let data = this._getObjectData(txHash)
         if (this._isFreshTx(data)) {
             if (data.net === this._net)
-                return {[txHash]: data.text}
+                return {[txHash]: data}
         } else {
             this._removeNote(txHash)
         }
         return null
     }
 
-    _writeNewNote (txHash, text) {
+    _writeNewNote (txHash, status, text) {
         localStorage.setItem(this._pubKey + txHash, JSON.stringify({
+            status : status,
             text : text,
             data : (new Date).getTime(),
             net  : this._net

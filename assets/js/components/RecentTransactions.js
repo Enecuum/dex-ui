@@ -129,7 +129,7 @@ class RecentTransactions extends React.Component {
     }
 
     getRecentTxsMarkup () {
-        let recentTxList = this.state.recentTxs
+        let recentTxList = {...this.state.recentTxs}
         let recentTxListLen = Object.keys(recentTxList).length
         if (!recentTxListLen)
             recentTxList.header = "Your transactions will appear here..."
@@ -138,7 +138,7 @@ class RecentTransactions extends React.Component {
 
         let txsForRender = Object.keys(recentTxList).reduce((arrForRender, hash, index) => {
             let yPadding
-            if (recentTxListLen === 1)
+            if (recentTxListLen === 1 || recentTxListLen === 0)
                 yPadding = "py-2"
             else
                 yPadding = (index === "0") ? "pt-3" : (index === String(recentTxList.length-1)) ? "pb-3" : ""

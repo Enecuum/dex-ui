@@ -11,13 +11,14 @@ import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-import {cookieProcessor as cp} from '../utils/cookieProcessor';
+import lsdp from "../utils/localStorageDataProcessor";
 
 import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/confirm-supply.css';
 
 const valueProcessor = new ValueProcessor();
+
 
 class ConfirmSupply extends React.Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class ConfirmSupply extends React.Component {
         tx.then(result => {
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
-            cp.set(result.hash, 0);
+            // lsdp.write(result.hash, 0, this.getDescription())
         },
         error => {
             this.props.changeWaitingStateType('rejected');

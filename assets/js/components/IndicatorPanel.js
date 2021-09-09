@@ -2,12 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
+import AccountShortInfo from "./AccountShortInfo";
+
 import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
 import swapApi from '../requests/swapApi';
 import utils from '../utils/swapUtils';
 import ValueProcessor from '../utils/ValueProcessor';
 import lsdp from "../utils/localStorageDataProcessor";
+import pageDataPresets from "../../store/pageDataPresets";
 
 const valueProcessor = new ValueProcessor();
 
@@ -15,28 +18,26 @@ class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
         this.updData();
-        this.intervalDescriptor = this.circleUpd();
+        this.intervalDescriptors = []
+        this.intervalDescriptors.push(this.circleUpd())
+        this.intervalDescriptors.push(this.updPendingSpinner())
         this.state = {
-            accountInfoVisibility : false
+            accountInfoVisibility : false,
+            pendingVisibility : false
         };
     };
 
     componentWillUnmount() {
-        clearInterval(this.intervalDescriptor)
+        this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
     }
 
     renderPendingIndicator () {
-        if (this.props.pendingIndicator)
-            return(
-                <div id="pendingIndicator" className="d-flex align-items-center justify-content-end px-3 mr-3">
-                    <span className="mr-2">Pending</span>
-                    <span className="spinner icon-Icon3"/>
-                </div>
-            );
-        else
-            return(
-                <></>
-            );
+        return(
+            <div id="pendingIndicator" className="d-flex align-items-center justify-content-end px-3 mr-3">
+                <span className="mr-2">Pending</span>
+                <span className="spinner icon-Icon3"/>
+            </div>
+        )
     };
 
     changeNet (name, url) {
@@ -47,7 +48,7 @@ class IndicatorPanel extends React.Component {
     renderWalletInfo () {
         return (
             <div className='wallet-info-wrapper d-flex align-items-center justify-content-end'>
-                {this.renderPendingIndicator()}
+                {this.state.pendingVisibility && this.renderPendingIndicator()}
                 <div className='net wallet-info-boxes d-flex align-items-center justify-content-center mr-3'>
                     <span className='text-uppercase mx-2'>{this.props.net.name}</span>
                 </div>
@@ -59,12 +60,15 @@ class IndicatorPanel extends React.Component {
                     <div className='addr wallet-info-boxes d-none d-md-flex align-items-center justify-content-center open-in-explorer hover-pointer'
                          onClick={this.openCloseAccountInfo.bind(this)}>{utils.packAddressString(this.props.pubkey)}</div>
                 </div>
+                <div id="toastWrapper" className="position-absolute pt-4">
+                    {this.state.accountInfoVisibility && <AccountShortInfo openCloseAccountInfo={this.openCloseAccountInfo.bind(this)}/>}
+                </div>
             </div>
         );
     };
 
     openCloseAccountInfo () {
-        this.props.changeAccountInfoVisibility();
+        this.setState({accountInfoVisibility : !this.state.accountInfoVisibility})
     };
 
     updData () {
@@ -105,6 +109,72 @@ class IndicatorPanel extends React.Component {
         },
         err => console.log('cannot make getProvider request'));
     };
+
+    hidePendingIndicator () {
+        this.setState({pendingVisibility : false})
+    }
+
+    showPendingIndicator () {
+        this.setState({pendingVisibility : true})
+    }
+
+    controlPendingSpinnerVisibility (pendingArray) {
+        let promises = []
+        for (let pendingRequest of pendingArray)
+            promises.push(swapApi.tx(pendingRequest.hash))
+
+        Promise.allSettled(promises)
+            .then(results => {
+                let allDone = true
+                promises = []
+                for (let res of results) {
+                    promises.push(
+                        res.value.json()
+                            .then(res => {
+                                if (res.status !== 3 && res.status !== 2)
+                                    allDone = false
+                            })
+                            .catch(() => allDone = false)
+                    );
+                }
+                Promise.all(promises)
+                    .then(() => {
+                        if (allDone)
+                            this.hidePendingIndicator()
+                        else
+                            this.showPendingIndicator()
+                    })
+            })
+    }
+
+    filterEnexTxs (pendingArray) {
+        for (let i in pendingArray) {
+            let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data)
+            if (pageDataPresets.pending.allowedTxTypes.indexOf(data.type) === -1)
+                pendingArray.splice(i, 1)
+        }
+        return pendingArray
+    }
+
+    updPendingSpinner () {
+        return setInterval(() => {
+            if (this.props.pubkey) {
+                swapApi.pendingTxAccount(this.props.pubkey)
+                    .then(res => {
+                        if (!res.lock)
+                            res.json()
+                                .then(pendingArray => {
+                                    if (Array.isArray(pendingArray) && pendingArray.length !== 0) {
+                                        pendingArray = this.filterEnexTxs(pendingArray)
+                                        this.controlPendingSpinnerVisibility(pendingArray)
+                                    } else {
+                                        this.hidePendingIndicator()
+                                    }
+                                })
+                    })
+            }
+        }, 1000)
+    }
 
     render () {
         return (

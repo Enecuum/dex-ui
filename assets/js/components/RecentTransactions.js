@@ -141,7 +141,7 @@ class RecentTransactions extends React.Component {
             if (recentTxListLen === 1 || recentTxListLen === 0)
                 yPadding = "py-2"
             else
-                yPadding = (index === "0") ? "pt-3" : (index === String(recentTxList.length-1)) ? "pb-3" : ""
+                yPadding = (index == "0") ? "pt-3" : (index == String(recentTxList.length-1)) ? "pb-3" : ""
 
             if (recentTxList[hash].text !== undefined) {
                 let iconNumber = (recentTxList[hash].status == 3) ? 5 : 7
@@ -176,7 +176,7 @@ class RecentTransactions extends React.Component {
     render () {
         return (
             <>
-                {this.props.accountInfoVisibility && this.getRecentTxsMarkup()}
+                {this.getRecentTxsMarkup()}
             </>
         )
     }

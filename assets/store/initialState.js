@@ -26,7 +26,6 @@ const initialState = {
         siteLocales             : presets.langData.siteLocales,
         activeLocale            : presets.langData.preferredLocale,
         langTitles              : presets.langData.langTitles,
-        pendingIndicator        : false,
         swapCardLeft            : '45%',
         currentTxHash           : undefined,
         balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
@@ -70,7 +69,6 @@ const initialState = {
         exchangeRate : ''
     },
     indicatorPanel : {
-        accountInfoVisibility : false,
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
         coinAmount  : 0,

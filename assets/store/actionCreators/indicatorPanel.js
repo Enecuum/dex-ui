@@ -14,11 +14,6 @@ const actionCreators = {
             type : actions.UPD_COIN_NAME,
             value : name
         }
-    },
-    changeAccountInfoVisibility () {
-        return {
-            type : actions.CHANGE_ACC_INFO_VISIBILITY
-        }
     }
 }
 

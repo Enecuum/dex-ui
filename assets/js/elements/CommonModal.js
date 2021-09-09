@@ -11,7 +11,7 @@ class CommonModal extends React.Component {
         return (
             <Modal
                 show={true}
-                aria-labelledby="example-custom-modal-styling-title"
+                aria-labelledby="custom-modal-styling-title"
                 onHide={this.props.closeAction.bind(this.props)}
                 centered
                 animation={false}

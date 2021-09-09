@@ -26,18 +26,6 @@ const actionCreators = {
         };
     },
     
-    openConList() {
-        return {
-            type : actions.OPEN_CONNECTION_LIST
-        };
-    },
-    
-    closeConList() {
-        return {
-            type : actions.CLOSE_CONNECTION_LIST
-        };
-    },
-    
     setConStatus(connected) {
         return {
             type : actions.CHANGE_CONN_STATUS,
@@ -63,18 +51,6 @@ const actionCreators = {
         return {
             type : actions.UPD_ACTIVE_LOCALE,
             value : locale
-        };
-    },
-
-    showPendingIndicator() {
-        return {
-            type : actions.SHOW_PENDING_STATE
-        };
-    },
-
-    hidePendingIndicator() {
-        return {
-            type : actions.HIDE_PENDING_STATE
         };
     },
 

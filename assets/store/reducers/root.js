@@ -23,12 +23,6 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.CHANGE_LANG:
             return rootStore(state, { langData : action.value });
 
-        case actions.OPEN_CONNECTION_LIST:
-            return rootStore(state, { connecionListOpened : true });
-
-        case actions.CLOSE_CONNECTION_LIST:
-            return rootStore(state, { connecionListOpened : false });
-
         case actions.CHANGE_CONN_STATUS:
             return rootStore(state, { connectionStatus : action.value });
 
@@ -40,12 +34,6 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.UPD_ACTIVE_LOCALE:
             return rootStore(state, { activeLocale : action.value });
-
-        case actions.SHOW_PENDING_STATE:
-            return rootStore(state, { pendingIndicator : true });
-
-        case actions.HIDE_PENDING_STATE:
-            return rootStore(state, { pendingIndicator : false });
         
         case actions.UPD_BALANCES:
             return rootStore (state, { balances : action.value });

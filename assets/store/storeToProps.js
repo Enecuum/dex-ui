@@ -15,7 +15,6 @@ const components = {
     SWITCH                           : 0x2,
     TOKEN_CARD                       : 0x3,
     ASIDE                            : 0x4,
-    CONNECTION_SERVICE               : 0x5,
     NAVBAR                           : 0x6,
     CONNECT                          : 0x7,
     INDICATOR_PANEL                  : 0x8,
@@ -93,14 +92,6 @@ function mapStoreToProps(component) {
                     langTitles      : state.root.langTitles
                 };
             };
-        case components.CONNECTION_SERVICE:
-            return function (state) {
-                return {
-                    pubkey              : state.root.pubkey,
-                    connectionStatus    : state.root.connectionStatus,
-                    connectionListOpened : state.root.connecionListOpened
-                };
-            };
         case components.NAVBAR:
             return function (state) {
                 return {
@@ -108,20 +99,18 @@ function mapStoreToProps(component) {
                     connectionStatus    : state.root.connectionStatus
                 };
             };  
-        // case components.CONNECT:
-        //     return function (state) {
-        //         return {
-        //             langData : state.root.langData.navbars.top,
-
-        //         };
-        //     };
+        case components.CONNECT:
+            return function (state) {
+                return {
+                    connectionStatus : state.root.connectionStatus
+                };
+            };
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
                     ...state.root,
                     ...state.indicatorPanel,
                     pubkey          : state.root.pubkey,
-                    pendingIndicator: state.root.pendingIndicator,
                     balances        : state.root.balances,
                     tokens          : state.root.tokens,
                     net             : state.root.net,
@@ -249,21 +238,17 @@ function mapStoreToProps(component) {
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 };
             };
-
-                       
         case components.ACCOUNT_SHORT_INFO:
             return function (state) {
                 return {
                     pubkey                : state.root.pubkey,
                     net                   : state.root.net,
-                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility
                 }
             };
         case components.RECENT_TXS_LIST:
             return function (state) {
                 return {
                     pubkey                : state.root.pubkey,
-                    accountInfoVisibility : state.indicatorPanel.accountInfoVisibility,
                     recentTxs             : state.root.recentTxs,
                     pairs                 : state.root.pairs,
                     tokens                : state.root.tokens,
@@ -369,14 +354,6 @@ function mapDispatchToProps(component) {
                     changeLanguage  : rootCreator.changeLanguage
                 }, dispatch);
             };
-        case components.CONNECTION_SERVICE:
-            return function (dispatch) {
-                return bindActionCreators({
-                    closeConList : rootCreator.closeConList,
-                    setConStatus : rootCreator.setConStatus,
-                    assignPubkey : rootCreator.assignPubkey
-                }, dispatch);
-            };
         case components.NAVBAR:
             return function (dispatch) {
                 return bindActionCreators({
@@ -386,7 +363,8 @@ function mapDispatchToProps(component) {
         case components.CONNECT:
             return function (dispatch) {
                 return bindActionCreators({
-                    openConList     : rootCreator.openConList
+                    setConStatus : rootCreator.setConStatus,
+                    assignPubkey : rootCreator.assignPubkey
                 }, dispatch);
             };
         case components.INDICATOR_PANEL:
@@ -404,8 +382,6 @@ function mapDispatchToProps(component) {
                     closeConfirmCard        : swapCardCreator.closeConfirmCard,
                     openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
                     changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
-                    showPendingIndicator    : rootCreator.showPendingIndicator,
-                    hidePendingIndicator    : rootCreator.hidePendingIndicator,
                     updCurrentTxHash        : rootCreator.updCurrentTxHash
                 }, dispatch); 
             };
@@ -457,18 +433,9 @@ function mapDispatchToProps(component) {
                     // closeConfirmCard           : etmCreator.closeConfirmCard,
                     openWaitingConfirmation    : etmCreator.openWaitingConfirmation,
                     changeWaitingStateType     : etmCreator.changeWaitingStateType,
-                    showPendingIndicator       : rootCreator.showPendingIndicator,
-                    hidePendingIndicator       : rootCreator.hidePendingIndicator,
                     updCurrentTxHash           : rootCreator.updCurrentTxHash,
                     resetStore                  : etmCreator.resetStore
                 }, dispatch); 
-            };
-        case components.ACCOUNT_SHORT_INFO:
-            return function (dispatch) {
-                return bindActionCreators({
-                    changeAccountInfoVisibility : indicatorPanelCreator.changeAccountInfoVisibility,
-                    openConList                 : rootCreator.openConList
-                }, dispatch);
             };
 
         case components.RECENT_TXS_LIST:

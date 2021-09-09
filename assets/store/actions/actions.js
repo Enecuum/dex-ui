@@ -4,14 +4,10 @@ const actionPack =  {
         UPD_BALANCES            : 'UPD_BALANCES',
         CHANGE_NET              : 'CHANGE_NET',
         CHANGE_LANG             : 'CHANGE_LANG',
-        OPEN_CONNECTION_LIST    : 'OPEN_CONNECTION_LIST',
-        CLOSE_CONNECTION_LIST   : 'CLOSE_CONNECTION_LIST',
         CHANGE_CONN_STATUS      : 'CHANGE_CONN_STATUS',
         CHANGE_MENU_ITEM        : 'CHANGE_MENU_ITEM',
         ASSIGN_PUBKEY           : 'ASSIGN_PUBKEY',
         UPD_ACTIVE_LOCALE       : 'UPD_ACTIVE_LOCALE',
-        SHOW_PENDING_STATE      : 'SHOW_PENDING_STATE',
-        HIDE_PENDING_STATE      : 'HIDE_PENDING_STATE',
         UPD_PAIRS               : 'UPD_PAIRS',
         ASSIGN_ALL_TOKENS       : 'ASSIGN_ALL_TOKENS',
         UPD_CURRENT_TX_HASH     : 'UPD_CURRENT_TX_HASH',
@@ -45,8 +41,7 @@ const actionPack =  {
     },
     indicatorPanel : {
         UPD_COIN_AMOUNT             : 'UPD_COIN_AMOUNT',
-        UPD_COIN_NAME               : 'UPD_COIN_NAME',
-        CHANGE_ACC_INFO_VISIBILITY  : 'CHANGE_ACC_INFO_VISIBILITY'
+        UPD_COIN_NAME               : 'UPD_COIN_NAME'
     },
     etm : {
         UPDATE_TOKEN_PROPERTY          : 'UPDATE_TOKEN_PROPERTY',

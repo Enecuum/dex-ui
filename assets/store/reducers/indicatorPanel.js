@@ -15,12 +15,6 @@ export default function indicatorPanelReducer (state = initialState.indicatorPan
                 ...state,
                 coinName: action.value
             }
-        case actions.CHANGE_ACC_INFO_VISIBILITY:
-            return {
-                ...state,
-                accountInfoVisibility: !state.accountInfoVisibility
-            }
-
         default: 
             return state
     }

@@ -2,6 +2,7 @@ IMG_TAG="dex-ui"
 
 SERVER_ENTRY_PORT=80
 CLIENTS_PORT=7071
+# Services (rd - request divisor, fl - file loader, ddl - dex data loader (not implemented))
 SERVICES=('rd' 'fl' 'ddl')
 PORTS=(7001 7002 7003)
 SUBNET='172.18.0.0/16'

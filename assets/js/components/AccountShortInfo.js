@@ -27,10 +27,6 @@ class AccountShortInfo extends React.Component {
         navigator.clipboard.writeText(this.props.pubkey).then(() => {})
     }
 
-    closeAccountCard () {
-        this.props.changeAccountInfoVisibility()
-    }
-
     reloadPage () {
         cp.set('reload', true, true)
         location.reload()
@@ -79,10 +75,9 @@ class AccountShortInfo extends React.Component {
 
     render() {
         return (
-            this.props.accountInfoVisibility &&
             <CommonToast renderHeader={this.renderHeader.bind(this)}
                          renderBody={this.renderBody.bind(this)}
-                         closeAction={this.closeAccountCard.bind(this)}/>
+                         closeAction={this.props.openCloseAccountInfo.bind(this.props)}/>
         )
     }
 }

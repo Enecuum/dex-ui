@@ -2,7 +2,7 @@ class LocalStorageDataProcessor {
     constructor (pubKey, net) {
         this._pubKey = pubKey
         this._net = net
-        this._txTTL = 1000 * 60 * 60 * 24; // one day
+        this._txTTL = 1000 * 60 * 60 * 24 // one day
     }
 
     updNet (net) {
@@ -31,13 +31,13 @@ class LocalStorageDataProcessor {
 
     _getHistory () {
         let keys = Object.keys(localStorage)
-        let validKeys = keys.filter(key => (new RegExp(`^${this._pubKey}[a-b|0-9]{64}$`)).test(key))
+        let validKeys = keys.filter(key => (new RegExp(`^${this._pubKey}[a-z|0-9]{64}$`)).test(key))
 
         return validKeys.reduce((history, concatenatedKey) => {
             let data = this._getObjectData(concatenatedKey)
             if (this._isFreshTx(data)) {
                 if (data.net === this._net)
-                    return history[concatenatedKey.substring(this._pubKey.length)] = data
+                    history[concatenatedKey.substring(this._pubKey.length)] = data
             } else {
                 this._removeNote(concatenatedKey, true)
             }
@@ -46,7 +46,7 @@ class LocalStorageDataProcessor {
     }
 
     _getNote (txHash) {
-        let data = this._getObjectData(txHash)
+        let data = this._getObjectData(this._pubKey + txHash)
         if (this._isFreshTx(data)) {
             if (data.net === this._net)
                 return {[txHash]: data}
@@ -60,7 +60,7 @@ class LocalStorageDataProcessor {
         localStorage.setItem(this._pubKey + txHash, JSON.stringify({
             status : status,
             text : text,
-            data : (new Date).getTime(),
+            date : (new Date).getTime(),
             net  : this._net
         }))
     }
@@ -71,12 +71,19 @@ class LocalStorageDataProcessor {
         else
             localStorage.removeItem(this._pubKey + txHash)
     }
+
+    _removeHistory () {
+        Object.keys(this._getHistory()).forEach(hash => this._removeNote(hash))
+    }
 }
 
 const lsdp = new LocalStorageDataProcessor()
 
 lsdp.write  = lsdp._writeNewNote.bind(lsdp)
-lsdp.remove = lsdp._removeNote.bind(lsdp)
+lsdp.remove = {
+    history : lsdp._removeHistory.bind(lsdp),
+    note    : lsdp._removeNote.bind(lsdp)
+}
 lsdp.get    = {
     history : lsdp._getHistory.bind(lsdp),
     note    : lsdp._getNote.bind(lsdp)

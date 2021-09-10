@@ -1,15 +1,10 @@
-import React from "react";
-import {connect} from "react-redux";
-import {components, mapDispatchToProps, mapStoreToProps} from "../../store/storeToProps";
-import {withTranslation} from "react-i18next";
+import React from "react"
+import {connect} from "react-redux"
+import {components, mapDispatchToProps, mapStoreToProps} from "../../store/storeToProps"
+import {withTranslation} from "react-i18next"
 
-import ValueProcessor from "../utils/ValueProcessor";
-import swapApi from "../requests/swapApi";
-// import swapUtils from "../utils/swapUtils";
-// import testFormulas from "../utils/testFormulas";
-import lsdp from "../utils/localStorageDataProcessor";
-
-const vp = new ValueProcessor()
+import swapApi from "../requests/swapApi"
+import lsdp from "../utils/localStorageDataProcessor"
 
 
 class RecentTransactions extends React.Component {
@@ -19,6 +14,10 @@ class RecentTransactions extends React.Component {
             recentTxs : {},
         }
         this.updData()
+    }
+
+    componentDidMount() {
+        this.updRecentTxs()
     }
 
     componentWillUnmount() {
@@ -131,34 +130,40 @@ class RecentTransactions extends React.Component {
     getRecentTxsMarkup () {
         let recentTxList = {...this.state.recentTxs}
         let recentTxListLen = Object.keys(recentTxList).length
-        if (!recentTxListLen)
-            recentTxList.header = "Your transactions will appear here..."
-        else
-            recentTxList.header = "Recent transactions"
 
         let txsForRender = Object.keys(recentTxList).reduce((arrForRender, hash, index) => {
-            let yPadding
-            if (recentTxListLen === 1 || recentTxListLen === 0)
-                yPadding = "py-2"
-            else
-                yPadding = (index == "0") ? "pt-3" : (index == String(recentTxList.length-1)) ? "pb-3" : ""
-
+            let yPadding = (index == recentTxListLen-1) ? "pb-3" : ""
             if (recentTxList[hash].text !== undefined) {
-                let iconNumber = (recentTxList[hash].status == 3) ? 5 : 7
+                let txStatusIcon
+                if (recentTxList[hash].status == 3)
+                    txStatusIcon = 'icon-Icon5'
+                else if (recentTxList[hash].status == 0)
+                    txStatusIcon = 'spinner icon-Icon3'
+                else
+                    txStatusIcon = 'icon-Icon7'
                 arrForRender.push((
-                    <p className={`${yPadding} px-3 d-flex justify-content-between`} key={index+''}>
+                    <p className={`${yPadding} px-4 d-flex justify-content-between`} key={index+''}>
                         <a className="recent-tx-ref" onClick={this.openTxInExplorer.bind(this, hash)}>
                             { recentTxList[hash].text }
                             <span className='ml-2 icon-Icon11' />
                         </a>
-                        <span className={`ml-2 recent-tx-ref icon-Icon${iconNumber}`} />
+                        <span className={`ml-2 mb-2 recent-tx-ref ${txStatusIcon}`} />
                     </p>
                 ))
-            } else {
-                arrForRender.push((<p className={`${yPadding} px-3`} key={index+''}>{ recentTxList.header }</p>))
             }
             return arrForRender
         }, [])
+
+        if (!recentTxListLen)
+            txsForRender.unshift((<p className={`py-3 px-4`} key={'-1'}>{ "Your transactions will appear here..." }</p>))
+        else
+            txsForRender.unshift((<div className="px-4 d-flex justify-content-between">
+                <p className="pt-3" key={'-1'}>{ "Recent transactions" }</p>
+                <a
+                    className="recent-tx-ref d-flex align-items-center"
+                    onClick={this.clearHistory.bind(this)}
+                >(clear all)</a>
+            </div>))
 
         return (
             <div className="recent-txs-place mt-3">
@@ -167,10 +172,19 @@ class RecentTransactions extends React.Component {
         )
     }
 
+    clearHistory () {
+        lsdp.remove.history()
+        this.updRecentTxs()
+    }
+
     updData () {
         this.intervalDescriptor = setInterval(() => {
-            this.getListOfRecentTxs().then(recentTxs => this.setState({recentTxs : recentTxs}))
-        }, 2000)
+            this.updRecentTxs()
+        }, 1000)
+    }
+
+    updRecentTxs () {
+        this.getListOfRecentTxs().then(recentTxs => this.setState({recentTxs : recentTxs}))
     }
 
     render () {

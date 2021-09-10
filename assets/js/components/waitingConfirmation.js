@@ -107,7 +107,7 @@ class WaitingConfirmation extends React.Component {
                     renderHeader={this.renderModalHeader.bind(this)}
                     renderBody={this.renderModalBody.bind(this)}
                     closeAction={this.props.closeWaitingCard.bind(this)}
-                />}
+                />
             </>
         )
     }

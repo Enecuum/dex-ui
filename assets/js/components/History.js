@@ -1,10 +1,12 @@
 import React from 'react'
-import { Modal } from "react-bootstrap"
+import {Modal, DropdownButton, Dropdown} from "react-bootstrap"
 import { withTranslation } from "react-i18next"
 import Form from "react-bootstrap/Form"
 
 import CommonModal from "../elements/CommonModal"
 import RecentTransactions from "./RecentTransactions"
+
+import '../../css/history.css'
 
 class History extends React.Component {
     constructor(props) {
@@ -29,14 +31,35 @@ class History extends React.Component {
 
     renderModalBody () {
         return(<>
-            {/*<div className="mb-4">*/}
-            {/*    <Form.Control*/}
-            {/*        // onChange={}*/}
-            {/*        className='text-input-1 form-control'*/}
-            {/*        type='text'*/}
-            {/*        autoFocus*/}
-            {/*    />*/}
-            {/*</div>*/}
+            <div className="d-flex justify-content-begin mx-4 mb-4 history-filters">
+                <DropdownButton
+                    variant="info"
+                    title="farms"
+                    className="d-flex mr-3"
+                    size="sm"
+                >
+                    <Dropdown.Item eventKey="1">Action</Dropdown.Item>
+                    <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" active>
+                        Active Item
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
+                </DropdownButton>
+                <DropdownButton
+                    variant="info"
+                    title="1h ago"
+                    size="sm"
+                >
+                    <Dropdown.Item eventKey="1">Action</Dropdown.Item>
+                    <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
+                    <Dropdown.Item eventKey="3" active>
+                        Active Item
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
+                </DropdownButton>
+            </div>
             <RecentTransactions />
         </>)
     }

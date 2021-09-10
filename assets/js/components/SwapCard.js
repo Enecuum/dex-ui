@@ -529,7 +529,7 @@ class SwapCard extends React.Component {
                         {props.fieldName}
                     </div>
                     <div className='my-token-amount d-flex justify-content-end'>
-                        {this.showBalance(valueProcessor.usCommasBigIntDecimals(props.fieldData.balance.amount, props.fieldData.balance.decimals, 3))}
+                        {this.showBalance(valueProcessor.usCommasBigIntDecimals(props.fieldData.balance.amount, props.fieldData.balance.decimals, props.fieldData.balance.decimals))}
                     </div>
                 </div>
                 <div className="d-flex align-items-center justify-content-between">                    
@@ -547,7 +547,7 @@ class SwapCard extends React.Component {
                             <div
                                 className="text-color3 mr-2 hover-pointer hover-color4"
                                 onClick={this.setMax.bind(this, props)}
-                                >MAX</div>
+                            >MAX</div>
                         }    
                         <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
                             <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>

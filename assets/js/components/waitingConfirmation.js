@@ -59,6 +59,20 @@ class WaitingConfirmation extends React.Component {
                     </div>
                 </>
             )
+        } else if (this.props.txStateType === 'rejected') {
+            return  (
+                <>
+                    <div className="tx-state-icon-wrapper bordered d-flex align-items-center justify-content-center mx-auto">
+                        <span className="tx-state-icon icon-Icon7"/>
+                    </div>
+                    <Button
+                        className='btn-secondary mx-auto mt-5'
+                        onClick={this.props.closeWaitingCard.bind(this)}
+                    >
+                        { this.props.t('close') }
+                    </Button>
+                </>
+            )
         }
     }
 

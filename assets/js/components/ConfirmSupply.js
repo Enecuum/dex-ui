@@ -186,6 +186,7 @@ class ConfirmSupply extends React.Component {
 
     closeWaitingCard () {
         this.setState({waitingCardVisibility: false})
+        this.setState({txStatus : 'waiting'})
     }
 
     renderWaitingConfirmation () {

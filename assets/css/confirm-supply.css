@@ -61,12 +61,12 @@ a.wiew-in-explorer:hover {
 	text-decoration: none;
 }
 
-.modal.tx-state-submitted .btn-secondary {
+.modal.tx-state-submitted, .modal.tx-state-rejected .btn-secondary {
 	background-color: var(--color4);
 	border-color: var(--color4);
 }
 
-.modal.tx-state-submitted .btn-secondary:hover {
+.modal.tx-state-submitted, .modal.tx-state-rejected .btn-secondary:hover {
 	background-color: var(--color3);
 	border-color: var(--color3);
 }

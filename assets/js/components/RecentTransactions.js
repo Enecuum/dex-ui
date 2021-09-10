@@ -166,9 +166,9 @@ class RecentTransactions extends React.Component {
             </div>))
 
         return (
-            <div className="recent-txs-place mt-3">
+            <>
                 {txsForRender}
-            </div>
+            </>
         )
     }
 

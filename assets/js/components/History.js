@@ -1,9 +1,10 @@
 import React from 'react'
 import { Modal } from "react-bootstrap"
 import { withTranslation } from "react-i18next"
+import Form from "react-bootstrap/Form"
 
 import CommonModal from "../elements/CommonModal"
-import Form from "react-bootstrap/Form";
+import RecentTransactions from "./RecentTransactions"
 
 class History extends React.Component {
     constructor(props) {
@@ -28,14 +29,15 @@ class History extends React.Component {
 
     renderModalBody () {
         return(<>
-            <div className="mb-4">
-                <Form.Control
-                    // onChange={}
-                    className='text-input-1 form-control'
-                    type='text'
-                    autoFocus/>
-            </div>
-            {}
+            {/*<div className="mb-4">*/}
+            {/*    <Form.Control*/}
+            {/*        // onChange={}*/}
+            {/*        className='text-input-1 form-control'*/}
+            {/*        type='text'*/}
+            {/*        autoFocus*/}
+            {/*    />*/}
+            {/*</div>*/}
+            <RecentTransactions />
         </>)
     }
 

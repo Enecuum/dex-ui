@@ -30,8 +30,7 @@ const valueProcessor = new ValueProcessor();
 
 class SwapCard extends React.Component {
     constructor(props) {
-
-        super(props);
+        super(props)
         this.pairExists = false;
         this.readyToSubmit = false;
         this.enoughMoney = [];
@@ -292,7 +291,12 @@ class SwapCard extends React.Component {
                                     </div>
                                 </>
                             }
-                            { this.getSubmitButton(modeStruct) }
+                            { <Suspense fallback={<div>---</div>}>
+                                <ConfirmSupply
+                                    getSubmitButton={this.getSubmitButton.bind(this)}
+                                    modeStruct={modeStruct}
+                                />
+                            </Suspense> }
                         </>
                     }
 
@@ -448,7 +452,12 @@ class SwapCard extends React.Component {
         );    
     };
 
-    getSubmitButton(modeStruct) {
+    validateDataForConfirmation (openConfirmCard) {
+        if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds)
+            openConfirmCard()
+    }
+
+    getSubmitButton(modeStruct, openConfirmCard) {
         const t = this.props.t;
         let buttonName;
         if (this.props.connectionStatus === false)
@@ -477,7 +486,7 @@ class SwapCard extends React.Component {
                         </div>
                         <button
                             className='btn btn-secondary alt-submit w-100 py-2'
-                            onClick={this.openConfirmCard.bind(this)}
+                            onClick={this.validateDataForConfirmation.bind(this, openConfirmCard)}
                             type='submit'
                             id='submit'>
                             { t(`trade.swapCard.submitButton.${buttonName}`) }
@@ -491,7 +500,7 @@ class SwapCard extends React.Component {
                 className='btn btn-secondary w-100 py-2'
                 type='submit'
                 id='submit'
-                onClick={this.openConfirmCard.bind(this)}
+                onClick={this.validateDataForConfirmation.bind(this, openConfirmCard)}
                 style={{backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'}}>
                 { t(`trade.swapCard.submitButton.${buttonName}`) }
             </button>
@@ -510,7 +519,6 @@ class SwapCard extends React.Component {
     };
 
     getInputField(props) {
-
         let ticker = props.fieldData.token.ticker;
         if (ticker === undefined)
             ticker = this.props.t('trade.swapCard.inputField.selectToken');
@@ -844,11 +852,6 @@ class SwapCard extends React.Component {
         window.location.hash = '#!action=pool';
     };
 
-    openConfirmCard() {
-        if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds)
-            this.props.openConfirmCard();
-    };
-
     toggleView() {
         this.props.toggleRemoveLiquidityView();
     }
@@ -929,15 +932,14 @@ class SwapCard extends React.Component {
             <div>
                 { this.renderSwapCard()  }
                 { this.renderTokenCard() }
-
-                <Suspense fallback={<div>---</div>}>
-                    <ConfirmSupply />
-                </Suspense>    
             </div>
         );
     };
 }
 
-const WSwapCard = connect(mapStoreToProps(components.SWAP_CARD), mapDispatchToProps(components.SWAP_CARD))(withTranslation()(SwapCard));
+const WSwapCard = connect(
+    mapStoreToProps(components.SWAP_CARD),
+    mapDispatchToProps(components.SWAP_CARD)
+)(withTranslation()(SwapCard))
 
-export default WSwapCard;
+export default WSwapCard

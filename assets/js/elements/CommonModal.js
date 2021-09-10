@@ -10,7 +10,8 @@ class CommonModal extends React.Component {
     render() {
         return (
             <Modal
-                show={true}
+                show={(this.props.showMode) ? this.props.showMode : true}
+                className={(this.props.modalClassName) ? this.props.modalClassName : ''}
                 aria-labelledby="custom-modal-styling-title"
                 onHide={this.props.closeAction.bind(this.props)}
                 centered

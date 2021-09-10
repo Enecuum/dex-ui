@@ -74,12 +74,6 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.CHANGE_LIQUIDITY_MODE:
             return swapCardStore(state, { liquidityMain: !state.liquidityMain });
 
-        case actions.OPEN_CONFIRM_CARD:
-            return swapCardStore(state, { confirmCardOpened: true });
-
-        case actions.CLOSE_CONFIRM_CARD:
-            return swapCardStore(state, { confirmCardOpened: false });
-
         case actions.ASSIGN_COIN_VALUE:
             return fieldStore(state, action.mode, action.field, { value: action.value });
 
@@ -88,30 +82,6 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
 
         case actions.UPD_ACTIVE_FIELD:
             return swapCardStore(state, { activeField: action.value });
-
-        case actions.OPEN_WAITING_CONFIRMATION:
-            return swapCardStore(state, {
-                waitingConfirmation : {
-                    ...state.waitingConfirmation,
-                    visibility : true
-                }
-            });
-
-        case actions.CLOSE_WAITING_CONFIRMATION:
-            return swapCardStore(state, {
-                waitingConfirmation : {
-                    ...state.waitingConfirmation,
-                    visibility : false
-                }
-            });
-
-        case actions.CHANGE_WAITING_STATE_TYPE:
-            return swapCardStore(state, {
-                waitingConfirmation : {
-                    ...state.waitingConfirmation,
-                    txStateType : action.value
-                }
-            });
 
         case actions.TOGGLE_REMOVE_LIQUIDITY_VIEW:
             return swapCardStore(state, {

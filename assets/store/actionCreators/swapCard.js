@@ -55,41 +55,10 @@ const actionCreators = {
         };
     },
 
-    openConfirmCard () {
-        return {
-            type : actions.OPEN_CONFIRM_CARD
-        };
-    },
-
-    closeConfirmCard () {
-        return {
-            type : actions.CLOSE_CONFIRM_CARD
-        };
-    },
-
     updActiveField (value) {
         return {
             type : actions.UPD_ACTIVE_FIELD,
             value : value
-        };
-    },
-
-    openWaitingConfirmation () {
-        return {
-            type : actions.OPEN_WAITING_CONFIRMATION
-        };
-    },
-
-    closeWaitingConfirmation () {
-        return {
-            type : actions.CLOSE_WAITING_CONFIRMATION
-        };
-    },
-
-    changeWaitingStateType (stateType) {
-        return {
-            type : actions.CHANGE_WAITING_STATE_TYPE,
-            value : stateType
         };
     },
     

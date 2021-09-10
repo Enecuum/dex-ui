@@ -25,6 +25,45 @@ class Connect extends React.Component {
         }
     }
 
+    componentDidMount() {
+        window.onload = this.checkConnection.bind(this)
+    }
+
+    checkConnection () {
+        ENQweb3lib.connect()
+        ENQweb3lib.reconnect()
+            .then(res => {
+                if (res.status === true)
+                    ENQweb3lib.enable()
+                        .then(res => {
+                            cp.updateSettings(res.pubkey, '/')
+                            lsdp.updPubKey(res.pubkey)
+                            this.props.assignPubkey(res.pubkey)
+                            this.props.updDexData(res.pubkey)
+                            this.props.setConStatus(true)
+                        })
+            })
+    }
+
+    connectToEnq () {
+        if (!this.props.connectionStatus) {
+            ENQweb3lib.connect()
+            ENQweb3lib.enable()
+                .then(res => {
+                        cp.updateSettings(res.pubkey, '/')
+                        lsdp.updPubKey(res.pubkey)
+                        this.props.assignPubkey(res.pubkey)
+                        this.props.updDexData(res.pubkey)
+                        this.props.setConStatus(true)
+                        this.closeConList()
+                    },
+                    () => {
+                        this.closeConList()
+                        this.props.setConStatus(false)
+                    })
+        }
+    }
+
     renderConnectionButton() {
         const t = this.props.t
         return (
@@ -47,24 +86,6 @@ class Connect extends React.Component {
     closeConList () {
         this.setState({connectionListVisibility : false})
     }
-
-    async connectToEnq () {
-        if (!this.props.connectionStatus)
-            await ENQweb3lib.connect()
-        await ENQweb3lib.enable()
-            .then(res => {
-                    cp.updateSettings(res.pubkey, '/')
-                    lsdp.updPubKey(res.pubkey)
-                    this.props.assignPubkey(res.pubkey)
-                    this.props.updDexData(res.pubkey)
-                    this.props.setConStatus(true)
-                    this.closeConList()
-                },
-                () => {
-                    this.closeConList()
-                    this.props.setConStatus(false)
-                })
-    };
 
     renderModalHeader () {
         return (
@@ -105,7 +126,16 @@ class Connect extends React.Component {
         )
     }
 
+    openConnectionListWhileReload () {
+        let res = cp.get().note('reload', true)
+        if (res && res['reload'] === "true") {
+            cp.set('reload', false, true)
+            this.openConList()
+        }
+    }
+
     render () {
+        this.openConnectionListWhileReload()
         return (
             <>
                 {this.renderConnectionButton()}

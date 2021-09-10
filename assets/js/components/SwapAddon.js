@@ -39,6 +39,6 @@ class SwapAddon extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default SwapAddon;

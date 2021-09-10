@@ -23,7 +23,6 @@ import store from '../store/store'
 /* ------------------ Dex-ui components ------------------ */
 import LPTokensWalletInfo from './components/LPTokensWalletInfo'
 import { Navbar, Aside, SwapCard, Switch,
-         ConfirmSupply, WaitingConfirmation,
          WaitingIssueTokenConfirmation,
          TopPairs, Etm, Farms, Drops } from './components/entry'
 
@@ -51,30 +50,8 @@ class Root extends React.Component {
         })
     }
 
-    componentDidMount() {
-        window.onload = this.checkConnection.bind(this)
-    }
-
     componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
-    }
-
-    /* ---------------- Extension connection ----------------- */
-
-    checkConnection () {
-        ENQweb3lib.connect()
-        ENQweb3lib.reconnect()
-            .then(res => {
-                if (res.status === true)
-                    ENQweb3lib.enable()
-                        .then(res => {
-                            cp.updateSettings(res.pubkey, '/')
-                            lsdp.updPubKey(res.pubkey)
-                            this.props.assignPubkey(res.pubkey)
-                            this.updDexData(res.pubkey)
-                            this.props.setConStatus(true)
-                        })
-            })
     }
 
     /* ---------------------- Routing ------------------------ */
@@ -288,12 +265,6 @@ class Root extends React.Component {
                             <Suspense fallback={<div>---</div>}>
                                 <SwapCard />
                             </Suspense>
-                            <Suspense fallback={<div>---</div>}>
-                                <ConfirmSupply />
-                            </Suspense>
-                            <Suspense fallback={<div>---</div>}>
-                                <WaitingConfirmation />
-                            </Suspense>    
                         </div>
                         <div className="addon-card-wrapper mt-4">
                             {/* <SwapAddon /> */}
@@ -341,24 +312,7 @@ class Root extends React.Component {
         this.props.changeMenuItem(newItem);
     };
 
-    openConnectionList () {
-        this.props.openConList();
-    };
-
-    closeConnectionList () {
-        this.props.closeConList();
-    };
-
-    openConnectionListWhileReload () {
-        let res = cp.get().note('reload', true)
-        if (res && res['reload'] === "true") {
-            cp.set('reload', false, true)
-            this.openConnectionList()
-        }
-    }
-
     render () {
-        {this.openConnectionListWhileReload()}
         return (
             <div className={this.props.menuItem === 'etm' ? 'background-opaque' : ''}>
                 <Suspense fallback={<div>---</div>}>

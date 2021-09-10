@@ -122,14 +122,14 @@ function mapStoreToProps(component) {
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
-                    confirmCardOpened : state.swapCard.confirmCardOpened,
                     exchange          : state.swapCard.exchange,
                     liquidity         : state.swapCard.liquidity,
                     menuItem          : state.root.menuItem,
                     pubkey            : state.root.pubkey,
                     pairs             : state.root.pairs,
                     tokens            : state.root.tokens,
-                    balances          : state.root.balances
+                    balances          : state.root.balances,
+                    connectionStatus  : state.root.connectionStatus
                 };
             };
         case components.WAITING_CONFIRMATION:
@@ -148,10 +148,8 @@ function mapStoreToProps(component) {
         case components.WAITING_ISSUE_TOKEN_CONFIRMATION:
             return function (state) {
                 return {
-                    ...state.swapCard.waitingConfirmation,///////////////////////////
-                    net             : state.root.net,
-                    currentTxHash   : state.root.currentTxHash,
-                    txState         : state.etm.waitingConfirmation.txStateType
+                    ...state.swapCard.waitingConfirmation,
+                    net             : state.root.net
                 };
             };            
         case components.LIQUIDITY_TOKEN_ZONE:
@@ -379,17 +377,12 @@ function mapDispatchToProps(component) {
         case components.CONFIRM_SUPPLY:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeConfirmCard        : swapCardCreator.closeConfirmCard,
-                    openWaitingConfirmation : swapCardCreator.openWaitingConfirmation,
-                    changeWaitingStateType  : swapCardCreator.changeWaitingStateType,
                     updCurrentTxHash        : rootCreator.updCurrentTxHash
                 }, dispatch); 
             };
         case components.WAITING_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
-                    closeWaitingConfirmation    : swapCardCreator.closeWaitingConfirmation,
-                    changeWaitingStateType      : swapCardCreator.changeWaitingStateType,
                     changeCreatePoolState       : swapCardCreator.changeCreatePoolState
                 }, dispatch);
             };
@@ -430,7 +423,6 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     updatePossibleToIssueToken : etmCreator.updatePossibleToIssueToken,
-                    // closeConfirmCard           : etmCreator.closeConfirmCard,
                     openWaitingConfirmation    : etmCreator.openWaitingConfirmation,
                     changeWaitingStateType     : etmCreator.changeWaitingStateType,
                     updCurrentTxHash           : rootCreator.updCurrentTxHash,

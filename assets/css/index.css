@@ -28,7 +28,7 @@
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
     --menu-bg: rgba(26, 31, 46, 0.702); /*полупрозрачный синий - бэкграунд асайда*/
-    --menu-bg-non-transparent: rgb(26, 31, 46, 1);
+    --menu-bg-non-transparent: rgb(26, 31, 46);
     --transition1 : 0.1s;
     --box-shadow-r : rgba(0, 0, 0, 0.03) 19px 2px 25px 0px;
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;

@@ -7,17 +7,18 @@ import { withTranslation } from "react-i18next"
 import CommonModal from "../elements/CommonModal"
 import PairLogos from '../components/PairLogos'
 import LogoToken from '../elements/LogoToken'
+import {WaitingConfirmation} from "./entry"
 
 import utils from '../utils/swapUtils.js'
 import testFormulas from '../utils/testFormulas'
 import extRequests from '../requests/extRequests'
 import ValueProcessor from '../utils/ValueProcessor'
 import lsdp from "../utils/localStorageDataProcessor"
+import pageDataPresets from "../../store/pageDataPresets"
 
 import img1 from '../../img/logo.png'
 import img2 from '../../img/bry-logo.png'
 import '../../css/confirm-supply.css'
-import {WaitingConfirmation} from "./entry";
 
 const valueProcessor = new ValueProcessor();
 
@@ -148,20 +149,24 @@ class ConfirmSupply extends React.Component {
 
     sendTransaction (pair) {
         new Promise((resolve, reject) => {
-            let txPromise, description = this.getDescription()
+            let txTypes = pageDataPresets.pending.allowedTxTypes
+            let txPromise, description = this.getDescription(), txType
             if (utils.pairExists(pair)) {
                 if (this.props.menuItem === 'exchange') {
+                    txType = txTypes.pool_swap
                     txPromise = extRequests.swap(this.props.pubkey, this.props.exchange)
                 } else if (this.props.menuItem === 'liquidity') {
+                    txType = txTypes.pool_add_liquidity
                     txPromise = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity)
                 }
             } else {
+                txType = txTypes.pool_create
                 txPromise = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem])
             }
             txPromise.then(result => {
                 this.setState({currentTxHash : result.hash})
                 this.setState({txStatus : 'submitted'})
-                lsdp.write(result.hash, 0, description)
+                lsdp.write(result.hash, 0, txType, description)
                 resolve()
             },
             () => {

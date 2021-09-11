@@ -150,7 +150,7 @@ class IndicatorPanel extends React.Component {
     filterEnexTxs (pendingArray) {
         for (let i in pendingArray) {
             let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data)
-            if (pageDataPresets.pending.allowedTxTypes.indexOf(data.type) === -1)
+            if (Object.keys(pageDataPresets.pending.allowedTxTypes).indexOf(data.type) === -1)
                 pendingArray.splice(i, 1)
         }
         return pendingArray

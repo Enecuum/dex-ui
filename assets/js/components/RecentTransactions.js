@@ -5,15 +5,20 @@ import {withTranslation} from "react-i18next"
 
 import swapApi from "../requests/swapApi"
 import lsdp from "../utils/localStorageDataProcessor"
+import pageDataPresets from "../../store/pageDataPresets"
 
 
 class RecentTransactions extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             recentTxs : {},
         }
+        this.filters = this.validateFilters()
         this.updData()
+
+        if (this.props.rerenderRecentTxs)
+            this.rerenderRecentTxs = this.props.rerenderRecentTxs
     }
 
     componentDidMount() {
@@ -22,6 +27,20 @@ class RecentTransactions extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.intervalDescriptor)
+    }
+
+    validateFilters () {
+        let resFilters = {
+            type : null,
+            time : null
+        }, rawFilters = this.props.filters
+        if (rawFilters) {
+            if (rawFilters.type && Array.isArray(rawFilters.type))
+                resFilters.type = rawFilters.type
+            if (rawFilters.time && Number.isInteger(rawFilters.time))
+                resFilters.time = rawFilters.time
+        }
+        return resFilters
     }
 
     // getUnresolvedData (recentTxs) {
@@ -102,7 +121,8 @@ class RecentTransactions extends React.Component {
                             promises.push(
                                 result.value.json()
                                     .then(res => {
-                                        lsdp.write(res.hash, res.status, lsdp.get.note(res.hash)[res.hash].text)
+                                        let oldData = lsdp.get.note(res.hash)[res.hash]
+                                        lsdp.write(res.hash, res.status, oldData.type, oldData.text)
                                     })
                                     .catch(err => {/* pending transaction */})
                             )
@@ -114,11 +134,33 @@ class RecentTransactions extends React.Component {
         })
     }
 
+    satisfiesTypeFilter (note) {
+        if (this.filters.type === null)
+            return true
+        return this.filters.type.indexOf(note.type) !== -1
+    }
+
+    satisfiesTimeFilter (note) {
+        if (this.filters.time === null)
+            return true
+        return new Date() - this.filters.time < note.date
+    }
+
     getListOfRecentTxs () {
         return new Promise(resolve => {
             this.updStatuses()
                 .then(() => {
-                    resolve(lsdp.get.history())
+                    let history = lsdp.get.history()
+                    for (let hash in history) {
+                        let mustBeDeleted = false
+                        if (!this.satisfiesTypeFilter(history[hash]))
+                            mustBeDeleted = true
+                        if (!this.satisfiesTimeFilter(history[hash]))
+                            mustBeDeleted = true
+                        if (mustBeDeleted)
+                            delete history[hash]
+                    }
+                    resolve(history)
                 })
         })
     }

@@ -1,19 +1,77 @@
 import React from 'react'
 import {Modal, DropdownButton, Dropdown} from "react-bootstrap"
 import { withTranslation } from "react-i18next"
-import Form from "react-bootstrap/Form"
 
 import CommonModal from "../elements/CommonModal"
 import RecentTransactions from "./RecentTransactions"
 
+import pageDataPresets from "../../store/pageDataPresets"
+
 import '../../css/history.css'
+
+const txTypes = pageDataPresets.pending.allowedTxTypes
+const HOUR = 1000 * 60 * 60
 
 class History extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            historyVisibility : false
+            historyVisibility : false,
+            rerenderRecentTxs : true
+        }
+        this.filters = {
+            type : {
+                allTypes : {
+                    text : "all types",
+                    types : null,
+                    active : true
+                },
+                swap : {
+                    text : "swap",
+                    types : [
+                        txTypes.pool_create,
+                        txTypes.pool_swap
+                    ]
+                },
+                pool : {
+                    text : "pool",
+                    types : [
+                        txTypes.pool_create,
+                        txTypes.pool_add_liquidity,
+                        txTypes.pool_remove_liquidity
+                    ]
+                },
+                farms : {
+                    text : "farms",
+                    types : [
+                        txTypes.farm_create,
+                        txTypes.farm_close_stake,
+                        txTypes.farm_increase_stake,
+                        txTypes.farm_decrease_stake,
+                        txTypes.farm_get_reward
+                    ]
+                },
+                drops : {
+                    text : "drops",
+                    types : []
+                },
+            },
+            time : {
+                oneHour : {
+                    text : "1h ago",
+                    time : HOUR,
+                    active : true
+                },
+                twelveHours : {
+                    text : "12h ago",
+                    time : 12 * HOUR
+                },
+                oneDay : {
+                    text : "1d ago",
+                    time : 24 * HOUR
+                },
+            }
         }
     }
 
@@ -29,38 +87,60 @@ class History extends React.Component {
         </>)
     }
 
+    getActiveFilter (filterName) {
+        let filter = this.filters[filterName]
+        for (let curItemName in filter)
+            if (filter[curItemName].active)
+                return filter[curItemName]
+        return filter[Object.keys(filter)[0]]
+    }
+
+    changeActiveFilter (filterName, itemName) {
+        let filter = this.filters[filterName]
+        delete this.getActiveFilter(filterName).active
+        filter[itemName].active = true
+        this.setState({rerenderRecentTxs : true})
+    }
+
+    getFilters () {
+        return Object.keys(this.filters).map((filterName, filterIndex) => {
+            let activeItem
+            let items = Object.keys(this.filters[filterName]).map((itemName, itemIndex) => {
+                let item = this.filters[filterName][itemName]
+                if (item.active)
+                    activeItem = item
+                return (
+                    <Dropdown.Item
+                        key={itemIndex+""} active={item.active}
+                        onClick={this.changeActiveFilter.bind(this, filterName, itemName)}
+                    >
+                        {item.text}
+                    </Dropdown.Item>
+                )
+            })
+            return (
+                <DropdownButton
+                    variant="info"
+                    title={activeItem.text}
+                    className="d-flex mr-3"
+                    size="sm"
+                    key={filterIndex+""}
+                >
+                    {items}
+                </ DropdownButton>
+            )
+        })
+    }
+
     renderModalBody () {
         return(<>
             <div className="d-flex justify-content-begin mx-4 mb-4 history-filters">
-                <DropdownButton
-                    variant="info"
-                    title="farms"
-                    className="d-flex mr-3"
-                    size="sm"
-                >
-                    <Dropdown.Item eventKey="1">Action</Dropdown.Item>
-                    <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-                    <Dropdown.Item eventKey="3" active>
-                        Active Item
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
-                </DropdownButton>
-                <DropdownButton
-                    variant="info"
-                    title="1h ago"
-                    size="sm"
-                >
-                    <Dropdown.Item eventKey="1">Action</Dropdown.Item>
-                    <Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-                    <Dropdown.Item eventKey="3" active>
-                        Active Item
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item eventKey="4">Separated link</Dropdown.Item>
-                </DropdownButton>
+                {this.getFilters()}
             </div>
-            <RecentTransactions />
+            <RecentTransactions filters={{
+                type : this.getActiveFilter("type").types,
+                time : this.getActiveFilter("time").time
+            }} rerenderRecentTxs={this.state.rerenderRecentTxs}/>
         </>)
     }
 

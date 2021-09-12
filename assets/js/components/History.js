@@ -17,8 +17,7 @@ class History extends React.Component {
         super(props)
 
         this.state = {
-            historyVisibility : false,
-            rerenderRecentTxs : true
+            historyVisibility : false
         }
         this.filters = {
             type : {
@@ -99,7 +98,9 @@ class History extends React.Component {
         let filter = this.filters[filterName]
         delete this.getActiveFilter(filterName).active
         filter[itemName].active = true
-        this.setState({rerenderRecentTxs : true})
+        this.setState({historyVisibility : false}, () => {
+            this.setState({historyVisibility : true})
+        })
     }
 
     getFilters () {
@@ -140,7 +141,7 @@ class History extends React.Component {
             <RecentTransactions filters={{
                 type : this.getActiveFilter("type").types,
                 time : this.getActiveFilter("time").time
-            }} rerenderRecentTxs={this.state.rerenderRecentTxs}/>
+            }}/>
         </>)
     }
 

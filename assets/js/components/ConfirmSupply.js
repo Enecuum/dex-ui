@@ -14,6 +14,7 @@ import testFormulas from '../utils/testFormulas'
 import extRequests from '../requests/extRequests'
 import ValueProcessor from '../utils/ValueProcessor'
 import lsdp from "../utils/localStorageDataProcessor"
+import generateTxText from "../utils/txTextGenerator"
 import pageDataPresets from "../../store/pageDataPresets"
 
 import img1 from '../../img/logo.png'
@@ -117,40 +118,16 @@ class ConfirmSupply extends React.Component {
         )
     }
 
-    getDescription () {
-        if (this.props[this.props.menuItem] !== undefined) {
-            let descriptionPhrase = ''
-            let v0 = this.props[this.props.menuItem].field0.value.text
-            let v1 = this.props[this.props.menuItem].field1.value.text
-            let t0 = this.props[this.props.menuItem].field0.token.ticker
-            let t1 = this.props[this.props.menuItem].field1.token.ticker
-            let interpolateParams = {
-                value0  : (v0 === undefined) ? '' : v0,
-                ticker0 : (t0 === undefined) ? '' : t0,
-                value1  : (v1 === undefined) ? '' : v1,
-                ticker1 : (t1 === undefined) ? '' : t1,
-            }
-
-            if (!this.props.createPool) {
-                if (this.props.menuItem === 'exchange') {
-                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.swap.completePhrase'
-                } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
-                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.addLiquidity.completePhrase'
-                } else if (this.props.menuItem === 'liquidity') {
-                    descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.removeLiquidity.completePhrase'
-                }
-            } else {
-                descriptionPhrase = 'trade.confirmCard.waitingForConfirmationInternals.createPool.completePhrase'
-            }
-
-            return this.props.t(descriptionPhrase, interpolateParams)
-        }
-    }
-
     sendTransaction (pair) {
         new Promise((resolve, reject) => {
             let txTypes = pageDataPresets.pending.allowedTxTypes
-            let txPromise, description = this.getDescription(), txType
+            let interpolateParams = {
+                value0  : this.props[this.props.menuItem].field0.value.text,
+                ticker0 : this.props[this.props.menuItem].field0.token.ticker,
+                value1  : this.props[this.props.menuItem].field1.value.text,
+                ticker1 : this.props[this.props.menuItem].field1.token.ticker,
+            }
+            let txPromise, txType
             if (utils.pairExists(pair)) {
                 if (this.props.menuItem === 'exchange') {
                     txType = txTypes.pool_swap
@@ -166,7 +143,7 @@ class ConfirmSupply extends React.Component {
             txPromise.then(result => {
                 this.setState({currentTxHash : result.hash})
                 this.setState({txStatus : 'submitted'})
-                lsdp.write(result.hash, 0, txType, description)
+                lsdp.write(result.hash, 0, txType, interpolateParams)
                 resolve()
             },
             () => {
@@ -203,7 +180,6 @@ class ConfirmSupply extends React.Component {
                     txStateType={this.state.txStatus}
                     currentTxHash={this.state.currentTxHash}
                     confirmSupplyVisibility={this.state.confirmSupplyVisibility}
-                    getDescription={this.getDescription.bind(this)}
                 />
             )
     }

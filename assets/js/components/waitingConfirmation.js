@@ -7,6 +7,8 @@ import CommonModal from "../elements/CommonModal"
 import '../../css/confirm-supply.css'
 import {connect} from "react-redux";
 import {components, mapDispatchToProps, mapStoreToProps} from "../../store/storeToProps";
+import pageDataPresets from "../../store/pageDataPresets";
+import generateTxText from "../utils/txTextGenerator";
 
 class WaitingConfirmation extends React.Component {
     constructor(props) {
@@ -25,6 +27,30 @@ class WaitingConfirmation extends React.Component {
         else if (this.props.txStateType === 'rejected')
             modalHeaderPropName = "transactionRejected";
         return modalHeaderPropName;
+    }
+
+    getDescription () {
+        let interpolateParams = {
+            value0  : this.props[this.props.menuItem].field0.value.text,
+            ticker0 : this.props[this.props.menuItem].field0.token.ticker,
+            value1  : this.props[this.props.menuItem].field1.value.text,
+            ticker1 : this.props[this.props.menuItem].field1.token.ticker,
+        }, t = this.props.t
+        if (this.props[this.props.menuItem] !== undefined) {
+            let textPlace = 'waitingConfirmation', txTypes = pageDataPresets.pending.allowedTxTypes
+            if (!this.props.createPool) {
+                if (this.props.menuItem === 'exchange') {
+                    return generateTxText(t, textPlace, txTypes.pool_swap, interpolateParams)
+                } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
+                    return generateTxText(t, textPlace, txTypes.pool_add_liquidity, interpolateParams)
+                } else if (this.props.menuItem === 'liquidity') {
+                    return generateTxText(t, textPlace, txTypes.pool_remove_liquidity, interpolateParams)
+                }
+            } else {
+                return generateTxText(t, textPlace, txTypes.pool_create, interpolateParams)
+            }
+        }
+        return ''
     }
 
     getContentByType() {
@@ -54,7 +80,7 @@ class WaitingConfirmation extends React.Component {
                 <>
                     <div className="tx-state-icon-waiting spinner d-flex align-items-center justify-content-center mx-auto" />
                     <div>
-                        <div className="mt-4">{ this.props.getDescription() }</div>
+                        <div className="mt-4">{ this.getDescription() }</div>
                         <div className="small mt-2">{ this.props.t('trade.confirmCard.confirmInWallet') }</div>
                     </div>
                 </>

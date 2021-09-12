@@ -25,21 +25,7 @@
                 "clue" : "Get Enecuum browser extension"
             },
             "accountShortInfo" : {
-                "header" : "Account",
-                "txListInternals" : {
-                    "swap" : {
-                        "completePhrase" : "Swapped {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
-                    },
-                    "addLiquidity" : {
-                        "completePhrase" : "Added liquidity {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
-                    },
-                    "createPool" : {
-                        "completePhrase" : "Created pool {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
-                    },
-                    "removeLiquidity" : {
-                        "completePhrase" : "Removed liquidity {{value0}} {{ticker0}}"
-                    }
-                }
+                "header" : "Account"
             }
         }
     },
@@ -132,7 +118,7 @@
                     "completePhrase" : "Creating pool {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
                 },
                 "removeLiquidity" : {
-                    "completePhrase" : "Remove liquidity"
+                    "completePhrase" : "Removing liquidity"
                 }
             }
         }
@@ -237,5 +223,33 @@
     "max" : "MAX",
     "balance" : "Balance",
     "cancel" : "Cancel",
-    "checkingMainTokenBalance" : "Сhecking the balance of the native token..."
+    "checkingMainTokenBalance" : "Checking the balance of the native token...",
+    "txActionWords" : {
+        "meanwhileSending" : {
+            "pool_create" : "Creating",
+            "pool_swap" : "Swapping",
+            "pool_add_liquidity" : "Adding",
+            "pool_remove_liquidity" : "Removing"
+        },
+        "history" : {
+            "pool_create" : "Create",
+            "pool_swap" : "Swap",
+            "pool_add_liquidity" : "Add",
+            "pool_remove_liquidity" : "Remove"
+        }
+    },
+    "txActionPhrases" : {
+        "pool_swap" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
+        },
+        "pool_add_liquidity" : {
+            "completePhrase" : "{{action}} liquidity {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
+        },
+        "pool_create" : {
+            "completePhrase" : "{{action}} pool {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
+        },
+        "pool_remove_liquidity" : {
+            "completePhrase" : "{{action}} liquidity"
+        }
+    }
 }

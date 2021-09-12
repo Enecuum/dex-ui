@@ -6,6 +6,7 @@ import {withTranslation} from "react-i18next"
 import swapApi from "../requests/swapApi"
 import lsdp from "../utils/localStorageDataProcessor"
 import pageDataPresets from "../../store/pageDataPresets"
+import generateTxText from "../utils/txTextGenerator"
 
 
 class RecentTransactions extends React.Component {
@@ -16,10 +17,11 @@ class RecentTransactions extends React.Component {
         }
         this.filters = this.validateFilters()
         this.updData()
-
-        if (this.props.rerenderRecentTxs)
-            this.rerenderRecentTxs = this.props.rerenderRecentTxs
     }
+
+    // componentDidUpdate() {
+    //     this.filters = this.validateFilters()
+    // }
 
     componentDidMount() {
         this.updRecentTxs()
@@ -122,7 +124,7 @@ class RecentTransactions extends React.Component {
                                 result.value.json()
                                     .then(res => {
                                         let oldData = lsdp.get.note(res.hash)[res.hash]
-                                        lsdp.write(res.hash, res.status, oldData.type, oldData.text)
+                                        lsdp.write(res.hash, res.status, oldData.type, oldData.interpolateParams)
                                     })
                                     .catch(err => {/* pending transaction */})
                             )
@@ -166,7 +168,11 @@ class RecentTransactions extends React.Component {
     }
 
     openTxInExplorer (hash) {
-        window.open(this.props.net + '#!/tx/' + hash, '_blank').focus()
+        window.open(this.props.net.url + '#!/tx/' + hash, '_blank').focus()
+    }
+
+    getDescription (note) {
+        return generateTxText(this.props.t, 'RecentTransactions', note.type, note.interpolateParams)
     }
 
     getRecentTxsMarkup () {
@@ -175,7 +181,7 @@ class RecentTransactions extends React.Component {
 
         let txsForRender = Object.keys(recentTxList).reduce((arrForRender, hash, index) => {
             let yPadding = (index == recentTxListLen-1) ? "pb-3" : ""
-            if (recentTxList[hash].text !== undefined) {
+            if (recentTxList[hash].interpolateParams !== undefined) {
                 let txStatusIcon
                 if (recentTxList[hash].status == 3)
                     txStatusIcon = 'icon-Icon5'
@@ -186,7 +192,7 @@ class RecentTransactions extends React.Component {
                 arrForRender.push((
                     <p className={`${yPadding} px-4 d-flex justify-content-between`} key={index+''}>
                         <a className="recent-tx-ref" onClick={this.openTxInExplorer.bind(this, hash)}>
-                            { recentTxList[hash].text }
+                            { this.getDescription(recentTxList[hash]) }
                             <span className='ml-2 icon-Icon11' />
                         </a>
                         <span className={`ml-2 mb-2 recent-tx-ref ${txStatusIcon}`} />
@@ -199,8 +205,8 @@ class RecentTransactions extends React.Component {
         if (!recentTxListLen)
             txsForRender.unshift((<p className={`py-3 px-4`} key={'-1'}>{ "Your transactions will appear here..." }</p>))
         else
-            txsForRender.unshift((<div className="px-4 d-flex justify-content-between">
-                <p className="pt-3" key={'-1'}>{ "Recent transactions" }</p>
+            txsForRender.unshift((<div className="px-4 d-flex justify-content-between" key={'-1'}>
+                <p className="pt-3" >{ "Recent transactions" }</p>
                 <a
                     className="recent-tx-ref d-flex align-items-center"
                     onClick={this.clearHistory.bind(this)}

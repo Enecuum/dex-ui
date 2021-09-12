@@ -140,6 +140,7 @@ function mapStoreToProps(component) {
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
                     menuItem        : state.root.menuItem,
+                    removeLiquidity : state.root.removeLiquidity,
                     net             : state.root.net,
                     liquidityRemove : state.swapCard.liquidityRemove,
                     currentTxHash   : state.root.currentTxHash

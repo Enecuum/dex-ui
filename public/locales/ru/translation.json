@@ -239,5 +239,33 @@
     "max" : "MAX",
     "balance" : "Баланс",
     "cancel" : "Отменить",
-    "checkingMainTokenBalance" : "Проверка баланса нативного токена..."
+    "checkingMainTokenBalance" : "Проверка баланса нативного токена...",
+    "txActionWords" : {
+        "meanwhileSending" : {
+            "pool_create" : "Создание",
+            "pool_swap" : "Обмен",
+            "pool_add_liquidity" : "Добавление",
+            "pool_remove_liquidity" : "Удаление"
+        },
+        "history" : {
+            "pool_create" : "Создание",
+            "pool_swap" : "Обмен",
+            "pool_add_liquidity" : "Добавление",
+            "pool_remove_liquidity" : "Удаление"
+        }
+    },
+    "txActionPhrases" : {
+        "pool_swap" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
+        },
+        "pool_add_liquidity" : {
+            "completePhrase" : "{{action}} ликвидности {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
+        },
+        "pool_create" : {
+            "completePhrase" : "{{action}} пулла {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+        },
+        "pool_remove_liquidity" : {
+            "completePhrase" : "{{action}} ликвидности"
+        }
+    }
 }

@@ -5,15 +5,22 @@ import {withTranslation} from "react-i18next"
 
 import swapApi from "../requests/swapApi"
 import lsdp from "../utils/localStorageDataProcessor"
-import pageDataPresets from "../../store/pageDataPresets"
 import generateTxText from "../utils/txTextGenerator"
+import swapUtils from "../utils/swapUtils"
+import testFormulas from "../utils/testFormulas"
+
+import pageDataPresets from "../../store/pageDataPresets"
+const txTypes = pageDataPresets.pending.allowedTxTypes
+
+import ValueProcessor from "../utils/ValueProcessor"
+const vp = new ValueProcessor()
 
 
 class RecentTransactions extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            recentTxs : {},
+            recentTxs : [],
         }
         this.filters = this.validateFilters()
         this.updData()
@@ -45,69 +52,59 @@ class RecentTransactions extends React.Component {
         return resFilters
     }
 
-    // getUnresolvedData (recentTxs) {
-    //     for (let key in recentTxs)
-    //         if (this.props.recentTxs.find(el => el.hash === key))
-    //             delete recentTxs[key]
-    //     return recentTxs
-    // }
+    getFreshInterpolateParams (rawDataSrt, oldInterpolateParams) {
+        let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
+        let newInterpolateParams = {}
+        if (objData.type === txTypes.pool_swap) {
+            let poolObj = swapUtils.searchSwap(this.props.pairs, [
+                {hash : objData.parameters.asset_in},
+                {hash : objData.parameters.asset_out}
+            ])
+            let tokenObj_0 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_in)
+            let tokenObj_1 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_out)
+            let volume0  = {
+                value : BigInt(poolObj.token_0.volume),
+                decimals : tokenObj_0.decimals
+            };
+            let volume1  = {
+                value : BigInt(poolObj.token_1.volume),
+                decimals : tokenObj_1.decimals
+            };
+            let amountIn = {
+                value : BigInt(objData.parameters.amount_in),
+                decimals : tokenObj_0.decimals
+            }
+            let amount_out = testFormulas.getSwapPrice(volume0, volume1, amountIn)
+            newInterpolateParams = {
+                value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_in)),
+                ticker0 : tokenObj_0.ticker,
+                value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(amount_out.value, amount_out.decimals)),
+                ticker1 : tokenObj_1.ticker
+            }
+        // } else if (objData.type === txTypes.pool_create) {                               // unnecessary
+        //     newInterpolateParams = {
+        //         value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
+        //         ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
+        //         value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
+        //         ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
+        //     }
+        } else if (objData.type === txTypes.pool_add_liquidity) {
+            newInterpolateParams = {
+                value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
+                ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
+                value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
+                ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
+            }
+        // } else if (objData.type === txTypes.pool_remove_liquidity) {                     // unnecessary
+        //     newInterpolateParams = {
+        //         value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount)),
+        //         ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.lt).ticker
+        //     }
+        } else
+            newInterpolateParams = undefined
 
-    // generateTxText (strData) {
-    //     let objData = ENQWeb.Utils.ofd.parse(strData)
-    //     let descriptionPhrase = "", interpolateParams = {}
-    //     if (objData.type === "pool_swap") {
-    //         descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.swap.completePhrase'
-    //         let poolObj = swapUtils.searchSwap(this.props.pairs, [
-    //             {hash : objData.parameters.asset_in},
-    //             {hash : objData.parameters.asset_out}
-    //         ])
-    //         let tokenObj_0 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_in)
-    //         let tokenObj_1 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_out)
-    //         let volume0  = {
-    //             value : BigInt(poolObj.token_0.volume),
-    //             decimals : tokenObj_0.decimals
-    //         };
-    //         let volume1  = {
-    //             value : BigInt(poolObj.token_1.volume),
-    //             decimals : tokenObj_1.decimals
-    //         };
-    //         let amountIn = {
-    //             value : BigInt(objData.parameters.amount_in),
-    //             decimals : tokenObj_0.decimals
-    //         }
-    //         let amount_out = testFormulas.getSwapPrice(volume0, volume1, amountIn)
-    //         interpolateParams = {
-    //             value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_in)),
-    //             ticker0 : tokenObj_0.ticker,
-    //             value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(amount_out.value, amount_out.decimals)),
-    //             ticker1 : tokenObj_1.ticker
-    //         }
-    //     } else if (objData.type === "pool_create") {
-    //         descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.createPool.completePhrase'
-    //         interpolateParams = {
-    //             value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
-    //             ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
-    //             value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
-    //             ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
-    //         }
-    //     } else if (objData.type === "pool_add_liquidity") {
-    //         descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.addLiquidity.completePhrase'
-    //         interpolateParams = {
-    //             value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
-    //             ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
-    //             value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
-    //             ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
-    //         }
-    //     } else if (objData.type === "pool_remove_liquidity") {
-    //         descriptionPhrase = 'navbars.top.accountShortInfo.txListInternals.removeLiquidity.completePhrase'
-    //         interpolateParams = {
-    //             value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount)),
-    //             ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.lt).ticker
-    //         }
-    //     } else {}
-    //
-    //     return this.props.t(descriptionPhrase, interpolateParams)
-    // }
+        return (newInterpolateParams === undefined) ? oldInterpolateParams : newInterpolateParams
+    }
 
     updStatuses () {
         return new Promise(resolve => {
@@ -124,7 +121,7 @@ class RecentTransactions extends React.Component {
                                 result.value.json()
                                     .then(res => {
                                         let oldData = lsdp.get.note(res.hash)[res.hash]
-                                        lsdp.write(res.hash, res.status, oldData.type, oldData.interpolateParams)
+                                        lsdp.write(res.hash, res.status, oldData.type, this.getFreshInterpolateParams(res.data, oldData.interpolateParams))
                                     })
                                     .catch(err => {/* pending transaction */})
                             )
@@ -148,6 +145,23 @@ class RecentTransactions extends React.Component {
         return new Date() - this.filters.time < note.date
     }
 
+    sortHistory (history) {
+        let historyArray = []
+        for (let hash in history) {
+            let arrEl = history[hash]
+            arrEl.hash = hash
+            historyArray.push(arrEl)
+        }
+        return historyArray.sort((a, b) => {
+            if (a.date > b.date)
+                return -1
+            if (a.date < b.date)
+                return 1
+            else
+                return 0
+        })
+    }
+
     getListOfRecentTxs () {
         return new Promise(resolve => {
             this.updStatuses()
@@ -162,7 +176,7 @@ class RecentTransactions extends React.Component {
                         if (mustBeDeleted)
                             delete history[hash]
                     }
-                    resolve(history)
+                    resolve(this.sortHistory(history))
                 })
         })
     }
@@ -176,23 +190,23 @@ class RecentTransactions extends React.Component {
     }
 
     getRecentTxsMarkup () {
-        let recentTxList = {...this.state.recentTxs}
-        let recentTxListLen = Object.keys(recentTxList).length
+        let recentTxList = this.state.recentTxs
+        let recentTxListLen = recentTxList.length
 
-        let txsForRender = Object.keys(recentTxList).reduce((arrForRender, hash, index) => {
-            let yPadding = (index == recentTxListLen-1) ? "pb-3" : ""
-            if (recentTxList[hash].interpolateParams !== undefined) {
+        let txsForRender = recentTxList.reduce((arrForRender, note, index) => {
+            let yPadding = (index === recentTxListLen-1) ? "pb-3" : ""
+            if (note.interpolateParams !== undefined) {
                 let txStatusIcon
-                if (recentTxList[hash].status == 3)
+                if (note.status === 3)
                     txStatusIcon = 'icon-Icon5'
-                else if (recentTxList[hash].status == 0)
+                else if (note.status === 0)
                     txStatusIcon = 'spinner icon-Icon3'
                 else
                     txStatusIcon = 'icon-Icon7'
                 arrForRender.push((
                     <p className={`${yPadding} px-4 d-flex justify-content-between`} key={index+''}>
-                        <a className="recent-tx-ref" onClick={this.openTxInExplorer.bind(this, hash)}>
-                            { this.getDescription(recentTxList[hash]) }
+                        <a className="recent-tx-ref" onClick={this.openTxInExplorer.bind(this, note.hash)}>
+                            { this.getDescription(note) }
                             <span className='ml-2 icon-Icon11' />
                         </a>
                         <span className={`ml-2 mb-2 recent-tx-ref ${txStatusIcon}`} />

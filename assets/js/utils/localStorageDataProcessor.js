@@ -58,7 +58,7 @@ class LocalStorageDataProcessor {
 
     _writeNewNote (txHash, status, txType, interpolateParams) {
         localStorage.setItem(this._pubKey + txHash, JSON.stringify({
-            status : status,
+            status : Number(status),
             type : txType,
             interpolateParams : interpolateParams,
             date : (new Date).getTime(),

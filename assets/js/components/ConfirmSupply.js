@@ -59,9 +59,11 @@ class ConfirmSupply extends React.Component {
         let firstToken = modeStruct.field0.token
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
-        let ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
-        if (utils.pairExists(pair) && this.props.menuItem === 'exchange')
+        if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
             this.sendTransaction(pair)
+            return (<></>)
+        }
+        let ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
         return (
             <>
                 <div className="h3 font-weight-bold">
@@ -132,9 +134,20 @@ class ConfirmSupply extends React.Component {
                 if (this.props.menuItem === 'exchange') {
                     txType = txTypes.pool_swap
                     txPromise = extRequests.swap(this.props.pubkey, this.props.exchange)
-                } else if (this.props.menuItem === 'liquidity') {
+                } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
                     txType = txTypes.pool_add_liquidity
                     txPromise = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity)
+                } else if (this.props.menuItem === 'liquidity') {
+                    interpolateParams = {
+                        value0  : this.props.removeLiquidity.field0.value.text,
+                        ticker0 : this.props.removeLiquidity.field0.token.ticker,
+                        value1  : this.props.removeLiquidity.field1.value.text,
+                        ticker1 : this.props.removeLiquidity.field1.token.ticker,
+                        value2  : this.props.removeLiquidity.ltfield.value.text,
+                        ticker2 : this.props.removeLiquidity.ltfield.token.ticker
+                    }
+                    txType = txTypes.pool_remove_liquidity
+                    txPromise = extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, this.props.removeLiquidity.ltfield)
                 }
             } else {
                 txType = txTypes.pool_create

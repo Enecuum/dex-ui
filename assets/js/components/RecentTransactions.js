@@ -4,6 +4,7 @@ import {components, mapDispatchToProps, mapStoreToProps} from "../../store/store
 import {withTranslation} from "react-i18next"
 
 import swapApi from "../requests/swapApi"
+import networkApi from "../requests/networkApi"
 import lsdp from "../utils/localStorageDataProcessor"
 import generateTxText from "../utils/txTextGenerator"
 import swapUtils from "../utils/swapUtils"
@@ -13,6 +14,7 @@ import pageDataPresets from "../../store/pageDataPresets"
 const txTypes = pageDataPresets.pending.allowedTxTypes
 
 import ValueProcessor from "../utils/ValueProcessor"
+
 const vp = new ValueProcessor()
 
 
@@ -52,58 +54,44 @@ class RecentTransactions extends React.Component {
         return resFilters
     }
 
-    getFreshInterpolateParams (rawDataSrt, oldInterpolateParams) {
-        let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
-        let newInterpolateParams = {}
-        if (objData.type === txTypes.pool_swap) {
-            let poolObj = swapUtils.searchSwap(this.props.pairs, [
-                {hash : objData.parameters.asset_in},
-                {hash : objData.parameters.asset_out}
-            ])
-            let tokenObj_0 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_in)
-            let tokenObj_1 = swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_out)
-            let volume0  = {
-                value : BigInt(poolObj.token_0.volume),
-                decimals : tokenObj_0.decimals
-            };
-            let volume1  = {
-                value : BigInt(poolObj.token_1.volume),
-                decimals : tokenObj_1.decimals
-            };
-            let amountIn = {
-                value : BigInt(objData.parameters.amount_in),
-                decimals : tokenObj_0.decimals
-            }
-            let amount_out = testFormulas.getSwapPrice(volume0, volume1, amountIn)
-            newInterpolateParams = {
-                value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_in)),
-                ticker0 : tokenObj_0.ticker,
-                value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(amount_out.value, amount_out.decimals)),
-                ticker1 : tokenObj_1.ticker
-            }
-        // } else if (objData.type === txTypes.pool_create) {                               // unnecessary
-        //     newInterpolateParams = {
-        //         value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
-        //         ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
-        //         value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
-        //         ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
-        //     }
-        } else if (objData.type === txTypes.pool_add_liquidity) {
-            newInterpolateParams = {
-                value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_1)),
-                ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_1).ticker,
-                value1 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount_2)),
-                ticker1 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.asset_2).ticker
-            }
-        // } else if (objData.type === txTypes.pool_remove_liquidity) {                     // unnecessary
-        //     newInterpolateParams = {
-        //         value0 : swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(objData.parameters.amount)),
-        //         ticker0 : swapUtils.getTokenObj(this.props.tokens, objData.parameters.lt).ticker
-        //     }
-        } else
-            newInterpolateParams = undefined
+    getObjByRecType (arrData, recType) {
+        for (let i = arrData.length - 1; i >= 0; i--)
+            if (arrData[i]['rectype'] === recType)
+                return arrData[i]
+    }
 
-        return (newInterpolateParams === undefined) ? oldInterpolateParams : newInterpolateParams
+    getDecimals (asset_out) {
+        return new Promise(resolve => {
+            resolve(swapUtils.getTokenObj(this.props.tokens, asset_out).decimals)
+        })
+    }
+
+    getEIndexData (txHash) {
+        return new Promise(resolve => {
+            networkApi.eIndexByHash(txHash)
+                .then(res => {
+                    res.json()
+                        .then(arr => resolve(this.getObjByRecType(arr, 'iswapout').value))
+                })
+        })
+    }
+
+    getFreshInterpolateParams (rawDataSrt, interpolateParams, txHash) {
+        return new Promise(resolve => {
+            let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
+            if (objData.type === txTypes.pool_swap) {
+                Promise.allSettled([
+                    this.getEIndexData(txHash),
+                    this.getDecimals(objData.parameters.asset_out)
+                ]).then(results => {
+                    let editedString = vp.usCommasBigIntDecimals(results[0].value, results[1].value)
+                    interpolateParams.value1 = swapUtils.removeEndZeros(editedString)
+                    resolve(interpolateParams)
+                })
+            } else {
+                resolve(interpolateParams)
+            }
+        })
     }
 
     updStatuses () {
@@ -121,7 +109,8 @@ class RecentTransactions extends React.Component {
                                 result.value.json()
                                     .then(res => {
                                         let oldData = lsdp.get.note(res.hash)[res.hash]
-                                        lsdp.write(res.hash, res.status, oldData.type, this.getFreshInterpolateParams(res.data, oldData.interpolateParams))
+                                        this.getFreshInterpolateParams(res.data, oldData.interpolateParams, res.hash)
+                                            .then(iParams => lsdp.write(res.hash, res.status, oldData.type, iParams))
                                     })
                                     .catch(err => {/* pending transaction */})
                             )
@@ -209,7 +198,7 @@ class RecentTransactions extends React.Component {
                             { this.getDescription(note) }
                             <span className='ml-2 icon-Icon11' />
                         </a>
-                        <span className={`ml-2 mb-2 recent-tx-ref ${txStatusIcon}`} />
+                        <span className={`ml-2 d-flex align-items-center recent-tx-ref ${txStatusIcon}`} />
                     </p>
                 ))
             }

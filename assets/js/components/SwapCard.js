@@ -171,20 +171,6 @@ class SwapCard extends React.Component {
         this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldObj);
     };
 
-    removeRequest() {
-        if (!this.pairExists)
-            return;
-        this.props.openWaitingConfirmation();
-        extRequests.removeLiquidity(this.props.pubkey, this.props.removeLiquidity.ltfield.token.hash, this.props.removeLiquidity.ltfield)
-        .then(result => {
-            this.props.updCurrentTxHash(result.hash);
-            this.props.changeWaitingStateType('submitted');
-            cp.set(result.hash, 0);
-        }, () => {
-            this.props.changeWaitingStateType('rejected');
-        });
-    };
-
     /* ================================ cards rendering functions ================================== */
 
     renderSwapCard () {
@@ -291,12 +277,6 @@ class SwapCard extends React.Component {
                                     </div>
                                 </>
                             }
-                            { <Suspense fallback={<div>---</div>}>
-                                <ConfirmSupply
-                                    getSubmitButton={this.getSubmitButton.bind(this)}
-                                    modeStruct={modeStruct}
-                                />
-                            </Suspense> }
                         </>
                     }
 
@@ -350,7 +330,7 @@ class SwapCard extends React.Component {
                         </>
                     }
                     
-                    {/* ---------------------------------------- remove-liquidity: bottom info and buttons ---------------------------------------- */}
+                    {/* -------------------------------------- remove-liquidity: bottom info  ---------------------------------- */}
                     { this.props.liquidityRemove && mode !== 'exchange' &&
                         <>
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
@@ -360,10 +340,17 @@ class SwapCard extends React.Component {
                                     <div>1 {secondToken.ticker} = {this.showExchangeRate(false)} {firstToken.ticker}</div>
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center justify-content-center">
-                                { this.getRemoveLiquidityButton(t) }
-                            </div>
                         </>
+                    }
+                    {(!this.props.liquidityMain || mode !== 'liquidity') &&
+                        <div className="d-flex align-items-center justify-content-center">
+                            {<Suspense fallback={<div>---</div>}>
+                                <ConfirmSupply
+                                    getSubmitButton={this.getSubmitButton.bind(this)}
+                                    modeStruct={modeStruct}
+                                />
+                            </Suspense>}
+                        </div>
                     }
                 </div>
             </>
@@ -449,8 +436,8 @@ class SwapCard extends React.Component {
                     </>
                 }
             </>
-        );    
-    };
+        )
+    }
 
     validateDataForConfirmation (openConfirmCard) {
         if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds)
@@ -463,11 +450,12 @@ class SwapCard extends React.Component {
         if (this.props.connectionStatus === false)
             buttonName = 'beforeConnection';
         else {
-            if (this.props.menuItem === 'exchange') {
-                buttonName = 'swap';              
-            }
+            if (this.props.menuItem === 'exchange')
+                buttonName = 'swap'
+            else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove)
+                buttonName = 'addLiquidity'
             else if (this.props.menuItem === 'liquidity')
-                buttonName = 'addLiquidity';
+                buttonName = 'removeLiquidity'
             if (!this.readyToSubmit)
                 buttonName = 'fillAllFields';
             let id0 = this.enoughMoney.indexOf(modeStruct.field0.id);

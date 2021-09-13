@@ -8,8 +8,12 @@ function pairExists (pair) {
     return !(pair.lt === undefined || pair.pool_fee === undefined);
 }
 
-function removeEndZeros (value, strLength=10) {
+function removeEndZeros (value, strLength) {
     value = String(value)
+    if (strLength === undefined) {
+        let parts = String(value).split(/[\.|,]/)
+        strLength = (parts.length === 2) ? parts[0].length + 11 : parts[0]
+    }
     if ((/\.[0-9]*0+$/).test(value) && value !== '0') {
         value = value.replace(/0*$/, '');
         if (value[value.length-1] === '.')

@@ -249,7 +249,7 @@
             "completePhrase" : "{{action}} pool {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
         },
         "pool_remove_liquidity" : {
-            "completePhrase" : "{{action}} liquidity"
+            "completePhrase" : "{{action}} {{value2}} {{ticker2}}, get {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
         }
     }
 }

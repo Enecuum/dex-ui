@@ -251,7 +251,7 @@
             "completePhrase" : "{{action}} пулла {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
         },
         "pool_remove_liquidity" : {
-            "completePhrase" : "{{action}} ликвидности"
+            "completePhrase" : "{{action}} {{value2}} {{ticker2}}, извлечение {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
         }
     }
 }

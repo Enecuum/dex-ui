@@ -34,7 +34,7 @@ class WaitingConfirmation extends React.Component {
             value0  : this.props[this.props.menuItem].field0.value.text,
             ticker0 : this.props[this.props.menuItem].field0.token.ticker,
             value1  : this.props[this.props.menuItem].field1.value.text,
-            ticker1 : this.props[this.props.menuItem].field1.token.ticker,
+            ticker1 : this.props[this.props.menuItem].field1.token.ticker
         }, t = this.props.t
         if (this.props[this.props.menuItem] !== undefined) {
             let textPlace = 'waitingConfirmation', txTypes = pageDataPresets.pending.allowedTxTypes
@@ -44,6 +44,14 @@ class WaitingConfirmation extends React.Component {
                 } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
                     return generateTxText(t, textPlace, txTypes.pool_add_liquidity, interpolateParams)
                 } else if (this.props.menuItem === 'liquidity') {
+                    interpolateParams = {
+                        value0  : this.props.removeLiquidity.field0.value.text,
+                        ticker0 : this.props.removeLiquidity.field0.token.ticker,
+                        value1  : this.props.removeLiquidity.field1.value.text,
+                        ticker1 : this.props.removeLiquidity.field1.token.ticker,
+                        value2  : this.props.removeLiquidity.ltfield.value.text,
+                        ticker2 : this.props.removeLiquidity.ltfield.token.ticker
+                    }
                     return generateTxText(t, textPlace, txTypes.pool_remove_liquidity, interpolateParams)
                 }
             } else {

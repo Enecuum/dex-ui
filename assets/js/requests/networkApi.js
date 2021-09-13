@@ -39,8 +39,16 @@ class NetworkApi {
         );
     };          
 
+    eIndexByHash (hash, url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/eindex_by_hash?hash=${hash}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+
     // ---------------------------------------------------------------------
-};
+}
 
 const networkApi = new NetworkApi();
 

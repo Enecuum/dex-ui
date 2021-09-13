@@ -131,6 +131,10 @@ right: 0;
     background: var(--color4);
 }
 
+.inactive {
+    color: var(--color2) !important;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color4) var(--color2);
@@ -342,4 +346,8 @@ right: 0;
 .err-msg {
     color: #e03266;
     font-size: 13px;
+}
+
+.bottom-indicator {
+    margin-left: -16px; /*crutch*/
 }

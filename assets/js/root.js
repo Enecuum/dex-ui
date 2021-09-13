@@ -327,8 +327,8 @@ class Root extends React.Component {
                     </div>
                 </main>
             </div>
-        );
-    };
+        )
+    }
 }
 
 const WRoot = connect(

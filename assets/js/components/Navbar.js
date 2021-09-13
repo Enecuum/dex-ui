@@ -36,18 +36,21 @@ class Navbar extends React.Component {
                             </div>}
                         </Suspense>
                     </div>
+                    {this.props.connectionStatus &&
+                    <div className="w-100 d-flex align-items-center justify-content-center d-xl-none bottom-indicator"
+                         style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
+                        <IndicatorPanel />
+                    </div>
+                    }
                 </nav>
-                {this.props.connectionStatus &&
-                <div className="w-100 d-flex align-items-center justify-content-center d-xl-none"
-                     style={{height:'50px', background: 'white', position: 'fixed', bottom: '0px', backgroundColor: 'var(--menu-bg-non-transparent)', zIndex: '901'}}>
-                    <IndicatorPanel />
-                </div>
-                }
             </>
         )
     }
 }
 
-const WNavbar = connect(mapStoreToProps(components.NAVBAR), mapDispatchToProps(components.NAVBAR))(withTranslation()(Navbar));
+const WNavbar = connect(
+    mapStoreToProps(components.NAVBAR),
+    mapDispatchToProps(components.NAVBAR)
+)(withTranslation()(Navbar))
 
-export default WNavbar;
+export default WNavbar

@@ -129,7 +129,9 @@ function mapStoreToProps(component) {
                     pairs             : state.root.pairs,
                     tokens            : state.root.tokens,
                     balances          : state.root.balances,
-                    connectionStatus  : state.root.connectionStatus
+                    connectionStatus  : state.root.connectionStatus,
+                    removeLiquidity   : state.swapCard.removeLiquidity,
+                    liquidityRemove   : state.swapCard.liquidityRemove
                 };
             };
         case components.WAITING_CONFIRMATION:
@@ -140,7 +142,7 @@ function mapStoreToProps(component) {
                     exchange        : state.swapCard.exchange,
                     liquidity       : state.swapCard.liquidity,
                     menuItem        : state.root.menuItem,
-                    removeLiquidity : state.root.removeLiquidity,
+                    removeLiquidity : state.swapCard.removeLiquidity,
                     net             : state.root.net,
                     liquidityRemove : state.swapCard.liquidityRemove,
                     currentTxHash   : state.root.currentTxHash

@@ -11,6 +11,7 @@ import utils from '../utils/swapUtils';
 import ValueProcessor from '../utils/ValueProcessor';
 import lsdp from "../utils/localStorageDataProcessor";
 import pageDataPresets from "../../store/pageDataPresets";
+import BlockTheWindow from "./BlockTheWindow";
 
 const valueProcessor = new ValueProcessor();
 
@@ -23,7 +24,8 @@ class IndicatorPanel extends React.Component {
         this.intervalDescriptors.push(this.updPendingSpinner())
         this.state = {
             accountInfoVisibility : false,
-            pendingVisibility : false
+            pendingVisibility : false,
+            blockTheWindow : false
         };
     };
 
@@ -63,6 +65,7 @@ class IndicatorPanel extends React.Component {
                 <div id="toastWrapper" className="position-absolute pt-4">
                     {this.state.accountInfoVisibility && <AccountShortInfo openCloseAccountInfo={this.openCloseAccountInfo.bind(this)}/>}
                 </div>
+                {this.state.blockTheWindow && <BlockTheWindow />}
             </div>
         );
     };
@@ -99,6 +102,8 @@ class IndicatorPanel extends React.Component {
     updNetwork () {
         extRequests.getProvider(true)
         .then(res => {
+            if (this.state.blockTheWindow)
+                this.setState({blockTheWindow : false})
             if (!res.lock && res.net) {
                 ENQWeb.Enq.provider = res.net
                 this.updMainTokenData(res.net)
@@ -107,7 +112,7 @@ class IndicatorPanel extends React.Component {
                 this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
             }
         },
-        err => console.log('cannot make getProvider request'));
+        err => this.setState({blockTheWindow : true}))
     };
 
     hidePendingIndicator () {

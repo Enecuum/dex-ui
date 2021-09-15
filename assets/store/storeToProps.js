@@ -116,7 +116,8 @@ function mapStoreToProps(component) {
                     net             : state.root.net,
                     coinAmount      : state.indicatorPanel.coinAmount,
                     mainToken       : state.root.mainToken,
-                    mainTokenFee    : state.root.mainTokenFee
+                    mainTokenFee    : state.root.mainTokenFee,
+                    connectionStatus: state.root.connectionStatus,
                 };
             };
         case components.CONFIRM_SUPPLY:
@@ -261,6 +262,7 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.farms,
+                    tokens            : state.root.tokens,
                     farmsList         : state.farms.farmsList,
                     mainTokenAmount   : state.farms.mainTokenAmount,
                     mainTokenDecimals : state.farms.mainTokenDecimals,

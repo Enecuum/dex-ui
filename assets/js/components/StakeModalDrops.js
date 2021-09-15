@@ -11,6 +11,7 @@ import FarmValidationRules from '../utils/dropFarmsValidationRules/StakeUnstakeV
 import Validator from  '../utils/Validator';
 
 import '../../css/confirm-supply.css';
+import lsdp from "../utils/localStorageDataProcessor";
 
 const valueProcessor = new ValueProcessor();
 
@@ -142,10 +143,13 @@ class StakeModalDrops extends React.Component {
         .then(result => {
             console.log(obj)
             console.log('Success', result.hash);
+
+            let interpolateParams = {
+                value0  : commonDataSet.stakeValue.numberValue,
+                ticker0 : this.props.managedFarmData.reward_token_name
+            }
+            lsdp.write(result.hash, 0, this.props.currentAction, interpolateParams)
             this.closeModal();
-            //this.props.updCurrentTxHash(result.hash);
-            // this.props.changeWaitingStateType('submitted');
-            // this.props.resetStore();
         },
         error => {
             console.log('Error')

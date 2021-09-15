@@ -235,7 +235,12 @@
             "pool_create" : "Create",
             "pool_swap" : "Swap",
             "pool_add_liquidity" : "Add",
-            "pool_remove_liquidity" : "Remove"
+            "pool_remove_liquidity" : "Remove",
+            "farm_create" : "Create",
+            "farm_get_reward" : "Get",
+            "farm_increase_stake" : "Stake",
+            "farm_close_stake" : "Close",
+            "farm_decrease_stake" : "Unstake"
         }
     },
     "txActionPhrases" : {
@@ -250,6 +255,25 @@
         },
         "pool_remove_liquidity" : {
             "completePhrase" : "{{action}} {{value2}} {{ticker2}}, get {{value0}} {{ticker0}} and {{value1}} {{ticker1}}"
+        },
+        "farm_create" : {
+            "completePhrase" : "{{action}} farm {{ticker0}}-{{ticker1}}"
+        },
+        "farm_get_reward" : {
+            "completePhrase" : "{{action}} reward {{value0}} {{ticker0}}"
+        },
+        "farm_increase_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "farm_close_stake" : {
+            "completePhrase" : "{{action}} stake {{ticker0}}-{{ticker1}}"
+        },
+        "farm_decrease_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
         }
+    },
+    "blockWindow" : {
+        "header" : "Your extension was blocked",
+        "text" : "Please, unlock the extension"
     }
 }

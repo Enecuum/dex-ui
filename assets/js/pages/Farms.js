@@ -20,6 +20,7 @@ import testFormulas from '../utils/testFormulas';
 import '../../css/drop-farms.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import lsdp from "../utils/localStorageDataProcessor";
 
 const valueProcessor = new ValueProcessor();
 
@@ -103,9 +104,25 @@ class Farms extends React.Component {
         .then(result => {
             console.log(obj)
             console.log('Success', result.hash)
+            let interpolateParams, txTypes = presets.pending.allowedTxTypes
+            if (actionType === txTypes.farm_decrease_stake || actionType === txTypes.farm_increase_stake) {
+                interpolateParams = {
+                    value0  : this.props.stakeData.stakeValue.numberValue,
+                    ticker0 : this.props.managedFarmData.reward_token_name
+                }
+            } else if (actionType === txTypes.farm_create) {
+                interpolateParams = {
+                    ticker0 : this.props.managedFarmData.stake_token_name,
+                    ticker1 : this.props.managedFarmData.reward_token_name
+                }
+            } else if (actionType === txTypes.farm_get_reward) {
+                interpolateParams = {
+                    value0  : valueProcessor.usCommasBigIntDecimals(this.props.managedFarmData.earned, utils.getTokenObj(this.props.tokens, this.props.managedFarmData.reward_token_hash)),
+                    ticker0 : this.props.managedFarmData.reward_token_name
+                }
+            }
+            lsdp.write(result.hash, 0, actionType, interpolateParams)
             this.props.updCurrentTxHash(result.hash);
-            // this.props.changeWaitingStateType('submitted');
-            // this.props.resetStore();
         },
         error => {
             console.log('Error')
@@ -114,9 +131,14 @@ class Farms extends React.Component {
     }
 
     executeHarvest() {
-        extRequests.farmAction(this.props.pubkey, 'farm_get_reward', this.props.mainTokenFee + BigInt(this.props.pricelist.farm_get_reward), {farm_id  : this.props.expandedRow})        
+        extRequests.farmAction(this.props.pubkey, 'farm_get_reward', this.props.mainTokenFee + BigInt(this.props.pricelist.farm_get_reward), {farm_id  : this.props.expandedRow})
         .then(result => {
             console.log('Success', result.hash);
+            let interpolateParams = {
+                value0  : valueProcessor.usCommasBigIntDecimals(this.props.managedFarmData.earned, utils.getTokenObj(this.props.tokens, this.props.managedFarmData.reward_token_hash).decimals),
+                ticker0 : this.props.managedFarmData.reward_token_name
+            }
+            lsdp.write(result.hash, 0, 'farm_get_reward', interpolateParams)
             //this.closeModal();
             //this.props.updCurrentTxHash(result.hash);
             // this.props.changeWaitingStateType('submitted');
@@ -336,7 +358,7 @@ class Farms extends React.Component {
     		},
     		disabled : {
     			className : 'btn btn-secondary py-3 px-5',
-    			variant   : 'btn-secondary'		
+    			variant   : 'btn-secondary'
     		}
     	}
     	let buttonState = active === true ? 'active' : 'disabled';

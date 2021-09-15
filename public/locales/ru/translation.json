@@ -237,7 +237,12 @@
             "pool_create" : "Создание",
             "pool_swap" : "Обмен",
             "pool_add_liquidity" : "Добавление",
-            "pool_remove_liquidity" : "Удаление"
+            "pool_remove_liquidity" : "Удаление",
+            "farm_create" : "Создание",
+            "farm_get_reward" : "Получение",
+            "farm_increase_stake" : "Увеличение стейка",
+            "farm_close_stake" : "Закрыть",
+            "farm_decrease_stake" : "Уменьшение стейка"
         }
     },
     "txActionPhrases" : {
@@ -252,6 +257,25 @@
         },
         "pool_remove_liquidity" : {
             "completePhrase" : "{{action}} {{value2}} {{ticker2}}, извлечение {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+        },
+        "farm_create" : {
+            "completePhrase" : "{{action}} фермы {{ticker0}}-{{ticker1}}"
+        },
+        "farm_get_reward" : {
+            "completePhrase" : "{{action}} награды {{value0}} {{ticker0}}"
+        },
+        "farm_increase_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "farm_close_stake" : {
+            "completePhrase" : "{{action}} стейк {{ticker0}}-{{ticker1}}"
+        },
+        "farm_decrease_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
         }
+    },
+    "blockWindow" : {
+        "header" : "Ваше расширение заблокировано",
+        "text" : "Пожалуйста, разблокируйте расширение"
     }
 }

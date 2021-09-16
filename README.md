@@ -2,7 +2,8 @@
 
 
 #### Intro 
-This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. Here you can find all information about frontend part of that project.
+This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. 
+Here you can find all information about frontend part of that project.
     
 #### Technologies
 * Language: JavaScript
@@ -13,46 +14,53 @@ This is the web application for DEX AMM (Decentralized EXchange with Automatic M
 * State container: Redux, docs - https://redux.js.org/introduction/getting-started
 
 #### Dependencies
-For communication with Enecuum blockchain application you must use the web-enq library and Enecuum-wallet extension. At the moment site maintains five methods:
+For communication with Enecuum blockchain application you must use the web-enq library and Enecuum-wallet extension. 
+At the moment site maintains five methods:
 * connect()
 * enable() -> {pubkey, net}
-* balanceOf(to, tokenHash}) -> {amount, decimals, delegated, reward, transit, undelegated}
+* balanceOf(to, tokenHash) -> {amount, decimals, delegated, reward, transit, undelegated}
 * sendTransaction(from, to, value, tokenHash)
 * net.getProvider() -> {net}
-To learn more about web-enq API, visit - https://github.com/Enecuum/web-enq/blob/e392d8a51d993cc6fbce2de65ef6a5ce4f7e84a8/ENQweb3lib.md
+To learn more about web-enq API, visit - 
+  https://github.com/Enecuum/web-enq/blob/e392d8a51d993cc6fbce2de65ef6a5ce4f7e84a8/ENQweb3lib.md
 
 #### Preparing for usage
 * install necessary dependencies
-```bash
+```shell
     npm install
 ```
-* create config.json, copy structure from config.example.json, write valid url in 'dex_url' property and valid port in 'dex_port' property (it is necessary for dex stub)
+* create config.json, copy structure from config.example.json.
 * install pm2
 
 #### Usage
-* start server with webpack-dev-middleware
-```bash
+* start server with webpack-dev-middleware. (check the mode inside [./webpack.config.js][2], must be 'development')
+```shell
     npm run dev
 ```
-* build the application with webpack (check the mode inside [./webpack.config.js][2])
-```bash
+
+* stop development server by command:
+```shell
+  pm2 stop hot_dev
+```
+
+* build the application with webpack (check the mode inside [./webpack.config.js][2], must be 'production')
+```shell
     npm run make
 ```
-After assembling all files are put inside [./public][1] directory, where index.html is the frontend entry point, and enex.webpack.js is the js bundle.
+After assembling all files are put inside [./public][1] directory, where index.html is the frontend entry point, 
+and enex.webpack.js is the js bundle. Also, command creates docker image (check IMG_TAG variable into 
+[./production.bash][11])
 
-* run the script for creating docker images and running production solution
-```bash
-    npm run prod
+* run the script for using docker images and running production solution (check the mode inside [./webpack.config.js][2], 
+  must be 'production').
+```shell
+    npm run prod -- {tag}
 ```
-All configuration for production mode are placed inside ./standard_build.bash
+tag - custom image tag. See entire configuration for production mode inside [./production.bash][11]
 
-* stop server in the development mode
-```bash
-    npm run stop_d
-```
-* stop server in the production mode
-```bash
-    npm run stop_p
+* stop all docker images and clear memory by command:
+```shell
+  npm run clear
 ```
 
 #### Webpack config
@@ -63,13 +71,16 @@ Essential properties:
 * [module.rules][5] - amount of modules, and their rules for creating right imports
 * [devServer][6] - configuration field with server deployment properties (read more about in on https://webpack.js.org/configuration/dev-server/)
 
-#### Develop mode
+#### Development mode
 
-In order to turn on the 'develop mode' you must specify in the file webpack.config.js in the property 'mode' the string 'development'.
+In order to turn on the 'develop mode' you must specify in the file webpack.config.js in the property 'mode' the string 
+'development'. All server functional runs without docker images, therefore all manipulations with the server must be 
+realized through the "pm2".
 ```js
     mode : 'development'
 ```
-In the develop mode you must take into consideration that all options specified in the server/scripts/hotDev.js file have a higher priority than the config.json file settings.
+In the develop mode you must take into consideration that all options specified in the server/scripts/hotDev.js file 
+have a higher priority than the config.json file settings.
 
 #### Redux
 
@@ -116,13 +127,14 @@ In the images below you can see a couple of sequence diagrams that explain servi
   [![](https://mermaid.ink/img/eyJjb2RlIjoiICAgICAgICBzZXF1ZW5jZURpYWdyYW1cbiAgICAgICAgcGFydGljaXBhbnQgQ2xpZW50XG4gICAgICAgIHBhcnRpY2lwYW50IFJlcXVlc3REaXZpc29yXG5cbiAgICAgICAgQ2xpZW50IC0-PiBSZXF1ZXN0RGl2aXNvcjogXCJ7cHJvdG9jb2x9Oi8ve2lwfTp7cG9ydH0ve2ZpbGVwYXRofVwiXG4gICAgICAgIFJlcXVlc3REaXZpc29yIC0-PiBSZXF1ZXN0RGl2aXNvcjogQ2hlY2sgdGhlIHNlcnZpY2VzICh0aGVyZSBpcyBubyBmaWxlIGxvYWRlcilcbiAgICAgICAgUmVxdWVzdERpdmlzb3IgLS0-PiBDbGllbnQ6IDUwMCBJbnRlcm5hbCBzZXJ2ZXIgZXJyb3IiLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCIsImJhY2tncm91bmRDb2xvciI6InRyYW5zcGFyZW50In0sInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZX0)](https://mermaid-js.github.io/mermaid-live-editor/edit##eyJjb2RlIjoiICAgICAgICBzZXF1ZW5jZURpYWdyYW1cbiAgICAgICAgcGFydGljaXBhbnQgQ2xpZW50XG4gICAgICAgIHBhcnRpY2lwYW50IFJlcXVlc3REaXZpc29yXG4gICAgICAgIHBhcnRpY2lwYW50IEZpbGVMb2FkZXJcblxuICAgICAgICBDbGllbnQgLT4-IFJlcXVlc3REaXZpc29yOiBcIntwcm90b2NvbH06Ly97aXB9Ontwb3J0fS97ZmlsZXBhdGh9XCJcbiAgICAgICAgUmVxdWVzdERpdmlzb3IgLT4-IEZpbGVMb2FkZXI6IHtcImpzb25ycGNcIjogXCIyLjBcIiwgXCJtZXRob2RcIjogXCJpbnRlcm5hbF9yZXF1ZXN0XCIsIFwicGFyYW1zXCI6IFtcInRva2VuXCIsIFwiZmlsZXBhdGhcIl0sIFwiaWRcIjogaWR9XG4gICAgICAgIEZpbGVMb2FkZXIgLT4-IEZpbGVMb2FkZXI6IEludGVybmFsIHJvdXRlciB3b3JrXG4gICAgICAgIEZpbGVMb2FkZXIgLS0-PiBSZXF1ZXN0RGl2aXNvcjoge1wianNvbnJwY1wiOiBcIjIuMFwiLCBcInJlc3VsdFwiOiB7XCJkYXRhXCI6IGRhdGEsIFwiY29udGVudFR5cGVcIiA6IGNvbnRlbnRUeXBlfSwgXCJpZFwiOiBpZH1cbiAgICAgICAgUmVxdWVzdERpdmlzb3IgLS0-PiBDbGllbnQ6IDIwMCBPaywgZGF0YSIsIm1lcm1haWQiOiJ7XG4gIFwidGhlbWVcIjogXCJkZWZhdWx0XCIsXG4gIFwiYmFja2dyb3VuZENvbG9yXCIgOiBcInRyYW5zcGFyZW50XCJcbn0iLCJ1cGRhdGVFZGl0b3IiOmZhbHNlLCJhdXRvU3luYyI6dHJ1ZSwidXBkYXRlRGlhZ3JhbSI6ZmFsc2V9)
   
 
-[1]:https://github.com/Enecuum/dex/tree/develop/public
-[2]:https://github.com/Enecuum/dex/blob/develop/webpack.config.js
-[3]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L6
-[4]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L7
-[5]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L12
-[6]:https://github.com/Enecuum/dex/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L31
-[7]:https://github.com/Enecuum/dex/tree/master/assets/store
-[8]:https://github.com/Enecuum/dex/tree/master/assets/store/actions
-[9]:https://github.com/Enecuum/dex/tree/master/assets/store/actionCreators
-[10]:https://github.com/Enecuum/dex/tree/master/assets/store/reducers
+[1]:https://github.com/Enecuum/dex-ui/tree/develop/public
+[2]:https://github.com/Enecuum/dex-ui/blob/develop/webpack.config.js
+[3]:https://github.com/Enecuum/dex-ui/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L6
+[4]:https://github.com/Enecuum/dex-ui/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L7
+[5]:https://github.com/Enecuum/dex-ui/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L12
+[6]:https://github.com/Enecuum/dex-ui/blob/9b28e3dffff43396e6503e089d8f373b2bf39259/webpack.config.js#L31
+[7]:https://github.com/Enecuum/dex-ui/tree/master/assets/store
+[8]:https://github.com/Enecuum/dex-ui/tree/master/assets/store/actions
+[9]:https://github.com/Enecuum/dex-ui/tree/master/assets/store/actionCreators
+[10]:https://github.com/Enecuum/dex-ui/tree/master/assets/store/reducers
+[11]:https://github.com/Enecuum/dex-ui/blob/develop/production.bash

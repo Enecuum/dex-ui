@@ -71,7 +71,7 @@ class RecentTransactions extends React.Component {
             networkApi.eIndexByHash(txHash)
                 .then(res => {
                     res.json()
-                        .then(arr => resolve(this.getObjByRecType(arr, 'iswapout').value))
+                        .then(arr => resolve(arr))
                 })
         })
     }
@@ -79,15 +79,22 @@ class RecentTransactions extends React.Component {
     getFreshInterpolateParams (rawDataSrt, interpolateParams, txHash) {
         return new Promise(resolve => {
             let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
-            if (objData.type === txTypes.pool_swap) {
+            const allowedTypes = [txTypes.pool_swap, txTypes.farm_get_reward]
+            if (allowedTypes.indexOf(objData.type) !== -1) {
                 Promise.allSettled([
                     this.getEIndexData(txHash),
                     this.getDecimals(objData.parameters.asset_out)
                 ]).then(results => {
-                    let editedString = vp.usCommasBigIntDecimals(results[0].value, results[1].value)
-                    interpolateParams.value1 = swapUtils.removeEndZeros(editedString)
+                    let value
+                    if (objData.type === txTypes.pool_swap) {
+                        value = this.getObjByRecType(results[0].value, 'iswapout').value
+                        interpolateParams.value1 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
+                    } else if (objData.type === txTypes.farm_get_reward) {
+                        value = this.getObjByRecType(results[0].value, 'ifrew').value
+                        interpolateParams.value0 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
+                    }
                     resolve(interpolateParams)
-                })
+                }).catch(() => resolve(interpolateParams))
             } else {
                 resolve(interpolateParams)
             }

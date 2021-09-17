@@ -136,7 +136,8 @@ class Farms extends React.Component {
             console.log('Success', result.hash);
             let interpolateParams = {
                 value0  : valueProcessor.usCommasBigIntDecimals(this.props.managedFarmData.earned, utils.getTokenObj(this.props.tokens, this.props.managedFarmData.reward_token_hash).decimals),
-                ticker0 : this.props.managedFarmData.reward_token_name
+                ticker0 : this.props.managedFarmData.reward_token_name,
+                asset_out : this.props.managedFarmData.reward_token_hash
             }
             lsdp.write(result.hash, 0, 'farm_get_reward', interpolateParams)
             //this.closeModal();

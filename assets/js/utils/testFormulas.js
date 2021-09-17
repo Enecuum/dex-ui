@@ -91,4 +91,4 @@ export default {
     ltDestruction,
     countLTValue,
     getSwapPrice
-};
+}

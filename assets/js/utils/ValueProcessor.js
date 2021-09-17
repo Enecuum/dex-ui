@@ -113,7 +113,7 @@ class ValueProcessor {
                 console.log('zero division!');
                 return {};
             }
-            let signsAfterComma = 4;
+            let signsAfterComma = 15;
             let addition = String(op1.value).length - String(op0.value).length + signsAfterComma;
             if (addition < 0)
                 addition = signsAfterComma;

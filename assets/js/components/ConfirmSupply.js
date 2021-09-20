@@ -71,10 +71,21 @@ class ConfirmSupply extends React.Component {
                 </div>
                 <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
                 <div className='h5 mb-4'>
-                    {t('pairPoolTokens', {token0 : (firstToken.ticker) ? firstToken.ticker : '', token1 : (secondToken.ticker) ? secondToken.ticker : ''})}
+                    {
+                        (this.props.menuItem === 'liquidity')
+                        &&
+                        t('pairPoolTokens', {
+                            token0: (firstToken.ticker) ? firstToken.ticker : '',
+                            token1: (secondToken.ticker) ? secondToken.ticker : ''
+                        })
+                        ||
+                        t('receiveToken', {
+                            token0: (secondToken.ticker) ? secondToken.ticker : ''
+                        })
+                    }
                 </div>
                 <div className='confirm-supply-description'>
-                    {t('trade.confirmCard.description')}
+                    {(this.props.menuItem === 'liquidity') && t('trade.confirmCard.description')}
                 </div>
                 <div className="my-5">
                     <div className='d-flex align-items-center justify-content-between mb-2'>
@@ -85,7 +96,14 @@ class ConfirmSupply extends React.Component {
                     </div>
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
-                            {secondToken.ticker} {t('trade.confirmCard.deposited')}
+                            {secondToken.ticker}
+                            {
+                                (this.props.menuItem === 'liquidity')
+                                &&
+                                ' ' + t('trade.confirmCard.deposited')
+                                ||
+                                ' ' + t('trade.confirmCard.toBeReceived')
+                            }
                         </div>
                         <LogoToken data={{url : img2, value : modeStruct.field1.value.text}} />
                     </div>

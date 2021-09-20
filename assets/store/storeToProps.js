@@ -15,6 +15,7 @@ const components = {
     SWITCH                           : 0x2,
     TOKEN_CARD                       : 0x3,
     ASIDE                            : 0x4,
+    WALLET_LIST                      : 0x5,
     NAVBAR                           : 0x6,
     CONNECT                          : 0x7,
     INDICATOR_PANEL                  : 0x8,
@@ -92,6 +93,7 @@ function mapStoreToProps(component) {
                     langTitles      : state.root.langTitles
                 };
             };
+
         case components.NAVBAR:
             return function (state) {
                 return {
@@ -355,6 +357,13 @@ function mapDispatchToProps(component) {
                     toggleAside     : rootCreator.toggleAside,
                     updActiveLocale : rootCreator.updActiveLocale,
                     changeLanguage  : rootCreator.changeLanguage
+                }, dispatch);
+            };
+        case components.WALLET_LIST:
+            return function (dispatch) {
+                return bindActionCreators({
+                    setConStatus : rootCreator.setConStatus,
+                    assignPubkey : rootCreator.assignPubkey
                 }, dispatch);
             };
         case components.NAVBAR:

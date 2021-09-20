@@ -15,6 +15,7 @@ import '../../css/close-button.css'
 import '../../css/index.css'
 import '../../css/wallet-connection.css'
 import '../../css/font-style.css'
+import WalletList from "./WalletList";
 
 class Connect extends React.Component {
     constructor(props) {
@@ -45,25 +46,6 @@ class Connect extends React.Component {
             })
     }
 
-    connectToEnq () {
-        if (!this.props.connectionStatus) {
-            ENQweb3lib.connect()
-            ENQweb3lib.enable()
-                .then(res => {
-                        cp.updateSettings(res.pubkey, '/')
-                        lsdp.updPubKey(res.pubkey)
-                        this.props.assignPubkey(res.pubkey)
-                        this.props.updDexData(res.pubkey)
-                        this.props.setConStatus(true)
-                        this.closeConList()
-                    },
-                    () => {
-                        this.closeConList()
-                        this.props.setConStatus(false)
-                    })
-        }
-    }
-
     renderConnectionButton() {
         const t = this.props.t
         return (
@@ -79,51 +61,12 @@ class Connect extends React.Component {
         )
     }
 
-    openConList () {
-        this.setState({connectionListVisibility : true})
-    }
-
     closeConList () {
         this.setState({connectionListVisibility : false})
     }
 
-    renderModalHeader () {
-        return (
-            <Modal.Title id="custom-modal-styling-title">
-                {this.props.t('navbars.top.connectionCard.header')}
-            </Modal.Title>
-        )
-    }
-
-    renderModalBody () {
-        const t = this.props.t
-        return (
-            <>
-                <div onClick={this.connectToEnq.bind(this)} className='enq-wallet d-flex align-items-center'>
-                    <p className='col-6 text-nowrap'>{t('tokenWallet', {'token' : 'ENQ'})}</p>
-                    <div className='col-6 d-flex justify-content-end align-items-center' >
-                        <div className='c-circle'/>
-                        <img src={img} alt="wallet img"/>
-                    </div>
-                </div>
-                <a href='https://chrome.google.com/webstore/detail/enecuum/oendodccclbjedifljnlkapjejklgekf'
-                   className='d-flex justify-content-center c-clue'
-                >
-                    <span className='icon-Icon4'/>
-                    {t('navbars.top.connectionCard.clue')}
-                </a>
-            </>
-        )
-    }
-
-    renderConnectionList () {
-        return (
-            <CommonModal
-                renderHeader={this.renderModalHeader.bind(this)}
-                renderBody={this.renderModalBody.bind(this)}
-                closeAction={this.closeConList.bind(this)}
-            />
-        )
+    openConList () {
+        this.setState({connectionListVisibility : true})
     }
 
     openConnectionListWhileReload () {
@@ -139,7 +82,10 @@ class Connect extends React.Component {
         return (
             <>
                 {this.renderConnectionButton()}
-                {this.state.connectionListVisibility && this.renderConnectionList()}
+                {this.state.connectionListVisibility && <WalletList
+                    closeConList = {this.closeConList.bind(this)}
+                    updDexData = {this.props.updDexData.bind(this.props)}
+                />}
             </>
         )
     }

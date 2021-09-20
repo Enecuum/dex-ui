@@ -263,7 +263,7 @@ class Root extends React.Component {
                                 </Suspense>    
                             </div>
                             <Suspense fallback={<div>---</div>}>
-                                <SwapCard />
+                                <SwapCard updDexData = {this.updDexData.bind(this)} />
                             </Suspense>
                         </div>
                         <div className="addon-card-wrapper mt-4">

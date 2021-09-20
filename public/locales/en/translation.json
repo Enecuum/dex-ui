@@ -25,7 +25,11 @@
                 "clue" : "Get Enecuum browser extension"
             },
             "accountShortInfo" : {
-                "header" : "Account"
+                "header" : "Account",
+                "copyPubKey" : "copy address",
+                "viewIn" : "view in",
+                "connectInfo" : "Connected with",
+                "changeButton" : "Change"
             }
         }
     },
@@ -102,6 +106,7 @@
             "poolTokens" : "Pool Tokens",
             "description" : "Output is estimated. If the price changes by more than 1% your transaction will revert.",
             "deposited" : "Deposited",
+            "toBeReceived" : "To be received",
             "rates" : "Rates",
             "shareOfPool" : "Share of pool",
             "confirm" : "Confirm Supply",
@@ -122,6 +127,11 @@
                 }
             }
         }
+    },
+    "recentTxs" : {
+        "withoutTxs" : "Your transactions will appear here...",
+        "withTxs" : "Recent transactions",
+        "clearButton" : "(clear all)"
     },
     "etm" : {
         "issueToken" : "Issue token",
@@ -158,6 +168,7 @@
     "tokenWallet" : "{{token}} wallet",
     "viewOnSite" :  "View on {{site}}",
     "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "receiveToken" : "{{token0}} Tokens",
     "numberSign" : "#",
     "name" : "Name",
     "liquidity" : "Liquidity",

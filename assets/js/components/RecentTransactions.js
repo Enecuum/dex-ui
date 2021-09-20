@@ -186,6 +186,7 @@ class RecentTransactions extends React.Component {
     }
 
     getRecentTxsMarkup () {
+        let t = this.props.t
         let recentTxList = this.state.recentTxs
         let recentTxListLen = recentTxList.length
 
@@ -213,14 +214,14 @@ class RecentTransactions extends React.Component {
         }, [])
 
         if (!recentTxListLen)
-            txsForRender.unshift((<p className={`py-3 px-4`} key={'-1'}>{ "Your transactions will appear here..." }</p>))
+            txsForRender.unshift((<p className={`py-3 px-4`} key={'-1'}>{ t('recentTxs.withoutTxs') }</p>))
         else
             txsForRender.unshift((<div className="px-4 d-flex justify-content-between" key={'-1'}>
-                <p className="pt-3" >{ "Recent transactions" }</p>
+                <p className="pt-3" >{ t('recentTxs.withTxs') }</p>
                 <a
                     className="recent-tx-ref d-flex align-items-center"
                     onClick={this.clearHistory.bind(this)}
-                >(clear all)</a>
+                >{ t('recentTxs.clearButton') }</a>
             </div>))
 
         return (

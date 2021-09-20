@@ -86,6 +86,8 @@ function countLTValue (pair, uiPair, mode, tokens) {
     return 'wrong mode';
 }
 
+global.getAddLiquidityPrice = getAddLiquidityPrice
+
 export default {
     getAddLiquidityPrice,
     ltDestruction,

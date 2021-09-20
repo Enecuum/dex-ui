@@ -25,6 +25,7 @@ import img1 from '../../img/logo.png';
 import img2 from '../../img/bry-logo.png';
 import '../../css/swap-card.css';
 import '../../css/font-style.css';
+import WalletList from "./WalletList";
 
 const valueProcessor = new ValueProcessor();
 
@@ -57,6 +58,9 @@ class SwapCard extends React.Component {
                 }
             ]
         };
+        this.state = {
+            walletListVisibility : false
+        }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
         this.initByGetRequestParams = true
@@ -442,6 +446,8 @@ class SwapCard extends React.Component {
     validateDataForConfirmation (openConfirmCard) {
         if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds)
             openConfirmCard()
+        if (!this.props.connectionStatus)
+            this.openConList()
     }
 
     getSubmitButton(modeStruct, openConfirmCard) {
@@ -912,14 +918,35 @@ class SwapCard extends React.Component {
                 f1.token.hash  !== undefined;
     };
 
+    closeConList () {
+        this.setState({walletListVisibility : false})
+    }
+
+    openConList () {
+        this.setState({walletListVisibility : true})
+    }
+
+    renderWalletList () {
+        return (
+            <>
+                {this.state.walletListVisibility &&
+                <WalletList
+                    closeConList = {this.closeConList.bind(this)}
+                    updDexData = {this.props.updDexData.bind(this.props)}
+                />}
+            </>
+        )
+    }
+
     /* ================================== main rendering function ================================== */
     render() {
         this.establishReadiness(this.validateSwapCard(this.props[this.getMode()]))
         this.establishPairExistence();
         return (
             <div>
-                { this.renderSwapCard()  }
-                { this.renderTokenCard() }
+                { this.renderWalletList() }
+                { this.renderSwapCard()   }
+                { this.renderTokenCard()  }
             </div>
         );
     };

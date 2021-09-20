@@ -41,13 +41,16 @@ class AccountShortInfo extends React.Component {
     }
 
     renderBody () {
+        let t = this.props.t
         return (
             <>
                 <Card className='account-card'>
                     <Card.Body>
                         <div className="d-flex justify-content-between mt-2">
-                            <small className="mr-5 connected-with">Connected with ENQ-wallet</small>
-                            <button className="ml-lg-2 extra-small-button" onClick={this.reloadPage.bind(this)}>Change</button>
+                            <small className="mr-5 connected-with">{t('navbars.top.accountShortInfo.connectInfo')} ENQ-wallet</small>
+                            <button className="ml-lg-2 extra-small-button" onClick={this.reloadPage.bind(this)}>
+                                {t('navbars.top.accountShortInfo.changeButton')}
+                            </button>
                         </div>
                         <div className="d-flex justify-content-start mt-2">
                             <div className="mr-3">
@@ -59,11 +62,11 @@ class AccountShortInfo extends React.Component {
                         <div>
                             <a className="mr-2 functional-ref" onClick={this.copyPubKey.bind(this)}>
                                 <span className='icon-Icon12 mr-1'/>
-                                copy address
+                                {t('navbars.top.accountShortInfo.copyPubKey')}
                             </a>
                             <a className="ml-2 functional-ref" onClick={this.openAccountInExplorer.bind(this)}>
                                 <span className='icon-Icon11 mr-1'/>
-                                view on pulse
+                                {t('navbars.top.accountShortInfo.viewIn')} Explorer
                             </a>
                         </div>
                     </Card.Body>

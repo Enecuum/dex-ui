@@ -25,7 +25,11 @@
                 "clue" : "Получить расширение Enecuum"
             },
             "accountShortInfo" : {
-                "header" : "Аккаунт"
+                "header" : "Аккаунт",
+                "copyPubKey" : "копировать адрес",
+                "viewIn" : "смотреть в",
+                "connectInfo" : "Подключено к",
+                "changeButton" : "Сменить"
             }
         }
     },
@@ -101,6 +105,7 @@
             "poolTokens" : "Токенов ликвидности",
             "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
             "deposited" : "Внесено",
+            "toBeReceived" : "Будет получено",
             "rates" : "Курс",
             "shareOfPool" : "Доля в пуле",
             "confirm" : "Подтверждение",
@@ -124,6 +129,11 @@
                 }
             }
         }
+    },
+    "recentTxs" : {
+        "withoutTxs" : "Здесь появятся ваши транзакции...",
+        "withTxs" : "Недавние транзакции",
+        "clearButton" : "(очистить)"
     },
     "etm" : {
         "issueToken" : "Выпуск токена",
@@ -159,7 +169,8 @@
     "transactionRejected" : "Транзакция отклонена",
     "tokenWallet" : "{{token}} кошелёк",
     "viewOnSite" :  "Смотреть на {{site}}",
-    "pairPoolTokens" : "{{token0}}/{{token1}} Pool Tokens",
+    "pairPoolTokens" : "{{token0}}/{{token1}} Пул Токены",
+    "receiveToken" : "{{token0}} Токены",
     "numberSign" : "#",
     "name" : "Наименование",
     "liquidity" : "Ликвидность",
@@ -253,7 +264,7 @@
             "completePhrase" : "{{action}} ликвидности {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
         },
         "pool_create" : {
-            "completePhrase" : "{{action}} пулла {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+            "completePhrase" : "{{action}} пула {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
         },
         "pool_remove_liquidity" : {
             "completePhrase" : "{{action}} {{value2}} {{ticker2}}, извлечение {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"

@@ -68,7 +68,7 @@ class AccountShortInfo extends React.Component {
                         </div>
                     </Card.Body>
                 </Card>
-                <div className="recent-txs-place mt-3">
+                <div className="recent-txs-place mt-3 px-4">
                     <RecentTransactions />
                 </div>
             </>

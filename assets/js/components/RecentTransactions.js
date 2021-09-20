@@ -200,7 +200,7 @@ class RecentTransactions extends React.Component {
                 else
                     txStatusIcon = 'icon-Icon7'
                 arrForRender.push((
-                    <p className={`${yPadding} px-4 d-flex justify-content-between`} key={index+''}>
+                    <p className={`${yPadding} px-0 d-flex justify-content-between`} key={index+''}>
                         <a className="recent-tx-ref" onClick={this.openTxInExplorer.bind(this, note.hash)}>
                             { this.getDescription(note) }
                             <span className='ml-2 icon-Icon11' />
@@ -213,9 +213,9 @@ class RecentTransactions extends React.Component {
         }, [])
 
         if (!recentTxListLen)
-            txsForRender.unshift((<p className={`py-3 px-4`} key={'-1'}>{ "Your transactions will appear here..." }</p>))
+            txsForRender.unshift((<p className={`py-3 px-0`} key={'-1'}>{ "Your transactions will appear here..." }</p>))
         else
-            txsForRender.unshift((<div className="px-4 d-flex justify-content-between" key={'-1'}>
+            txsForRender.unshift((<div className="px-0 d-flex justify-content-between" key={'-1'}>
                 <p className="pt-3" >{ "Recent transactions" }</p>
                 <a
                     className="recent-tx-ref d-flex align-items-center"

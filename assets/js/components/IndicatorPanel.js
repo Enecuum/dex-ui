@@ -12,6 +12,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import lsdp from "../utils/localStorageDataProcessor";
 import pageDataPresets from "../../store/pageDataPresets";
 import BlockTheWindow from "./BlockTheWindow";
+import CommonToast from '../elements/CommonToast';
 
 const valueProcessor = new ValueProcessor();
 
@@ -23,6 +24,7 @@ class IndicatorPanel extends React.Component {
         this.intervalDescriptors.push(this.circleUpd())
         this.intervalDescriptors.push(this.updPendingSpinner())
         this.state = {
+            txNotificationToasts : {},
             accountInfoVisibility : false,
             pendingVisibility : false,
             blockTheWindow : false
@@ -63,7 +65,11 @@ class IndicatorPanel extends React.Component {
                          onClick={this.openCloseAccountInfo.bind(this)}>{utils.packAddressString(this.props.pubkey)}</div>
                 </div>
                 <div id="toastWrapper" className="position-absolute pt-4">
-                    {this.state.accountInfoVisibility && <AccountShortInfo openCloseAccountInfo={this.openCloseAccountInfo.bind(this)}/>}
+                    {this.state.accountInfoVisibility && <AccountShortInfo
+                        openCloseAccountInfo={this.openCloseAccountInfo.bind(this)}
+                        createToast={this.createToast.bind(this)}
+                    />}
+                    {this.renderRecentTxNotification()}
                 </div>
                 {this.state.blockTheWindow && <BlockTheWindow />}
             </div>
@@ -179,6 +185,50 @@ class IndicatorPanel extends React.Component {
                     })
             }
         }, 1000)
+    }
+
+    toastHeader () {
+        return(<></>)
+    }
+
+    toastBody () {
+        return(<>
+            test body
+        </>)
+    }
+
+    closeAction (id) {
+        this.deleteToast(id)
+    }
+
+    deleteToast (id) {
+        let result = this.state.txNotificationToasts
+        delete result[id]
+        this.setState({txNotificationToasts : result})
+    }
+
+    createToast (id, interpolateParams) {
+        let result = this.state.txNotificationToasts
+        result[id] = interpolateParams
+        this.setState({txNotificationToasts : result})
+    }
+
+    renderRecentTxNotification () {
+        let toastsMarkup = []
+        for (let id in this.state.txNotificationToasts) {
+            toastsMarkup.push(<CommonToast
+                renderHeader={this.toastHeader.bind(this)}
+                renderBody={this.toastBody.bind(this)}
+                closeAction={this.closeAction.bind(this, id)}
+                autoHide={true}
+                delay={5000}
+            />)
+        }
+        return (
+            <>
+                {toastsMarkup}
+            </>
+        )
     }
 
     render () {

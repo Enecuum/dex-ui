@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 
-
+import CommonToast from "../elements/CommonToast";
 import IndicatorPanel from './IndicatorPanel';
 
 import img from '../../img/enex-logo.png';
@@ -16,7 +16,7 @@ class Navbar extends React.Component {
     constructor (props) {
         super(props)
     }
-    
+
     render () {
         let asideToggleClasses = (this.props.navOpened ? 'icon-Icon9' : 'icon-Icon8') + ' aside-toggle mr-5 mb-2'
 

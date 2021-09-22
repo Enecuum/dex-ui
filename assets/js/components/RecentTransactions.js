@@ -117,7 +117,10 @@ class RecentTransactions extends React.Component {
                                     .then(res => {
                                         let oldData = lsdp.get.note(res.hash)[res.hash]
                                         this.getFreshInterpolateParams(res.data, oldData.interpolateParams, res.hash)
-                                            .then(iParams => lsdp.write(res.hash, res.status, oldData.type, iParams))
+                                            .then(interpolateParams => {
+                                                this.props.createToast(res.hash, interpolateParams)
+                                                lsdp.write(res.hash, res.status, oldData.type, interpolateParams)
+                                            })
                                     })
                                     .catch(err => {/* pending transaction */})
                             )

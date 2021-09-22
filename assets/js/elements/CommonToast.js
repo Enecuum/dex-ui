@@ -5,12 +5,25 @@ import '../../css/common-toast.css';
 
 class CommonToast extends React.Component {
     constructor (props) {
-        super(props);        
-    };
+        super(props)
+        this.state = {
+            show : true
+        }
+    }
+
+    closeAction () {
+        this.setState({show : false})
+        this.props.closeAction()
+    }
 
     render() {
         return (
-              <Toast show="true" className="common-toast" onClose={this.props.closeAction.bind(this.props)}>
+              <Toast
+                  show={this.state.show}
+                  className="common-toast"
+                  onClose={this.closeAction.bind(this)}
+                  delay={(this.props.delay) ? this.props.delay : 3000}
+                  autohide={this.props.autoHide}>
                     <Toast.Header className="toast-header">
                         {this.props.renderHeader()}
                     </Toast.Header>
@@ -18,8 +31,8 @@ class CommonToast extends React.Component {
                         {this.props.renderBody()}
                     </Toast.Body>
               </Toast>
-        );
-    };     
+        )
+    }
 }
 
-export default CommonToast;
+export default CommonToast

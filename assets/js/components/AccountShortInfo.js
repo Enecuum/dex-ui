@@ -72,7 +72,9 @@ class AccountShortInfo extends React.Component {
                     </Card.Body>
                 </Card>
                 <div className="recent-txs-place mt-3 px-4">
-                    <RecentTransactions />
+                    <RecentTransactions
+                        createToast={this.props.createToast}
+                    />
                 </div>
             </>
         )
@@ -80,9 +82,12 @@ class AccountShortInfo extends React.Component {
 
     render() {
         return (
-            <CommonToast renderHeader={this.renderHeader.bind(this)}
-                         renderBody={this.renderBody.bind(this)}
-                         closeAction={this.props.openCloseAccountInfo.bind(this.props)}/>
+            <>
+                <CommonToast renderHeader={this.renderHeader.bind(this)}
+                             renderBody={this.renderBody.bind(this)}
+                             closeAction={this.props.openCloseAccountInfo.bind(this.props)}
+                />
+            </>
         )
     }
 }

@@ -24,10 +24,10 @@ class CommonToast extends React.Component {
                   onClose={this.closeAction.bind(this)}
                   delay={(this.props.delay) ? this.props.delay : 3000}
                   autohide={this.props.autoHide}>
-                    <Toast.Header className="toast-header">
+                    <Toast.Header className="toast-header" closeButton >
                         {this.props.renderHeader()}
                     </Toast.Header>
-                    <Toast.Body>
+                    <Toast.Body className={`${this.props.bodyClass}`}>
                         {this.props.renderBody()}
                     </Toast.Body>
               </Toast>

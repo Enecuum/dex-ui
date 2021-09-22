@@ -13,8 +13,13 @@ import lsdp from "../utils/localStorageDataProcessor";
 import pageDataPresets from "../../store/pageDataPresets";
 import BlockTheWindow from "./BlockTheWindow";
 import CommonToast from '../elements/CommonToast';
+import generateTxText from "../utils/txTextGenerator"
+import {withTranslation} from "react-i18next";
+import swapUtils from "../utils/swapUtils";
 
-const valueProcessor = new ValueProcessor();
+const txTypes = pageDataPresets.pending.allowedTxTypes
+
+const vp = new ValueProcessor();
 
 class IndicatorPanel extends React.Component {
     constructor (props) {
@@ -42,12 +47,12 @@ class IndicatorPanel extends React.Component {
                 <span className="spinner icon-Icon3"/>
             </div>
         )
-    };
+    }
 
     changeNet (name, url) {
         swapApi.updUrl(url);
         this.props.changeNetwork(name, url);
-    };
+    }
 
     renderWalletInfo () {
         return (
@@ -74,25 +79,104 @@ class IndicatorPanel extends React.Component {
                 {this.state.blockTheWindow && <BlockTheWindow />}
             </div>
         );
-    };
+    }
 
     openCloseAccountInfo () {
         this.setState({accountInfoVisibility : !this.state.accountInfoVisibility})
-    };
+    }
 
     updData () {
+        this.updStatuses()
         this.updNetwork()
         let tokenObj = utils.getBalanceObj(this.props.balances, this.props.mainToken)
         let tokenName = utils.getTokenObj(this.props.tokens, this.props.mainToken)
-        this.props.updCoinAmount(valueProcessor.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals))
+        this.props.updCoinAmount(vp.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals))
         this.props.updCoinName(tokenName.ticker)
-    };
+    }
+
+    getDecimals (asset_out) {
+        return new Promise(resolve => {
+            resolve(swapUtils.getTokenObj(this.props.tokens, asset_out).decimals)
+        })
+    }
+
+    getEIndexData (txHash) {
+        return new Promise(resolve => {
+            networkApi.eIndexByHash(txHash)
+                .then(res => {
+                    res.json()
+                        .then(arr => resolve(arr))
+                })
+        })
+    }
+
+    getObjByRecType (arrData, recType) {
+        for (let i = arrData.length - 1; i >= 0; i--)
+            if (arrData[i]['rectype'] === recType)
+                return arrData[i]
+    }
+
+    getFreshInterpolateParams (rawDataSrt, interpolateParams, txHash) {
+        return new Promise(resolve => {
+            let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
+            const allowedTypes = [txTypes.pool_swap, txTypes.farm_get_reward]
+            if (allowedTypes.indexOf(objData.type) !== -1) {
+                Promise.allSettled([
+                    this.getEIndexData(txHash),
+                    this.getDecimals(objData.parameters.asset_out)
+                ]).then(results => {
+                    let value
+                    if (objData.type === txTypes.pool_swap) {
+                        value = this.getObjByRecType(results[0].value, 'iswapout').value
+                        interpolateParams.value1 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
+                    } else if (objData.type === txTypes.farm_get_reward) {
+                        value = this.getObjByRecType(results[0].value, 'ifrew').value
+                        interpolateParams.value0 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
+                    }
+                    resolve(interpolateParams)
+                }).catch(() => resolve(interpolateParams))
+            } else {
+                resolve(interpolateParams)
+            }
+        })
+    }
+
+    updStatuses () {
+        return new Promise(resolve => {
+            let promises = [], history = lsdp.get.history()
+            for (let hash in history)
+                if (history[hash].status == 0)
+                    promises.push(swapApi.tx(hash))
+            Promise.allSettled(promises)
+                .then(results => {
+                    promises = []
+                    for (let result of results) {
+                        try {
+                            promises.push(
+                                result.value.json()
+                                    .then(res => {
+                                        let oldData = lsdp.get.note(res.hash)[res.hash]
+                                        this.getFreshInterpolateParams(res.data, oldData.interpolateParams, res.hash)
+                                            .then(interpolateParams => {
+                                                this.createToast(res.hash, res.status, oldData.type, interpolateParams)
+                                                lsdp.write(res.hash, res.status, oldData.type, interpolateParams)
+                                            })
+                                    })
+                                    .catch(err => {/* pending transaction */})
+                            )
+                        } catch (err) { /* pending transaction */ }
+                    }
+                    Promise.all(promises)
+                        .then(() => resolve())
+                })
+        })
+    }
 
     circleUpd () {
         return setInterval(() => {
             this.updData();
         }, 500);
-    };
+    }
 
     updMainTokenData (net) {
         let actualNativeToken = ENQWeb.Enq.token[net]
@@ -103,7 +187,7 @@ class IndicatorPanel extends React.Component {
                 extRequests.updNativeTokenData(actualNativeToken, fee)
             }).catch(err => console.log(err))
         }
-    };
+    }
 
     updNetwork () {
         extRequests.getProvider(true)
@@ -119,7 +203,7 @@ class IndicatorPanel extends React.Component {
             }
         },
         err => this.setState({blockTheWindow : true}))
-    };
+    }
 
     hidePendingIndicator () {
         this.setState({pendingVisibility : false})
@@ -188,13 +272,37 @@ class IndicatorPanel extends React.Component {
     }
 
     toastHeader () {
-        return(<></>)
+        return(<>
+            <div className="mr-auto">
+                {/*Transaction completed*/}
+            </div>
+        </>)
     }
 
-    toastBody () {
-        return(<>
-            test body
-        </>)
+    toastBody (hash, note) {
+        let txStatusIcon
+        if (note.status === 3)
+            txStatusIcon = 'icon-Icon5'
+        else if (note.status === 0)
+            txStatusIcon = 'spinner icon-Icon3'
+        else
+            txStatusIcon = 'icon-Icon7'
+        return (
+            <>
+                <p className={`d-flex justify-content-center px-4 my-0`}>
+                    <span className={`d-flex align-items-center notification-item mr-4 ${txStatusIcon}`} />
+                    <div className="d-flex text-white">
+                        { generateTxText(this.props.t, '', note.type, note.params) }
+                    </div>
+                </p>
+                <a className="d-flex justify-content-center view-in-explorer d-block hover-pointer my-1"
+                   href = { this.props.net.url + '#!/tx/' + hash }
+                   target = "_blank"
+                >
+                    {this.props.t('navbars.top.accountShortInfo.viewIn')} Explorer
+                </a>
+            </>
+        )
     }
 
     closeAction (id) {
@@ -207,22 +315,31 @@ class IndicatorPanel extends React.Component {
         this.setState({txNotificationToasts : result})
     }
 
-    createToast (id, interpolateParams) {
+    createToast (id, status, type, interpolateParams) {
         let result = this.state.txNotificationToasts
-        result[id] = interpolateParams
+        result[id] = {
+            status : status,
+            type : type,
+            params : interpolateParams
+        }
         this.setState({txNotificationToasts : result})
     }
 
     renderRecentTxNotification () {
         let toastsMarkup = []
         for (let id in this.state.txNotificationToasts) {
-            toastsMarkup.push(<CommonToast
-                renderHeader={this.toastHeader.bind(this)}
-                renderBody={this.toastBody.bind(this)}
-                closeAction={this.closeAction.bind(this, id)}
-                autoHide={true}
-                delay={5000}
-            />)
+            toastsMarkup.push(
+                <div className='tx-notification-toast'>
+                    <CommonToast
+                        renderHeader={this.toastHeader.bind(this)}
+                        renderBody={this.toastBody.bind(this, id, this.state.txNotificationToasts[id])}
+                        closeAction={this.closeAction.bind(this, id)}
+                        bodyClass='toast-body-no-padding'
+                        autoHide={true}
+                        delay={5000}
+                    />
+                </div>
+            )
         }
         return (
             <>
@@ -236,10 +353,13 @@ class IndicatorPanel extends React.Component {
             <>
                 {this.renderWalletInfo()}
             </>
-        );
-    };
+        )
+    }
 }
 
-const WIndicatorPanel = connect(mapStoreToProps(components.INDICATOR_PANEL), mapDispatchToProps(components.INDICATOR_PANEL))(IndicatorPanel);
+const WIndicatorPanel = connect(
+    mapStoreToProps(components.INDICATOR_PANEL),
+    mapDispatchToProps(components.INDICATOR_PANEL)
+)(withTranslation()(IndicatorPanel))
 
 export default WIndicatorPanel;

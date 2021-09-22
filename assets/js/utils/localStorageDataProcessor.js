@@ -74,7 +74,11 @@ class LocalStorageDataProcessor {
     }
 
     _removeHistory () {
-        Object.keys(this._getHistory()).forEach(hash => this._removeNote(hash))
+        let history = this._getHistory()
+        Object.keys(history).forEach(hash => {
+            if (history[hash].status != 0)
+                this._removeNote(hash)
+        })
     }
 }
 

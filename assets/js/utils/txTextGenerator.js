@@ -1,7 +1,12 @@
+import utils from './swapUtils'
+
 function editInterpolateParams (params) {
-    for (let param in params)
+    for (let param in params) {
         if (params[param] === undefined || params[param] === null)
             params[param] = ''
+        else
+            params[param] = utils.removeEndZeros(params[param])
+    }
     return params
 }
 

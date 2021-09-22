@@ -3,19 +3,9 @@ import {connect} from "react-redux"
 import {components, mapDispatchToProps, mapStoreToProps} from "../../store/storeToProps"
 import {withTranslation} from "react-i18next"
 
-import swapApi from "../requests/swapApi"
 import networkApi from "../requests/networkApi"
 import lsdp from "../utils/localStorageDataProcessor"
 import generateTxText from "../utils/txTextGenerator"
-import swapUtils from "../utils/swapUtils"
-import testFormulas from "../utils/testFormulas"
-
-import pageDataPresets from "../../store/pageDataPresets"
-const txTypes = pageDataPresets.pending.allowedTxTypes
-
-import ValueProcessor from "../utils/ValueProcessor"
-
-const vp = new ValueProcessor()
 
 
 class RecentTransactions extends React.Component {
@@ -54,84 +44,6 @@ class RecentTransactions extends React.Component {
         return resFilters
     }
 
-    getObjByRecType (arrData, recType) {
-        for (let i = arrData.length - 1; i >= 0; i--)
-            if (arrData[i]['rectype'] === recType)
-                return arrData[i]
-    }
-
-    getDecimals (asset_out) {
-        return new Promise(resolve => {
-            resolve(swapUtils.getTokenObj(this.props.tokens, asset_out).decimals)
-        })
-    }
-
-    getEIndexData (txHash) {
-        return new Promise(resolve => {
-            networkApi.eIndexByHash(txHash)
-                .then(res => {
-                    res.json()
-                        .then(arr => resolve(arr))
-                })
-        })
-    }
-
-    getFreshInterpolateParams (rawDataSrt, interpolateParams, txHash) {
-        return new Promise(resolve => {
-            let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
-            const allowedTypes = [txTypes.pool_swap, txTypes.farm_get_reward]
-            if (allowedTypes.indexOf(objData.type) !== -1) {
-                Promise.allSettled([
-                    this.getEIndexData(txHash),
-                    this.getDecimals(objData.parameters.asset_out)
-                ]).then(results => {
-                    let value
-                    if (objData.type === txTypes.pool_swap) {
-                        value = this.getObjByRecType(results[0].value, 'iswapout').value
-                        interpolateParams.value1 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
-                    } else if (objData.type === txTypes.farm_get_reward) {
-                        value = this.getObjByRecType(results[0].value, 'ifrew').value
-                        interpolateParams.value0 = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(value, results[1].value))
-                    }
-                    resolve(interpolateParams)
-                }).catch(() => resolve(interpolateParams))
-            } else {
-                resolve(interpolateParams)
-            }
-        })
-    }
-
-    updStatuses () {
-        return new Promise(resolve => {
-            let promises = [], history = lsdp.get.history()
-            for (let hash in history)
-                if (history[hash].status == 0)
-                    promises.push(swapApi.tx(hash))
-            Promise.allSettled(promises)
-                .then(results => {
-                    promises = []
-                    for (let result of results) {
-                        try {
-                            promises.push(
-                                result.value.json()
-                                    .then(res => {
-                                        let oldData = lsdp.get.note(res.hash)[res.hash]
-                                        this.getFreshInterpolateParams(res.data, oldData.interpolateParams, res.hash)
-                                            .then(interpolateParams => {
-                                                this.props.createToast(res.hash, interpolateParams)
-                                                lsdp.write(res.hash, res.status, oldData.type, interpolateParams)
-                                            })
-                                    })
-                                    .catch(err => {/* pending transaction */})
-                            )
-                        } catch (err) { /* pending transaction */ }
-                    }
-                    Promise.all(promises)
-                        .then(() => resolve())
-                })
-        })
-    }
-
     satisfiesTypeFilter (note) {
         if (this.filters.type === null)
             return true
@@ -163,20 +75,17 @@ class RecentTransactions extends React.Component {
 
     getListOfRecentTxs () {
         return new Promise(resolve => {
-            this.updStatuses()
-                .then(() => {
-                    let history = lsdp.get.history()
-                    for (let hash in history) {
-                        let mustBeDeleted = false
-                        if (!this.satisfiesTypeFilter(history[hash]))
-                            mustBeDeleted = true
-                        if (!this.satisfiesTimeFilter(history[hash]))
-                            mustBeDeleted = true
-                        if (mustBeDeleted)
-                            delete history[hash]
-                    }
-                    resolve(this.sortHistory(history))
-                })
+            let history = lsdp.get.history()
+            for (let hash in history) {
+                let mustBeDeleted = false
+                if (!this.satisfiesTypeFilter(history[hash]))
+                    mustBeDeleted = true
+                if (!this.satisfiesTimeFilter(history[hash]))
+                    mustBeDeleted = true
+                if (mustBeDeleted)
+                    delete history[hash]
+            }
+            resolve(this.sortHistory(history))
         })
     }
 

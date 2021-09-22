@@ -22,7 +22,7 @@ class History extends React.Component {
         this.filters = {
             type : {
                 allTypes : {
-                    text : "all types",
+                    text : "All types",
                     types : null,
                     active : true
                 },
@@ -123,7 +123,7 @@ class History extends React.Component {
                 <DropdownButton
                     variant="info"
                     title={activeItem.text}
-                    className="d-flex mr-3"
+                    className="d-flex"
                     size="sm"
                     key={filterIndex+""}
                 >
@@ -135,7 +135,7 @@ class History extends React.Component {
 
     renderModalBody () {
         return(<>
-            <div className="d-flex justify-content-begin mx-4 mb-4 history-filters">
+            <div className="d-flex justify-content-start mx-0 mb-4 history-filters">
                 {this.getFilters()}
             </div>
             <RecentTransactions filters={{

@@ -1,5 +1,4 @@
 .history-filters button {
-    border-radius: 50px;
     background-color: var(--bg-color-1);
 }
 
@@ -24,4 +23,8 @@
 .history-filters .dropdown-menu .active {
     background-color: transparent;
     color: white;
+}
+
+.history-filters .dropdown:first-child {
+    margin-right: 10px;
 }

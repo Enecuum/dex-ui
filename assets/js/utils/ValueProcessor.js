@@ -108,23 +108,35 @@ class ValueProcessor {
                 decimals : op0.decimals + op1.decimals,
             };
         } else if (operation == this.operations.DIV) {
-            op0.decimals = 0;
             if (op1.value == 0n) {
-                console.log('zero division!');
-                return {};
+                console.log('zero division!')
+                return {}
             }
-            let signsAfterComma = 15;
-            let addition = String(op1.value).length - String(op0.value).length + signsAfterComma;
-            if (addition < 0)
-                addition = signsAfterComma;
-            op0.value *= BigInt(Math.pow(10, addition));
-            op0.decimals += addition;
+
+            const defDecimals = 15
+            // step 1 - control length of number
+            let op0l = String(op0.value).length, op1l = String(op1.value).length
+            if (op0l < op1l) {
+                let diff = op1l - op0l
+                op0.decimals += diff
+                op0.value *= BigInt(Math.pow(10, diff))
+            }
+            // step 2 - control decimals
+            let maxDecimals = defDecimals
+            if (op0.decimals != 0 || op1.decimals != 0) {
+                maxDecimals = Math.max(op0.decimals, op1.decimals)
+                let diff = maxDecimals - (op0.decimals - op1.decimals)
+                op0.value *= BigInt(Math.pow(10, diff))
+            } else {
+                op0.value *= BigInt(Math.pow(10, maxDecimals))
+            }
+            // step 3 - count
             return {
                 value    : op0.value / op1.value,
-                decimals : op0.decimals,
-            };
+                decimals : maxDecimals,
+            }
         }
-    };
+    }
 }
 
 export default ValueProcessor;

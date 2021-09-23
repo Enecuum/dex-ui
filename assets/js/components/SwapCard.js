@@ -598,7 +598,7 @@ class SwapCard extends React.Component {
     };
 
     showExchangeRate (firstToken) {
-        return utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]);
+        return utils.removeEndZeros(utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]))
     };
 
     showPercents (fixedLength=1) {

@@ -27,7 +27,7 @@ class IndicatorPanel extends React.Component {
         this.updData();
         this.intervalDescriptors = []
         this.intervalDescriptors.push(this.circleUpd())
-        this.intervalDescriptors.push(this.updPendingSpinner())
+        // this.intervalDescriptors.push(this.updPendingSpinner())
         this.updStatusesPermition = true
         this.state = {
             txNotificationToasts : {},
@@ -147,11 +147,11 @@ class IndicatorPanel extends React.Component {
 
         this.updStatusesPermition = false
         return new Promise(resolve => {
-            let promises = [], history = lsdp.get.history()
-            for (let hash in history) {
+            let promises = [], history = lsdp.get.history(), pendingIndicator = false
+            for (let hash in history)
                 if (history[hash].status == 0)
                     promises.push(swapApi.tx(hash))
-            }
+
             if (promises.length === 0) {
                 this.updStatusesPermition = true
                 resolve()
@@ -172,12 +172,16 @@ class IndicatorPanel extends React.Component {
                                                 lsdp.write(res.hash, res.status, oldData.type, interpolateParams)
                                             })
                                     })
-                                    .catch(err => {/* pending transaction */})
+                                    .catch(err => pendingIndicator = true)
                             )
-                        } catch (err) { /* pending transaction */ }
+                        } catch (err) { pendingIndicator = true }
                     }
                     Promise.all(promises)
                         .then(() => {
+                            if (pendingIndicator)
+                                this.showPendingIndicator()
+                            else
+                                this.hidePendingIndicator()
                             this.updStatusesPermition = true
                             resolve()
                         })
@@ -226,63 +230,63 @@ class IndicatorPanel extends React.Component {
         this.setState({pendingVisibility : true})
     }
 
-    controlPendingSpinnerVisibility (pendingArray) {
-        let promises = []
-        for (let pendingRequest of pendingArray)
-            promises.push(swapApi.tx(pendingRequest.hash))
+    // controlPendingSpinnerVisibility (pendingArray) {
+    //     let promises = []
+    //     for (let pendingRequest of pendingArray)
+    //         promises.push(swapApi.tx(pendingRequest.hash))
+    //
+    //     Promise.allSettled(promises)
+    //         .then(results => {
+    //             let allDone = true
+    //             promises = []
+    //             for (let res of results) {
+    //                 promises.push(
+    //                     res.value.json()
+    //                         .then(res => {
+    //                             if (res.status !== 3 && res.status !== 2)
+    //                                 allDone = false
+    //                         })
+    //                         .catch(() => allDone = false)
+    //                 );
+    //             }
+    //             Promise.all(promises)
+    //                 .then(() => {
+    //                     if (allDone)
+    //                         this.hidePendingIndicator()
+    //                     else
+    //                         this.showPendingIndicator()
+    //                 })
+    //         })
+    // }
 
-        Promise.allSettled(promises)
-            .then(results => {
-                let allDone = true
-                promises = []
-                for (let res of results) {
-                    promises.push(
-                        res.value.json()
-                            .then(res => {
-                                if (res.status !== 3 && res.status !== 2)
-                                    allDone = false
-                            })
-                            .catch(() => allDone = false)
-                    );
-                }
-                Promise.all(promises)
-                    .then(() => {
-                        if (allDone)
-                            this.hidePendingIndicator()
-                        else
-                            this.showPendingIndicator()
-                    })
-            })
-    }
+    // filterEnexTxs (pendingArray) {
+    //     for (let i in pendingArray) {
+    //         let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data)
+    //         if (Object.keys(pageDataPresets.pending.allowedTxTypes).indexOf(data.type) === -1)
+    //             pendingArray.splice(i, 1)
+    //     }
+    //     return pendingArray
+    // }
 
-    filterEnexTxs (pendingArray) {
-        for (let i in pendingArray) {
-            let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data)
-            if (Object.keys(pageDataPresets.pending.allowedTxTypes).indexOf(data.type) === -1)
-                pendingArray.splice(i, 1)
-        }
-        return pendingArray
-    }
-
-    updPendingSpinner () {
-        return setInterval(() => {
-            if (this.props.pubkey) {
-                swapApi.pendingTxAccount(this.props.pubkey)
-                    .then(res => {
-                        if (!res.lock)
-                            res.json()
-                                .then(pendingArray => {
-                                    if (Array.isArray(pendingArray) && pendingArray.length !== 0) {
-                                        pendingArray = this.filterEnexTxs(pendingArray)
-                                        this.controlPendingSpinnerVisibility(pendingArray)
-                                    } else {
-                                        this.hidePendingIndicator()
-                                    }
-                                })
-                    })
-            }
-        }, 1000)
-    }
+    // updPendingSpinner () {
+    //     return setInterval(() => {
+    //         if (this.props.pubkey) {
+    //             swapApi.pendingTxAccount(this.props.pubkey)
+    //                 .then(res => {
+    //                     if (!res.lock)
+    //                         res.json()
+    //                             .then(pendingArray => {
+    //                                 if (Array.isArray(pendingArray) && pendingArray.length !== 0) {
+    //                                     pendingArray = this.filterEnexTxs(pendingArray)
+    //                                     this.controlPendingSpinnerVisibility(pendingArray)
+    //                                 } else {
+    //                                     this.hidePendingIndicator()
+    //                                 }
+    //                             })
+    //                 })
+    //         }
+    //     }, 1000)
+    // }
 
     toastHeader () {
         return(<>

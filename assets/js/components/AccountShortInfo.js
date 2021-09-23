@@ -72,9 +72,7 @@ class AccountShortInfo extends React.Component {
                     </Card.Body>
                 </Card>
                 <div className="recent-txs-place mt-3 px-4">
-                    <RecentTransactions
-                        createToast={this.props.createToast}
-                    />
+                    <RecentTransactions />
                 </div>
             </>
         )

@@ -28,13 +28,14 @@ class IndicatorPanel extends React.Component {
         this.intervalDescriptors = []
         this.intervalDescriptors.push(this.circleUpd())
         this.intervalDescriptors.push(this.updPendingSpinner())
+        this.updStatusesPermition = true
         this.state = {
             txNotificationToasts : {},
             accountInfoVisibility : false,
             pendingVisibility : false,
             blockTheWindow : false
-        };
-    };
+        }
+    }
 
     componentWillUnmount() {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
@@ -72,7 +73,6 @@ class IndicatorPanel extends React.Component {
                 <div id="toastWrapper" className="position-absolute pt-4">
                     {this.state.accountInfoVisibility && <AccountShortInfo
                         openCloseAccountInfo={this.openCloseAccountInfo.bind(this)}
-                        createToast={this.createToast.bind(this)}
                     />}
                     {this.renderRecentTxNotification()}
                 </div>
@@ -142,11 +142,21 @@ class IndicatorPanel extends React.Component {
     }
 
     updStatuses () {
+        if (this.updStatusesPermition === false)
+            return new Promise(resolve => resolve())
+
+        this.updStatusesPermition = false
         return new Promise(resolve => {
             let promises = [], history = lsdp.get.history()
-            for (let hash in history)
+            for (let hash in history) {
                 if (history[hash].status == 0)
                     promises.push(swapApi.tx(hash))
+            }
+            if (promises.length === 0) {
+                this.updStatusesPermition = true
+                resolve()
+                return
+            }
             Promise.allSettled(promises)
                 .then(results => {
                     promises = []
@@ -167,7 +177,10 @@ class IndicatorPanel extends React.Component {
                         } catch (err) { /* pending transaction */ }
                     }
                     Promise.all(promises)
-                        .then(() => resolve())
+                        .then(() => {
+                            this.updStatusesPermition = true
+                            resolve()
+                        })
                 })
         })
     }
@@ -288,7 +301,7 @@ class IndicatorPanel extends React.Component {
         else
             txStatusIcon = 'icon-Icon7'
         return (
-            <>
+            <div>
                 <p className={`d-flex justify-content-center px-4 my-0`}>
                     <span className={`d-flex align-items-center notification-item mr-4 ${txStatusIcon}`} />
                     <div className="d-flex text-white">
@@ -301,7 +314,7 @@ class IndicatorPanel extends React.Component {
                 >
                     {this.props.t('navbars.top.accountShortInfo.viewIn')} Explorer
                 </a>
-            </>
+            </div>
         )
     }
 
@@ -322,9 +335,9 @@ class IndicatorPanel extends React.Component {
             type : type,
             params : interpolateParams
         }
-        setTimeout(() => {
-            this.closeAction(id)
-        }, 5000)
+        // setTimeout(() => {
+        //     this.closeAction(id)
+        // }, 5000)
         this.setState({txNotificationToasts : result})
     }
 
@@ -332,14 +345,14 @@ class IndicatorPanel extends React.Component {
         let toastsMarkup = []
         for (let id in this.state.txNotificationToasts) {
             toastsMarkup.push(
-                <div className='tx-notification-toast'>
+                <div className='tx-notification-toast' key={id}>
                     <CommonToast
                         renderHeader={this.toastHeader.bind(this)}
                         renderBody={this.toastBody.bind(this, id, this.state.txNotificationToasts[id])}
                         closeAction={this.closeAction.bind(this, id)}
                         bodyClass='toast-body-no-padding'
-                        // autoHide={true}
-                        // delay={5000}
+                        autoHide={true}
+                        delay={5000}
                     />
                 </div>
             )

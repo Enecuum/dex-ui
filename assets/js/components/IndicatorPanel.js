@@ -322,6 +322,9 @@ class IndicatorPanel extends React.Component {
             type : type,
             params : interpolateParams
         }
+        setTimeout(() => {
+            this.closeAction(id)
+        }, 5000)
         this.setState({txNotificationToasts : result})
     }
 
@@ -335,8 +338,8 @@ class IndicatorPanel extends React.Component {
                         renderBody={this.toastBody.bind(this, id, this.state.txNotificationToasts[id])}
                         closeAction={this.closeAction.bind(this, id)}
                         bodyClass='toast-body-no-padding'
-                        autoHide={true}
-                        delay={5000}
+                        // autoHide={true}
+                        // delay={5000}
                     />
                 </div>
             )

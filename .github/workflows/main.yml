@@ -57,7 +57,7 @@ jobs:
         run: |
           ssh devapp "docker pull $IMG_TAG"
           ssh devapp "cd $W_DIR; git fetch --tags -f; git checkout $REPOS_TAG -f"
-          ssh devapp "bash -ic 'cd $W_DIR; npm i; npm run cls; npm run prod -- $IMG_TAG'"
+          ssh devapp "bash -ic 'cd $W_DIR; npm i; npm run clear; npm run prod -- $IMG_TAG'"
         env:
           IMG_TAG: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }}
           W_DIR: ${{ github.event.repository.name }}

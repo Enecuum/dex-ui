@@ -64,26 +64,26 @@ function ltDestruction (tokens, pair, tokenTrio, chField) {
 function countLTValue (pair, uiPair, mode, tokens) {
     // create pool case
     if (!utils.pairExists(pair)) {
-        let res = vp.mul(uiPair.field0.value, uiPair.field1.value);
+        let res = vp.mul(uiPair.field0.value, uiPair.field1.value)
         if (res.value === undefined)
             return {};
-        return res;//Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals))));
+        return vp.valueToBigInt(Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals)))), res.decimals)
     }
     // exchange mode has no lt-calculations
     // https://github.com/Enecuum/docs/issues/6
     if (mode === 'exchange') {
         return 0;
     } else if (mode === 'liquidity') {
-        let tObj0 = {value : pair.token_0.volume, decimals : utils.getTokenObj(tokens, pair.token_0.hash).decimals};
-        let tObj1 = {value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals};
-        let required_1 = vp.div(vp.mul(tObj0, uiPair.field1.value), tObj1);
-        let res = vp.mul(required_1, uiPair.field1.value);
+        let tObj0 = {value : pair.token_0.volume, decimals : utils.getTokenObj(tokens, pair.token_0.hash).decimals}
+        let tObj1 = {value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals}
+        let required_1 = vp.div(vp.mul(tObj0, uiPair.field1.value), tObj1)
+        let res = vp.mul(required_1, uiPair.field1.value)
         if (res.value === undefined)
             return {};
-        return res; //Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals))));
+        return vp.valueToBigInt(Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals)))), res.decimals)
     }
     // dev warning
-    return 'wrong mode';
+    return 'wrong mode'
 }
 
 global.getAddLiquidityPrice = getAddLiquidityPrice

@@ -4,10 +4,10 @@
   "description": "swap service",
   "main": "server.js",
   "scripts": {
-    "make"  : "bash production.bash --build",
-    "clear" : "bash production.bash --clear",
-    "prod"  : "bash production.bash --run",
-    "dev"   : "pm2 start ecosystem.config.js --only hot_dev"
+    "make": "bash production.bash --build",
+    "clear": "bash production.bash --clear",
+    "prod": "bash production.bash --run",
+    "dev": "pm2 start ecosystem.config.js --only hot_dev"
   },
   "repository": {
     "type": "git",

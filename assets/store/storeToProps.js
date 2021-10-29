@@ -61,7 +61,8 @@ function mapStoreToProps(component) {
                     pairs                      : state.root.pairs,
                     balances                   : state.root.balances,
                     navOpened                  : state.root.navOpened,
-                    tokens                     : state.root.tokens
+                    tokens                     : state.root.tokens,
+                    nativeToken                : state.root.nativeToken
                 };
             };
         case components.SWITCH:
@@ -134,7 +135,8 @@ function mapStoreToProps(component) {
                     balances          : state.root.balances,
                     connectionStatus  : state.root.connectionStatus,
                     removeLiquidity   : state.swapCard.removeLiquidity,
-                    liquidityRemove   : state.swapCard.liquidityRemove
+                    liquidityRemove   : state.swapCard.liquidityRemove,
+                    nativeToken       : state.root.nativeToken
                 };
             };
         case components.WAITING_CONFIRMATION:
@@ -332,7 +334,6 @@ function mapDispatchToProps(component) {
                     ...swapCardCreator,
                     updCurrentTxHash : rootCreator.updCurrentTxHash,
                     assignTokenValue : swapCardCreator.assignTokenValue,
-
                 }, dispatch);
             };
         case components.SWITCH:

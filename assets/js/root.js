@@ -45,6 +45,7 @@ class Root extends React.Component {
         this.intervalDescriptors = []
         this.intervalDescriptors.push(this.intervalUpdDexData())
         this.intervalDescriptors.push(this.circleBalanceUpd())
+        this.updNativeTokenData()
         this.setPath()
         window.addEventListener('hashchange', () => {
             this.setPath()
@@ -107,6 +108,15 @@ class Root extends React.Component {
         this.updBalances(pubkey)
         this.updPools()
         this.updTokens()
+    }
+
+    updNativeTokenData () {
+        swapApi.getNativeTokenData()
+        .then(res => {
+            if (!res.lock)
+                res.json()
+                .then(res => this.props.updNativeToken(res.native_token))
+        })
     }
 
     intervalUpdDexData () {

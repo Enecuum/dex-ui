@@ -53,6 +53,9 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.UPD_MAIN_TOKEN_DATA:
             return rootStore(state, { mainToken: action.hash , mainTokenFee : action.fee })
 
+        case actions.UPD_NATIVE_TOKEN_DATA:
+            return rootStore(state, { nativeToken: action.value })
+
         default:
             return state;
     }

@@ -95,6 +95,13 @@ const actionCreators = {
             hash : hash,
             fee  : fee
         }
+    },
+
+    updNativeToken (data) {
+        return {
+            type : actions.UPD_NATIVE_TOKEN_DATA,
+            value : data
+        }
     }
 };
 

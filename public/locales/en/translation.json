@@ -109,6 +109,7 @@
             "toBeReceived" : "To be received",
             "rates" : "Rates",
             "shareOfPool" : "Share of pool",
+            "feeData" : "Fee of transaction",
             "confirm" : "Confirm Supply",
             "waitingForConfirmation" : "Waiting for confirmation",
             "confirmInWallet" : "Confirm this transaction in your wallet",

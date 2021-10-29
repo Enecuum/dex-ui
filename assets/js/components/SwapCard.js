@@ -257,10 +257,12 @@ class SwapCard extends React.Component {
                                     fieldData : modeStruct.field1
                                 })}
                             </div>
-                            <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
-                                {/* <div>Coming soon</div>
-                                <div>1%</div> */}
-                            </div>
+                            { mode === 'exchange' && this.activePair !== undefined &&
+                                <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
+                                    <div className='pr-4'>Price</div>
+                                    <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
+                                </div>
+                            }
                             {/* ---------------------------------------- add-liquidity: exchange rate ---------------------------------------- */}
                             { !this.props.liquidityMain && mode === 'liquidity' &&
                                 <>
@@ -708,14 +710,14 @@ class SwapCard extends React.Component {
 
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getSwapPrice(volume0, volume1, amountIn);
+                return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
             else
-                return testFormulas.getSwapPrice(volume1, volume0, amountIn);
+                return testFormulas.getSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
         } else {
             if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn);
+                return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn)
             else
-                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn);
+                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn)
         }
     };
 

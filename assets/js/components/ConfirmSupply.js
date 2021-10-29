@@ -118,6 +118,14 @@ class ConfirmSupply extends React.Component {
                     </div>
                     <div className='d-flex align-items-start justify-content-between'>
                         <div>
+                            {t('trade.confirmCard.feeData')}
+                        </div>
+                        <div>
+                            {valueProcessor.usCommasBigIntDecimals(this.props.nativeToken.fee_value, this.props.nativeToken.decimals)} {this.props.nativeToken.ticker}
+                        </div>
+                    </div>
+                    <div className='d-flex align-items-start justify-content-between'>
+                        <div>
                             {t('trade.confirmCard.shareOfPool')}
                         </div>
                         <div>

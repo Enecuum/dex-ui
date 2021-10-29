@@ -108,6 +108,7 @@
             "toBeReceived" : "Будет получено",
             "rates" : "Курс",
             "shareOfPool" : "Доля в пуле",
+            "feeData" : "Комиссия транзакции",
             "confirm" : "Подтверждение",
             "waitingForConfirmation" : "Ожидание подтверждения",
             "confirmInWallet" : "Подтвердите вашу транзакцию в кошельке",

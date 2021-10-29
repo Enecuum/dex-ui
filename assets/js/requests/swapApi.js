@@ -30,6 +30,13 @@ class SwapApi {
             }
         );
     };
+    getNativeTokenData () {
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/network_info`,
+            {
+                method : 'GET'
+            }
+        );
+    }
     getTokenInfo (hash) {
         return trafficController.simpleRequest(`${this.url}api/${config.api_version}/token_info?hash=${hash}`,
             {
@@ -58,13 +65,6 @@ class SwapApi {
             }
         );
     };
-    // getLanguage (language) {    // to the host
-    //     return trafficController.simpleRequest(`${this.hostUrl}getLanguage/${language}`,
-    //         {
-    //             method : 'GET'
-    //         }
-    //     );
-    // };
     getEnqLib () {              // to the host
         return trafficController.simpleRequest(`${this.hostUrl}enqlib`,
             {

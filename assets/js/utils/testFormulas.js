@@ -8,19 +8,22 @@ function getAddLiquidityPrice (input_0, input_1, coinValue) {
     return vp.div(mul, input_1);
 }
 
-function getSwapPrice (volume0, volume1, amountIn) { // handle only custom BigInt
-    if (amountIn == 0) // use 'if' instead of try/catch in order to check empty string
-        return 0;
-    let mul = vp.mul(volume0, volume1);
-    let add = vp.add(volume0, amountIn);
-    let div = vp.div(mul    , add);
-    return vp.sub(volume1, div);
+function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
+    if (amountIn == 0)
+        return 0
+
+    let one = vp.valueToBigInt(1, pool_fee.decimals)
+    let mul = vp.mul(volume0, volume1)
+    let add = vp.add(volume0, vp.mul(amountIn, vp.sub(one, pool_fee)))
+    let div = vp.div(mul, add)
+
+    return vp.sub(volume1, div)
 }
 
 /**
  * 
  * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
- * @param {object} tokenTrio - tree objects {t0, t1, lt} with internal structure like {value, decimals} 
+ * @param {object} tokenTrio - three objects {t0, t1, lt} with internal structure like {value, decimals}
  * @param {string} chField - name of changed field
  * @param {object} tokens - list of tokens from redux state
  * @returns {object} - tokenTrio

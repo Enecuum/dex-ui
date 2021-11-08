@@ -81,11 +81,11 @@ class ValueProcessor {
 
         let decimalsAddition = Math.abs(op1.decimals - op0.decimals);
         if (op0.decimals > op1.decimals) {
-            op1.decimals += decimalsAddition;
-            op1.value *= BigInt(Math.pow(10, decimalsAddition));
+            op1.decimals += decimalsAddition
+            op1.value *= BigInt('1'+ '0'.repeat(decimalsAddition))
         } else {
-            op0.decimals += decimalsAddition;
-            op0.value *= BigInt(Math.pow(10, decimalsAddition));
+            op0.decimals += decimalsAddition
+            op0.value *= BigInt('1'+ '0'.repeat(decimalsAddition))
         }
         let res = this.mathOperation(operation, op0, op1);
 
@@ -119,16 +119,16 @@ class ValueProcessor {
             if (op0l < op1l) {
                 let diff = op1l - op0l
                 op0.decimals += diff
-                op0.value *= BigInt(Math.pow(10, diff))
+                op0.value *= BigInt('1'+ '0'.repeat(diff))
             }
             // step 2 - control decimals
             let maxDecimals = defDecimals
             if (op0.decimals != 0 || op1.decimals != 0) {
                 maxDecimals = Math.max(op0.decimals, op1.decimals)
                 let diff = maxDecimals - (op0.decimals - op1.decimals)
-                op0.value *= BigInt(Math.pow(10, diff))
+                op0.value *=BigInt('1'+ '0'.repeat(diff))
             } else {
-                op0.value *= BigInt(Math.pow(10, maxDecimals))
+                op0.value *= BigInt('1'+ '0'.repeat(maxDecimals))
             }
             // step 3 - count
             return {

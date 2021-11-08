@@ -34,6 +34,10 @@
         }
     },
     "trade" : {
+        "swapAddon" : {
+            "priceImpact" : "Price impact",
+            "providerFee" : "Liquidity provider fee"
+        },
         "lpTokensWalletInfo" : {
             "header" : "LP tokens in your wallet"
         },

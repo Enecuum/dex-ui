@@ -1,13 +1,13 @@
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 
-import rootCreator from './actionCreators/root';
-import swapCardCreator from './actionCreators/swapCard';
-import tokenCardCreator from './actionCreators/tokenCard';
-import asideCreator from './actionCreators/aside';
-import indicatorPanelCreator from './actionCreators/indicatorPanel';
-import etmCreator from './actionCreators/etm';
-import farmsCreator from './actionCreators/farms';
-import dropsCreator from './actionCreators/drops';
+import rootCreator from './actionCreators/root'
+import swapCardCreator from './actionCreators/swapCard'
+import tokenCardCreator from './actionCreators/tokenCard'
+import asideCreator from './actionCreators/aside'
+import indicatorPanelCreator from './actionCreators/indicatorPanel'
+import etmCreator from './actionCreators/etm'
+import farmsCreator from './actionCreators/farms'
+import dropsCreator from './actionCreators/drops'
 
 const components = {
     ROOT                             : 0x0,
@@ -30,8 +30,9 @@ const components = {
     RECENT_TXS_LIST                  : 0x11,
     WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12,
     FARMS                            : 0x13,
-    DROPS                            : 0x14
-};
+    DROPS                            : 0x14,
+    SWAP_ADDON                       : 0x15
+}
 
 function mapStoreToProps(component) {
     switch (component) {
@@ -45,7 +46,7 @@ function mapStoreToProps(component) {
                     removeLiquidity : state.swapCard.removeLiquidity,
                     topPairs        : state.topPairs
                 }
-            };
+            }
         case components.SWAP_CARD:
             return function (state) {
                 return {
@@ -63,15 +64,15 @@ function mapStoreToProps(component) {
                     navOpened                  : state.root.navOpened,
                     tokens                     : state.root.tokens,
                     nativeToken                : state.root.nativeToken
-                };
-            };
+                }
+            }
         case components.SWITCH:
             return function (state) {
                 return {
                     pubkey      : state.root.pubkey,
                     menuItem    : state.root.menuItem
-                };
-            };
+                }
+            }
         case components.TOKEN_CARD:
             return function (state) {
                 return {
@@ -81,8 +82,8 @@ function mapStoreToProps(component) {
                     menuItem    : state.root.menuItem,
                     tokens      : state.root.tokens,
                     balances    : state.root.balances,
-                };
-            };
+                }
+            }
         case components.ASIDE:
             return function (state) {
                 return {
@@ -92,22 +93,22 @@ function mapStoreToProps(component) {
                     navOpened       : state.root.navOpened,
                     siteLocales     : state.root.siteLocales,
                     langTitles      : state.root.langTitles
-                };
-            };
+                }
+            }
 
         case components.NAVBAR:
             return function (state) {
                 return {
                     navOpened           : state.root.navOpened,
                     connectionStatus    : state.root.connectionStatus
-                };
-            };  
+                }
+            }  
         case components.CONNECT:
             return function (state) {
                 return {
                     connectionStatus : state.root.connectionStatus
-                };
-            };
+                }
+            }
         case components.INDICATOR_PANEL:
             return function (state) {
                 return {
@@ -121,8 +122,8 @@ function mapStoreToProps(component) {
                     mainToken       : state.root.mainToken,
                     mainTokenFee    : state.root.mainTokenFee,
                     connectionStatus: state.root.connectionStatus,
-                };
-            };
+                }
+            }
         case components.CONFIRM_SUPPLY:
             return function (state) {
                 return {
@@ -137,8 +138,8 @@ function mapStoreToProps(component) {
                     removeLiquidity   : state.swapCard.removeLiquidity,
                     liquidityRemove   : state.swapCard.liquidityRemove,
                     nativeToken       : state.root.nativeToken
-                };
-            };
+                }
+            }
         case components.WAITING_CONFIRMATION:
             return function (state) {
                 return {
@@ -151,15 +152,15 @@ function mapStoreToProps(component) {
                     net             : state.root.net,
                     liquidityRemove : state.swapCard.liquidityRemove,
                     currentTxHash   : state.root.currentTxHash
-                };
-            };
+                }
+            }
         case components.WAITING_ISSUE_TOKEN_CONFIRMATION:
             return function (state) {
                 return {
                     ...state.swapCard.waitingConfirmation,
                     net             : state.root.net
-                };
-            };            
+                }
+            }            
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (state) {
                 return {
@@ -170,8 +171,8 @@ function mapStoreToProps(component) {
                     pairs            : state.root.pairs,
                     tokens           : state.root.tokens,
                     balances         : state.root.balances,
-                };
-            };
+                }
+            }
         case components.LP_WALLET_INFO:
             return function (state) {
                 return {
@@ -184,8 +185,8 @@ function mapStoreToProps(component) {
                     tokens          : state.root.tokens,
                     balances        : state.root.balances,
                     liquidityMain   : state.swapCard.liquidityMain
-                };
-            };
+                }
+            }
         case components.TOP_PAIRS:
             return function (state) {
                 return {
@@ -194,8 +195,8 @@ function mapStoreToProps(component) {
                     pairs             : state.root.pairs,
                     balances          : state.root.balances,
                     tokens            : state.root.tokens
-                };
-            };
+                }
+            }
         case components.ETM:
             return function (state) {
                 return {
@@ -230,7 +231,7 @@ function mapStoreToProps(component) {
                     showFormErrMessages  : state.etm.showFormErrMessages,
                     possibleToIssueToken : state.etm.possibleToIssueToken
                 }
-            };
+            }
         case components.CONFIRM_ISSUE_TOKEN:
             return function (state) {
                 return {
@@ -242,15 +243,15 @@ function mapStoreToProps(component) {
                     tokenBigIntData      : state.etm.tokenBigIntData,
                     dataValid            : state.etm.dataValid,
                     possibleToIssueToken : state.etm.possibleToIssueToken
-                };
-            };
+                }
+            }
         case components.ACCOUNT_SHORT_INFO:
             return function (state) {
                 return {
                     pubkey                : state.root.pubkey,
                     net                   : state.root.net,
                 }
-            };
+            }
         case components.RECENT_TXS_LIST:
             return function (state) {
                 return {
@@ -284,8 +285,8 @@ function mapStoreToProps(component) {
                         msgData            : state.farms.stakeData.msgData,
                         stakeTokenAmount   : state.farms.stakeData.stakeTokenAmount
                     }
-                };
-            };
+                }
+            }
         case components.DROPS:
             return function (state) {
                 return {
@@ -309,11 +310,18 @@ function mapStoreToProps(component) {
                         msgData            : state.drops.stakeData.msgData,
                         stakeTokenAmount   : state.drops.stakeData.stakeTokenAmount
                     }
-                };
-            };             
+                }
+            }
+        case components.SWAP_ADDON:
+            return function (state) {
+                return {
+                    pairs       : state.root.pairs,
+                    exchange    : state.swapCard.exchange,
+                    nativeToken : state.root.nativeToken
+                }
+            }
         default:
-            return undefined;
-
+            return undefined
     }
 }
 
@@ -326,30 +334,30 @@ function mapDispatchToProps(component) {
                     assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
                     changeMenuItem  : rootCreator.changeMenuItem,
                     assignTokenValue: swapCardCreator.assignTokenValue
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.SWAP_CARD:
             return function (dispatch) {
                 return bindActionCreators({
                     ...swapCardCreator,
                     updCurrentTxHash : rootCreator.updCurrentTxHash,
                     assignTokenValue : swapCardCreator.assignTokenValue,
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.SWITCH:
             return function (dispatch) {
                 return {
                     changeMenuItem: bindActionCreators(rootCreator.changeMenuItem, dispatch)
-                };
-            };
+                }
+            }
         case components.TOKEN_CARD:
             return function (dispatch) {
                 return bindActionCreators({
                     ...tokenCardCreator,
                     assignTokenValue    : swapCardCreator.assignTokenValue,
                     closeTokenList      : swapCardCreator.closeTokenList
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.ASIDE:
             return function (dispatch) {
                 return bindActionCreators({
@@ -358,28 +366,28 @@ function mapDispatchToProps(component) {
                     toggleAside     : rootCreator.toggleAside,
                     updActiveLocale : rootCreator.updActiveLocale,
                     changeLanguage  : rootCreator.changeLanguage
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.WALLET_LIST:
             return function (dispatch) {
                 return bindActionCreators({
                     setConStatus : rootCreator.setConStatus,
                     assignPubkey : rootCreator.assignPubkey
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.NAVBAR:
             return function (dispatch) {
                 return bindActionCreators({
                     toggleAside     : rootCreator.toggleAside
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.CONNECT:
             return function (dispatch) {
                 return bindActionCreators({
                     setConStatus : rootCreator.setConStatus,
                     assignPubkey : rootCreator.assignPubkey
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.INDICATOR_PANEL:
             return function (dispatch) {
                 return bindActionCreators({
@@ -387,20 +395,20 @@ function mapDispatchToProps(component) {
                     assignPubkey    : rootCreator.assignPubkey,
                     changeNetwork   : rootCreator.changeNetwork,
                     updMainTokenData: rootCreator.updMainTokenData
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.CONFIRM_SUPPLY:
             return function (dispatch) {
                 return bindActionCreators({
                     updCurrentTxHash        : rootCreator.updCurrentTxHash
-                }, dispatch); 
-            };
+                }, dispatch) 
+            }
         case components.WAITING_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
                     changeCreatePoolState       : swapCardCreator.changeCreatePoolState
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.WAITING_ISSUE_TOKEN_CONFIRMATION:
             return function (dispatch) {
                 return bindActionCreators({
@@ -408,8 +416,8 @@ function mapDispatchToProps(component) {
                     openWaitingConfirmation     : etmCreator.openWaitingConfirmation,
                     changeWaitingStateType      : etmCreator.changeWaitingStateType,
                     resetStore                  : etmCreator.resetStore
-                }, dispatch);
-            };            
+                }, dispatch)
+            }            
         case components.LIQUIDITY_TOKEN_ZONE:
             return function (dispatch) {
                 return bindActionCreators({
@@ -417,8 +425,8 @@ function mapDispatchToProps(component) {
                     assignTokenValue                : swapCardCreator.assignTokenValue,
                     changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility,
                     assignCoinValue                 : swapCardCreator.assignCoinValue 
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.ETM:
             return function (dispatch) {
                 return bindActionCreators({
@@ -432,8 +440,8 @@ function mapDispatchToProps(component) {
                     updateMainTokenTicker          : etmCreator.updateMainTokenTicker,
                     updateMainTokenDecimals        : etmCreator.updateMainTokenDecimals,
                     resetStore                     : etmCreator.resetStore
-                }, dispatch);
-            };            
+                }, dispatch)
+            }            
         case components.CONFIRM_ISSUE_TOKEN:
             return function (dispatch) {
                 return bindActionCreators({
@@ -442,15 +450,15 @@ function mapDispatchToProps(component) {
                     changeWaitingStateType     : etmCreator.changeWaitingStateType,
                     updCurrentTxHash           : rootCreator.updCurrentTxHash,
                     resetStore                  : etmCreator.resetStore
-                }, dispatch); 
-            };
+                }, dispatch) 
+            }
 
         case components.RECENT_TXS_LIST:
             return function (dispatch) {
                 return bindActionCreators({
                     updRecentTxs : rootCreator.updRecentTxs
-                }, dispatch);
-            };
+                }, dispatch)
+            }
         case components.FARMS:
             return function (dispatch) {
                 return bindActionCreators({
@@ -467,8 +475,8 @@ function mapDispatchToProps(component) {
                     updateCurrentAction     : farmsCreator.updateCurrentAction,
                     updateStakeData         : farmsCreator.updateStakeData,
                     changeMenuItem          : rootCreator.changeMenuItem
-                }, dispatch); 
-            };
+                }, dispatch) 
+            }
         case components.DROPS:
             return function (dispatch) {
                 return bindActionCreators({
@@ -485,16 +493,16 @@ function mapDispatchToProps(component) {
                     updateCurrentAction     : dropsCreator.updateCurrentAction,
                     updateStakeData         : dropsCreator.updateStakeData,
                     changeMenuItem          : rootCreator.changeMenuItem
-                }, dispatch); 
-            };            
+                }, dispatch) 
+            }            
         case components.TOP_PAIRS:
             return function (dispatch) {
                 return bindActionCreators({
                     changeMenuItem          : rootCreator.changeMenuItem
-                }, dispatch); 
-            };            
+                }, dispatch) 
+            }            
         default:
-            return undefined;
+            return undefined
     }
 }
 
@@ -502,4 +510,4 @@ export {
     mapStoreToProps,
     mapDispatchToProps,
     components
-};
+}

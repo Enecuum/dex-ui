@@ -1,4 +1,5 @@
 /* ======== code for manual reloading in dev-mode ======== */
+
 if (module.hot) {
     module.hot.accept()
     module.hot.dispose(() => location.reload())
@@ -25,6 +26,7 @@ import LPTokensWalletInfo from './components/LPTokensWalletInfo'
 import { Navbar, Aside, SwapCard, Switch,
          WaitingIssueTokenConfirmation,
          TopPairs, Etm, Farms, Drops } from './components/entry'
+import SwapAddon from "./components/SwapAddon"
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'
@@ -278,8 +280,9 @@ class Root extends React.Component {
                             </Suspense>
                         </div>
                         <div className="addon-card-wrapper mt-4">
-                            {/* <SwapAddon /> */}
-                            <LPTokensWalletInfo useSuspense={false}/>
+                            {this.props.menuItem === 'exchange' &&
+                                <SwapAddon useSuspense={false}/> || <LPTokensWalletInfo useSuspense={false}/>
+                            }
                         </div>
                     </div>    
                 );

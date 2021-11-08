@@ -92,8 +92,11 @@ class LPTokensWalletInfo extends React.Component {
                 <></>
             );
     }
-};
+}
 
-const WLPTokensWalletInfo = connect(mapStoreToProps(components.LP_WALLET_INFO), mapDispatchToProps(components.LP_WALLET_INFO))(withTranslation()(LPTokensWalletInfo));
+const WLPTokensWalletInfo = connect(
+    mapStoreToProps(components.LP_WALLET_INFO),
+    mapDispatchToProps(components.LP_WALLET_INFO)
+)(withTranslation()(LPTokensWalletInfo))
 
-export default WLPTokensWalletInfo;
+export default WLPTokensWalletInfo

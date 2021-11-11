@@ -20,6 +20,13 @@ function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
     return vp.sub(volume1, div)
 }
 
+function revGetSwapPrice (volume0, volume1, amountOut, pool_fee) {
+    let nominator = vp.sub(vp.div(vp.mul(volume0, volume1), vp.sub(volume1, amountOut)), volume0)
+    let denominator = vp.sub(vp.valueToBigInt(1, pool_fee.decimals), pool_fee)
+
+    return vp.div(nominator, denominator)
+}
+
 /**
  * 
  * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
@@ -95,5 +102,6 @@ export default {
     getAddLiquidityPrice,
     ltDestruction,
     countLTValue,
-    getSwapPrice
+    getSwapPrice,
+    revGetSwapPrice
 }

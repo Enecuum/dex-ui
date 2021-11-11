@@ -677,17 +677,43 @@ class SwapCard extends React.Component {
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
         let checkResult = this.validator.batchValidate(fieldData, rules)
 
+        if (mode === "exchange" && field === "field1") {
+            checkResult.dataValid = this.checkExchangeOutValue(modeData)
+        }
+
         if (checkResult.dataValid) {
             this.props.assignCoinValue(mode, field, newValObj)
             let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
             checkResult = this.validator.batchValidate(this.activePair, activePairRules)
             if (checkResult.dataValid)
                 this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
+
+            // if (mode === "exchange" && field === "field0") {
+            //     while (modeData.field1.value.value === undefined) {
+            //
+            //     }
+            //     if (!this.checkExchangeOutValue(modeData)) {
+            //         this.props.assignCoinValue(mode, field, oldValObj)
+            //         fieldData.value = oldValObj
+            //         this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
+            //     }
+            // }
+
             modeData[field] = fieldData
             this.establishReadiness(this.validateSwapCard(modeData))
         } else {
             this.props.assignCoinValue(mode, field, oldValObj)
         }
+    }
+
+    checkExchangeOutValue (modeData) {
+        let decimalsDiff = modeData.field1.value.decimals - modeData.field1.token.decimals, testVal
+        if (decimalsDiff >= 0)
+            testVal = BigInt(modeData.field1.value.value) * BigInt('1' + '0'.repeat(decimalsDiff))
+        else
+            testVal = BigInt(modeData.field1.value.value) / BigInt('1' + '0'.repeat(-decimalsDiff))
+        let borderValue = (this.activePair.token_1.hash === modeData.field1.token.hash) ? this.activePair.token_1.volume : this.activePair.token_0.volume
+        return testVal < borderValue
     }
 
     isValidPercent (rmPercent) {
@@ -712,7 +738,7 @@ class SwapCard extends React.Component {
             if (activeField.token.hash === pair.token_0.hash)
                 return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
             else
-                return testFormulas.getSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
         } else {
             if (activeField.token.hash === pair.token_0.hash)
                 return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn)

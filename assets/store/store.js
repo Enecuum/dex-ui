@@ -5,13 +5,19 @@ import swapCardReducer from './reducers/swapCard';
 import tokenCardReducer from './reducers/tokenCard';
 import asideReducer from './reducers/aside';
 import indicatorPanelReducer from './reducers/indicatorPanel';
+import etmReducer from './reducers/etm';
+import farmsReducer from './reducers/farms';
+import dropsReducer from './reducers/drops';
 
 const totalReducer = combineReducers({
-    root : rootReducer,
-    swapCard : swapCardReducer,
-    tokenCard : tokenCardReducer,
-    aside : asideReducer,
-    indicatorPanel : indicatorPanelReducer
+    root            : rootReducer,
+    swapCard        : swapCardReducer,
+    tokenCard       : tokenCardReducer,
+    aside           : asideReducer,
+    indicatorPanel  : indicatorPanelReducer,
+    etm				: etmReducer,
+    farms           : farmsReducer,
+    drops           : dropsReducer
 });
 
 const store = createStore(totalReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

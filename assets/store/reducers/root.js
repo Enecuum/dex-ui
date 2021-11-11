@@ -8,15 +8,13 @@ function rootStore (state, changingProperty) {
         ...state,
         ...changingProperty
     };
-};
+}
 
 export default function rootReducer (state = initialState.root, action) {
     switch (action.type) {
         case actions.TOGGLE_ASIDE: 
-            let leftOffset = (state.navOpened) ? '41%' : '45%';
             return rootStore(state, {
-                navOpened : !state.navOpened,
-                swapCardLeft : leftOffset
+                navOpened : !state.navOpened
             });
 
         case actions.CHANGE_NET:
@@ -24,12 +22,6 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.CHANGE_LANG:
             return rootStore(state, { langData : action.value });
-
-        case actions.OPEN_CONNECTION_LIST:
-            return rootStore(state, { connecionListOpened : true });
-
-        case actions.CLOSE_CONNECTION_LIST:
-            return rootStore(state, { connecionListOpened : false });
 
         case actions.CHANGE_CONN_STATUS:
             return rootStore(state, { connectionStatus : action.value });
@@ -42,6 +34,27 @@ export default function rootReducer (state = initialState.root, action) {
 
         case actions.UPD_ACTIVE_LOCALE:
             return rootStore(state, { activeLocale : action.value });
+        
+        case actions.UPD_BALANCES:
+            return rootStore (state, { balances : action.value });
+
+        case actions.UPD_PAIRS:
+            return rootStore(state, { pairs: action.value });
+
+        case actions.ASSIGN_ALL_TOKENS:
+            return rootStore(state, { tokens : action.value });
+
+        case actions.UPD_CURRENT_TX_HASH:
+            return rootStore(state, { currentTxHash : action.value });
+
+        case actions.UPD_RECENT_TXS:
+            return rootStore(state, { recentTxs: action.value })
+
+        case actions.UPD_MAIN_TOKEN_DATA:
+            return rootStore(state, { mainToken: action.hash , mainTokenFee : action.fee })
+
+        case actions.UPD_NATIVE_TOKEN_DATA:
+            return rootStore(state, { nativeToken: action.value })
 
         default:
             return state;

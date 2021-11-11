@@ -1,0 +1,30 @@
+.history-filters button {
+    background-color: var(--bg-color-1);
+}
+
+.history-filters button:focus {
+    box-shadow: none !important;
+}
+
+.history-filters .dropdown-menu {
+    background-color: var(--bg-color-1);
+    border-color: var(--color4);
+}
+
+.history-filters .dropdown-menu .dropdown-item {
+    color: var(--color2);
+}
+
+.history-filters .dropdown-menu .dropdown-item:hover {
+    background-color: transparent;
+    color: white;
+}
+
+.history-filters .dropdown-menu .active {
+    background-color: transparent;
+    color: white;
+}
+
+.history-filters .dropdown:first-child {
+    margin-right: 10px;
+}

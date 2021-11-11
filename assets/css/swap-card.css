@@ -3,15 +3,19 @@
     margin-left: 0;
 }
 
-.swap-card {
-    position: fixed;
-    box-shadow: var(--box-shadow);
-    background-color: var(--bg-swap-card);
-    margin-top: 250px;
-    height: auto;
+.swap-card-wrapper {
+    padding-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
     width: 430px;
-    left: 40%;
     transition: var(--transition1);
+    margin-top: 150px;
+}
+
+.swap-card {    
+    box-shadow: var(--box-shadow);
+    background-color: var(--bg-swap-card);    
+    height: auto;
     border-radius: var(--border-radius1);
 }
 
@@ -97,6 +101,7 @@
 .token-button {
     background-color: #00000000;
     border-radius: var(--border-radius1);
+    
 }
 
 .token-button .chevron-down {
@@ -128,8 +133,7 @@
 }
 
 .your-liquidity-field {
-    height: 120px;
-    background-color: var(--color5);
+    background-color: var(--color2);
     border-radius: var(--border-radius2);
 }
 
@@ -140,6 +144,7 @@
 .plus-liquidity {
     transform: rotate(45deg);
     color: var(--color4);
+    margin: 45%;
 }
 
 .pool-prices {
@@ -162,4 +167,80 @@
 .alt-submit {
     width: 30%;
     margin-right: 5%;
+}
+
+
+.form-control-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    background: var(--color4);
+    border-radius: 3px;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.form-control-range:hover {
+  opacity: 1;
+}
+
+.form-control-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+/*    border: 1px solid var(--color1);*/
+    background: var(--color3);
+    cursor: pointer;
+}
+
+.form-control-range::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--color3);
+/*    border: 1px solid var(--color1);*/
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#removeLiquidityRange button.btn-secondary {
+    color: var(--color4);
+    line-height: 1.3;
+}
+
+.liquidity-tokens-zone {
+    background-color: var(--color2);
+}
+
+.liquidity-tokens-empty-zone {
+    background-color: var(--color5);
+    border-radius: var(--border-radius2);
+    height: 100px;
+}
+
+a.view-in-explorer, a.view-in-explorer:visited {
+    color: var(--color4);
+}
+
+a.view-in-explorer:hover {
+    color: var(--color3);
+    text-decoration: none!important;
+}
+
+.unclickable {
+    pointer-events: none;
+}
+
+.card-header {
+    border-bottom: 0;
+    background-color: rgba(0,0,0, 0);
+}
+
+.card-body {
+    padding-top: 0;
 }

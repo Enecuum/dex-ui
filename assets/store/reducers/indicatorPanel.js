@@ -1,7 +1,7 @@
-import initialState from '../initialState';
-import actionPack from '../actions/actions';
+import initialState from '../initialState'
+import actionPack from '../actions/actions'
 
-const actions = actionPack.indicatorPanel;
+const actions = actionPack.indicatorPanel
 
 export default function indicatorPanelReducer (state = initialState.indicatorPanel, action) {
     switch (action.type) {
@@ -9,9 +9,13 @@ export default function indicatorPanelReducer (state = initialState.indicatorPan
             return {
                 ...state,
                 coinAmount : action.value
-            };
-            
+            }
+        case actions.UPD_COIN_NAME:
+            return {
+                ...state,
+                coinName: action.value
+            }
         default: 
-            return state;
+            return state
     }
-};
+}

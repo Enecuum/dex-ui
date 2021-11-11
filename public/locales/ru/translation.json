@@ -1,0 +1,297 @@
+{
+    "langTitles": {
+        "full": "Русский",
+        "short": "Ру"
+    },    
+    "navbars" : {
+        "left" : {
+            "home" : "Домой",
+            "exchange" : "Обмен",
+            "liquidity" : "Пулы",
+            "ido" : "IDO",
+            "farms" : "Space Harvest Farms",
+            "pools" : "Space Drop",
+            "etm" : "ETM",
+            "info" : "Информация",
+            "topPairs" : "Торговые пары",
+            "docs" : "Документация",
+            "drops" : "Space Drops"
+        },
+        "top" : {
+            "header" : "Enecuum",
+            "connect" : "Подключение",
+            "connectionCard" : {
+                "header" : "Подключить кошелёк",
+                "clue" : "Получить расширение Enecuum"
+            },
+            "accountShortInfo" : {
+                "header" : "Аккаунт",
+                "copyPubKey" : "копировать адрес",
+                "viewIn" : "смотреть в",
+                "connectInfo" : "Подключено к",
+                "changeButton" : "Сменить"
+            }
+        }
+    },
+    "trade" : {
+        "swapAddon" : {
+            "priceImpact" : "Влияние цены",
+            "providerFee" : "Комиссия провайдера ликвидности"
+        },
+        "lpTokensWalletInfo" : {
+            "header" : "Ваши токены ликвидности"
+        },
+        "switch" : {
+            "mode0" : "Обмен",
+            "mode1" : "Пулы"
+        },
+        "swapCard" : {
+            "inputField" : {
+                "balance" : "Баланс",
+                "selectToken" : "Выберите токен"
+            },
+            "exchange" : {
+                "header" : "Обмен",
+                "description" : "Торговля токенами в одно мгновение",
+                "input0" : "Из",
+                "input1" : "В"
+            },
+            "liquidity" : {
+                "header" : "Пулы",
+                "secondHeader" : "Добавить Ликвидность",
+                "description" : "Добавить ликвидность для получения LP токенов",
+                "addButton" : "Добавить",
+                "yourLiquidity" : "Ваша ликвидность",
+                "additionInfo" : "Если вы вложили токены ENX в ферму, верните их, и они появятся тут.",
+                "priceAndPoolShare" : "Цена и доля в пуле",
+                "per" : "на",
+                "shareOfPool" : "Доля в пуле",
+                "input0" : "Ввод",
+                "input1" : "Ввод",
+                "tooltipText" : "Когда вы добавляете ликвидность, вам выдаются токены пула, которые представляют вашу долю."
+            },
+            "submitButton" : {
+                "beforeConnection" : "Подключите кошелёк",
+                "afterConnection" : "Отправить",
+                "addLiquidity" : "Добавить ликвидность",
+                "removeLiquidity" : "Удалить ликвидность",
+                "fillAllFields" : "Заполните все поля",
+                "swap" : "Обменять",
+                "createPair" : "Создать пару",
+                "insufficientFunds" : "Недостаточно средств",
+                "invalidPool" : "Такой пул не существует"
+            },
+            "aboutButtonInfo" : {
+                "withoutPair" : "Такой пары не существует",
+                "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
+            },
+            "removeLiquidity" : {
+                "amount" : "Количество",
+                "price" : "Цена",
+                "simple" : "Упрощённый вид",
+                "detailed" : "Детальный вид",
+                "header" : "Удалить Ликвидность",
+                "tooltipText" : "Удалите токены ликвидности для получения токенов пула",
+                "input" : "Ввод"
+            },
+            "history" : {
+                "header" : "История"
+            }
+        },
+        "tokenCard" : {
+            "header" : "Выберите токен",
+            "search" : "Поиск по имени",
+            "tooltipText" : "Когда вы добавляете ликвидность, вам выдаются токены пула, которые представляют вашу долю.",
+            "tokenName" : "Токены"
+        },
+        "confirmCard" : {
+            "header" : "Вы получите",
+            "poolTokens" : "Токенов ликвидности",
+            "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
+            "deposited" : "Внесено",
+            "toBeReceived" : "Будет получено",
+            "rates" : "Курс",
+            "shareOfPool" : "Доля в пуле",
+            "feeData" : "Комиссия транзакции",
+            "confirm" : "Подтверждение",
+            "waitingForConfirmation" : "Ожидание подтверждения",
+            "confirmInWallet" : "Подтвердите вашу транзакцию в кошельке",
+            "waitingForConfirmationInternals" : {
+                "swap" : {
+                    "completePhrase" : "Обмен {{value0}}{{ticker0}} на {{value1}}{{ticker1}}",
+                    "header" : "Обмен",
+                    "to" : "на"
+                },
+                "addLiquidity" : {
+                    "completePhrase" : "Добавление ликвидности {{value0}}{{ticker0}} + {{value1}}{{ticker1}}",
+                    "header" : "Добавление ликвидности",
+                    "plus" : "+"
+                },
+                "createPool" : {
+                    "completePhrase" : "Создание пула {{value0}}{{ticker0}} и {{value1}}{{ticker1}}",
+                    "header" : "Создание пула",
+                    "and" : "и"
+                }
+            }
+        }
+    },
+    "recentTxs" : {
+        "withoutTxs" : "Здесь появятся ваши транзакции...",
+        "withTxs" : "Недавние транзакции",
+        "clearButton" : "(очистить)"
+    },
+    "etm" : {
+        "issueToken" : "Выпуск токена",
+        "issueTokenQuotes" : "'Выпуск токена'",
+        "ticker" : "Тикер",
+        "name" : "Имя",
+        "tokenType" : "Тип токена",
+        "nonReissuable" : "С фиксированной эмиссией",
+        "reissuable" : "C нефиксированной эмиссией и возможностью дополнительно эмитировать токены",
+        "mineable" : "C возможностью майнинга на мобильных телефонах с операционной системой Android",
+        "premine" : "Premine",
+        "emission" : "Эмиссия",
+        "maxSupply" : "Max Supply",
+        "blockReward" : "Block Reward",
+        "miningPeriod" : "Майнинг период",
+        "minStake" : "Минимальный стейк",
+        "referrerStake" : "Реферальная ставка",
+        "refShare" : "Ref. share",
+        "decimals" : "Decimals",
+        "feeType" : "Тип комиссии",
+        "flat" : "Фиксированная",
+        "percent" : "Процентная",
+        "fee" : "Комиссия",
+        "minFee" : "Минимальная комиссия",
+        "days" : "Дни",
+        "tokenIssueTotalPay":"Стоимость выпуска токена {{issueTokenCost}} {{ticker}}:"
+    },
+    "info" : "Инфо",
+    "submit" : "Отправить",
+    "close" : "Закрыть",
+    "transactionSubmitted" : "Транзакция подтверждена",
+    "waitingForConfirmation" : "Ожидайте подтверждения",
+    "transactionRejected" : "Транзакция отклонена",
+    "tokenWallet" : "{{token}} кошелёк",
+    "viewOnSite" :  "Смотреть на {{site}}",
+    "pairPoolTokens" : "{{token0}}/{{token1}} Пул Токены",
+    "receiveToken" : "{{token0}} Токены",
+    "numberSign" : "#",
+    "name" : "Наименование",
+    "liquidity" : "Ликвидность",
+    "volume" : "Объем",
+    "fee" : "Комиссия",
+    "topPairs" : {
+        "title" : "Топ торговых пар",
+        "ltTotalSupply" : "LP Total Supply",
+        "volumeInPair"  : "Объем {{indexInPair}}",
+        "yourTokensInPair" : "Мой Токен {{indexInPair}}",
+        "yourPoolShare" : "Доля в Пуле"
+    },
+    "noData" : "Нет данных",
+    "noConnection" : "Отсутствует соединение.",
+    "clickConnect" : "Пожалуйста, нажмите кнопку \"Подключение\" в навигационном меню",
+    "tokens" : "Токены",
+    "mainToken": "Основной токен",
+    "stakeToken": "Stake токен",
+    "farmStake": "Стейк фермы",
+    "actionCost" : "Стоимость операции",
+    "errorMsg" : {
+        "REQUIRED": "Обязательное значение",
+        "TOO_LONG_STRING": "Слишком длинная строка. Должно быть не более {{strLength}} символов",
+        "INVALID_SYMBOLS": "Должны быть только латинские символы.",
+        "NOT_IN_RANGE": "Неверное значение. Должно быть в пределе от {{min}} до {{max}}",
+        "FEE_WRONG_TYPE": "Неверный тип комиссии",        
+        "INVALID_SYMBOLS_IN_DIGITAL_VALUE": "Недопустимые символы. Введненное значение не является целым или десятичным числом.",
+        "INVALID_SYMBOLS_IN_NAMED_DIGITAL_VALUE": "Недопустимые символы. Введненное значение \"{{name}}\" не является целым или десятичным числом.",
+        "TOO_LONG_FRACTIONAL_PART": "Число знаков в десятичной части не должно превышать {{decimals}}",
+        "EXEED_MAX_VALUE_IN_TOKENS": "Не должно превышать {{maxValue}} {{ticker}}",
+        "INTEGER_REQUIRED": "Значение должно быть целым числом",
+        "MUST_BE_GREATER_THAN": "Значение должно быть больше {{minValue}}",
+        "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть больше или равно, чем {{name}}",
+        "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}",
+        "INSUFFICIENT_FUNDS_FOR_OPERATION": "Недостаточно средств для выполнения операции {{operationName}}.",
+        "TOP_UP_BALANCE": "Пожалуйста, пополните баланс до {{value}} {{ticker}}.",
+        "NAMED_VALUE_UNDEFINED" : "Не удалось определить {{name}}"
+    },
+    "dropFarms" : {
+        "stakeNamedToken"              : "Стейк {{tokenName}}",
+        "unstakeNamedToken"            : "Отозвать {{tokenName}}",
+        "stakeLPTokens"                : "Стейк LP токенов",
+        "unstakeLPTokens"              : "Отзыв LP токенов",
+        "stake"                        : "Стейк",
+        "myStake"                      : "Мой стейк",
+        "unstake"                      : "Отозвать",  
+        "getLPToken"                   : "Получить {{tokenName}} LP",  
+        "getNamedToken"                : "Получить {{tokenName}}",
+        "nBlocksLeft"                  : "Осталось блоков: {{blocksLeft}}",
+        "finished"                     : "Работа завершена",
+        "pausedFarmStatusDescription"  : "Пауза. Для возобновления работы сделайте стейк {{stakeTokenName}}",
+        "liquidity"                    : "Ликвидность",
+        "earn"                         : "Доход",
+        "earned"                       : "Доход",
+        "apy"                          : "APY",
+        "rewardPerBlock"               : "Награда за блок",
+        "details"                      : "Подробнее",
+        "harvest"                      : "Собрать урожай",
+        "totalStaked"                  : "Общий стейк"
+    },
+    "confirm" : "Подтвердить",
+    "status" : "Статус",
+    "max" : "MAX",
+    "balance" : "Баланс",
+    "cancel" : "Отменить",
+    "checkingMainTokenBalance" : "Проверка баланса нативного токена...",
+    "txActionWords" : {
+        "meanwhileSending" : {
+            "pool_create" : "Создание",
+            "pool_swap" : "Обмен",
+            "pool_add_liquidity" : "Добавление",
+            "pool_remove_liquidity" : "Удаление"
+        },
+        "history" : {
+            "pool_create" : "Создание",
+            "pool_swap" : "Обмен",
+            "pool_add_liquidity" : "Добавление",
+            "pool_remove_liquidity" : "Удаление",
+            "farm_create" : "Создание",
+            "farm_get_reward" : "Получение",
+            "farm_increase_stake" : "Увеличение стейка",
+            "farm_close_stake" : "Закрыть",
+            "farm_decrease_stake" : "Уменьшение стейка"
+        }
+    },
+    "txActionPhrases" : {
+        "pool_swap" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
+        },
+        "pool_add_liquidity" : {
+            "completePhrase" : "{{action}} ликвидности {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
+        },
+        "pool_create" : {
+            "completePhrase" : "{{action}} пула {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+        },
+        "pool_remove_liquidity" : {
+            "completePhrase" : "{{action}} {{value2}} {{ticker2}}, извлечение {{value0}} {{ticker0}} и {{value1}} {{ticker1}}"
+        },
+        "farm_create" : {
+            "completePhrase" : "{{action}} фермы {{ticker0}}-{{ticker1}}"
+        },
+        "farm_get_reward" : {
+            "completePhrase" : "{{action}} награды {{value0}} {{ticker0}}"
+        },
+        "farm_increase_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "farm_close_stake" : {
+            "completePhrase" : "{{action}} стейк {{ticker0}}-{{ticker1}}"
+        },
+        "farm_decrease_stake" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        }
+    },
+    "blockWindow" : {
+        "header" : "Ваше расширение заблокировано",
+        "text" : "Пожалуйста, разблокируйте расширение"
+    }
+}

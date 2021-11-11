@@ -10,11 +10,11 @@ const actionCreators = {
         };
     },
 
-    assignWalletValue (mode, field, walletValue) {
+    assignBalanceObj (mode, field, balanceObj) {
         return {
             type : actions.ASSIGN_WALLET_VALUE,
             field : field,
-            value : walletValue,
+            value : balanceObj,
             mode : mode
         };
     },
@@ -28,11 +28,11 @@ const actionCreators = {
         };
     },
 
-    assignTokenValue (mode, field, value) {
+    assignTokenValue (mode, field, tokenObj) {
         return {
             type : actions.ASSIGN_TOKEN_VALUE,
             field : field,
-            value : value,
+            value : tokenObj,
             mode : mode
         };
     },
@@ -55,29 +55,29 @@ const actionCreators = {
         };
     },
 
-    openConfirmCard () {
-        return {
-            type : actions.OPEN_CONFIRM_CARD
-        };
-    },
-
-    closeConfirmCard () {
-        return {
-            type : actions.CLOSE_CONFIRM_CARD
-        };
-    },
-    
-    updPairs (value) {
-        return {
-            type : actions.UPD_PAIRS,
-            value : value
-        };
-    },
-
     updActiveField (value) {
         return {
             type : actions.UPD_ACTIVE_FIELD,
             value : value
+        };
+    },
+    
+    toggleRemoveLiquidityView () {
+        return {
+            type : actions.TOGGLE_REMOVE_LIQUIDITY_VIEW
+        };
+    },
+
+    changeCreatePoolState (booleanVar) {
+        return {
+            type : actions.CHANGE_CREATE_POOL_STATE,
+            value : booleanVar
+        }
+    },
+
+    changeRemoveLiquidityVisibility () {
+        return {
+            type : actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY
         };
     }
 };

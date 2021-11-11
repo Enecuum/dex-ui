@@ -1,0 +1,129 @@
+{
+    "navbars" : {
+        "left" : {
+            "home" : "Home",
+            "exchange" : "Обмен",
+            "liquidity" : "Ликвидность",
+            "ido" : "IDO",
+            "farms" : "Farms",
+            "pools" : "Пулы",
+            "etm" : "ETM",
+            "info" : "Информация",
+            "docs" : "Документация"
+        },
+        "top" : {
+            "header" : "Enecuum",
+            "connect" : "Подключение",
+            "connectionCard" : {
+                "header" : "Подключите кошелёк",
+                "clue" : "Скачать расширение Enecuum Wallet"
+            }
+        }
+    },
+    "trade" : {
+        "switch" : {
+            "mode0" : "Обмен",
+            "mode1" : "Ликвидность"
+        },
+        "swapCard" : {
+            "exchange" : {
+                "header" : "Обмен",
+                "description" : "Торговля токенами в одно мгновение",
+                "input0" : "Из",
+                "input1" : "В"
+            },
+            "liquidity" : {
+                "header" : "Ликвидность",
+                "secondHeader" : "Добавить Ликвидность",
+                "description" : "Добавить ликвидность для получения LP токенов",
+                "addButton" : "Добавить",
+                "yourLiquidity" : "Ваша ликвидность",
+                "additionInfo" : "Если вы вложили токены ENX в ферму, верните их, и они появятся тут.",
+                "priceAndPoolShare" : "Цена и доля в пуле",
+                "per" : "на",
+                "shareOfPool" : "Доля в пуле",
+                "input0" : "Ввод",
+                "input1" : "Ввод",
+                "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share."
+            },
+            "submitButton" : {
+                "beforeConnection" : "Подключите кошелёк",
+                "afterConnection" : "Submit",
+                "addLiquidity" : "Добавить ликвидность",
+                "fillAllFields" : "Заполните все поля",
+                "swap" : "Обменять",
+                "createPair" : "Создать пару"
+            },
+            "aboutButtonInfo" : {
+                "withoutPair" : "Такой пары не существует",
+                "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
+            },
+            "removeLiquidity" : {
+                "simple" : "Простой вид",
+                "detailed" : "Детальный вид",
+                "header" : "Удалить Ликвидность",
+                "tooltipText" : "Удалите токены ликвидности для получения токенов пула"
+            }
+        },
+        "tokenCard" : {
+            "header" : "Выберите токен",
+            "search" : "Поиск по имени",
+            "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
+            "tokenName" : "Токены"
+        },
+        "confirmCard" : {
+            "header" : "Вы получите",
+            "poolTokens" : "Токенов ликвидности",
+            "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
+            "deposited" : "Внесено",
+            "rates" : "Курс",
+            "shareOfPool" : "Доля в пуле",
+            "confirm" : "Подтверждение",
+            "waitingForConfirmation" : "Ожидание подтверждения",
+            "confirmInWallet" : "Подтвердите вашу транзакцию в кошельке",
+            "waitingForConfirmationInternals" : {
+                "swap" : {
+                    "header" : "Обмен",
+                    "to" : "на"
+                },
+                "addLiquidity" : {
+                    "header" : "Добавление ликвидности",
+                    "plus" : "+"
+                },
+                "createPool" : {
+                    "header" : "Создание пула",
+                    "and" : "и"
+                }
+            }
+        }
+    },
+    "etm" : {
+        "issueToken" : "Выпуск токена",
+        "ticker" : "Тикер",
+        "name" : "Имя",
+        "tokenType" : "Тип токена",
+        "nonReissuable" : "С фиксированной эмиссией",
+        "reissuable" : "C не фиксированной эмиссией и возможностью дополнительно эмитировать токены",
+        "mineable" : "C возможностью майнинга на мобильных телефонах с операционной системой Android",
+        "premine" : "Premine",
+        "emission" : "Emission",
+        "maxSupply" : "Max Supply",
+        "blockReward" : "Block Reward",
+        "miningPeriod" : "Mining Period",
+        "minStake" : "Минимальный стейк",
+        "referrerStake" : "Referrer Stake",
+        "refShare" : "RefShare",
+        "decimals" : "Decimals",
+        "feeType" : "Тип комиссии",
+        "flat" : "Фиксированная",
+        "percent" : "Процентная",
+        "fee" : "Комиссия",
+        "minFee" : "Минимальная комиссия"
+    },
+    "info" : "Инфо",
+    "submit" : "Submit",
+    "close" : "Закрыть",
+    "transactionSubmitted" : "Транзакция подтверждена",
+    "waitingForConfirmation" : "Ожидайте подтверждения",
+    "transactionRejected" : "Транзакция была отклонена"
+}

@@ -1,25 +1,20 @@
 #switch {
-    position: fixed;
+    position: absolute;
     box-shadow: var(--box-shadow);
-    margin-top: -100px;
+    top: -100px;
     height: 35px;
-    margin-left: 25px;
-    width: 380px;
-    background-color: var(--bg-swap-card);
+    width: 100%;
     transition: var(--transition1);
     border-radius: var(--border-radius2);
 }
 
 #liquidity-mode {
-    position: absolute;
-    right: 0;
-    margin-top: -35px;
+
     border-bottom-right-radius: var(--border-radius2);
     border-top-right-radius: var(--border-radius2);
 }
 
 #exchange-mode {
-    position: relative;
     border-bottom-left-radius: var(--border-radius2);
     border-top-left-radius: var(--border-radius2);
 }

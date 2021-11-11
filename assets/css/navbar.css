@@ -1,38 +1,13 @@
 .navbar {
     height: var(--top-menu-height);
     background-color: var(--menu-bg);
-
-/*    position: fixed;
-    width: 100%;
-    height: 67px;
-    box-shadow: var(--box-shadow);*/
 }
 
-
-
-/*
-.navbar.new-color {
-    background-color: var(--color1);
+@media (max-width: 767px) {
+    .navbar {
+        background-color: var(--menu-bg-non-transparent);
+    }
 }
-
-.navbar-brand {
-    cursor: pointer;
-    margin-left: 0.5%;
-    margin-bottom: 0.2%;
-    margin-top: 0.2%;
-}
-
-.navbar-custom {
-    cursor: pointer;
-    margin-left: 0.5%;
-    margin-bottom: 0.3%;
-    margin-top: 0.3%;
-    color: var(--color1);
-}
-
-.navbar-light .navbar-brand {
-    color: var(--color1);
-}*/
 
 .wallet-info-wrapper {
     height: 28px;
@@ -68,12 +43,6 @@
     text-decoration: none;
 }
 
-/* .btn-secondary {
-    border-color: #00000000;
-} */
-
-
-
 .wallet-info-boxes {
     border : 1px solid var(--color5);
     font-size: 14px;
@@ -99,10 +68,30 @@
 }
 
 .addr {
-    background-color: var(--bg-swap-card);
+    background-color: var(--color4);
     width: 130px;
     position: relative;
     right: -1px;
     top: 0px;
     height: calc(100% + 2px);
+}
+
+.open-in-explorer:hover {
+    background-color: var(--color3);
+}
+
+.notification-item {
+    color: var(--color3);
+    font-size: 1.4rem;
+}
+
+.toast-body-no-padding {
+    padding: 0 !important;
+}
+
+.tx-notification-toast .toast-header{
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+    margin-bottom: -10px;
 }

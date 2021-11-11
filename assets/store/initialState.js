@@ -1,54 +1,64 @@
 import presets from './pageDataPresets';
 
+function getDefaultField(id) {
+    return {
+        id      : id,
+        balance : presets.swapTokens.emptyBalance, // balance of the token from 'token' property
+        value   : {
+            value   : undefined,
+            decimals: undefined
+        },
+        token   : presets.swapTokens.emptyToken
+    };
+}
+
 const initialState = {
     root : {
-        net : presets.network.defaultNet,
-        langData : presets.langData,
-        connecionListOpened : false,
-        navOpened : true,
-        connectionStatus : false,
-        pending : true,
-        swapCardLeft : '45%',
-        menuItem : 'exchange',
-        pubkey : '',
-        siteLocales : presets.langData.siteLocales,
-        activeLocale : presets.langData.preferredLocale,
-        langTitles : presets.langData.langTitles
+        net                     : presets.network.defaultNet,
+        mainToken               : presets.network.nativeToken.hash, // <-
+        mainTokenFee            : presets.network.nativeToken.fee,  // <-
+        langData                : presets.langData,
+        connecionListOpened     : false,
+        navOpened               : window.innerWidth > 757,
+        connectionStatus        : false,
+        menuItem                : 'exchange',
+        pubkey                  : '',
+        siteLocales             : presets.langData.siteLocales,
+        activeLocale            : presets.langData.preferredLocale,
+        langTitles              : presets.langData.langTitles,
+        swapCardLeft            : '45%',
+        currentTxHash           : undefined,
+        balances    : [],   // [{amount, token, ticker, decimals, minable, reissuable}] - explorer data
+        pairs       : [],   // [{token_0 : {volume, hash}, token_2 : {volume, hash}, pool_fee, lt}] - all pairs from dex
+        tokens      : [],   // [{ticker, hash, caption}] - all tokens from dex
+        recentTxs   : [],
+        nativeToken : {}
     },
     swapCard : {
-        pairs: [],
         exchange: {
-            field0: {
-                walletValue: '-',
-                value: '',
-                token: presets.swapTokens.defaultToken
-            },
-            field1: {
-                walletValue: '-',
-                value: '',
-                token: presets.swapTokens.emptyToken
-            }
+            field0  : getDefaultField(0),
+            field1  : getDefaultField(1)
         },
         liquidity: {
-            field0: {
-                walletValue: '-',
-                value: '',
-                token: presets.swapTokens.defaultToken
-            },
-            field1: {
-                walletValue: '-',
-                value: '',
-                token: presets.swapTokens.emptyToken
-            }
+            field0  : getDefaultField(2),
+            field1  : getDefaultField(3)
         },
-        activeField : 0,
-        tokenListStatus: false,
-        liquidityMain: true,
-        confirmCardOpened: false
+        removeLiquidity : {
+            simpleView : true,
+            field0  : getDefaultField(4),
+            field1  : getDefaultField(5),
+            ltfield : getDefaultField(6)
+        },
+        activeField         : 0,
+        tokenListStatus     : false,
+        liquidityMain       : true,
+        liquidityRemove     : false,
+        createPool          : false,
+        waitingConfirmation : {
+        }
     },
     tokenCard : {
         list : [],
-        tokens : [],
         sort : 'asc'
     },
     navbar : {
@@ -57,11 +67,100 @@ const initialState = {
         exchangeRate : ''
     },
     indicatorPanel : {
-        nativeToken: presets.network.nativeToken.hash,
-        coinName: presets.network.nativeToken.name,
-        net: presets.network.defaultNet,
-        coinAmount: 0,
-        enx: 0
+        coinName    : presets.network.nativeToken.ticker,
+        net         : presets.network.defaultNet,
+        coinAmount  : 0,
+        enx         : 0
+    },
+    etm : {
+        showForm : false,
+        tokenData : {
+            mining_period: '',
+            ticker: presets.etm.tickerDefault,    
+            name: presets.etm.nameDefault,
+            token_type: '0',
+            reissuable: 0,
+            mineable: 0,
+            max_supply: '',
+            block_reward: presets.etm.blockRewardDefault,
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            decimals: 10,
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_type: '0',
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
+        tokenBigIntData : {
+            mining_period: '',
+            max_supply: '',
+            block_reward: '',
+            min_stake: '',
+            referrer_stake: '',
+            ref_share: '',          
+            total_supply: presets.etm.totalSupplyDefault,
+            fee_value: presets.etm.feeValueDefault,
+            min_fee_for_percent_fee_type: ''
+        },
+        waitingConfirmation : {
+            visibility  : false,
+            txStateType : 'waiting'
+        },
+        issueTokenTxAmount : '',
+        mainTokenTicker : presets.network.nativeToken.ticker,
+        mainTokenDecimals : 10,
+        msgData : {},
+        dataValid : false,
+        showFormErrMessages : false,
+        possibleToIssueToken : false
+    },
+    farms : {
+        mainTokenAmount   : undefined,
+        mainTokenDecimals : undefined,
+        mainTokenFee      : presets.network.nativeToken.fee,
+        pricelist         : {},
+        expandedRow       : null,
+        managedFarmData   : null,
+        sortType          : 'liquidity',
+        showStakeModal    : false,
+        currentAction     : undefined,
+        farmsList         : [],
+        stakeData         : {
+            actionCost         : 0,
+            initialStake       : 0,
+            stakeValue         : {
+                numberValue : 0
+            },  
+            stakeTxStatus      : '',
+            stakeValid         : true,
+            msgData            : {},
+            stakeTokenAmount   : undefined
+        }
+    },
+    drops : {
+        mainTokenAmount   : undefined,
+        mainTokenDecimals : undefined,
+        mainTokenFee      : presets.network.nativeToken.fee,
+        pricelist         : {},
+        expandedRow       : null,
+        managedFarmData   : null,
+        sortType          : 'liquidity',
+        showStakeModal    : false,
+        currentAction     : undefined,
+        farmsList         : [],
+        exchangeRate      : 0,
+        stakeData         : {
+            actionCost         : 0,
+            initialStake       : 0,
+            stakeValue         : {
+                numberValue : 0
+            },  
+            stakeTxStatus      : '',
+            stakeValid         : true,
+            msgData            : {},
+            stakeTokenAmount   : undefined
+        }
     }
 };
 

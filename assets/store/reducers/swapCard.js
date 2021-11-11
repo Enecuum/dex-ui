@@ -13,15 +13,19 @@ function swapCardStore(state, changingProperty) {
 function convertIntoMode(mode, packed) {
     if (mode == 'exchange')
         return { exchange: packed };
-    else
+    else if (mode == 'liquidity')
         return { liquidity: packed };
+    else 
+        return { removeLiquidity: packed };
 };
 
 function convertIntoField(field, packed) {
     if (field == 'field0')
         return { field0: packed };
-    else
+    else if (field == 'field1')
         return { field1: packed };
+    else
+        return { ltfield: packed };
 };
 
 function fieldStore(state, mode, field, changingProperty) {
@@ -37,12 +41,15 @@ function fieldStore(state, mode, field, changingProperty) {
 };
 
 function swapFields(state, mode) {
-    let field0 = state[mode].field0;
+    let field0 = {...state[mode].field1}
+    field0.id = state[mode].field0.id
+    let field1 = {...state[mode].field0}
+    field1.id = state[mode].field1.id
     return swapCardStore(state, {
         ...convertIntoMode(mode, {
             ...state[mode],
-            field0: state[mode].field1,
-            field1: field0
+            field0: field0,
+            field1: field1
         })
     });
 };
@@ -56,7 +63,7 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
             return swapFields(state, action.mode);
 
         case actions.ASSIGN_WALLET_VALUE:
-            return fieldStore(state, action.mode, action.field, { walletValue: action.value });
+            return fieldStore(state, action.mode, action.field, { balance: action.value });
 
         case actions.OPEN_TOKEN_LIST:
             return swapCardStore(state, { tokenListStatus: true });
@@ -67,23 +74,28 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.CHANGE_LIQUIDITY_MODE:
             return swapCardStore(state, { liquidityMain: !state.liquidityMain });
 
-        case actions.OPEN_CONFIRM_CARD:
-            return swapCardStore(state, { confirmCard: true });
-
-        case actions.CLOSE_CONFIRM_CARD:
-            return swapCardStore(state, { confirmCard: false });
-
         case actions.ASSIGN_COIN_VALUE:
             return fieldStore(state, action.mode, action.field, { value: action.value });
 
         case actions.ASSIGN_TOKEN_VALUE:
             return fieldStore(state, action.mode, action.field, { token: action.value });
 
-        case actions.UPD_PAIRS:
-            return swapCardStore(state, { pairs: action.value });
-
         case actions.UPD_ACTIVE_FIELD:
             return swapCardStore(state, { activeField: action.value });
+
+        case actions.TOGGLE_REMOVE_LIQUIDITY_VIEW:
+            return swapCardStore(state, {
+                removeLiquidity : {
+                    ...state.removeLiquidity,
+                    simpleView : !state.removeLiquidity.simpleView
+                }
+            });              
+            
+        case actions.CHANGE_CREATE_POOL_STATE:
+            return swapCardStore(state, { createPool : action.value });
+
+        case actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY:
+            return swapCardStore(state, {liquidityRemove : !state.liquidityRemove});
 
         default:
             return state;

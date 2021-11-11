@@ -9,10 +9,13 @@ const actionCreators = {
         };
     },
     
-    changeNetwork(netName) {
+    changeNetwork(netName, netUrl) {
         return {
             type : actions.CHANGE_NET,
-            value : netName
+            value : {
+                name : netName,
+                url : netUrl
+            }
         };
     },
     
@@ -20,18 +23,6 @@ const actionCreators = {
         return {
             type : actions.CHANGE_LANG,
             value : langData
-        };
-    },
-    
-    openConList() {
-        return {
-            type : actions.OPEN_CONNECTION_LIST
-        };
-    },
-    
-    closeConList() {
-        return {
-            type : actions.CLOSE_CONNECTION_LIST
         };
     },
     
@@ -61,6 +52,56 @@ const actionCreators = {
             type : actions.UPD_ACTIVE_LOCALE,
             value : locale
         };
+    },
+
+    updBalances (balances) {
+        return {
+            type : actions.UPD_BALANCES,
+            value : balances
+        };
+    },
+
+    updPairs (value) {
+        return {
+            type : actions.UPD_PAIRS,
+            value : value
+        };
+    },
+
+    assignAllTokens (list) {
+        return {
+            type : actions.ASSIGN_ALL_TOKENS,
+            value : list
+        };
+    },
+
+    updCurrentTxHash (hash) {
+        return {
+            type : actions.UPD_CURRENT_TX_HASH,
+            value : hash
+        }
+    },
+
+    updRecentTxs (txs) {
+        return {
+            type : actions.UPD_RECENT_TXS,
+            value : txs
+        }
+    },
+
+    updMainTokenData (hash, fee) {
+        return {
+            type : actions.UPD_MAIN_TOKEN_DATA,
+            hash : hash,
+            fee  : fee
+        }
+    },
+
+    updNativeToken (data) {
+        return {
+            type : actions.UPD_NATIVE_TOKEN_DATA,
+            value : data
+        }
     }
 };
 

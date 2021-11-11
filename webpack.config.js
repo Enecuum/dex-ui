@@ -1,49 +1,50 @@
-const path = require('path');
-const fs = require('fs');
+const path = require('path')
+
 const outPath = path.resolve(__dirname, 'public');
 
 module.exports = {
-    entry : './assets/js/root.js',
+    entry : {
+        app : [
+            path.resolve(__dirname, 'assets/js/root.js'),
+        ]
+    },
     output : {
         path : outPath,
         filename : 'enex.webpack.js',
+        hotUpdateChunkFilename: 'hot/hot-update.js',
+        hotUpdateMainFilename: 'hot/hot-update.json'
     },
     module : {
         rules : [
             {
                 test : /\.jsx?$/,
-                use : 'babel-loader'
+                loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-env',
+                              '@babel/react',{
+                              'plugins': ['@babel/plugin-proposal-class-properties']}]
+                }
             },
             {
                 test : /\.css$/,
                 use : ['style-loader', 'css-loader']
             },
             {
-                test : /\.(png|jpg|svg|jpeg|woff|ttf|eot|otf)$/,
+                test : /\.(png|jpg|ico|svg|jpeg|woff|ttf|eot|otf)$/,
                 use : 'file-loader'
             }
         ]
     },
-    mode : 'develop',
+    performance: {
+        maxEntrypointSize: 4 * 1024 * 1024,
+        maxAssetSize: 4 * 1024 * 1024
+    },
+    plugins : [
+    ],
+    devtool: 'inline-source-map',
+    // mode : 'production',
+    mode : 'development',
     devServer : {
-        contentBase : outPath,
-        port : 1235,
-        watchContentBase : true,
-        before: (app) => {
-            app.get('/getLanguage/*', (req, res) => {
-                let urlArr = req.url.split('/');
-                let language = urlArr[urlArr.length - 1];
-                res.json(JSON.parse(fs.readFileSync(`./data/${language}.json`, { encoding : 'utf-8' })));
-            });
-            app.get('/getPairs', (req, res) => {
-                res.json(JSON.parse(fs.readFileSync(`./data/pairs.json`, { encoding : 'utf-8' })));
-            });
-            app.get('/getTokens', (req, res) => {
-                res.json(JSON.parse(fs.readFileSync(`./data/tokens.json`, { encoding : 'utf-8' })));
-            });
-            app.get('/enqlib', (req, res) => {
-                res.send(fs.readFileSync(`./web-enq/prebuild/enqweb3.min.js`, { encoding : 'utf-8' }));
-            });
-        }
+        contentBase : outPath
     }
 };

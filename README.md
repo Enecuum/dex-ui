@@ -1,11 +1,11 @@
 # Dex
 
 
-#### Intro 
+### Intro 
 This is the web application for DEX AMM (Decentralized EXchange with Automatic Market Making) infrastructure. 
 Here you can find all information about frontend part of that project.
     
-#### Technologies
+### Technologies
 * Language: JavaScript
 * Framework: React.js, docs - https://reactjs.org/docs/getting-started.html
 * CSS-Framework: Bootstrap v4.6, docs - https://getbootstrap.com/docs/4.6/getting-started/introduction/
@@ -13,7 +13,7 @@ Here you can find all information about frontend part of that project.
 * Transpiler: Babel, docs - https://babeljs.io/docs/en/
 * State container: Redux, docs - https://redux.js.org/introduction/getting-started
 
-#### Dependencies
+### Dependencies
 For communication with Enecuum blockchain application you must use the web-enq library and Enecuum-wallet extension. 
 At the moment site maintains five methods:
 * connect()
@@ -24,7 +24,7 @@ At the moment site maintains five methods:
 To learn more about web-enq API, visit - 
   https://github.com/Enecuum/web-enq/blob/e392d8a51d993cc6fbce2de65ef6a5ce4f7e84a8/ENQweb3lib.md
 
-#### Preparing for usage
+### Preparing for usage
 * install necessary dependencies
 ```shell
     npm install
@@ -32,7 +32,9 @@ To learn more about web-enq API, visit -
 * create config.json, copy structure from config.example.json.
 * install pm2
 
-#### Usage
+### Usage
+
+#### Development mode
 * start server with webpack-dev-middleware. (check the mode inside [./webpack.config.js][2], must be 'development')
 ```shell
     npm run dev
@@ -43,27 +45,41 @@ To learn more about web-enq API, visit -
   pm2 stop hot_dev
 ```
 
+#### Production mode (use docker hub)
+
+* pull docker image
+```shell
+  docker pull enecuum/dex-ui:vX.X.X
+```
+
+* run the script for using docker images and running production solution (check the mode inside [./webpack.config.js][2],
+  must be 'production').
+```shell
+  npm run prod -- enecuum/dex-ui:vX.X.X
+```
+See entire configuration for production mode inside [./production.bash][11]
+
+#### Production mode (build image by yourself)
+
 * build the application with webpack (check the mode inside [./webpack.config.js][2], must be 'production')
 ```shell
-    npm run make
+  npm run make
+```
+* and then run production server
+```shell
+  npm run prod
 ```
 After assembling all files are put inside [./public][1] directory, where index.html is the frontend entry point, 
 and enex.webpack.js is the js bundle. Also, command creates docker image (check IMG_TAG variable into 
 [./production.bash][11])
-
-* run the script for using docker images and running production solution (check the mode inside [./webpack.config.js][2], 
-  must be 'production').
-```shell
-    npm run prod -- {tag}
-```
-tag - custom image tag. See entire configuration for production mode inside [./production.bash][11]
 
 * stop all docker images and clear memory by command:
 ```shell
   npm run clear
 ```
 
-#### Webpack config
+### Webpack config
+
 All settings for webpack module locates into [./webpack.config.js][2].
 Essential properties:
 * [entry][3] - root file, which imports all scripts, styles and other assets
@@ -71,7 +87,7 @@ Essential properties:
 * [module.rules][5] - amount of modules, and their rules for creating right imports
 * [devServer][6] - configuration field with server deployment properties (read more about in on https://webpack.js.org/configuration/dev-server/)
 
-#### Development mode
+### Development mode details
 
 In order to turn on the 'develop mode' you must specify in the file webpack.config.js in the property 'mode' the string 
 'development'. All server functional runs without docker images, therefore all manipulations with the server must be 
@@ -82,22 +98,22 @@ realized through the "pm2".
 In the develop mode you must take into consideration that all options specified in the server/scripts/hotDev.js file 
 have a higher priority than the config.json file settings.
 
-#### Redux
+### Redux
 
 We use Redux for more comfortable supervising of components states. You can find container inside the [./assets/store][7] directory. There is introduced seven main files and directories for creating main redux structure:
 * store.js - main assembly file
 * initialState.js and pageDataPresets.js - describe main state structure of the project
 * [./actions][8] and [./actionCreators][9] - directories with rules and methods for using redux store
 * [./reducers][10] - middle layer for store control, change state object according the actions
-* storetoProps.js - node for states and methods distribution across the components (react-redux connect())
+* storeToProps.js - node for states and methods distribution across the components (react-redux connect())
 
-#### Enecuum AMM DEX documentation 
+### Enecuum AMM DEX documentation 
 
 For more information about AMM DEX functional read: https://github.com/Enecuum/docs/issues/6
 
 ---
 
-#### Server architecture
+### Server architecture
 
 Dex-ui server architecture is the service-oriented architecture. At the moment the structure of the system has only two working parts: request divisor and file loader.
 Here in the image you can see the plain model:

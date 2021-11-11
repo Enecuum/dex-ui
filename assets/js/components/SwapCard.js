@@ -677,9 +677,9 @@ class SwapCard extends React.Component {
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
         let checkResult = this.validator.batchValidate(fieldData, rules)
 
-        if (mode === "exchange" && field === "field1") {
-            checkResult.dataValid = this.checkExchangeOutValue(modeData)
-        }
+        // if (mode === "exchange" && field === "field1") {
+        //     checkResult.dataValid = this.checkExchangeOutValue(modeData)
+        // }
 
         if (checkResult.dataValid) {
             this.props.assignCoinValue(mode, field, newValObj)
@@ -687,17 +687,6 @@ class SwapCard extends React.Component {
             checkResult = this.validator.batchValidate(this.activePair, activePairRules)
             if (checkResult.dataValid)
                 this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
-
-            // if (mode === "exchange" && field === "field0") {
-            //     while (modeData.field1.value.value === undefined) {
-            //
-            //     }
-            //     if (!this.checkExchangeOutValue(modeData)) {
-            //         this.props.assignCoinValue(mode, field, oldValObj)
-            //         fieldData.value = oldValObj
-            //         this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
-            //     }
-            // }
 
             modeData[field] = fieldData
             this.establishReadiness(this.validateSwapCard(modeData))
@@ -720,7 +709,7 @@ class SwapCard extends React.Component {
         return Number(rmPercent) <= 100
     }
 
-    countPrice(activeField, counterField, pair) {
+    countPrice(mode, activeField, counterField, pair) {
         let decimals = [activeField.token.decimals, counterField.token.decimals];
         if (activeField.token.hash !== pair.token_0.hash)
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
@@ -735,10 +724,17 @@ class SwapCard extends React.Component {
         let amountIn = activeField.value;
 
         if (this.props.menuItem === 'exchange') {
-            if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
-            else
-                return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+            if (activeField.token.hash === mode.field0.token.hash) {
+                if (activeField.token.hash === pair.token_0.hash)
+                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                else
+                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+            } else {
+                if (activeField.token.hash === pair.token_1.hash) {
+                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                } else
+                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+            }
         } else {
             if (activeField.token.hash === pair.token_0.hash)
                 return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn)
@@ -759,9 +755,9 @@ class SwapCard extends React.Component {
                 return;
             }
             if (removeLiquidity) {
-                this.countRemoveLiquidity(mode, aField, fieldObj.value);
+                this.countRemoveLiquidity(mode, aField, fieldObj.value)
             } else {
-                let counterFieldPrice = this.countPrice(fieldObj, counterField, this.activePair);
+                let counterFieldPrice = this.countPrice(this.props[mode], fieldObj, counterField, this.activePair)
                 this.props.assignCoinValue(mode, cField, {
                     value : counterFieldPrice.value,
                     decimals : counterFieldPrice.decimals,

@@ -62,6 +62,7 @@ class SwapAddon extends React.Component {
         if (!swapUtils.pairExists(pair))
             return (<></>)
 
+        let provider = this.props.exchange.field0.token
         let t = this.props.t
         return (
             <div className="general-card p-4">
@@ -77,7 +78,7 @@ class SwapAddon extends React.Component {
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         <span className="mr-2">{t('trade.swapAddon.priceImpact')}</span>
-                        <Tooltip text='Price impact tooltip text' />
+                        <Tooltip text='The difference between the mid-price and the execution price of a trade' />
                     </div>
                     <div>
                         <span className="text-color3">{this.showPriceImpact(pair)}%</span>
@@ -89,7 +90,7 @@ class SwapAddon extends React.Component {
                         <Tooltip text='Liquidity provider fee tooltip text' />
                     </div>
                     <div>
-                        {vp.usCommasBigIntDecimals(this.props.nativeToken.fee_value, this.props.nativeToken.decimals)} {this.props.nativeToken.ticker}
+                        {vp.usCommasBigIntDecimals(pair.pool_fee, provider.decimals)} {provider.ticker}
                     </div>
                 </div>                                
             </div>

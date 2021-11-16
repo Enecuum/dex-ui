@@ -317,7 +317,8 @@ function mapStoreToProps(component) {
                 return {
                     pairs       : state.root.pairs,
                     exchange    : state.swapCard.exchange,
-                    nativeToken : state.root.nativeToken
+                    nativeToken : state.root.nativeToken,
+                    tokens      : state.root.tokens
                 }
             }
         default:

@@ -32,28 +32,18 @@ class SwapAddon extends React.Component {
             decimals : secondData.token.decimals
         }
 
-        let exchangeRate = vp.div(vol0, vol1)
-        let pricePaidPerSwappedToken
-        if (pair.token_0.hash === data.field0.token.hash)
-            pricePaidPerSwappedToken = vp.div(data.field0.value, data.field1.value)
-        else
-            pricePaidPerSwappedToken = vp.div(data.field1.value, data.field0.value)
-        let priceImpact = vp.div(vp.sub(pricePaidPerSwappedToken, exchangeRate), exchangeRate)
-        return vp.mul(priceImpact, {value : 100, decimals : 0})
+        let midPrice = (pair.token_0.hash !== data.field0.token.hash) ? vp.div(vol0, vol1) : vp.div(vol1, vol0)
+
+        let mul = vp.mul(midPrice, data.field0.value)
+        let priceImpact = vp.div(vp.sub(mul, data.field1.value), mul)
+        return vp.mul(priceImpact, {value : 100, decimals: 0})
     }
 
     showPriceImpact (pair) {
         let priceImpact = this.countPriceImpact(pair)
-        if (!Object.keys(priceImpact).length)
-            return '< 0.001 '
-        let res = vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
-        let numFloat = Number.parseFloat(res.replace(',', ''))
-        if (numFloat > 100)
-            return '100 '
-        else if (numFloat < 0.001)
-            return '< 0.001 '
-        else
-            return res
+        if (priceImpact.decimals - String(priceImpact.value).length > 2)
+            return  "< 0.001"
+        return vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
     }
 
     render () {

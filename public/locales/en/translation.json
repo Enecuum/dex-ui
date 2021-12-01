@@ -15,7 +15,8 @@
             "info" : "Info",
             "topPairs" : "Top Pairs",
             "docs" : "Docs",
-            "drops" : "Space Drops"
+            "drops" : "Space Drops",
+            "spaceStation" : "Space Station"
         },
         "top" : {
             "header" : "Enecuum",

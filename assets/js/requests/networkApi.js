@@ -47,6 +47,14 @@ class NetworkApi {
         );
     };
 
+    networkInfo (url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/network_info`,
+            {
+                method : 'GET'
+            }
+        );        
+    }
+
     // ---------------------------------------------------------------------
 }
 

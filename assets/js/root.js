@@ -25,7 +25,7 @@ import store from '../store/store'
 import LPTokensWalletInfo from './components/LPTokensWalletInfo'
 import { Navbar, Aside, SwapCard, Switch,
          WaitingIssueTokenConfirmation,
-         TopPairs, Etm, Farms, Drops } from './components/entry'
+         TopPairs, Etm, Farms, Drops, SpaceStation } from './components/entry'
 import SwapAddon from "./components/SwapAddon"
 
 /* -------------------- Dex-ui pages --------------------- */
@@ -314,7 +314,13 @@ class Root extends React.Component {
                     <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <Drops useSuspense={false}/>
                     </div>                    
-                );                                     
+                );
+            case 'spaceStation' :
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceStation useSuspense={false}/>
+                    </div>                    
+                );                                                     
             default:
                 return (
                     <BlankPage text="Coming soon"/>

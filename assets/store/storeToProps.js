@@ -8,6 +8,7 @@ import indicatorPanelCreator from './actionCreators/indicatorPanel'
 import etmCreator from './actionCreators/etm'
 import farmsCreator from './actionCreators/farms'
 import dropsCreator from './actionCreators/drops'
+import spaceStationCreator from './actionCreators/spaceStation'
 
 const components = {
     ROOT                             : 0x0,
@@ -31,7 +32,8 @@ const components = {
     WAITING_ISSUE_TOKEN_CONFIRMATION : 0x12,
     FARMS                            : 0x13,
     DROPS                            : 0x14,
-    SWAP_ADDON                       : 0x15
+    SWAP_ADDON                       : 0x15,
+    SPACE_STATION                    : 0x16
 }
 
 function mapStoreToProps(component) {
@@ -312,6 +314,31 @@ function mapStoreToProps(component) {
                     }
                 }
             }
+        case components.SPACE_STATION:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.drops,
+                    farmsList         : state.spaceStation.farmsList,
+                    mainTokenAmount   : state.spaceStation.mainTokenAmount,
+                    mainTokenDecimals : state.spaceStation.mainTokenDecimals,
+                    mainTokenFee      : state.spaceStation.mainTokenFee,
+                    pricelist         : state.spaceStation.pricelist,                    
+                    showStakeModal    : state.spaceStation.showStakeModal,
+                    managedFarmData   : state.spaceStation.managedFarmData,
+                    currentAction     : state.spaceStation.currentAction,
+                    expandedRow       : state.spaceStation.expandedRow,
+                    exchangeRate      : state.aside.exchangeRate,
+                    stakeData         : {
+                        actionCost         : state.spaceStation.stakeData.actionCost,
+                        stakeValue         : state.spaceStation.stakeData.stakeValue,  
+                        stakeTxStatus      : state.spaceStation.stakeData.stakeTxStatus,
+                        stakeValid         : state.spaceStation.stakeData.stakeValid,
+                        msgData            : state.spaceStation.stakeData.msgData,
+                        stakeTokenAmount   : state.spaceStation.stakeData.stakeTokenAmount
+                    }
+                }
+            }            
         case components.SWAP_ADDON:
             return function (state) {
                 return {
@@ -462,11 +489,11 @@ function mapDispatchToProps(component) {
         case components.FARMS:
             return function (dispatch) {
                 return bindActionCreators({
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
                     updateFarmsList         : farmsCreator.updateFarmsList,
                     updateExpandedRow       : farmsCreator.updateExpandedRow,
                     updateManagedFarmData   : farmsCreator.updateManagedFarmData,
-                    updateSortType          : farmsCreator.updateSortType,
-                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updateSortType          : farmsCreator.updateSortType,                    
                     updShowStakeModal       : farmsCreator.updShowStakeModal,
                     updateMainTokenAmount   : farmsCreator.updateMainTokenAmount,
                     updateMainTokenDecimals : farmsCreator.updateMainTokenDecimals,
@@ -480,11 +507,11 @@ function mapDispatchToProps(component) {
         case components.DROPS:
             return function (dispatch) {
                 return bindActionCreators({
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
                     updateFarmsList         : dropsCreator.updateFarmsList,
                     updateExpandedRow       : dropsCreator.updateExpandedRow,
                     updateManagedFarmData   : dropsCreator.updateManagedFarmData,
-                    updateSortType          : dropsCreator.updateSortType,
-                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updateSortType          : dropsCreator.updateSortType,                    
                     updShowStakeModal       : dropsCreator.updShowStakeModal,
                     updateMainTokenAmount   : dropsCreator.updateMainTokenAmount,
                     updateMainTokenDecimals : dropsCreator.updateMainTokenDecimals,
@@ -494,7 +521,25 @@ function mapDispatchToProps(component) {
                     updateStakeData         : dropsCreator.updateStakeData,
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch) 
-            }            
+            }
+        case components.SPACE_STATION:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updateFarmsList         : spaceStationCreator.updateFarmsList,
+                    updateExpandedRow       : spaceStationCreator.updateExpandedRow,
+                    updateManagedFarmData   : spaceStationCreator.updateManagedFarmData,
+                    updateSortType          : spaceStationCreator.updateSortType,
+                    updShowStakeModal       : spaceStationCreator.updShowStakeModal,
+                    updateMainTokenAmount   : spaceStationCreator.updateMainTokenAmount,
+                    updateMainTokenDecimals : spaceStationCreator.updateMainTokenDecimals,
+                    updateMainTokenFee      : spaceStationCreator.updateMainTokenFee,
+                    updatePricelist         : spaceStationCreator.updatePricelist,
+                    updateCurrentAction     : spaceStationCreator.updateCurrentAction,
+                    updateStakeData         : spaceStationCreator.updateStakeData,
+                    changeMenuItem          : rootCreator.changeMenuItem
+                }, dispatch) 
+            }                         
         case components.TOP_PAIRS:
             return function (dispatch) {
                 return bindActionCreators({

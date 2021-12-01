@@ -15,7 +15,8 @@
             "info" : "Информация",
             "topPairs" : "Торговые пары",
             "docs" : "Документация",
-            "drops" : "Space Drops"
+            "drops" : "Space Drops",
+            "spaceStation" : "Space Station"
         },
         "top" : {
             "header" : "Enecuum",

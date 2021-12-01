@@ -3,6 +3,7 @@ const actionPack =  {
         TOGGLE_ASIDE            : 'TOGGLE_ASIDE',
         UPD_BALANCES            : 'UPD_BALANCES',
         CHANGE_NET              : 'CHANGE_NET',
+        UPD_NETWORK_INFO        : 'UPD_NETWORK_INFO',
         CHANGE_LANG             : 'CHANGE_LANG',
         CHANGE_CONN_STATUS      : 'CHANGE_CONN_STATUS',
         CHANGE_MENU_ITEM        : 'CHANGE_MENU_ITEM',

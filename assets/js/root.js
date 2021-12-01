@@ -33,6 +33,7 @@ import BlankPage from './pages/blankPage'
 
 /* -------------------- Request util --------------------- */
 import swapApi from './requests/swapApi'
+import networkApi from './requests/networkApi'
 
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
@@ -52,6 +53,13 @@ class Root extends React.Component {
         window.addEventListener('hashchange', () => {
             this.setPath()
         })
+        this.updNetworkInfo();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.net.url !== prevProps.net.url) {            
+            this.updNetworkInfo();
+        }
     }
 
     componentWillUnmount () {
@@ -105,6 +113,17 @@ class Root extends React.Component {
     };
 
     /* -------------------- Data loading --------------------- */
+
+    updNetworkInfo() {
+        let networkInfo = networkApi.networkInfo();
+        networkInfo.then(result => {
+            if (!result.lock) {
+                result.json().then(info => {
+                    this.props.updateNetworkInfo(info);
+                });
+            }
+        });    
+    }
 
     updDexData (pubkey) {
         this.updBalances(pubkey)

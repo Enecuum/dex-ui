@@ -15,6 +15,7 @@ function getDefaultField(id) {
 const initialState = {
     root : {
         net                     : presets.network.defaultNet,
+        networkInfo             : {},
         mainToken               : presets.network.nativeToken.hash, // <-
         mainTokenFee            : presets.network.nativeToken.fee,  // <-
         langData                : presets.langData,

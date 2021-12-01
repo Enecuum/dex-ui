@@ -154,15 +154,7 @@ class SpaceStation extends React.Component {
     updateFarms() {
         let whiteList = presets.dropFarms.spaceHarvestFarms.whiteList;
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
-        let networkInfo = networkApi.networkInfo();
-        networkInfo.then(result => {
-            if (!result.lock) {
-                result.json().then(info => {
-                    console.log(info);
-                });
-            }
-        });
-
+        
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {

@@ -722,18 +722,22 @@ class SwapCard extends React.Component {
             decimals : decimals[1]
         };
         let amountIn = activeField.value;
+        let pool_fee = {
+            value : pair.pool_fee,
+            decimals : decimals[0]
+        }
 
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 if (activeField.token.hash === pair.token_0.hash)
-                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, pool_fee)
                 else
-                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, pool_fee)
             } else {
                 if (activeField.token.hash === pair.token_1.hash) {
-                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, pool_fee)
                 } else
-                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, pool_fee)
             }
         } else {
             if (activeField.token.hash === pair.token_0.hash)

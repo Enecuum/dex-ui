@@ -156,8 +156,17 @@ class SwapCard extends React.Component {
         if (this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {
             window.location.hash = '#!action=' + presets.paths[mode] + '&pair=' + this.props[mode].field1.token.ticker + '-' + this.props[mode].field0.token.ticker + '&from=' + this.props[mode].field1.token.hash + '&to=' +  this.props[mode].field0.token.hash;
         }
-        this.props.swapFields(this.props.menuItem);
+        let oldHash = this.props[mode].field0.token.hash
+        this.props.swapFields(this.props.menuItem)
+        setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     };
+
+    recalculateSwap (mode, oldHash) {
+        if (this.props[mode].field0.token.hash !== oldHash)
+            this.changeField(this.props[mode].field0.id, {value : this.props[mode].field0.value.text})
+        else
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+    }
 
     changeBalance(field, hash) {
         this.props.assignBalanceObj(this.getMode(), field, utils.getBalanceObj(this.props.balances, hash));

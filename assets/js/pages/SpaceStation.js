@@ -69,12 +69,14 @@ class SpaceStation extends React.Component {
     };
 
     getDataSet() {
-        this.updateMainTokenInfo();
-        this.updateMainTokenAmount();
-        this.updateStakeTokenBalance();        
-        this.updatePricelist();
-        this.updateFarms();
-        this.updateSpaceStationPools();
+        if (this.props.connectionStatus) {
+            this.updateMainTokenInfo();
+            this.updateMainTokenAmount();
+            this.updateStakeTokenBalance();
+            this.updatePricelist();
+            this.updateFarms();
+            this.updateSpaceStationPools();
+        }
     }
 
     componentDidMount() {
@@ -155,8 +157,7 @@ class SpaceStation extends React.Component {
     }
 
     updateFarms() {
-        console.log(this.props.networkInfo)
-        let whiteList = this.props.networkInfo.dex.DEX_ENX_FARM_ID ? this.props.networkInfo.dex.DEX_ENX_FARM_ID : [null]
+        let whiteList = this.props.networkInfo.dex.DEX_ENX_FARM_ID !== undefined ? [this.props.networkInfo.dex.DEX_ENX_FARM_ID] : [null];
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {

@@ -156,8 +156,17 @@ class SwapCard extends React.Component {
         if (this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {
             window.location.hash = '#!action=' + presets.paths[mode] + '&pair=' + this.props[mode].field1.token.ticker + '-' + this.props[mode].field0.token.ticker + '&from=' + this.props[mode].field1.token.hash + '&to=' +  this.props[mode].field0.token.hash;
         }
-        this.props.swapFields(this.props.menuItem);
+        let oldHash = this.props[mode].field0.token.hash
+        this.props.swapFields(this.props.menuItem)
+        setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     };
+
+    recalculateSwap (mode, oldHash) {
+        if (this.props[mode].field0.token.hash !== oldHash)
+            this.changeField(this.props[mode].field0.id, {value : this.props[mode].field0.value.text})
+        else
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+    }
 
     changeBalance(field, hash) {
         this.props.assignBalanceObj(this.getMode(), field, utils.getBalanceObj(this.props.balances, hash));
@@ -722,18 +731,22 @@ class SwapCard extends React.Component {
             decimals : decimals[1]
         };
         let amountIn = activeField.value;
+        let pool_fee = {
+            value : pair.pool_fee,
+            decimals : decimals[0]
+        }
 
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 if (activeField.token.hash === pair.token_0.hash)
-                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, pool_fee)
                 else
-                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, pool_fee)
             } else {
                 if (activeField.token.hash === pair.token_1.hash) {
-                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, pool_fee)
                 } else
-                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, valueProcessor.valueToBigInt(pair.pool_fee, decimals[0]))
+                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, pool_fee)
             }
         } else {
             if (activeField.token.hash === pair.token_0.hash)

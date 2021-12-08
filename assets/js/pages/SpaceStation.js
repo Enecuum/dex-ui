@@ -18,6 +18,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
 import '../../css/drop-farms.css';
+import '../../css/space-station-pools.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
@@ -28,6 +29,7 @@ class SpaceStation extends React.Component {
     constructor(props) {
         super(props);
         this.farms = [];
+        this.spaceStationPools = [];
 
         this.dropFarmActions = [
             'farm_create',
@@ -71,7 +73,8 @@ class SpaceStation extends React.Component {
         this.updateMainTokenAmount();
         this.updateStakeTokenBalance();        
         this.updatePricelist();
-        this.updateFarms(); 
+        this.updateFarms();
+        this.updateSpaceStationPools();
     }
 
     componentDidMount() {
@@ -152,9 +155,10 @@ class SpaceStation extends React.Component {
     }
 
     updateFarms() {
-        let whiteList = presets.dropFarms.spaceHarvestFarms.whiteList;
+        console.log(this.props.networkInfo)
+        let whiteList = this.props.networkInfo.dex.DEX_ENX_FARM_ID ? this.props.networkInfo.dex.DEX_ENX_FARM_ID : [null]
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
-        
+
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
@@ -175,6 +179,31 @@ class SpaceStation extends React.Component {
             }
         }, () => {
             this.farms = [];
+        })
+    }
+
+    updateSpaceStationPools() {
+        let spaceStationPools = networkApi.getSpaceStationPools();
+        spaceStationPools.then(result => {
+            if (!result.lock) {
+                result.json().then(resultSpaceStationPools => {
+                    this.spaceStationPools = resultSpaceStationPools;
+                    this.props.updatePoolsList({
+                        value : resultSpaceStationPools
+                    });
+                    // if (this.props.expandedRow !== null) {
+                    //     this.props.updateManagedFarmData({
+                    //         value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
+                    //     });                       
+                    // } else {
+                    //     this.props.updateManagedFarmData({
+                    //         value : null
+                    //     });                        
+                    // }                                      
+                })
+            }
+        }, () => {
+            this.spaceStationPools = [];
         })
     }    
 
@@ -295,7 +324,7 @@ class SpaceStation extends React.Component {
 
     getStakeButton() {
         const t = this.props.t;
-        let active = (this.props.managedFarmData.blocks_left === null || this.props.managedFarmData.blocks_left > 0) && (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
+        let active = (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
         let attributes = {
             active : {
                 className : 'btn py-3 px-5 w-100 outline-border-color3-button'
@@ -319,7 +348,7 @@ class SpaceStation extends React.Component {
     }
 
     getIncreaseDecreaseStakeButtons(){
-        let increaseStakeActive = (this.props.managedFarmData.blocks_left > 0) && (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
+        let increaseStakeActive = (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
         let decreaseStakeActive = this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_close_stake));
         return (
             <>
@@ -628,7 +657,7 @@ class SpaceStation extends React.Component {
             <div className="h2 mb-5">
                 {t('navbars.left.spaceStation')}
             </div>
-		    	<div className="drop-farms-table-wrapper">			    		
+		    	<div className="drop-farms-table-wrapper mb-5">			    		
 					<Table hover variant="dark" className="table-to-cards">
 						<tbody>
 					        {this.farms.map(( farm, index ) => {
@@ -686,12 +715,10 @@ class SpaceStation extends React.Component {
 													<div className="dropfarms-controls-wrapper mx-0 px-0">
 														<div className="dropfarm-control">
 															<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																<div className="d-flex align-items-center justify-content-start mb-2">
-																	{farm.earned !== undefined && farm.earned > 0 && 
-																		<div className="text-color3 mr-2">
-																			{farm.reward_token_name}
-																		</div>
-																	}
+																<div className="d-flex align-items-center justify-content-start mb-2">																	
+																	<div className="text-color3 mr-2">
+																		{farm.reward_token_name}
+																	</div>																	
 																	<div className="color-2">
 																		{t('dropFarms.earned')}
 																	</div>																	
@@ -724,6 +751,66 @@ class SpaceStation extends React.Component {
     	)
     }
 
+    switchToPool() {
+      this.props.changeMenuItem('pool');      
+    }    
+
+    getPoolsTable() {
+        const t = this.props.t;
+        return(
+            <>
+                <div className="h2 mb-5">
+                    LP-ENX pools
+                </div>
+
+                <div className="pairs-table-wrapper">
+                    <SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>    
+                        <Table hover variant="dark" style={{tableLayout : 'auto'}}>
+                              <thead>
+                                <tr>
+                                    <th>{t('numberSign')}</th>
+                                    <th>{t('name')}</th>
+                                    <th></th>           
+                                </tr>
+                              </thead>
+                            <tbody>
+                                {this.spaceStationPools.map(( pool, index ) => {
+                                  return (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td className="text-nowrap">
+                                            <a
+                                                href = {"/#!action=pool&pair=" + pool.ticker_1 + "-" + pool.ticker_2 + '&from=' + pool.asset_1 + "&to=" + pool.asset_2}
+                                                onClick={this.switchToPool.bind(this)}
+                                                className="text-color4-link hover-pointer">
+                                                {pool.ticker_1}-{pool.ticker_2}
+                                            </a>
+                                        </td>
+                                        <td>                            <Button variant="primary"
+                            onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')} className="unselectable-text"> 
+                              Distibute
+                              </Button> </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                        </Table>
+                    </SimpleBar>
+                </div>
+            </>
+        ); 
+    }
+
+    distribute(LPTokenHash) {
+         extRequests.dexCmdDistribute(this.props.pubkey, this.props.mainTokenFee, {token_hash : LPTokenHash}).then(result => {
+            console.log(result);
+        },
+        error => {
+            console.log(error, 'Error')
+            //this.props.changeWaitingStateType('rejected');
+        });         
+    }    
+
     render() {
 		const t = this.props.t;
        
@@ -733,11 +820,12 @@ class SpaceStation extends React.Component {
 					<Card className="c-card-1 pt-4" id="farmsCard">
 					  <Card.Body>
 					    <Card.Text as="div">
-						    {this.props.connectionStatus && this.farms !== undefined && this.farms.length > 0 ? this.getFarmsTable() : this.getTmpErrorElement() /*проверка на пустой массив списка ферм*/}				    
+						    {this.props.connectionStatus && this.farms !== undefined && this.farms.length > 0 ? this.getFarmsTable() : this.getTmpErrorElement()}
+                            {this.props.connectionStatus && this.spaceStationPools !== undefined && this.spaceStationPools.length > 0 ? this.getPoolsTable() : ''}				    
 					    </Card.Text>
 					  </Card.Body>
-					</Card>    			
-    			</div>
+					</Card>                       			
+    			</div> 
                 <Suspense fallback={<div>---</div>}>
                     <StakeModalSpaceStation/>
                 </Suspense>

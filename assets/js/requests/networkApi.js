@@ -55,6 +55,14 @@ class NetworkApi {
         );        
     }
 
+    getSpaceStationPools (url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/get_sstation_pools`,
+            {
+                method : 'GET'
+            }
+        );        
+    }    
+
     // ---------------------------------------------------------------------
 }
 

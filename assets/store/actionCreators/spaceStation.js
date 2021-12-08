@@ -14,7 +14,13 @@ const actionCreators = {
             type : actions.SPACE_STATION_UPDATE_FARMS_LIST,
             payload : payload.value 
         };
-    },    
+    },
+    updatePoolsList (payload) {
+        return {
+            type : actions.SPACE_STATION_UPDATE_POOLS_LIST,
+            payload : payload.value 
+        };
+    },
     updateManagedFarmData (payload) {
         return {
             type : actions.SPACE_STATION_UPDATE_MANAGED_FARM_DATA,

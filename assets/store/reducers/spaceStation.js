@@ -42,7 +42,12 @@ export default function spaceStationReducer (state = initialState.spaceStation, 
             return {
                 ...state,
                 farmsList : action.payload
-            };        
+            };
+        case actions.SPACE_STATION_UPDATE_POOLS_LIST:
+            return {
+                ...state,
+                poolsList : action.payload
+            };                     
         case actions.SPACE_STATION_UPDATE_MANAGED_FARM_DATA:
             return {
                 ...state,

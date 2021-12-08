@@ -129,6 +129,7 @@ class Root extends React.Component {
         this.updBalances(pubkey)
         this.updPools()
         this.updTokens()
+        this.updNetworkInfo()
     }
 
     updNativeTokenData () {

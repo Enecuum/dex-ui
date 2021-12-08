@@ -318,8 +318,9 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
-                    ...state.drops,
+                    networkInfo       : state.root.networkInfo,
                     farmsList         : state.spaceStation.farmsList,
+                    poolsList         : state.spaceStation.poolsList,
                     mainTokenAmount   : state.spaceStation.mainTokenAmount,
                     mainTokenDecimals : state.spaceStation.mainTokenDecimals,
                     mainTokenFee      : state.spaceStation.mainTokenFee,
@@ -527,6 +528,7 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     updCurrentTxHash        : rootCreator.updCurrentTxHash,
                     updateFarmsList         : spaceStationCreator.updateFarmsList,
+                    updatePoolsList         : spaceStationCreator.updatePoolsList,
                     updateExpandedRow       : spaceStationCreator.updateExpandedRow,
                     updateManagedFarmData   : spaceStationCreator.updateManagedFarmData,
                     updateSortType          : spaceStationCreator.updateSortType,

@@ -174,6 +174,7 @@ const initialState = {
         showStakeModal    : false,
         currentAction     : undefined,
         farmsList         : [],
+        poolsList         : [],
         exchangeRate      : 0,
         stakeData         : {
             actionCost         : 0,

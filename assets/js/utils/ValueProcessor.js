@@ -29,9 +29,10 @@ class ValueProcessor {
         };
     }
     usCommasBigIntDecimals (input, decimals=10, fixed=10) {
+	    console.log(input, decimals, fixed)
         if(typeof input === 'bigint' || !isNaN(input)) {
             if (decimals === undefined || decimals === null || isNaN(decimals) || input === null)
-                return '---';          
+                return '---';
             let str = BigInt(input).toString();
             let integerPart = '0';
             let fractionalPart = '0';

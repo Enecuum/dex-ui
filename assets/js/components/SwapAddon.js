@@ -38,7 +38,11 @@ class SwapAddon extends React.Component {
         let priceImpact = this.countPriceImpact(pair)
         if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
             return  "< 0.001"
-        return vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+        try {
+            return vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+        } catch (e) {
+            return ""
+        }
     }
 
     render () {

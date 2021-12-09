@@ -126,10 +126,12 @@ class Root extends React.Component {
     }
 
     updDexData (pubkey) {
-        this.updBalances(pubkey)
-        this.updPools()
-        this.updTokens()
-        this.updNetworkInfo()
+        if (this.props.connectionStatus) {
+            this.updBalances(pubkey)
+            this.updPools()
+            this.updTokens()
+            this.updNetworkInfo()
+        }
     }
 
     updNativeTokenData () {
@@ -143,8 +145,7 @@ class Root extends React.Component {
 
     intervalUpdDexData () {
         return setInterval(() => {
-            if (this.props.connectionStatus)
-                this.updDexData(this.props.pubkey)
+            this.updDexData(this.props.pubkey)
         }, 5000)
     }
 
@@ -172,7 +173,7 @@ class Root extends React.Component {
         .then(res => {
             if (!res.lock)
                 res.json()
-                .then(tokens => {                    
+                .then(tokens => {
                     let tokenHashArr = []
                     this.props.balances.forEach(balance => {
                         tokenHashArr.push({hash : balance.token})
@@ -189,8 +190,8 @@ class Root extends React.Component {
                                 let isInArr = tokenHashArr.find(elem => elem.hash === hash)
                                 if (!isInArr)
                                     tokenHashArr.push({hash : hash})                                
-                            }                                 
-                        }                        
+                            }
+                        }
                     })
                     this.addOptionalTokenInfo(tokens, tokenHashArr)
                 })
@@ -201,7 +202,8 @@ class Root extends React.Component {
         let promises = []
         let indexes = []
         let iCounter = 0
-
+        if (!subset.length)
+            return
         subset.forEach(elem => {
             let isInTokensArr = tokens.find(token => token.hash === elem.hash)
             if (isInTokensArr) {

@@ -7,6 +7,7 @@ import Tooltip from "../elements/Tooltip"
 
 import swapUtils from "../utils/swapUtils"
 import ValueProcessor from "../utils/ValueProcessor"
+import testFormulas from "../utils/testFormulas"
 
 const vp = new ValueProcessor()
 
@@ -20,30 +21,28 @@ class SwapAddon extends React.Component {
     }
 
     countPriceImpact (pair) {
-        let data = this.props.exchange, fieldNum = (pair.token_0.hash === data.field0.token.hash) ? [0, 1] : [1, 0]
-        let firstData = data["field" + fieldNum[0]]
-        let secondData = data["field" + fieldNum[1]]
-
-        let vol0 = {
-            value : pair.token_0.volume,
-            decimals : firstData.token.decimals
-        }, vol1 = {
-            value : pair.token_1.volume,
-            decimals : secondData.token.decimals
+        let data = this.props.exchange
+        let amountIn = {
+            value : data.field0.value.value,
+            decimals : data.field0.value.decimals,
+            token : data.field0.token
+        }, amountOut = {
+            value : data.field1.value.value,
+            decimals : data.field1.value.decimals,
+            token : data.field1.token
         }
-
-        let midPrice = (pair.token_0.hash !== data.field0.token.hash) ? vp.div(vol0, vol1) : vp.div(vol1, vol0)
-
-        let mul = vp.mul(midPrice, data.field0.value)
-        let priceImpact = vp.div(vp.sub(mul, data.field1.value), mul)
-        return vp.mul(priceImpact, {value : 100, decimals: 0})
+        return testFormulas.countPriceImpact(pair, amountIn, amountOut, this.props.tokens)
     }
 
     showPriceImpact (pair) {
         let priceImpact = this.countPriceImpact(pair)
         if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
             return  "< 0.001"
-        return vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+        try {
+            return vp.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+        } catch (e) {
+            return ""
+        }
     }
 
     render () {
@@ -80,7 +79,7 @@ class SwapAddon extends React.Component {
                         <Tooltip text='Liquidity provider fee tooltip text' />
                     </div>
                     <div>
-                        {vp.usCommasBigIntDecimals(pair.pool_fee, provider.decimals)} {provider.ticker}
+                        {Number(pair.pool_fee) / 100} {provider.ticker}
                     </div>
                 </div>                                
             </div>

@@ -1,11 +1,43 @@
 import utils from './swapUtils';
 import ValueProcessor from './ValueProcessor';
+import swapUtils from "./swapUtils";
 
 const vp = new ValueProcessor();
 
 function getAddLiquidityPrice (input_0, input_1, coinValue) {
     let mul = vp.mul(input_0, coinValue);
     return vp.div(mul, input_1);
+}
+
+/**
+ *
+ * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
+ * @param {object} amountIn - amount structure {value, decimals, (token)} where token is the extra option for cases when first token of the pool does not match the amountIn token
+ * @param {string} amountOut - amount structure {value, decimals, (token)} where token is the extra option for cases when second token of the pool does not match the amountOut token
+ * @param {object} tokens - list of tokens from redux state
+ * @returns {object} - priceImpact as {value, decimals}
+ */
+function countPriceImpact (pair, amountIn, amountOut, tokens) {
+    // ------------------------------- prepare volume and amount -------------------------------------------
+    if (!amountIn.token && !amountOut.token) {
+        amountIn.token = pair.token_0
+        amountOut.token = pair.token_1
+    }
+    let token0Decimals = swapUtils.getTokenObj(tokens, pair.token_0.hash).decimals
+    let token1Decimals = swapUtils.getTokenObj(tokens, pair.token_1.hash).decimals
+    let vol0 = {
+        value : pair.token_0.volume,
+        decimals : (pair.token_0.hash === amountIn.token.hash) ? token0Decimals : token1Decimals
+    }, vol1 = {
+        value : pair.token_1.volume,
+        decimals : (pair.token_1.hash === amountIn.token.hash) ? token1Decimals : token0Decimals
+    }
+    // -----------------------------------------------------------------------------------------------------
+    let midPrice = (pair.token_0.hash !== amountIn.token.hash) ? vp.div(vol0, vol1) : vp.div(vol1, vol0)
+
+    let mul = vp.mul(midPrice, amountIn)
+    let priceImpact = vp.div(vp.sub(mul, amountOut), mul)
+    return vp.mul(priceImpact, {value : 100, decimals: 0})
 }
 
 function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
@@ -99,6 +131,7 @@ function countLTValue (pair, uiPair, mode, tokens) {
 global.getAddLiquidityPrice = getAddLiquidityPrice
 
 export default {
+    countPriceImpact,
     getAddLiquidityPrice,
     ltDestruction,
     countLTValue,

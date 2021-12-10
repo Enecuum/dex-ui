@@ -483,9 +483,10 @@ class SwapCard extends React.Component {
             } else 
                 this.insufficientFunds = false;
             if (this.pairExists === false) {
-                buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
+                if (!this.insufficientFunds)
+                    buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
                 return (
-                    <div>
+                    <div className="w-100">
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
                             { this.props.t('trade.swapCard.aboutButtonInfo.withoutPair') }
                         </div>
@@ -860,8 +861,12 @@ class SwapCard extends React.Component {
             balance: nativeBalance,
             value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
         }
-        let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
-        return this.validator.batchValidate(modeData, rules)
+        if (modeData.field0.value.text && modeData.field1.value.text) {
+            let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData, this.getMode())
+            return this.validator.batchValidate(modeData, rules)
+        } else {
+            return false
+        }
     }
 
     closeTokenList(tokenObj, activeField) {
@@ -940,7 +945,7 @@ class SwapCard extends React.Component {
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (subtraction1.value < 0 && this.props.menuItem !== 'exchange')
+        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.pairExists))
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

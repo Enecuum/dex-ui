@@ -11,7 +11,7 @@ function pairExists (pair) {
 function removeEndZeros (value, strLength) {
     value = String(value)
     if (strLength === undefined) {
-        let parts = String(value).split(/[\.|,]/)
+        let parts = String(value).split(/[\.]/)
         strLength = (parts.length === 2) ? parts[0].length + 11 : parts[0]
     }
     if ((/\.[0-9]*0+$/).test(value) && value !== '0') {
@@ -74,7 +74,7 @@ function countExchangeRate (pair, firstPerSecond, modeStruct) {
             pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
     }
     if (pair.token_0.volume   !== undefined && 
-        pair.token_1.volume   !== undefined &&  
+        pair.token_1.volume &&
         pair.token_1.decimals !== undefined &&  
         pair.token_0.decimals !== undefined) {
         let res = vp.div({

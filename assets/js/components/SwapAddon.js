@@ -53,6 +53,10 @@ class SwapAddon extends React.Component {
 
         let provider = this.props.exchange.field0.token
         let t = this.props.t
+
+        let providerFee = vp.mul({value : pair.pool_fee, decimals : 0}, this.props.exchange.field0.value)
+        providerFee = vp.div(providerFee, {value : 100, decimals : 0})
+        providerFee = vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals)
         return (
             <div className="general-card p-4">
                 {/*<div className="d-block d-md-flex align-items-center justify-content-between py-2">*/}
@@ -79,9 +83,9 @@ class SwapAddon extends React.Component {
                         <Tooltip text='Liquidity provider fee tooltip text' />
                     </div>
                     <div>
-                        {Number(pair.pool_fee) / 100} {provider.ticker}
+                        {swapUtils.removeEndZeros(providerFee ? providerFee : "0.0")} {provider.ticker}
                     </div>
-                </div>                                
+                </div>
             </div>
         )
     }

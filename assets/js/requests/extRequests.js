@@ -193,11 +193,7 @@ class ExtRequests {
         console.log(data);
         console.log(params);
         return trafficController.sendTransaction(data);
-    };
-
-
-    
-    
+    };    
 }
 
 const extRequests = new ExtRequests();

@@ -184,23 +184,52 @@ class SpaceStation extends React.Component {
     }
 
     updateSpaceStationPools() {
+        let that = this;
         let spaceStationPools = networkApi.getSpaceStationPools();
         spaceStationPools.then(result => {
             if (!result.lock) {
                 result.json().then(resultSpaceStationPools => {
-                    this.spaceStationPools = resultSpaceStationPools;
-                    this.props.updatePoolsList({
-                        value : resultSpaceStationPools
-                    });
-                    // if (this.props.expandedRow !== null) {
-                    //     this.props.updateManagedFarmData({
-                    //         value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
-                    //     });                       
-                    // } else {
-                    //     this.props.updateManagedFarmData({
-                    //         value : null
-                    //     });                        
-                    // }                                      
+                    let spaceStationPools = resultSpaceStationPools;
+                    let commanderBalances = networkApi.getAccountBalancesAll();
+                    networkApi.getAccountBalancesAll(that.props.networkInfo.dex.DEX_COMMANDER_ADDRESS)
+                    .then(balances => {
+                        balances.json().then(function(commanderBalances) {
+                            let enxHash = that.props.networkInfo.dex.DEX_ENX_TOKEN_HASH;
+                            spaceStationPools.forEach(function(pool) {
+                                let LPBalance = commanderBalances.find(balance => balance.token === pool.asset_LP);
+                                if (LPBalance !== undefined) {
+                                    pool.LPTokenOnCommanderBalance = LPBalance;
+                                    let vol_LP = {
+                                        value    : pool.volume_LP,
+                                        decimals : pool.decimals_LP
+                                    }
+
+                                    let vol_ENX = {
+                                        value    : pool.volume_ENX,
+                                        decimals : pool.decimals_ENX
+                                    }
+
+                                    let amountIn = {
+                                        value    : pool.LPTokenOnCommanderBalance.amount,
+                                        decimals : pool.decimals_LP
+                                    }
+
+                                    let pool_fee = {
+                                        value    : pool.pool_fee,
+                                        decimals : 2
+                                    }
+
+                                    pool.distributeResult = {
+                                        enxOut : testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee)
+                                    }
+                                }
+                            });
+                            that.spaceStationPools = spaceStationPools;
+                            that.props.updatePoolsList({
+                                value : that.spaceStationPools
+                            });
+                        });
+                    })
                 })
             }
         }, () => {
@@ -771,6 +800,8 @@ class SpaceStation extends React.Component {
                                 <tr>
                                     <th>{t('numberSign')}</th>
                                     <th>{t('name')}</th>
+                                    <th>LP Amount</th>
+                                    <th>ENX out</th>
                                     <th></th>           
                                 </tr>
                               </thead>
@@ -781,16 +812,22 @@ class SpaceStation extends React.Component {
                                         <td>{index + 1}</td>
                                         <td className="text-nowrap">
                                             <a
-                                                href = {"/#!action=pool&pair=" + pool.ticker_1 + "-" + pool.ticker_2 + '&from=' + pool.asset_1 + "&to=" + pool.asset_2}
+                                                href = {"/#!action=pool&pair=" + pool.ticker_LP + "-" + pool.ticker_ENX + '&from=' + pool.asset_LP + "&to=" + pool.asset_ENX}
                                                 onClick={this.switchToPool.bind(this)}
                                                 className="text-color4-link hover-pointer">
-                                                {pool.ticker_1}-{pool.ticker_2}
+                                                {pool.ticker_LP}-{pool.ticker_ENX}
                                             </a>
                                         </td>
-                                        <td>                            <Button variant="primary"
-                            onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')} className="unselectable-text"> 
-                              Distibute
-                              </Button> </td>
+                                        <td>{pool.LPTokenOnCommanderBalance !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.LPTokenOnCommanderBalance.amount, pool.LPTokenOnCommanderBalance.decimals, pool.LPTokenOnCommanderBalance.decimals) : '---'}</td>
+                                        <td>
+                                            {pool.distributeResult !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.distributeResult.enxOut.value, pool.distributeResult.enxOut.decimals, pool.decimals_ENX) : '---'}
+                                        </td>
+                                        <td>
+                                            <Button variant="primary"
+                                                onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')} className="unselectable-text">
+                                                Distibute
+                                            </Button>
+                                        </td>
                                     </tr>
                                   );
                                 })}

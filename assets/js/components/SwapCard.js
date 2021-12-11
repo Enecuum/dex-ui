@@ -687,6 +687,9 @@ class SwapCard extends React.Component {
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
         let checkResult = this.validator.batchValidate(fieldData, rules)
 
+        rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
+        console.log(this.validator.batchValidate(this.activePair, rules))
+
         // if (mode === "exchange" && field === "field1") {
         //     checkResult.dataValid = this.checkExchangeOutValue(modeData)
         // }
@@ -731,29 +734,29 @@ class SwapCard extends React.Component {
             value : BigInt(pair.token_1.volume),
             decimals : decimals[1]
         };
-        let amountIn = activeField.value;
+        let activeAmount = activeField.value;
         let pool_fee = {
             value : pair.pool_fee,
-            decimals : decimals[0]
+            decimals : 2
         }
 
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 if (activeField.token.hash === pair.token_0.hash)
-                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, pool_fee)
+                    return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 else
-                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, pool_fee)
+                    return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
                 if (activeField.token.hash === pair.token_1.hash) {
-                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, pool_fee)
+                    return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
-                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, pool_fee)
+                    return testFormulas.revGetSwapPrice(volume1, volume0, activeAmount, pool_fee)
             }
         } else {
             if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn)
+                return testFormulas.getAddLiquidityPrice(volume1, volume0, activeAmount)
             else
-                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn)
+                return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
         }
     };
 

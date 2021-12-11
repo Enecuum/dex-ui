@@ -38,6 +38,16 @@ function countPercentsByPortion (fullAmount, portion) {
     return vp.usCommasBigIntDecimals(res.value, res.decimals);
 }
 
+function countProviderFee (pool_fee, field0ValueObj) {
+    let providerFee = vp.mul({value : pool_fee, decimals : 2}, field0ValueObj)
+    try {
+        providerFee = vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals)
+    } catch (e) {
+        providerFee = undefined
+    }
+    return providerFee
+}
+
 /**
  * Get exchange rate of two tokens. Все value и volume передавать в "копейках".
  * @param {object} pair - pool structure {token_0 : {volume, hash} , token_1 : {volume, hash}, lt, pool_fee}
@@ -205,6 +215,7 @@ export default {
     countPercentsByPortion,
     countExchangeRate,
     packAddressString,
+    countProviderFee,
     countPoolShare,
     removeEndZeros,
     countPortion,

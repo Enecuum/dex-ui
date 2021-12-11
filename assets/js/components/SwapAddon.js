@@ -54,9 +54,7 @@ class SwapAddon extends React.Component {
         let provider = this.props.exchange.field0.token
         let t = this.props.t
 
-        let providerFee = vp.mul({value : pair.pool_fee, decimals : 0}, this.props.exchange.field0.value)
-        providerFee = vp.div(providerFee, {value : 100, decimals : 0})
-        providerFee = vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals)
+        let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
         return (
             <div className="general-card p-4">
                 {/*<div className="d-block d-md-flex align-items-center justify-content-between py-2">*/}

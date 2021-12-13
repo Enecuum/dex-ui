@@ -319,6 +319,7 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     networkInfo       : state.root.networkInfo,
+                    tokens            : state.root.tokens,
                     farmsList         : state.spaceStation.farmsList,
                     poolsList         : state.spaceStation.poolsList,
                     mainTokenAmount   : state.spaceStation.mainTokenAmount,

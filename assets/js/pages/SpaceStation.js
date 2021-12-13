@@ -211,7 +211,10 @@ class SpaceStation extends React.Component {
 
                                     let amountIn = {
                                         value    : pool.LPTokenOnCommanderBalance.amount,
-                                        decimals : pool.decimals_LP
+                                        decimals : pool.decimals_LP,
+                                        token    : {
+                                            hash: pool.asset_LP
+                                        }
                                     }
 
                                     let pool_fee = {
@@ -219,8 +222,29 @@ class SpaceStation extends React.Component {
                                         decimals : 2
                                     }
 
+                                    let enxOut =  testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee);
+                                    enxOut.token = {
+                                            hash: pool.asset_ENX
+                                        }
+
+                                    pool.enxPrice = valueProcessor.div(vol_LP,vol_ENX);
+
+                                    let pair = {
+                                        token_0 : {
+                                            volume : vol_LP.value,
+                                            hash : pool.asset_LP
+                                        },
+                                        token_1 : {
+                                            volume : vol_ENX.value,
+                                            hash : pool.asset_ENX
+                                        }
+                                    }
+
+                                    let priceImpact = testFormulas.countPriceImpact(pair, amountIn, enxOut, that.props.tokens);
+
                                     pool.distributeResult = {
-                                        enxOut : testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee)
+                                        enxOut : enxOut,
+                                        priceImpact : that.showPriceImpact(priceImpact)
                                     }
                                 }
                             });
@@ -235,7 +259,18 @@ class SpaceStation extends React.Component {
         }, () => {
             this.spaceStationPools = [];
         })
-    }    
+    }
+
+    showPriceImpact(priceImpact) {
+        if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
+            return  "< 0.001"
+        try {
+            return valueProcessor.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+        } catch (e) {
+            return ""
+        }         
+    }
+   
 
     updateExpandedRow(event) {
     	const target = event.target;        
@@ -800,8 +835,10 @@ class SpaceStation extends React.Component {
                                 <tr>
                                     <th>{t('numberSign')}</th>
                                     <th>{t('name')}</th>
-                                    <th>LP Amount</th>
-                                    <th>ENX out</th>
+                                    <th>Enex treasury</th>
+                                    <th>Estimation</th>
+                                    <th>ENX price in pool</th>
+                                    <th>Price impact</th>
                                     <th></th>           
                                 </tr>
                               </thead>
@@ -823,8 +860,14 @@ class SpaceStation extends React.Component {
                                             {pool.distributeResult !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.distributeResult.enxOut.value, pool.distributeResult.enxOut.decimals, pool.decimals_ENX) : '---'}
                                         </td>
                                         <td>
-                                            <Button variant="primary"
-                                                onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')} className="unselectable-text">
+                                            {pool.enxPrice !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.enxPrice.value, pool.enxPrice.decimals, pool.decimals_LP) : '---'}
+                                        </td>
+                                        <td>
+                                            {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
+                                        </td>                                        
+                                        <td>
+                                            <Button className="btn outline-border-color3-button unselectable-text"                                                
+                                                onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')}>
                                                 Distibute
                                             </Button>
                                         </td>

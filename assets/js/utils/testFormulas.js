@@ -1,6 +1,7 @@
 import utils from './swapUtils';
 import ValueProcessor from './ValueProcessor';
 import swapUtils from "./swapUtils";
+import {values} from "regenerator-runtime";
 
 const vp = new ValueProcessor();
 
@@ -102,13 +103,28 @@ function ltDestruction (tokens, pair, tokenTrio, chField) {
     }
 }
 
+function bigIntSqrt(value) {
+    if (value < 0n)
+        return ""
+    if (value < 2n)
+        return value
+    function newtonIteration(n, x0) {
+        const x1 = ((n / x0) + x0) >> 1n
+        if (x0 === x1 || x0 === (x1 - 1n)) {
+            return x0
+        }
+        return newtonIteration(n, x1)
+    }
+    return newtonIteration(value, 1n)
+}
+
 function countLTValue (pair, uiPair, mode, tokens) {
     // create pool case
     if (!utils.pairExists(pair)) {
-        let res = vp.mul(uiPair.field0.value, uiPair.field1.value)
-        if (res.value === undefined)
-            return {};
-        return vp.valueToBigInt(Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals)))), res.decimals)
+        let mul = uiPair.field0.value.value * uiPair.field1.value.value
+        if (!mul)
+            return {value: 0, decimals: 0}
+        return {value: bigIntSqrt(mul), decimals: 10}
     }
     // exchange mode has no lt-calculations
     // https://github.com/Enecuum/docs/issues/6

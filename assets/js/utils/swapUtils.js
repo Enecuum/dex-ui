@@ -11,7 +11,7 @@ function pairExists (pair) {
 function removeEndZeros (value, strLength) {
     value = String(value)
     if (strLength === undefined) {
-        let parts = String(value).split(/[\.|,]/)
+        let parts = String(value).split(/[\.]/)
         strLength = (parts.length === 2) ? parts[0].length + 11 : parts[0]
     }
     if ((/\.[0-9]*0+$/).test(value) && value !== '0') {
@@ -36,6 +36,16 @@ function countPercentsByPortion (fullAmount, portion) {
     let hundred = {value : 100, decimals : 0};
     let res = vp.mul(vp.div(portion, fullAmount), hundred);
     return vp.usCommasBigIntDecimals(res.value, res.decimals);
+}
+
+function countProviderFee (pool_fee, field0ValueObj) {
+    let providerFee = vp.mul({value : pool_fee, decimals : 2}, field0ValueObj)
+    try {
+        providerFee = vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals)
+    } catch (e) {
+        providerFee = undefined
+    }
+    return providerFee
 }
 
 /**
@@ -74,7 +84,7 @@ function countExchangeRate (pair, firstPerSecond, modeStruct) {
             pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
     }
     if (pair.token_0.volume   !== undefined && 
-        pair.token_1.volume   !== undefined &&  
+        pair.token_1.volume &&
         pair.token_1.decimals !== undefined &&  
         pair.token_0.decimals !== undefined) {
         let res = vp.div({
@@ -205,6 +215,7 @@ export default {
     countPercentsByPortion,
     countExchangeRate,
     packAddressString,
+    countProviderFee,
     countPoolShare,
     removeEndZeros,
     countPortion,

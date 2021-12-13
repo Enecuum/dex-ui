@@ -483,9 +483,10 @@ class SwapCard extends React.Component {
             } else 
                 this.insufficientFunds = false;
             if (this.pairExists === false) {
-                buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
+                if (!this.insufficientFunds)
+                    buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
                 return (
-                    <div>
+                    <div className="w-100">
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
                             { this.props.t('trade.swapCard.aboutButtonInfo.withoutPair') }
                         </div>
@@ -686,6 +687,9 @@ class SwapCard extends React.Component {
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
         let checkResult = this.validator.batchValidate(fieldData, rules)
 
+        rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
+        console.log(this.validator.batchValidate(this.activePair, rules))
+
         // if (mode === "exchange" && field === "field1") {
         //     checkResult.dataValid = this.checkExchangeOutValue(modeData)
         // }
@@ -730,29 +734,29 @@ class SwapCard extends React.Component {
             value : BigInt(pair.token_1.volume),
             decimals : decimals[1]
         };
-        let amountIn = activeField.value;
+        let activeAmount = activeField.value;
         let pool_fee = {
             value : pair.pool_fee,
-            decimals : decimals[0]
+            decimals : 2
         }
 
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 if (activeField.token.hash === pair.token_0.hash)
-                    return testFormulas.getSwapPrice(volume0, volume1, amountIn, pool_fee)
+                    return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 else
-                    return testFormulas.getSwapPrice(volume1, volume0, amountIn, pool_fee)
+                    return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
                 if (activeField.token.hash === pair.token_1.hash) {
-                    return testFormulas.revGetSwapPrice(volume0, volume1, amountIn, pool_fee)
+                    return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
-                    return testFormulas.revGetSwapPrice(volume1, volume0, amountIn, pool_fee)
+                    return testFormulas.revGetSwapPrice(volume1, volume0, activeAmount, pool_fee)
             }
         } else {
             if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getAddLiquidityPrice(volume1, volume0, amountIn)
+                return testFormulas.getAddLiquidityPrice(volume1, volume0, activeAmount)
             else
-                return testFormulas.getAddLiquidityPrice(volume0, volume1, amountIn)
+                return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
         }
     };
 
@@ -860,8 +864,12 @@ class SwapCard extends React.Component {
             balance: nativeBalance,
             value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
         }
-        let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData)
-        return this.validator.batchValidate(modeData, rules)
+        if (modeData.field0.value.text && modeData.field1.value.text) {
+            let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData, this.getMode())
+            return this.validator.batchValidate(modeData, rules)
+        } else {
+            return false
+        }
     }
 
     closeTokenList(tokenObj, activeField) {
@@ -940,7 +948,7 @@ class SwapCard extends React.Component {
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (subtraction1.value < 0 && this.props.menuItem !== 'exchange')
+        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.pairExists))
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

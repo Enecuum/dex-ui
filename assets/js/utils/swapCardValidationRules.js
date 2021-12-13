@@ -77,6 +77,73 @@ class SwapCardValidationRules {
         }
     }
 
+    _tenPowerDecimals (decimals) {
+        return BigInt('1' + '0'.repeat(decimals))
+    }
+
+    getPoolVolumesValidationRules (activePair, modeStruct, mode, pairExists) {
+        let t0Value = 0, t0Max = 0, t1Value = 0, t1Max = 0, required = (mode === 'exchange' && pairExists)
+        try {
+            let fields = (modeStruct.field0.token.hash === activePair.token_0.hash) ? [0, 1] : [1, 0]
+            let tmp0 = this._realignValueByDecimals(modeStruct.field0.value, {
+                value : activePair[`token_${fields[0]}`].volume,
+                decimals : modeStruct.field0.token.decimals
+            })
+            t0Value = tmp0.value
+            t0Max = tmp0.max
+            let tmp1 = this._realignValueByDecimals(modeStruct.field1.value, {
+                value : activePair[`token_${fields[1]}`].volume,
+                decimals : modeStruct.field1.token.decimals
+            })
+            t1Value = tmp1.value
+            t1Max = tmp1.max
+        } catch (e) {}
+        return {
+            token_0: {
+                checks: [
+                    {
+                        method: 'isSet',
+                        requireToCheck: required,
+                        args: {data: t0Max},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED'
+                    },
+                    {
+                        method: 'lessThan',
+                        args: {
+                            value: t0Value,
+                            max: t0Max
+                        },
+                        requireToCheck: required,
+                        desiredResult: true,
+                        errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
+                    }
+                ]
+            },
+            token_1: {
+                checks: [
+                    {
+                        method: 'isSet',
+                        requireToCheck: required,
+                        args: {data: t1Max},
+                        desiredResult: true,
+                        errMsg: 'REQUIRED'
+                    },
+                    {
+                        method: 'lessThan',
+                        args: {
+                            value: t1Value,
+                            max: t1Max
+                        },
+                        requireToCheck: required,
+                        desiredResult: true,
+                        errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
+                    }
+                ]
+            }
+        }
+    }
+
     getSwapCardValidationRules (swapCardData, mode) {
         let ltData = {balance : 0, value : 0}
         if (swapCardData.ltfield)
@@ -117,8 +184,9 @@ class SwapCardValidationRules {
     _getSwapCardBalanceRules (fieldData) {
         let value = 0, max = 0
         try {
-            value = BigInt(fieldData.value.value) * BigInt(Math.pow(10, fieldData.value.decimals))
-            max = BigInt(fieldData.balance.amount) * BigInt(Math.pow(10, fieldData.balance.decimals))
+            let {tV, Tm} = this._realignValueByDecimals(fieldData.value, {value : fieldData.balance.amount, decimals : fieldData.balance.decimals})
+            value = tV
+            max = Tm
         } catch (e) {}
         return {
             checks: [
@@ -142,6 +210,18 @@ class SwapCardValidationRules {
         }
     }
 
+    _realignValueByDecimals (value, max) {
+        value.value = BigInt(value.value)
+        max.value = BigInt(max.value)
+        let diff = max.decimals - value.decimals
+        if (diff > 0) {
+            value.value *= this._tenPowerDecimals(diff)
+        } else if (diff < 0) {
+            diff *= -1
+            max.value *= this._tenPowerDecimals(diff)
+        }
+        return {value : value.value, max : max.value}
+    }
 }
 
 export default SwapCardValidationRules

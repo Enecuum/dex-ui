@@ -167,6 +167,7 @@ class SpaceStation extends React.Component {
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });
+
                     if (this.props.expandedRow !== null) {
                         this.props.updateManagedFarmData({
                             value : this.farms.find(farm => farm.farm_id === this.props.expandedRow)
@@ -275,6 +276,7 @@ class SpaceStation extends React.Component {
     updateExpandedRow(event) {
     	const target = event.target;        
 		const farmId = target.closest("tr").dataset.expandedRow === "true" ? null : target.closest("tr").dataset.farmId;
+
         let managedFarm = this.farms.find(farm => farm.farm_id === farmId);
         this.props.updateManagedFarmData({
             value : managedFarm !== undefined ? managedFarm : null
@@ -721,6 +723,10 @@ class SpaceStation extends React.Component {
 </div>
             <div className="h2 mb-5">
                 {t('navbars.left.spaceStation')}
+            </div>
+
+            <div className="h5 mb-4 text-color4 px-xl-5">
+                {t('spaceStation.aim')}
             </div>
 		    	<div className="drop-farms-table-wrapper mb-5">			    		
 					<Table hover variant="dark" className="table-to-cards">

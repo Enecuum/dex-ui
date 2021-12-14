@@ -82,24 +82,18 @@ class SwapCardValidationRules {
     }
 
     getPoolVolumesValidationRules (activePair, modeStruct, mode, pairExists) {
-        let t0Value = 0, t0Max = 0, t1Value = 0, t1Max = 0, required = (mode === 'exchange' && pairExists)
+        let t0Value = 0, t0Max = 0, required = (mode === 'exchange' && pairExists)
         try {
             let fields = (modeStruct.field0.token.hash === activePair.token_0.hash) ? [0, 1] : [1, 0]
-            let tmp0 = this._realignValueByDecimals(modeStruct.field0.value, {
-                value : activePair[`token_${fields[0]}`].volume,
-                decimals : modeStruct.field0.token.decimals
-            })
-            t0Value = tmp0.value
-            t0Max = tmp0.max
-            let tmp1 = this._realignValueByDecimals(modeStruct.field1.value, {
+            let tmp0 = this._realignValueByDecimals(modeStruct.field1.value, {
                 value : activePair[`token_${fields[1]}`].volume,
                 decimals : modeStruct.field1.token.decimals
             })
-            t1Value = tmp1.value
-            t1Max = tmp1.max
+            t0Value = tmp0.value
+            t0Max = tmp0.max
         } catch (e) {}
         return {
-            token_0: {
+            token_1: {
                 checks: [
                     {
                         method: 'isSet',
@@ -114,30 +108,9 @@ class SwapCardValidationRules {
                             value: t0Value,
                             max: t0Max
                         },
-                        requireToCheck: required,
+                        requireToCheck: (required && t0Value !== 0 && t0Max !== 0),
                         desiredResult: true,
-                        errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
-                    }
-                ]
-            },
-            token_1: {
-                checks: [
-                    {
-                        method: 'isSet',
-                        requireToCheck: required,
-                        args: {data: t1Max},
-                        desiredResult: true,
-                        errMsg: 'REQUIRED'
-                    },
-                    {
-                        method: 'lessThan',
-                        args: {
-                            value: t1Value,
-                            max: t1Max
-                        },
-                        requireToCheck: required,
-                        desiredResult: true,
-                        errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
+                        errMsg: 'MUST_BE_LESS_THAN_NAMED_VALUE'
                     }
                 ]
             }

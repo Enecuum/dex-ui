@@ -873,7 +873,7 @@ class SpaceStation extends React.Component {
                                         </td>                                        
                                         <td>
                                             <Button className="btn outline-border-color3-button unselectable-text"                                                
-                                                onClick={this.distribute.bind(this, 'c7603bb62eeb0a9f4380e93e5e895fe22fc3c0059adca0b5cae261da2f51b19c')}>
+                                                onClick={this.distribute.bind(this, pool.asset_LP)}>
                                                 Distibute
                                             </Button>
                                         </td>
@@ -889,7 +889,8 @@ class SpaceStation extends React.Component {
     }
 
     distribute(LPTokenHash) {
-         extRequests.dexCmdDistribute(this.props.pubkey, this.props.mainTokenFee, {token_hash : LPTokenHash}).then(result => {
+        let distributeCost = BigInt(this.props.mainTokenFee) + BigInt(this.props.pricelist.dex_cmd_distribute)
+        extRequests.dexCmdDistribute(this.props.pubkey, distributeCost, {token_hash : LPTokenHash}).then(result => {
             console.log(result);
         },
         error => {
@@ -908,7 +909,11 @@ class SpaceStation extends React.Component {
 					  <Card.Body>
 					    <Card.Text as="div">
 						    {this.props.connectionStatus && this.farms !== undefined && this.farms.length > 0 ? this.getFarmsTable() : this.getTmpErrorElement()}
-                            {this.props.connectionStatus && this.spaceStationPools !== undefined && this.spaceStationPools.length > 0 ? this.getPoolsTable() : ''}				    
+                            {this.props.connectionStatus && this.spaceStationPools !== undefined && this.spaceStationPools.length > 0 &&
+                                <>
+                                    {this.getPoolsTable()}
+                                </>	
+                            }    			    
 					    </Card.Text>
 					  </Card.Body>
 					</Card>                       			

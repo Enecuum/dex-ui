@@ -189,11 +189,12 @@ class StakeModal extends React.Component {
       }      
 
       value = valueProcessor.mul(op0, op1);
-      let max = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals, this.props.managedFarmData.stake_token_decimals).replace(',','')
+      let max = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals, this.props.managedFarmData.stake_token_decimals).replace(/,/g,'')
       this.processData(max);     
     }
 
     getPercentage(stake) {
+
       let res = 0;
       let action = this.props.currentAction;
       if (this.props.stakeData.stakeValid && this.props.managedFarmData !== null && stake !== undefined) {        
@@ -217,7 +218,7 @@ class StakeModal extends React.Component {
         }
 
         let divRes = valueProcessor.div(numerator, denominator);
-        res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(',','');
+        res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(/,/g ,'');
       } else if (!this.props.stakeData.stakeValid) {
         if (action === 'farm_increase_stake') {
           if (this.props.stakeData.stakeValue.bigIntValue > BigInt(this.props.stakeData.stakeTokenAmount))

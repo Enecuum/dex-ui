@@ -669,7 +669,7 @@ class SwapCard extends React.Component {
         modeData[field] = fieldObj
 
         this.establishReadiness(this.validateSwapCard(modeData))
-    }    
+    }
 
     changeField (fieldId, target) {
         let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
@@ -687,14 +687,23 @@ class SwapCard extends React.Component {
         let rules = this.swapCardValidationRules.getSwapFieldValidationRules(fieldData)
         let checkResult = this.validator.batchValidate(fieldData, rules)
 
-        rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
-        console.log(this.validator.batchValidate(this.activePair, rules))
-
         // if (mode === "exchange" && field === "field1") {
         //     checkResult.dataValid = this.checkExchangeOutValue(modeData)
         // }
 
         if (checkResult.dataValid) {
+            rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
+            console.log(this.validator.batchValidate(this.activePair, rules))
+            if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
+                if (this.activePair.token_1.hash === fieldData.token.hash) {
+                    newValObj.value = this.activePair.token_1.volume - 1
+                    newValObj.text = this.numWithoutCommas(this.activePair.token_1.volume - 1, newValObj.decimals)
+                } else {
+                    newValObj.value = this.activePair.token_0.volume - 1
+                    newValObj.text = this.numWithoutCommas(this.activePair.token_0.volume - 1, newValObj.decimals)
+                }
+            }
+
             this.props.assignCoinValue(mode, field, newValObj)
             let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
             checkResult = this.validator.batchValidate(this.activePair, activePairRules)
@@ -706,6 +715,10 @@ class SwapCard extends React.Component {
         } else {
             this.props.assignCoinValue(mode, field, oldValObj)
         }
+    }
+
+    numWithoutCommas (value, decimals) {
+        return valueProcessor.usCommasBigIntDecimals(value, decimals).replace(',','')
     }
 
     checkExchangeOutValue (modeData) {

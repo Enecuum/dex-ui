@@ -66,6 +66,14 @@ class LocalStorageDataProcessor {
         }))
     }
 
+    _writeNonHistoricalData (key, value) {
+        localStorage.setItem(this._pubKey + key, value)
+    }
+
+    _getNonHistoricalData (key) {
+        return localStorage.getItem(this._pubKey + key)
+    }
+
     _removeNote (txHash, concatenated) {
         if (concatenated)
             localStorage.removeItem(txHash)
@@ -92,6 +100,10 @@ lsdp.remove = {
 lsdp.get    = {
     history : lsdp._getHistory.bind(lsdp),
     note    : lsdp._getNote.bind(lsdp)
+}
+lsdp.simple = {
+    write : lsdp._writeNonHistoricalData.bind(lsdp),
+    get : lsdp._getNonHistoricalData.bind(lsdp)
 }
 
 export default lsdp

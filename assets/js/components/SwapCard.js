@@ -693,7 +693,6 @@ class SwapCard extends React.Component {
 
         if (checkResult.dataValid) {
             rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
-            console.log(this.validator.batchValidate(this.activePair, rules))
             if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
                 if (this.activePair.token_1.hash === fieldData.token.hash) {
                     newValObj.value = this.activePair.token_1.volume - 1

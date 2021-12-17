@@ -35,8 +35,18 @@
     },
     "trade" : {
         "swapAddon" : {
-            "priceImpact" : "Влияние цены",
-            "providerFee" : "Комиссия провайдера ликвидности"
+            "priceImpact" : {
+                "header" : "Влияние на цену",
+                "tooltip" : "Разница между рыночной и расчётной ценой согласно размеру сделки."
+            },
+            "providerFee" : {
+                "header" : "Комиссия поставщика ликвидности",
+                "tooltip" : "За каждую сделку выплачивается комиссия в размере 0,35%"
+            },
+            "minimumReceived" : {
+                "header" : "Минимальная получаемая сумма",
+                "tooltip" : "Ваша транзакция будет возвращена, если произойдет значительное неблагоприятное изменение цены до того, как транзакция подтвердится."
+            }
         },
         "lpTokensWalletInfo" : {
             "header" : "Ваши токены ликвидности"
@@ -96,6 +106,12 @@
             },
             "history" : {
                 "header" : "История"
+            },
+            "settings" : {
+                "header" : "Настройки транзакций",
+                "slippageHeader" : "Допустимое проскальзывание",
+                "autoButton" : "Авто",
+                "slippageTooltip" : "Ваша транзакция откатится, если цена изменится не в вашу пользу более, чем на этот процент."
             }
         },
         "tokenCard" : {
@@ -208,6 +224,7 @@
         "EXEED_MAX_VALUE_IN_TOKENS": "Не должно превышать {{maxValue}} {{ticker}}",
         "INTEGER_REQUIRED": "Значение должно быть целым числом",
         "MUST_BE_GREATER_THAN": "Значение должно быть больше {{minValue}}",
+        "MUST_BE_LESS_THAN": "Значение должно быть меньше {{minValue}}",
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть больше или равно, чем {{name}}",
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Недостаточно средств для выполнения операции {{operationName}}.",

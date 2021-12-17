@@ -159,7 +159,10 @@ class ConfirmSupply extends React.Component {
             if (utils.pairExists(pair)) {
                 if (this.props.menuItem === 'exchange') {
                     txType = txTypes.pool_swap
-                    txPromise = extRequests.swap(this.props.pubkey, this.props.exchange)
+                    let percent = valueProcessor.valueToBigInt(lsdp.simple.get("ENEXUserSlippage"), 8)
+                    percent.decimals += 2
+                    percent = valueProcessor.sub(valueProcessor.valueToBigInt(1), percent)
+                    txPromise = extRequests.swap(this.props.pubkey, this.props.exchange, valueProcessor.mul(this.props.exchange.field1.value, percent))
                 } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
                     txType = txTypes.pool_add_liquidity
                     txPromise = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity)

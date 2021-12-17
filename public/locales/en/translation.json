@@ -35,8 +35,18 @@
     },
     "trade" : {
         "swapAddon" : {
-            "priceImpact" : "Price impact",
-            "providerFee" : "Liquidity provider fee"
+            "priceImpact" : {
+                "header" : "Price impact",
+                "tooltip" : "The difference between the market price and estimated price due to trade size."
+            },
+            "providerFee" : {
+                "header" : "Liquidity provider fee",
+                "tooltip" : "For each trade a 0.35% fee is paid"
+            },
+            "minimumReceived" : {
+                "header" : "Minimum received",
+                "tooltip" : "Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
+            }
         },
         "lpTokensWalletInfo" : {
             "header" : "LP tokens in your wallet"
@@ -97,6 +107,12 @@
             },
             "history" : {
                 "header" : "History"
+            },
+            "settings" : {
+                "header" : "Transaction settings",
+                "slippageHeader" : "Slippage tolerance",
+                "autoButton" : "Auto",
+                "slippageTooltip" : "Your transaction will revert if the price changes unfavorably by more than this percentage"
             }
         },
         "tokenCard" : {
@@ -206,6 +222,7 @@
         "EXEED_MAX_VALUE_IN_TOKENS":"Value must not exceed {{maxValue}} {{ticker}}",
         "INTEGER_REQUIRED":"Integer required",
         "MUST_BE_GREATER_THAN":"The value must be greater than {{minValue}}",
+        "MUST_BE_LESS_THAN":"The value must be less than {{minValue}}",
         "MUST_BE_GREATER_OR_EQUAL_THAN_NAMED_VALUE":"The value must be greater or equal than {{name}}",
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",

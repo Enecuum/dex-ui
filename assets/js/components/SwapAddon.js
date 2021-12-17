@@ -8,6 +8,7 @@ import Tooltip from "../elements/Tooltip"
 import swapUtils from "../utils/swapUtils"
 import ValueProcessor from "../utils/ValueProcessor"
 import testFormulas from "../utils/testFormulas"
+import lsdp from "../utils/localStorageDataProcessor";
 
 const vp = new ValueProcessor()
 
@@ -51,25 +52,31 @@ class SwapAddon extends React.Component {
         if (!swapUtils.pairExists(pair))
             return (<></>)
 
-        let provider = this.props.exchange.field0.token
         let t = this.props.t
+        let provider = this.props.exchange.field0.token
+        let received = this.props.exchange.field1.token
 
+        let percent = vp.valueToBigInt(lsdp.simple.get("ENEXUserSlippage"), 8)
+        percent.decimals += 2
+        percent = vp.sub(vp.valueToBigInt(1), percent)
+        let minimumReceived = vp.mul(this.props.exchange.field1.value, percent)
+        minimumReceived = vp.usCommasBigIntDecimals(minimumReceived.value, minimumReceived.decimals)
         let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
         return (
             <div className="general-card p-4">
-                {/*<div className="d-block d-md-flex align-items-center justify-content-between py-2">*/}
-                {/*    <div className="mr-3 d-flex align-items-center">*/}
-                {/*        <span className="mr-2">Mininmum received</span>*/}
-                {/*        <Tooltip text='Mininmum received tooltip text' />*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        0.0009968 BRY*/}
-                {/*    </div>*/}
-                {/*</div>*/}
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
-                        <span className="mr-2">{t('trade.swapAddon.priceImpact')}</span>
-                        <Tooltip text='The difference between the mid-price and the execution price of a trade' />
+                        <span className="mr-2">{t('trade.swapAddon.minimumReceived.header')}</span>
+                        <Tooltip text={t('trade.swapAddon.minimumReceived.tooltip')} />
+                    </div>
+                    <div>
+                        {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                    </div>
+                </div>
+                <div className="d-block d-md-flex align-items-center justify-content-between py-2">
+                    <div className="mr-3 d-flex align-items-center">
+                        <span className="mr-2">{t('trade.swapAddon.priceImpact.header')}</span>
+                        <Tooltip text={t('trade.swapAddon.priceImpact.tooltip')} />
                     </div>
                     <div>
                         <span className="text-color3">{this.showPriceImpact(pair)}%</span>
@@ -77,8 +84,8 @@ class SwapAddon extends React.Component {
                 </div>
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
-                        <span className="mr-2">{t('trade.swapAddon.providerFee')}</span>
-                        <Tooltip text='Liquidity provider fee tooltip text' />
+                        <span className="mr-2">{t('trade.swapAddon.providerFee.header')}</span>
+                        <Tooltip text={t('trade.swapAddon.providerFee.tooltip')} />
                     </div>
                     <div>
                         {swapUtils.removeEndZeros(providerFee ? providerFee : "0.0")} {provider.ticker}

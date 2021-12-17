@@ -36,15 +36,19 @@ class ExtRequests {
         this.nativeTokenFee  = fee
     }
 
+    tenPowerDecimals (decimals) {
+        return BigInt('1' + '0'.repeat(decimals))
+    }
+
     getBigIntAmount (field) { // utility
         let diff = field.balance.decimals - field.value.decimals;
         if (diff > 0)
-            return BigInt(field.value.value) * BigInt(Math.pow(10, Math.abs(diff)));
+            return BigInt(field.value.value) * this.tenPowerDecimals(Math.abs(diff))
         else if (diff < 0)
-            return BigInt(field.value.value) / BigInt(Math.pow(10, Math.abs(diff)));
+            return BigInt(field.value.value) / this.tenPowerDecimals(Math.abs(diff))
         else 
-            return field.value.value;
-    };
+            return field.value.value
+    }
 
     /**
      * Get network url or name
@@ -89,13 +93,17 @@ class ExtRequests {
      * @param {object} exchangeMode - data structure from initialState.js
      * @returns {Promise}
      */
-    swap (pubkey, exchangeMode) {
+    swap (pubkey, exchangeMode, amountOutMin) {
         return this.sendTx(pubkey, requestType.SWAP, {
-            asset_in  : exchangeMode.field0.token.hash,
-            amount_in : this.getBigIntAmount(exchangeMode.field0),
-            asset_out : exchangeMode.field1.token.hash
-        });
-    };
+            asset_in: exchangeMode.field0.token.hash,
+            amount_in: this.getBigIntAmount(exchangeMode.field0),
+            asset_out: exchangeMode.field1.token.hash,
+            amount_out_min: this.getBigIntAmount({
+                value : amountOutMin,
+                balance : exchangeMode.field1.balance
+            })
+        })
+    }
 
     /**
      * Exchange pair of tokens
@@ -140,7 +148,7 @@ class ExtRequests {
             })
         };
         // console.log(data);
-        // console.log(params);
+        console.log(params);
         return trafficController.sendTransaction(data);
     };
 

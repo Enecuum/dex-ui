@@ -1,0 +1,10 @@
+.percent-span {
+    border: 1px solid var(--color2);
+    border-radius: 0 var(--border-radius2) var(--border-radius2) 0;
+    border-left: 0;
+    color: var(--color5)!important;
+}
+
+.slippage-input {
+    border-radius: var(--border-radius2) 0 0 var(--border-radius2);
+}

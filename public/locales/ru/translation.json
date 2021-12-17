@@ -259,7 +259,8 @@
             "farm_get_reward" : "Получение",
             "farm_increase_stake" : "Увеличение стейка",
             "farm_close_stake" : "Закрыть",
-            "farm_decrease_stake" : "Уменьшение стейка"
+            "farm_decrease_stake" : "Уменьшение стейка",
+            "dex_cmd_distribute" : "Добавление"
         }
     },
     "txActionPhrases" : {
@@ -289,6 +290,9 @@
         },
         "farm_decrease_stake" : {
             "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "dex_cmd_distribute" : {
+            "completePhrase" : "{{action}} {{value}} {{ticker}} на Space Station"
         }
     },
     "blockWindow" : {

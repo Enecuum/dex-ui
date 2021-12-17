@@ -9,7 +9,8 @@ const presets =  {
             farm_get_reward : 'farm_get_reward',
             farm_increase_stake : 'farm_increase_stake',
             farm_close_stake : 'farm_close_stake',
-            farm_decrease_stake : 'farm_decrease_stake'
+            farm_decrease_stake : 'farm_decrease_stake',
+            dex_cmd_distribute : 'dex_cmd_distribute'
         }
     },
 

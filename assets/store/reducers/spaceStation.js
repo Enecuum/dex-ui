@@ -52,7 +52,12 @@ export default function spaceStationReducer (state = initialState.spaceStation, 
             return {
                 ...state,
                 managedFarmData : action.payload
-            };            
+            };
+        case actions.SPACE_STATION_UPDATE_MANAGED_POOL:
+            return {
+                ...state,
+                managedPool : action.payload
+            };                         
         case actions.SPACE_STATION_UPDATE_SORT_TYPE:
             return {
                 ...state,
@@ -63,6 +68,11 @@ export default function spaceStationReducer (state = initialState.spaceStation, 
                 ...state,
                 showStakeModal : action.payload
             };
+        case actions.SPACE_STATION_UPDATE_SHOW_DISTRIBUTE_MODAL:
+            return {
+                ...state,
+                showDistributeModal : action.payload
+            };            
         case actions.SPACE_STATION_UPDATE_MAIN_TOKEN_AMOUNT:
             return {
                 ...state,

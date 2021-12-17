@@ -26,7 +26,13 @@ const actionCreators = {
             type : actions.SPACE_STATION_UPDATE_MANAGED_FARM_DATA,
             payload : payload.value 
         };
-    },    
+    },  
+    updateManagedPool (payload) {
+        return {
+            type : actions.SPACE_STATION_UPDATE_MANAGED_POOL,
+            payload : payload.value 
+        };
+    },      
     updateSortType (payload) {
         return {
             type : actions.SPACE_STATION_UPDATE_SORT_TYPE,
@@ -39,6 +45,12 @@ const actionCreators = {
             payload : payload.value 
         };
     },
+    updShowDistributeModal (payload) {
+        return {
+            type : actions.SPACE_STATION_UPDATE_SHOW_DISTRIBUTE_MODAL,
+            payload : payload.value 
+        };
+    },    
     updateMainTokenAmount (payload) {
         return {
             type : actions.SPACE_STATION_UPDATE_MAIN_TOKEN_AMOUNT,

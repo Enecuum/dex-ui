@@ -64,10 +64,6 @@ class StakeModal extends React.Component {
         });        
     };
 
-    sendIssueTokenTx() {
-        return true;
-    }
-
     handleInputChange(event) {
       const target = event.target;
       let value = target.value;
@@ -247,7 +243,6 @@ class StakeModal extends React.Component {
 
     render() {
         const t = this.props.t;
-
         return (
 
             <>

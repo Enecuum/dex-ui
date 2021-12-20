@@ -361,7 +361,7 @@ class SpaceStation extends React.Component {
                     </div>                                                                    
                 </div>
                 <div>
-                    {basic === true &&
+                    {basic === true && this.props.pricelist != undefined && this.props.pricelist.farm_increase_stake != undefined && this.props.mainTokenFee !== undefined && this.props.mainTokenAmount !== undefined &&
                         <>
                             {this.getStakeButton()}
                         </>
@@ -378,7 +378,8 @@ class SpaceStation extends React.Component {
 
     getStakeButton() {
         const t = this.props.t;
-        let active = (this.props.mainTokenAmount > (this.props.mainTokenFee + BigInt(this.props.pricelist.farm_increase_stake)));
+
+        let active = (BigInt(this.props.mainTokenAmount) > (BigInt(this.props.mainTokenFee) + BigInt(this.props.pricelist.farm_increase_stake)));
         let attributes = {
             active : {
                 className : 'btn py-3 px-5 w-100 outline-border-color3-button'
@@ -395,7 +396,7 @@ class SpaceStation extends React.Component {
                     disabled={!active}
                     onClick={(e) => this.showStakeModal('farm_increase_stake', e)}
                 >
-                    {t('dropFarms.stakeNamedToken', {tokenName: this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : ''})}
+                    {t('dropFarms.stakeNamedToken', {tokenName: this.props.managedFarmData !== null && this.props.managedFarmData !== undefined ? this.props.managedFarmData.stake_token_name : ''})}
                 </Button>}                
             </>
         )

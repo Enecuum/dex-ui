@@ -83,22 +83,23 @@ class DistributeModal extends React.Component {
       });         
     }
 
-    getErrMsg() {
+    getErrMsg(namedValue, msg) {
+      let nameTranslation = this.props.t(namedValue);
       return (
         <>
-          <div className="h1">
-            ERROR
+          <div className="h5 alert-1">           
+            {this.props.t('errorMsg.NAMED_VALUE_IS_INVALID', {name: nameTranslation})}            
           </div>
+          <div>{msg}</div>
         </>
       )    
     }
 
     getWaiting() {
-      console.log('Waiting')
       return (
         <>
           <div className="h1">
-            Waiting
+            Waiting...
           </div>
         </>
       )    
@@ -118,14 +119,17 @@ class DistributeModal extends React.Component {
     }
 
     showDistributeResume() {
+      let that = this;
       if (this.props.showDistributeModal) {
         let validationRules = new SpaceStationValidationRules(this.props.t);
         let amountOfRules = validationRules.amountOfRules;
         let dataset = this.getDistributeDataSet();
-        
+        let errMsg = '';
+        let invalidPropName = undefined;
         let validator = new Validator;
         let validatonResult = undefined;
         let dataValid = true;
+
         for (let step = 0; step < (amountOfRules); step++) {
           if (dataValid) {
             if (step <= 3) {
@@ -140,17 +144,24 @@ class DistributeModal extends React.Component {
             }            
           }
           
-          if (validatonResult.dataValid === false) {
-            dataValid = false;            
+          if (validatonResult !== undefined && validatonResult.dataValid === false) {
+            let validatonResultProps = Object.getOwnPropertyNames(validatonResult.propsArr);
+            validatonResultProps.forEach(propName => {
+              if (validatonResult.propsArr[propName].hasOwnProperty('msg')) {
+                invalidPropName = propName; 
+                errMsg = that.props.t('errorMsg.' + validatonResult.propsArr[propName].msg, validatonResult.propsArr[propName].params);
+              }
+            });
+            dataValid = false;
+            if (invalidPropName !== undefined && errMsg !== '')
+              return this.getErrMsg(invalidPropName, errMsg);          
           }      
         }
-
+console.log(validatonResult)
         if (validatonResult === undefined) {
           return this.getWaiting()
         } else if (dataValid) {
           return this.getContent();
-        } else if (dataValid === false) {
-          return this.getErrMsg()
         }
       }
     }

@@ -18,9 +18,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                             msg: 'NAMED_VALUE_UNDEFINED',
                             params: {
-                                    params: {
-                                        name: this.t('poolData')
-                                    }
+                                name: this.t('poolData')
                             }
                         }
                     }
@@ -40,9 +38,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                             msg: 'NAMED_VALUE_UNDEFINED',
                             params: {
-                                    params: {
-                                        name: this.t('LPTokenOnCommanderBalance')
-                                    }
+                                name: this.t('LPTokenOnCommanderBalance')
                             }
                         }
                     }
@@ -82,8 +78,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        maxValue: 0,
-                                        ticker: poolData.ticker_LP
+                                        minValue: '0.00 ' + poolData.ticker_LP
                                     }
                                 }
                     }
@@ -104,9 +99,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                             msg: 'NAMED_VALUE_UNDEFINED',
                             params: {
-                                    params: {
-                                        name: this.t('mainTokenAmount')
-                                    }
+                                name: this.t('mainTokenAmount')
                             }
                         }
                     }
@@ -126,9 +119,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                             msg: 'NAMED_VALUE_UNDEFINED',
                             params: {
-                                    params: {
-                                        name: this.t('mainTokenDecimals')
-                                    }
+                                name: this.t('mainTokenDecimals')
                             }
                         }
                     }
@@ -168,8 +159,7 @@ class SpaceStationValidationRules {
                         errMsg: {
                                     msg: 'MUST_BE_GREATER_THAN',
                                     params: {
-                                        maxValue: this.valueProcessor.usCommasBigIntDecimals(mainTokenBalance.mainTokenAmount, mainTokenBalance.mainTokenDecimals, mainTokenBalance.mainTokenDecimals),
-                                        ticker: mainTokenBalance.mainTokenAmount.mainTokenTicker
+                                        minValue: this.valueProcessor.usCommasBigIntDecimals(BigInt(distributeCost), mainTokenBalance.mainTokenDecimals, mainTokenBalance.mainTokenDecimals) + mainTokenBalance.mainTokenTicker
                                     }
                                 }
                     }

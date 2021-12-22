@@ -185,7 +185,7 @@ class SpaceStation extends React.Component {
     updateSpaceStationPools() {
         let that = this;
         let spaceStationPools = networkApi.getSpaceStationPools();
-        spaceStationPools.then(result => {
+        spaceStationPools.then(result => {            
             if (!result.lock) {
                 result.json().then(resultSpaceStationPools => {
                     let spaceStationPools = resultSpaceStationPools;
@@ -257,6 +257,11 @@ class SpaceStation extends React.Component {
                             });
                         });
                     })
+                },() => {
+                    that.spaceStationPools = [];
+                    that.props.updatePoolsList({
+                        value : that.spaceStationPools
+                    });
                 })
             }
         }, () => {
@@ -418,7 +423,7 @@ class SpaceStation extends React.Component {
                     <div className="value-and-control">
                         <div className="stake-value-wrapper">
                             <div className="stake-value">
-                                {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData.stake !== null ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
+                                {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData !== undefined ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
                             </div>
                             <div className="color-2 stake-value-usd">≈ {this.getValueInUSD()} USD</div>
                         </div>
@@ -498,7 +503,7 @@ class SpaceStation extends React.Component {
     }
 
     updateStakeTokenBalance() {
-        if (this.props.managedFarmData !== null) {
+        if (!(this.props.managedFarmData === null || this.props.managedFarmData === undefined)) {
             let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.managedFarmData.stake_token_hash);
 
             if (stakeTokenBalance !== undefined && BigInt(stakeTokenBalance.amount) > 0n) {
@@ -623,7 +628,20 @@ class SpaceStation extends React.Component {
 
     switchToPool() {
       this.props.changeMenuItem('pool');      
-    }    
+    }
+
+    getLPAlias(lpHash, lpTicker) {
+        let that = this;
+        let alias = lpTicker;
+        let re = /^[^\s]+$/;
+        if (this.props.tokens !== undefined) {
+            let lp = this.props.tokens.find(token => token.hash === lpHash);
+            if (lp !== undefined && lp.caption !== null && lp.caption !== '' && re.test(lp.caption))
+                alias = lp.caption;
+        }
+
+        return alias
+    }        
 
     getPoolsTable() {
         const t = this.props.t;
@@ -657,7 +675,7 @@ class SpaceStation extends React.Component {
                                                 href = {"/#!action=pool&pair=" + pool.ticker_LP + "-" + pool.ticker_ENX + '&from=' + pool.asset_LP + "&to=" + pool.asset_ENX}
                                                 onClick={this.switchToPool.bind(this)}
                                                 className="text-color4-link hover-pointer">
-                                                {pool.ticker_LP}-{pool.ticker_ENX}
+                                                {this.getLPAlias(pool.asset_LP, pool.ticker_LP)}-{pool.ticker_ENX}
                                             </a>
                                         </td>
                                         <td>{pool.LPTokenOnCommanderBalance !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.LPTokenOnCommanderBalance.amount, pool.LPTokenOnCommanderBalance.decimals, pool.LPTokenOnCommanderBalance.decimals) : '---'}</td>

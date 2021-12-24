@@ -216,7 +216,7 @@ class IndicatorPanel extends React.Component {
                 this.updMainTokenData(res.net)
                 networkApi.updUrl(res.net + '/')
                 lsdp.updNet(res.net)
-                this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/')
+                this.changeNet(ENQWeb.Enq.currentProvider, res.net + '/');                
             }
         },
         err => this.setState({blockTheWindow : true}))

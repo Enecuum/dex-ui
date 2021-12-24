@@ -14,11 +14,12 @@ BigInt.prototype.toJSON = function () {
 };
 
 const requestType = {
-    CREATE       : 'pool_create',
-    SWAP         : 'pool_swap',
-    ADD          : 'pool_add_liquidity',
-    REMOVE       : 'pool_remove_liquidity',
-    ISSUE_TOKEN :  'create_token'
+    CREATE             : 'pool_create',
+    SWAP               : 'pool_swap',
+    ADD                : 'pool_add_liquidity',
+    REMOVE             : 'pool_remove_liquidity',
+    ISSUE_TOKEN        : 'create_token',
+    DEX_CMD_DISTRIBUTE : 'dex_cmd_distribute'
 };
 
 class ExtRequests { 
@@ -184,6 +185,23 @@ class ExtRequests {
         // console.log(params);
         return trafficController.sendTransaction(data);
     };
+
+    dexCmdDistribute (pubKey, dexCmdDistributeCost, params) {
+        let data = {
+            from : pubKey,
+            to : presets.network.genesisPubKey,
+            value : dexCmdDistributeCost.toString(),
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : ENQweb3lib.serialize({
+                type : requestType.DEX_CMD_DISTRIBUTE,
+                parameters : params
+            })
+        };
+        console.log(data);
+        console.log(params);
+        return trafficController.sendTransaction(data);
+    };    
 }
 
 const extRequests = new ExtRequests();

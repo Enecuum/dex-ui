@@ -20,6 +20,9 @@ export default function rootReducer (state = initialState.root, action) {
         case actions.CHANGE_NET:
             return rootStore(state, { net : action.value });
 
+        case actions.UPD_NETWORK_INFO:
+            return rootStore(state, { networkInfo : action.value });            
+
         case actions.CHANGE_LANG:
             return rootStore(state, { langData : action.value });
 

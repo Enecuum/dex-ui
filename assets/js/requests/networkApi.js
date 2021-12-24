@@ -47,6 +47,30 @@ class NetworkApi {
         );
     };
 
+    networkInfo (url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/network_info`,
+            {
+                method : 'GET'
+            }
+        );        
+    }
+
+    getSpaceStationPools (url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/get_sstation_pools`,
+            {
+                method : 'GET'
+            }
+        );        
+    }
+
+    getAccountBalancesAll (accountHash, url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/balance_all?id=${accountHash}`,
+            {
+                method : 'GET'
+            }
+        );        
+    }        
+
     // ---------------------------------------------------------------------
 }
 

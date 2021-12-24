@@ -15,7 +15,8 @@
             "info" : "Info",
             "topPairs" : "Top Pairs",
             "docs" : "Docs",
-            "drops" : "Space Drops"
+            "drops" : "Space Drops",
+            "spaceStation" : "Space Station"
         },
         "top" : {
             "header" : "Enecuum",
@@ -227,7 +228,8 @@
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE":"The value must be less or equal than {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Insufficient funds for the {{operationName}} operation.",
         "TOP_UP_BALANCE": "Please top up your balance to at least {{value}} {{ticker}}.",
-        "NAMED_VALUE_UNDEFINED" : "{{name}} is undefined"
+        "NAMED_VALUE_UNDEFINED" : "{{name}} is undefined",
+        "NAMED_VALUE_IS_INVALID" : "{{name}} is invalid"
     },
     "dropFarms" : {
         "stakeNamedToken"              : "Stake {{tokenName}}",
@@ -273,8 +275,12 @@
             "farm_get_reward" : "Get",
             "farm_increase_stake" : "Stake",
             "farm_close_stake" : "Close",
-            "farm_decrease_stake" : "Unstake"
+            "farm_decrease_stake" : "Unstake",
+            "dex_cmd_distribute" : "Add"
         }
+    },
+    "spaceStation": {
+        "aim" : "Space station aims to distribute 0.05% Enex swap fee to ENX stakers. Fees are accumulated in Enex treasury in the form of LP tokens. Any user may call \"Distribute\" event to trade these LPs for ENX in a corresponding pools. ENX will be added to Space Station  rewards proportionally to stakers shares."
     },
     "txActionPhrases" : {
         "pool_swap" : {
@@ -303,10 +309,17 @@
         },
         "farm_decrease_stake" : {
             "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "dex_cmd_distribute" : {
+            "completePhrase" : "{{action}} {{value}} {{ticker}} to Space Station"
         }
     },
     "blockWindow" : {
         "header" : "Your extension was blocked",
         "text" : "Please, unlock the extension"
-    }
+    },
+    "LPTokenOnCommanderBalance" : "LPToken on Commander balance",
+    "mainTokenAmount" : "Main token amount",
+    "mainTokenDecimals" : "Main token decimals",
+    "poolData" : "Pool data"
 }

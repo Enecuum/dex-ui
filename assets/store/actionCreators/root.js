@@ -18,6 +18,13 @@ const actionCreators = {
             }
         };
     },
+
+    updateNetworkInfo(networkInfo) {
+        return {
+            type : actions.UPD_NETWORK_INFO,
+            value : networkInfo
+        };
+    },
     
     changeLanguage(langData) {
         return {

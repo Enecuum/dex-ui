@@ -11,6 +11,7 @@ import TopPairs from './TopPairs';
 import Etm from '../pages/Etm';
 import Farms from '../pages/Farms';
 import Drops from '../pages/Drops';
+import SpaceStation from '../pages/SpaceStation';
 
 export {
     Navbar,
@@ -25,5 +26,6 @@ export {
     TopPairs,
     Etm,
     Farms,
-    Drops
+    Drops,
+    SpaceStation
 };

@@ -25,7 +25,7 @@ import store from '../store/store'
 import LPTokensWalletInfo from './components/LPTokensWalletInfo'
 import { Navbar, Aside, SwapCard, Switch,
          WaitingIssueTokenConfirmation,
-         TopPairs, Etm, Farms, Drops } from './components/entry'
+         TopPairs, Etm, Farms, Drops, SpaceStation } from './components/entry'
 import SwapAddon from "./components/SwapAddon"
 
 /* -------------------- Dex-ui pages --------------------- */
@@ -33,6 +33,7 @@ import BlankPage from './pages/blankPage'
 
 /* -------------------- Request util --------------------- */
 import swapApi from './requests/swapApi'
+import networkApi from './requests/networkApi'
 
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
@@ -52,6 +53,13 @@ class Root extends React.Component {
         window.addEventListener('hashchange', () => {
             this.setPath()
         })
+        this.updNetworkInfo();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.net.url !== prevProps.net.url) {            
+            this.updNetworkInfo();
+        }
     }
 
     componentWillUnmount () {
@@ -106,11 +114,23 @@ class Root extends React.Component {
 
     /* -------------------- Data loading --------------------- */
 
+    updNetworkInfo() {
+        let networkInfo = networkApi.networkInfo();
+        networkInfo.then(result => {
+            if (!result.lock) {
+                result.json().then(info => {
+                    this.props.updateNetworkInfo(info);
+                });
+            }
+        });    
+    }
+
     updDexData (pubkey) {
         if (this.props.connectionStatus) {
             this.updBalances(pubkey)
             this.updPools()
             this.updTokens()
+            this.updNetworkInfo()
         }
     }
 
@@ -316,7 +336,13 @@ class Root extends React.Component {
                     <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <Drops useSuspense={false}/>
                     </div>                    
-                );                                     
+                );
+            case 'spaceStation' :
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceStation useSuspense={false}/>
+                    </div>                    
+                );                                                     
             default:
                 return (
                     <BlankPage text="Coming soon"/>

@@ -15,7 +15,7 @@ import lsdp from "../utils/localStorageDataProcessor";
 
 const valueProcessor = new ValueProcessor();
 
-class StakeModalDrops extends React.Component {
+class StakeModalSpaceStation extends React.Component {
     constructor(props) {
       super(props);
 
@@ -48,7 +48,10 @@ class StakeModalDrops extends React.Component {
     }
 
     getLinkToPair() {
-        return '/#!action=swap&pair=BIT-ENX&from=' + this.props.mainToken + "&to=824e7b171c01e971337c1b25a055023dd53c003d4aa5aa8b58a503d7c622651e";
+      if (this.props.managedFarmData !== null && this.props.managedFarmData !== undefined) {
+        let data = this.props.managedFarmData;
+        return "/#!action=swap&pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + data.stake_token_hash + "&to=" + data.reward_token_hash;
+      } 
     }
     
     closeModal () {
@@ -117,6 +120,7 @@ class StakeModalDrops extends React.Component {
           field : 'stakeValue',
           value : commonDataSet.stakeValue
         });
+
       } else if (value === '' || value === undefined) { 
         this.props.updateStakeData({
           field : 'stakeValue',
@@ -126,7 +130,7 @@ class StakeModalDrops extends React.Component {
             rawFractionalPart : ''
           }
         });
-      }
+      }  
 
       this.props.updateStakeData({
         field : 'stakeValid',
@@ -185,7 +189,7 @@ class StakeModalDrops extends React.Component {
       }      
 
       value = valueProcessor.mul(op0, op1);
-      let max = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals, this.props.managedFarmData.stake_token_decimals).replace(/,/g, '')
+      let max = valueProcessor.usCommasBigIntDecimals(value.value, value.decimals, this.props.managedFarmData.stake_token_decimals).replace(/,/g, '');
       this.processData(max);     
     }
 
@@ -226,7 +230,7 @@ class StakeModalDrops extends React.Component {
       }   
 
       return res;
-    }    
+    }
 
     getModalTitle(t) {      
       if (this.props.currentAction !== undefined && this.props.managedFarmData !== null && this.props.managedFarmData.stake_token_name !== undefined) {
@@ -299,14 +303,14 @@ class StakeModalDrops extends React.Component {
                                       onClick={this.setValue.bind(this, 100)}>
                                       {t('max')}
                                     </div>
-                                    <div className="text-nowrap">{this.props.managedFarmData !== null ? this.props.managedFarmData.stake_token_name : '---'}</div>
+                                    <div className="text-nowrap">{this.props.managedFarmData !== null && this.props.managedFarmData !== undefined ? this.props.managedFarmData.stake_token_name : '---'}</div>
                                 </div>
                             </div>                                                         
                         </div>
 
                         <div className={`err-msg mb-4 ${this.props.stakeData.stakeValid ? 'd-none' : 'd-block'}`}>
                             {this.props.stakeData.stakeValidationMsg}
-                        </div> 
+                        </div>
 
                         <Form.Group className="pb-2">
                           <Form.Control                            
@@ -322,12 +326,12 @@ class StakeModalDrops extends React.Component {
 
                         <div className="d-flex align-items-center justify-content-between mb-4">
                             {this.modifyStakeRanges.ranges.map((item, index) => (
-                              <button
-                                key={index+''}
-                                className="btn btn-secondary px-3 py-1 text-color4"
-                                onClick={this.setValue.bind(this, item.value)}>
-                                {item.alias}
-                              </button>
+                                <button
+                                  key={index+''}
+                                  className="btn btn-secondary px-3 py-1 text-color4"
+                                  onClick={this.setValue.bind(this, item.value)}>
+                                  {item.alias}
+                                </button>
                             ))}
                         </div>
 
@@ -349,7 +353,9 @@ class StakeModalDrops extends React.Component {
                                 href = {this.getLinkToPair()}
                                 onClick={this.switchToSwap.bind(this)}
                                 className="text-color4-link hover-pointer">
-                                <span className="mr-2">{t('dropFarms.getNamedToken', {tokenName : 'ENX'})}</span>
+                                {this.props.managedFarmData !== null && this.props.managedFarmData !== undefined && 
+                                  <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
+                                }
                                 <span className="icon-Icon11"/>                                
                               </a>
                           </div>
@@ -361,6 +367,6 @@ class StakeModalDrops extends React.Component {
     };
 };
 
-const WStakeModalDrops = connect(mapStoreToProps(components.DROPS), mapDispatchToProps(components.DROPS))(withTranslation()(StakeModalDrops));
+const WStakeModalSpaceStation = connect(mapStoreToProps(components.SPACE_STATION), mapDispatchToProps(components.SPACE_STATION))(withTranslation()(StakeModalSpaceStation));
 
-export default WStakeModalDrops;
+export default WStakeModalSpaceStation;

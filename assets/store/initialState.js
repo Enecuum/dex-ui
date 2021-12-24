@@ -15,6 +15,7 @@ function getDefaultField(id) {
 const initialState = {
     root : {
         net                     : presets.network.defaultNet,
+        networkInfo             : {},
         mainToken               : presets.network.nativeToken.hash, // <-
         mainTokenFee            : presets.network.nativeToken.fee,  // <-
         langData                : presets.langData,
@@ -151,6 +152,33 @@ const initialState = {
         farmsList         : [],
         exchangeRate      : 0,
         stakeData         : {
+            actionCost         : 0,
+            initialStake       : 0,
+            stakeValue         : {
+                numberValue : 0
+            },  
+            stakeTxStatus      : '',
+            stakeValid         : true,
+            msgData            : {},
+            stakeTokenAmount   : undefined
+        }
+    },
+    spaceStation : {
+        mainTokenAmount     : undefined,
+        mainTokenDecimals   : undefined,
+        mainTokenFee        : presets.network.nativeToken.fee,
+        pricelist           : {},
+        expandedRow         : null,
+        managedFarmData     : null,
+        managedPool         : null,
+        sortType            : 'liquidity',
+        showStakeModal      : false,
+        showDistributeModal : false,
+        currentAction       : undefined,
+        farmsList           : [],
+        poolsList           : [],
+        exchangeRate        : 0,
+        stakeData           : {
             actionCost         : 0,
             initialStake       : 0,
             stakeValue         : {

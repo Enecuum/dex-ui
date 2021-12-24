@@ -24,6 +24,7 @@
     --color6 : #242D3C; /*граница строк в таблице топ пар rgb(36, 45, 60)*/
     --color7 : #3b4455; /*цвет поля выбора пар*/
     --color8 : rgb(44, 55, 75);
+    --color-alert1 : #e03266;
     --main-background : #f9fafb; /*бэкграунд за планетой*/
     --bg-color-1: #1b2330; /*менюшка выбора языков в асайде ?????*/
     --bg-swap-card: #2c374b; /*бэкграунд карточки excange/liquidity*/
@@ -344,10 +345,14 @@ right: 0;
 }
 
 .err-msg {
-    color: #e03266;
+    color: var(--color-alert1);
     font-size: 13px;
 }
 
 .bottom-indicator {
     margin-left: -16px; /*crutch*/
+}
+
+.alert-1 {
+    color: var(--color-alert1);
 }

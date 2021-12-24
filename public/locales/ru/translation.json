@@ -15,7 +15,8 @@
             "info" : "Информация",
             "topPairs" : "Торговые пары",
             "docs" : "Документация",
-            "drops" : "Space Drops"
+            "drops" : "Space Drops",
+            "spaceStation" : "Space Station"
         },
         "top" : {
             "header" : "Enecuum",
@@ -229,7 +230,8 @@
         "MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE": "Значение должно быть меньше или равно, чем {{name}}",
         "INSUFFICIENT_FUNDS_FOR_OPERATION": "Недостаточно средств для выполнения операции {{operationName}}.",
         "TOP_UP_BALANCE": "Пожалуйста, пополните баланс до {{value}} {{ticker}}.",
-        "NAMED_VALUE_UNDEFINED" : "Не удалось определить {{name}}"
+        "NAMED_VALUE_UNDEFINED" : "Не удалось определить \"{{name}}\"",
+        "NAMED_VALUE_IS_INVALID" : "Неверное значение \"{{name}}\""
     },
     "dropFarms" : {
         "stakeNamedToken"              : "Стейк {{tokenName}}",
@@ -275,7 +277,8 @@
             "farm_get_reward" : "Получение",
             "farm_increase_stake" : "Увеличение стейка",
             "farm_close_stake" : "Закрыть",
-            "farm_decrease_stake" : "Уменьшение стейка"
+            "farm_decrease_stake" : "Уменьшение стейка",
+            "dex_cmd_distribute" : "Добавление"
         }
     },
     "txActionPhrases" : {
@@ -305,10 +308,17 @@
         },
         "farm_decrease_stake" : {
             "completePhrase" : "{{action}} {{value0}} {{ticker0}}"
+        },
+        "dex_cmd_distribute" : {
+            "completePhrase" : "{{action}} {{value}} {{ticker}} на Space Station"
         }
     },
     "blockWindow" : {
         "header" : "Ваше расширение заблокировано",
         "text" : "Пожалуйста, разблокируйте расширение"
-    }
+    },
+    "LPTokenOnCommanderBalance" : "LPToken on Commander balance",
+    "mainTokenAmount" : "Баланс основного токена",
+    "mainTokenDecimals" : "Decimals основного токена",
+    "poolData" : "Данные пула"
 }

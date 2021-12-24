@@ -8,6 +8,7 @@ import indicatorPanelReducer from './reducers/indicatorPanel';
 import etmReducer from './reducers/etm';
 import farmsReducer from './reducers/farms';
 import dropsReducer from './reducers/drops';
+import spaceStationReducer from './reducers/spaceStation';
 
 const totalReducer = combineReducers({
     root            : rootReducer,
@@ -17,7 +18,8 @@ const totalReducer = combineReducers({
     indicatorPanel  : indicatorPanelReducer,
     etm				: etmReducer,
     farms           : farmsReducer,
-    drops           : dropsReducer
+    drops           : dropsReducer,
+    spaceStation    : spaceStationReducer
 });
 
 const store = createStore(totalReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

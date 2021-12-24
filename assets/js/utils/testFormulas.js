@@ -41,7 +41,7 @@ function countPriceImpact (pair, amountIn, amountOut, tokens) {
     return vp.mul(priceImpact, {value : 100, decimals: 0})
 }
 
-function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
+function getSwapPrice (volume0, volume1, amountIn, pool_fee) {   
     if (amountIn == 0)
         return 0
 
@@ -49,7 +49,6 @@ function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
     let mul = vp.mul(volume0, volume1)
     let add = vp.add(volume0, vp.mul(amountIn, vp.sub(one, pool_fee)))
     let div = vp.div(mul, add)
-
     return vp.sub(volume1, div)
 }
 

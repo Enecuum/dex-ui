@@ -11,7 +11,7 @@
 }
 
 #ETMWrapper form .err-msg {
-    color: #e03266;
+    color: var(--color-alert1);
     font-size: 13px;
 }
 

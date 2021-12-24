@@ -127,7 +127,7 @@ class DistributeModal extends React.Component {
         let errMsg = '';
         let invalidPropName = undefined;
         let validator = new Validator;
-        let validatonResult = undefined;
+        let validationResult = undefined;
         let dataValid = true;
 
         for (let step = 0; step < (amountOfRules); step++) {
@@ -135,21 +135,21 @@ class DistributeModal extends React.Component {
             if (step <= 3) {
               let arg = dataset.poolData;
               let currentRule = validationRules[`getValidationRulesStep_${step}`](arg);
-              validatonResult = validator.batchValidate(arg, currentRule);
+              validationResult = validator.batchValidate(arg, currentRule);
             } else {
               let arg_1 = dataset.mainTokenBalance;
               let arg_2 = dataset.distributeCost;
               let currentRule = validationRules[`getValidationRulesStep_${step}`](arg_1, arg_2);
-              validatonResult = validator.batchValidate(arg_1, currentRule);          
+              validationResult = validator.batchValidate(arg_1, currentRule);          
             }            
           }
           
-          if (validatonResult !== undefined && validatonResult.dataValid === false) {
-            let validatonResultProps = Object.getOwnPropertyNames(validatonResult.propsArr);
-            validatonResultProps.forEach(propName => {
-              if (validatonResult.propsArr[propName].hasOwnProperty('msg')) {
+          if (validationResult !== undefined && validationResult.dataValid === false) {
+            let validationResultProps = Object.getOwnPropertyNames(validationResult.propsArr);
+            validationResultProps.forEach(propName => {
+              if (validationResult.propsArr[propName].hasOwnProperty('msg')) {
                 invalidPropName = propName; 
-                errMsg = that.props.t('errorMsg.' + validatonResult.propsArr[propName].msg, validatonResult.propsArr[propName].params);
+                errMsg = that.props.t('errorMsg.' + validationResult.propsArr[propName].msg, validationResult.propsArr[propName].params);
               }
             });
             dataValid = false;
@@ -157,8 +157,8 @@ class DistributeModal extends React.Component {
               return this.getErrMsg(invalidPropName, errMsg);          
           }      
         }
-console.log(validatonResult)
-        if (validatonResult === undefined) {
+
+        if (validationResult === undefined || validationResult.dataValid === false) {
           return this.getWaiting()
         } else if (dataValid) {
           return this.getContent();

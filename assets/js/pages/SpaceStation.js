@@ -419,11 +419,11 @@ class SpaceStation extends React.Component {
 
         return (
             <>
-                {this.props.managedFarmData !== null &&                
+                {this.props.managedFarmData !== null && this.props.managedFarmData !== undefined &&               
                     <div className="value-and-control">
                         <div className="stake-value-wrapper">
                             <div className="stake-value">
-                                {valueProcessor.usCommasBigIntDecimals((this.props.managedFarmData !== null && this.props.managedFarmData !== undefined ? this.props.managedFarmData.stake : '---'), this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
+                                {valueProcessor.usCommasBigIntDecimals(this.props.managedFarmData.stake, this.props.managedFarmData.stake_token_decimals, this.props.managedFarmData.stake_token_decimals)}
                             </div>
                             <div className="color-2 stake-value-usd">≈ {this.getValueInUSD()} USD</div>
                         </div>
@@ -645,6 +645,14 @@ class SpaceStation extends React.Component {
 
     getPoolsTable() {
         const t = this.props.t;
+        let distributeButtonClass = 'btn unselectable-text'
+        let disabledDependendClass = 'outline-border-color2-button'
+        let isDisabled = true;
+        if (this.props.mainTokenAmount !== undefined && this.props.mainTokenAmount > 0) {
+            isDisabled = false;
+            disabledDependendClass = 'outline-border-color3-button'
+        }
+        
         return(
             <>
                 <div className="h2 mb-5">
@@ -689,7 +697,9 @@ class SpaceStation extends React.Component {
                                             {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
                                         </td>                                        
                                         <td>
-                                            <Button className="btn outline-border-color3-button unselectable-text"                                                
+                                            <Button
+                                                className={`${distributeButtonClass} ${disabledDependendClass}`}
+                                                disabled={isDisabled}                                                
                                                 onClick={this.showDistributeModal.bind(this, pool)}>
                                                 Distibute
                                             </Button>

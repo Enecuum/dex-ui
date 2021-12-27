@@ -675,37 +675,38 @@ class SpaceStation extends React.Component {
                               </thead>
                             <tbody>
                                 {this.spaceStationPools.map(( pool, index ) => {
-                                  return (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td className="text-nowrap">
-                                            <a
-                                                href = {"/#!action=pool&pair=" + pool.ticker_LP + "-" + pool.ticker_ENX + '&from=' + pool.asset_LP + "&to=" + pool.asset_ENX}
-                                                onClick={this.switchToPool.bind(this)}
-                                                className="text-color4-link hover-pointer">
-                                                {this.getLPAlias(pool.asset_LP, pool.ticker_LP)}-{pool.ticker_ENX}
-                                            </a>
-                                        </td>
-                                        <td>{pool.LPTokenOnCommanderBalance !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.LPTokenOnCommanderBalance.amount, pool.LPTokenOnCommanderBalance.decimals, pool.LPTokenOnCommanderBalance.decimals) : '---'}</td>
-                                        <td>
-                                            {pool.distributeResult !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.distributeResult.enxOut.value, pool.distributeResult.enxOut.decimals, pool.decimals_ENX) : '---'}
-                                        </td>
-                                        <td>
-                                            {pool.enxPrice !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.enxPrice.value, pool.enxPrice.decimals, pool.decimals_LP) : '---'}
-                                        </td>
-                                        <td>
-                                            {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
-                                        </td>                                        
-                                        <td>
-                                            <Button
-                                                className={`${distributeButtonClass} ${disabledDependendClass}`}
-                                                disabled={isDisabled}                                                
-                                                onClick={this.showDistributeModal.bind(this, pool)}>
-                                                Distibute
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                  );
+                                    let LPAlias = this.getLPAlias(pool.asset_LP, pool.ticker_LP);
+                                    return (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td className="text-nowrap">
+                                                <a
+                                                    href = {"/#!action=pool&pair=" + pool.ticker_LP + "-" + pool.ticker_ENX + '&from=' + pool.asset_LP + "&to=" + pool.asset_ENX}
+                                                    onClick={this.switchToPool.bind(this)}
+                                                    className="text-color4-link hover-pointer">
+                                                    {LPAlias}-{pool.ticker_ENX}
+                                                </a>
+                                            </td>
+                                            <td>{pool.LPTokenOnCommanderBalance !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.LPTokenOnCommanderBalance.amount, pool.LPTokenOnCommanderBalance.decimals, pool.LPTokenOnCommanderBalance.decimals) : '---'} {LPAlias}</td>
+                                            <td>
+                                                {pool.distributeResult !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.distributeResult.enxOut.value, pool.distributeResult.enxOut.decimals, pool.decimals_ENX) : '---'} ENX
+                                            </td>
+                                            <td>
+                                                {pool.enxPrice !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.enxPrice.value, pool.enxPrice.decimals, pool.decimals_LP) : '---'} {LPAlias}
+                                            </td>
+                                            <td>
+                                                {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
+                                            </td>                                        
+                                            <td>
+                                                <Button
+                                                    className={`${distributeButtonClass} ${disabledDependendClass}`}
+                                                    disabled={isDisabled}                                                
+                                                    onClick={this.showDistributeModal.bind(this, pool)}>
+                                                    Distibute
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    );
                                 })}
                               </tbody>
                         </Table>

@@ -1,3 +1,5 @@
+import utils from '../utils/swapUtils' 
+
 class SwapCardValidationRules {
     constructor (translationFunction) {
         this.t = translationFunction
@@ -122,13 +124,24 @@ class SwapCardValidationRules {
         if (swapCardData.ltfield)
             ltData = swapCardData.ltfield
 
+        let field0Check = this._getSwapCardBalanceRules({
+            required: (mode === 'exchange' || mode === 'liquidity'),
+            balance: swapCardData.field0.balance,
+            value: swapCardData.field0.value
+        })
+        field0Check.checks.push({
+            requireToCheck: (mode === 'exchange' || mode === 'liquidity'),
+            method: 'moreThan',
+            args: {
+                value: swapCardData.field0.value.value,
+                max: 0
+            },
+            desiredResult: true,
+            errMsg: 'fillAllFields'
+        })
         return {
             field0: {
-                ...this._getSwapCardBalanceRules({
-                    required: (mode === 'exchange' || mode === 'liquidity'),
-                    balance: swapCardData.field0.balance,
-                    value: swapCardData.field0.value
-                })
+                ...field0Check
             },
             field1: {
                 ...this._getSwapCardBalanceRules({
@@ -150,6 +163,13 @@ class SwapCardValidationRules {
                     balance: swapCardData.nativeToken.balance,   // user balance
                     value: swapCardData.nativeToken.value        // network fee
                 })
+            },
+            fullField0Value : {
+                ...this._getSwapCardBalanceRules({
+                    required: mode === 'exchange',
+                    balance: swapCardData.field0.balance,
+                    value: swapCardData.fullField0Value
+                })
             }
         }
     }
@@ -157,9 +177,9 @@ class SwapCardValidationRules {
     _getSwapCardBalanceRules (fieldData) {
         let value = 0, max = 0
         try {
-            let {tV, Tm} = this._realignValueByDecimals(fieldData.value, {value : fieldData.balance.amount, decimals : fieldData.balance.decimals})
-            value = tV
-            max = Tm
+            let tmp = this._realignValueByDecimals(fieldData.value, {value : fieldData.balance.amount, decimals : fieldData.balance.decimals})
+            value = tmp.value
+            max = tmp.max
         } catch (e) {}
         return {
             checks: [
@@ -167,7 +187,7 @@ class SwapCardValidationRules {
                     method: 'isSet',
                     args: {data: fieldData},
                     desiredResult: true,
-                    errMsg: 'REQUIRED'
+                    errMsg: 'fillAllFields'
                 },
                 {
                     requireToCheck: fieldData.required,
@@ -177,7 +197,7 @@ class SwapCardValidationRules {
                         max: max
                     },
                     desiredResult: true,
-                    errMsg: 'MUST_BE_LESS_OR_EQUAL_THAN_NAMED_VALUE'
+                    errMsg: 'insufficientFunds'
                 }
             ]
         }

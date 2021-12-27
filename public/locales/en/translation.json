@@ -90,6 +90,7 @@
                 "fillAllFields" : "Fill all fields",
                 "swap" : "Swap",
                 "createPair" : "Create pair",
+                
                 "insufficientFunds" : "Insufficient funds",
                 "invalidPool" : "Invalid pool"
             },

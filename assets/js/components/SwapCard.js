@@ -32,12 +32,12 @@ const valueProcessor = new ValueProcessor();
 class SwapCard extends React.Component {
     constructor(props) {
         super(props)
-        this.pairExists = false;
-        this.readyToSubmit = false;
-        this.enoughMoney = [];
-        this.insufficientFunds = false;
-        this.activePair = {};
-        this.rmPercents = 50;
+        this.pairExists = false
+        this.readyToSubmit = {dataValid : false}
+        this.enoughMoney = []
+        this.insufficientFunds = false
+        this.activePair = {}
+        this.rmPercents = 50
         this.removeLiquidity = {
             ranges : [
                 {
@@ -461,30 +461,62 @@ class SwapCard extends React.Component {
             this.openConList()
     }
 
+    makeErrMsg (fieldName, err) {
+        return `${fieldName}: ${this.props.t('trade.swapCard.submitButton.' + err.msg, err.params)}`
+    }
+
+    handleErrorsForSwapCard (errObj) {
+        let errProp = Object.keys(errObj)[0]
+        switch (errProp) {
+            case 'field0':
+                return this.makeErrMsg("'from' field", errObj.field0)
+            case 'field1':
+                return this.makeErrMsg("'to' field", errObj.field1)
+            case 'ltfield':
+                return this.makeErrMsg("'from' field", errObj.ltfield)
+            case 'fullField0Value':
+                return this.makeErrMsg("check provider fee:", errObj.fullField0Value)
+            default:
+                return undefined
+        }
+    }
+
     getSubmitButton(modeStruct, openConfirmCard) {
-        const t = this.props.t;
-        let buttonName;
+        const t = this.props.t
+        let buttonName
         if (this.props.connectionStatus === false)
-            buttonName = 'beforeConnection';
+            buttonName = 'beforeConnection'
         else {
+            // ----------------- establish mode buttons -----------------
             if (this.props.menuItem === 'exchange')
                 buttonName = 'swap'
             else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove)
                 buttonName = 'addLiquidity'
             else if (this.props.menuItem === 'liquidity')
                 buttonName = 'removeLiquidity'
-            if (!this.readyToSubmit)
-                buttonName = 'fillAllFields';
-            let id0 = this.enoughMoney.indexOf(modeStruct.field0.id);
-            let id1 = this.enoughMoney.indexOf(modeStruct.field1.id);
-            if (id0 !== -1 || id1 !== -1) {
-                buttonName = 'insufficientFunds';
-                this.insufficientFunds = true;
-            } else 
-                this.insufficientFunds = false;
+
+            // -------------------- establish errors --------------------
+            if (this.readyToSubmit) {
+                if (this.readyToSubmit.propsArr) {
+                    let err = this.handleErrorsForSwapCard(this.readyToSubmit.propsArr)
+                    if (err)
+                        buttonName = err
+                } else 
+                    buttonName = 'fillAllFields'
+            }
+            
+            // // -------------------- establish balances --------------------
+            // let id0 = this.enoughMoney.indexOf(modeStruct.field0.id)
+            // let id1 = this.enoughMoney.indexOf(modeStruct.field1.id)
+            // if (id0 !== -1 || id1 !== -1) {
+            //     buttonName = 'insufficientFunds'
+            //     this.insufficientFunds = true
+            // } else 
+            //     this.insufficientFunds = false
+            
             if (this.pairExists === false) {
                 if (!this.insufficientFunds)
-                    buttonName = (!this.readyToSubmit) ? 'fillAllFields' : 'createPair';
+                    buttonName = (!this.readyToSubmit.dataValid) ? 'fillAllFields' : 'createPair';
                 return (
                     <div className="w-100">
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
@@ -876,11 +908,15 @@ class SwapCard extends React.Component {
             balance: nativeBalance,
             value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
         }
+        if (this.getMode() === 'exchange') {
+            let providerFee = valueProcessor.mul({value : this.activePair.pool_fee, decimals : 2}, modeData.field0.value)
+            modeData.fullField0Value = valueProcessor.add(providerFee, modeData.field0.value)
+        }
         if (modeData.field0.value.text && modeData.field1.value.text) {
             let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData, this.getMode())
             return this.validator.batchValidate(modeData, rules)
         } else {
-            return false
+            return {dataValid : false}
         }
     }
 
@@ -910,7 +946,7 @@ class SwapCard extends React.Component {
     /* =========================== rules checking for ConfirmCard opening ========================== */
     establishReadiness(checkResult) {
         this.countBadBalance()
-        this.readyToSubmit = checkResult.dataValid
+        this.readyToSubmit = checkResult
     };
 
     establishPairExistence() {

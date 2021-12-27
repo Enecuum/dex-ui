@@ -46,14 +46,15 @@ class Root extends React.Component {
     constructor (props) {
         super(props)
         this.intervalDescriptors = []
-        this.intervalDescriptors.push(this.intervalUpdDexData())
+        this.supersonicUpdDexData()
         this.intervalDescriptors.push(this.circleBalanceUpd())
         this.updNativeTokenData()
         this.setPath()
         window.addEventListener('hashchange', () => {
             this.setPath()
         })
-        this.updNetworkInfo();
+        this.updNetworkInfo()
+        this.prevConnectionStatus = false
     }
 
     componentDidUpdate(prevProps) {
@@ -64,6 +65,13 @@ class Root extends React.Component {
 
     componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
+        clearInterval(this.updDexDataDescriptor)
+    }
+
+    slowDownUpdDexDataInterval () {
+        this.updDexDataDescriptor = setInterval(() => {
+            this.updDexData(this.props.pubkey)
+        }, 5000)
     }
 
     /* ---------------------- Routing ------------------------ */
@@ -125,8 +133,17 @@ class Root extends React.Component {
         });    
     }
 
+    
+
     updDexData (pubkey) {
         if (this.props.connectionStatus) {
+            if (!this.prevConnectionStatus) {
+                this.prevConnectionStatus = true
+                setTimeout(() => {
+                    clearInterval(this.updDexDataDescriptor)
+                    this.slowDownUpdDexDataInterval()
+                }, 10 * 1000)
+            }
             this.updBalances(pubkey)
             this.updPools()
             this.updTokens()
@@ -143,10 +160,12 @@ class Root extends React.Component {
         })
     }
 
-    intervalUpdDexData () {
-        return setInterval(() => {
+    supersonicUpdDexData () {
+        if (this.updDexDataDescriptor)
+            clearInterval(this.updDexDataDescriptor)
+        this.updDexDataDescriptor = setInterval(() => {
             this.updDexData(this.props.pubkey)
-        }, 5000)
+        }, 1000)
     }
 
     updBalances (pubkey) {
@@ -254,7 +273,7 @@ class Root extends React.Component {
         this.updBalanceForms()
         return setInterval(() => {
             this.updBalanceForms()
-        }, 500)
+        }, 1000)
     }
 
     updBalanceObj (menuItem, field) {

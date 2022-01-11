@@ -94,6 +94,13 @@
                 "insufficientFunds" : "Insufficient funds",
                 "invalidPool" : "Invalid pool"
             },
+            "errorDescription" : {
+                "field0" : "Check value of the first asset",
+                "field1" : "Check value of the second asset",
+                "ltfield" : "Check value of the third asset",
+                "fullField0Value" : "The sum of the first asset and lt provider fee should be less than user's balance",
+                "nativeToken" : "Not enough native coin to pay the fee"
+            },
             "aboutButtonInfo" : {
                 "withoutPair" : "There is no such pair",
                 "lackOfLiquidity" : "Insufficient liquidity for this trade"

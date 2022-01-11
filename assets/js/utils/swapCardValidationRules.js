@@ -174,6 +174,32 @@ class SwapCardValidationRules {
         }
     }
 
+    getCreatePairValidationRules (swapCardData) {
+        return {
+            field0: {
+                ...this._getSwapCardBalanceRules({
+                    required: true,
+                    balance: swapCardData.field0.balance,
+                    value: swapCardData.field0.value
+                })
+            },
+            field1: {
+                ...this._getSwapCardBalanceRules({
+                    required: true,
+                    balance: swapCardData.field1.balance,
+                    value: swapCardData.field1.value
+                })
+            },
+            nativeToken: {
+                ...this._getSwapCardBalanceRules({
+                    required: true,
+                    balance: swapCardData.nativeToken.balance,   // user balance
+                    value: swapCardData.nativeToken.value        // network fee
+                })
+            }
+        }
+    }
+
     _getSwapCardBalanceRules (fieldData) {
         let value = 0, max = 0
         try {
@@ -191,7 +217,7 @@ class SwapCardValidationRules {
                 },
                 {
                     requireToCheck: fieldData.required,
-                    method: 'lessThan',
+                    method: 'lessOrEqualThan',
                     args: {
                         value: value,
                         max: max

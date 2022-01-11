@@ -454,46 +454,76 @@ class SwapCard extends React.Component {
         )
     }
 
-    validateDataForConfirmation (openConfirmCard) {
-        if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds)
+    validateDataForConfirmation (openConfirmCard, dataValid) {
+        if (this.props.connectionStatus && this.getReadinessState() && !this.insufficientFunds && dataValid)
             openConfirmCard()
         if (!this.props.connectionStatus)
             this.openConList()
     }
 
-    makeErrMsg (fieldName, err) {
-        return `${fieldName}: ${this.props.t('trade.swapCard.submitButton.' + err.msg, err.params)}`
+    makeErrMsg (errField, err) {
+        let errTitle = this.getSwapCardButtonName(err.msg)
+        return {
+            title: errTitle,
+            error: errField
+        }
     }
 
     handleErrorsForSwapCard (errObj) {
-        let errProp = Object.keys(errObj)[0]
+        let errProp = Object.keys(errObj)[0], t = this.props.t, dp = "trade.swapCard.errorDescription."
         switch (errProp) {
             case 'field0':
-                return this.makeErrMsg("'from' field", errObj.field0)
+                return this.makeErrMsg(t(dp + "field0"), errObj.field0)
             case 'field1':
-                return this.makeErrMsg("'to' field", errObj.field1)
+                return this.makeErrMsg(t(dp + "field1"), errObj.field1)
             case 'ltfield':
-                return this.makeErrMsg("'from' field", errObj.ltfield)
+                return this.makeErrMsg(t(dp + "ltfield"), errObj.ltfield)
             case 'fullField0Value':
-                return this.makeErrMsg("check provider fee:", errObj.fullField0Value)
+                return this.makeErrMsg(t(dp + "fullField0Value"), errObj.fullField0Value)
+            case 'nativeToken':
+                return this.makeErrMsg(t(dp + "nativeToken"), errObj.nativeToken)
             default:
                 return undefined
         }
+    }
+
+    getSwapCardButtonName(buttonName) {
+        return this.props.t(`trade.swapCard.submitButton.${buttonName}`)
+    }
+
+    renderSwapCardButton (buttonName, openConfirmCard, dataValid, style) {
+        return (
+            <div className="w-100">
+                <button className='btn btn-secondary alt-submit w-100 pt-2'
+                        onClick={this.validateDataForConfirmation.bind(this, openConfirmCard, dataValid)}
+                        type='submit'
+                        id='submit'
+                        style={style}
+                >
+                    { (typeof buttonName === "object") ? buttonName.title : buttonName }
+                </button>
+                { buttonName.error &&
+                    <small className="row err-msg d-flex justify-content-center form-text mx-0 pt-2">
+                        { buttonName.error }
+                    </small>
+                }
+            </div>
+        )
     }
 
     getSubmitButton(modeStruct, openConfirmCard) {
         const t = this.props.t
         let buttonName
         if (this.props.connectionStatus === false)
-            buttonName = 'beforeConnection'
+            buttonName = this.getSwapCardButtonName('beforeConnection')
         else {
             // ----------------- establish mode buttons -----------------
             if (this.props.menuItem === 'exchange')
-                buttonName = 'swap'
+                buttonName = this.getSwapCardButtonName('swap')
             else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove)
-                buttonName = 'addLiquidity'
+                buttonName = this.getSwapCardButtonName('addLiquidity')
             else if (this.props.menuItem === 'liquidity')
-                buttonName = 'removeLiquidity'
+                buttonName = this.getSwapCardButtonName('removeLiquidity')
 
             // -------------------- establish errors --------------------
             if (this.readyToSubmit) {
@@ -502,48 +532,42 @@ class SwapCard extends React.Component {
                     if (err)
                         buttonName = err
                 } else 
-                    buttonName = 'fillAllFields'
+                    buttonName = this.getSwapCardButtonName('fillAllFields')
             }
             
-            // // -------------------- establish balances --------------------
-            // let id0 = this.enoughMoney.indexOf(modeStruct.field0.id)
-            // let id1 = this.enoughMoney.indexOf(modeStruct.field1.id)
-            // if (id0 !== -1 || id1 !== -1) {
-            //     buttonName = 'insufficientFunds'
-            //     this.insufficientFunds = true
-            // } else 
-            //     this.insufficientFunds = false
-            
             if (this.pairExists === false) {
-                if (!this.insufficientFunds)
-                    buttonName = (!this.readyToSubmit.dataValid) ? 'fillAllFields' : 'createPair';
+                let validationResult = {dataValid : false}
+                let modeField = this.props[this.getMode()]
+                if (modeField.field0.value.text && modeField.field1.value.text) {
+                    let nativeBalance = utils.getBalanceObj(this.props.balances, this.props.mainToken)
+                    let rules = this.swapCardValidationRules.getCreatePairValidationRules({
+                        ...modeField,
+                        nativeToken : {
+                            balance: nativeBalance,
+                            value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
+                        }
+                    })
+                    validationResult = this.validator.batchValidate(modeField, rules)
+                    let err = this.handleErrorsForSwapCard(validationResult.propsArr)
+                    if (err)
+                        buttonName = err
+                    else
+                        buttonName = this.getSwapCardButtonName('createPair')
+                }
                 return (
                     <div className="w-100">
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
                             { this.props.t('trade.swapCard.aboutButtonInfo.withoutPair') }
                         </div>
-                        <button
-                            className='btn btn-secondary alt-submit w-100 py-2'
-                            onClick={this.validateDataForConfirmation.bind(this, openConfirmCard)}
-                            type='submit'
-                            id='submit'>
-                            { t(`trade.swapCard.submitButton.${buttonName}`) }
-                        </button>
+                        { this.renderSwapCardButton(buttonName, openConfirmCard, validationResult.dataValid) }
                     </div>
-                );
+                )
             }
         }
-        return (
-            <button
-                className='btn btn-secondary w-100 py-2'
-                type='submit'
-                id='submit'
-                onClick={this.validateDataForConfirmation.bind(this, openConfirmCard)}
-                style={{backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'}}>
-                { t(`trade.swapCard.submitButton.${buttonName}`) }
-            </button>
-        );
-    };
+        return this.renderSwapCardButton(buttonName, openConfirmCard, this.readyToSubmit.dataValid, {
+            backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'
+        })
+    }
 
     getBalanceColor (id) {
         let c_color = { danger : '#61c2d077', simple : '#61c2d0' };

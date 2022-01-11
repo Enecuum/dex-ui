@@ -21,7 +21,7 @@ import img1 from '../../img/logo.png'
 import img2 from '../../img/bry-logo.png'
 import '../../css/confirm-supply.css'
 
-const valueProcessor = new ValueProcessor();
+const valueProcessor = new ValueProcessor()
 
 
 class ConfirmSupply extends React.Component {

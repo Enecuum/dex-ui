@@ -77,9 +77,9 @@ class Root extends React.Component {
     /* ---------------------- Routing ------------------------ */
 
     setPath() {
-        let action = this.getPathFromURLsHash();
+        let action = this.getPathFromURLsHash()
         if (action !== undefined) {
-            this.props.changeMenuItem(action);
+            this.props.changeMenuItem(action)
         } else
             window.location.hash = '#!action=swap'
     }

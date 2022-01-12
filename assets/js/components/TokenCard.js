@@ -9,6 +9,7 @@ import utils from '../utils/swapUtils';
 import Tooltip from '../elements/Tooltip';
 
 import '../../css/token-card.css';
+import LogoToken from "../elements/LogoToken";
 
 
 class TokenCard extends React.Component {
@@ -95,12 +96,15 @@ class TokenCard extends React.Component {
     makeList(sortDirection = 'asc') { //allowable values are: 'asc','desc','unsort'
         return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map((el, i) => {
             return (
-                <div className='token-option py-1 my-1 px-1 hover-pointer' key={i} onClick={this.assignToken.bind(this, el)}>
-                    { el.ticker }
+                <div onClick={this.assignToken.bind(this, el)}>
+                    <LogoToken customClasses='token-option py-1 my-1 px-1 hover-pointer'
+                               data = {{url : el.logo, value : el.ticker}}
+                               key={i}
+                    />
                 </div>
-            );
-        });
-    };
+            )
+        })
+    }
 
     changeList() {
         if (['insertText', 'deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {

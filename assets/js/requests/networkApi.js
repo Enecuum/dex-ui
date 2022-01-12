@@ -69,7 +69,15 @@ class NetworkApi {
                 method : 'GET'
             }
         );        
-    }        
+    }
+
+    tokenInfoStorageEnq () {
+        return trafficController.simpleRequest('https://pulse.enecuum.com/info/token-info-storage-enq.json',
+            {
+                method : 'GET'
+            }
+        )
+    }
 
     // ---------------------------------------------------------------------
 }

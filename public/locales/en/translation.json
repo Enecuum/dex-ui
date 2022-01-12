@@ -73,6 +73,7 @@
                 "description" : "Add liquidity to receive LP tokens",
                 "addButton" : "Add liquidity",
                 "yourLiquidity" : "Your liquidity",
+                "yourLiquidityTooltip" : "Remove liquidity to receive tokens back",
                 "additionInfo" : "If you staked your ENX tokens in a farm, unstake them to see them here.",
                 "priceAndPoolShare" : "Price and pool share",
                 "per" : "per",

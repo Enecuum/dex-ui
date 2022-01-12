@@ -1,4 +1,4 @@
-/* ======== code for manual reloading in dev-mode ======== */
+/* ======== code for auto reloading in dev-mode ======== */
 
 if (module.hot) {
     module.hot.accept()
@@ -133,8 +133,6 @@ class Root extends React.Component {
         });    
     }
 
-    
-
     updDexData (pubkey) {
         if (this.props.connectionStatus) {
             if (!this.prevConnectionStatus) {
@@ -262,9 +260,43 @@ class Root extends React.Component {
             }
             Promise.all(promises)
             .then(() => {
-                this.props.assignAllTokens(tokens)
+                let withoutImagePlaces = this.getTokensWithoutImageName(tokens)
+                if (withoutImagePlaces.length)
+                    this.updTokensImageInfo(tokens, withoutImagePlaces)
+                    .then(tokens => this.props.assignAllTokens(tokens))
+                else
+                    this.props.assignAllTokens(tokens)
             })
         })
+    }
+
+    getTokensWithoutImageName (tokens) {
+        return tokens.reduce((emptyPlaces, cur, place) => {
+            if (cur.logo === undefined)
+                emptyPlaces.push(place)
+            return emptyPlaces
+        }, [])
+    }
+
+    updTokensImageInfo (tokens, withoutImagePlaces) {
+        return new Promise(resolve => {
+            networkApi.tokenInfoStorageEnq()
+            .then(result => {
+                if (!result.lock) {
+                    result.json().then(infoStorageEnq => {
+                        for (let index of withoutImagePlaces)
+                            tokens[index].logo = this.findLogo(infoStorageEnq, tokens[index].hash)
+                        resolve(tokens)
+                    }).catch(() => resolve())
+                } else
+                    resolve(tokens)
+            })
+        })
+    }
+
+    findLogo (infoStorageEnq, tokenHash) {
+        let res = infoStorageEnq.find(el => el.token_id === tokenHash)
+        return res ? res.logo : null
     }
 
     /* -------------- Upd balances in swapCard --------------- */

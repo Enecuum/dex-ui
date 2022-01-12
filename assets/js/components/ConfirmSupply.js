@@ -69,7 +69,7 @@ class ConfirmSupply extends React.Component {
                 <div className="h3 font-weight-bold">
                     { valueProcessor.usCommasBigIntDecimals(ltValue.value, ltValue.decimals) }
                 </div>
-                <PairLogos logos={{logo1 : img1, logo2 : img2, logoSize : 'sm'}} />
+                <PairLogos logos={{logo1 : firstToken.logo, logo2 : secondToken.logo, logoSize : 'sm'}} />
                 <div className='h5 mb-4'>
                     {
                         (this.props.menuItem === 'liquidity')
@@ -92,7 +92,7 @@ class ConfirmSupply extends React.Component {
                         <div>
                             {firstToken.ticker} {t('trade.confirmCard.deposited')}
                         </div>
-                        <LogoToken data={{url : img1, value : modeStruct.field0.value.text}} />
+                        <LogoToken data={{url : modeStruct.field0.token.logo, value : modeStruct.field0.value.text}} />
                     </div>
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
@@ -105,7 +105,7 @@ class ConfirmSupply extends React.Component {
                                 ' ' + t('trade.confirmCard.toBeReceived')
                             }
                         </div>
-                        <LogoToken data={{url : img2, value : modeStruct.field1.value.text}} />
+                        <LogoToken data={{url : modeStruct.field1.token.logo, value : modeStruct.field1.value.text}} />
                     </div>
                     <div className='d-flex align-items-start justify-content-between mb-2'>
                         <div>

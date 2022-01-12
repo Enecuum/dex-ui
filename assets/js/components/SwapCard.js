@@ -302,7 +302,7 @@ class SwapCard extends React.Component {
                                 <div>
                                     {t(dp + `.${mode}.yourLiquidity`)}
                                 </div>
-                                <Tooltip text='text'/> {/*langData.trade.tokenCard.tooltipText*/}
+                                <Tooltip text={t('trade.swapCard.liquidity.yourLiquidityTooltip')}/>
                             </div>
                             <div className='your-liquidity-field my-3'>
                                 <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
@@ -402,13 +402,13 @@ class SwapCard extends React.Component {
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>{this.showInputValue(modeStruct.field0.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : img1, value : firstToken.ticker}}/>
+                                    <LogoToken data = {{url : firstToken.logo, value : firstToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>{this.showInputValue(modeStruct.field1.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : img2, value : secondToken.ticker}}/>
+                                    <LogoToken data = {{url : secondToken.logo, value : secondToken.ticker}}/>
                                 </div>
                             </div>
                             <div className="text-right">

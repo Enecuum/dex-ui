@@ -402,13 +402,21 @@ class SwapCard extends React.Component {
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>{this.showInputValue(modeStruct.field0.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : firstToken.logo, value : firstToken.ticker}}/>
+                                    <LogoToken data = {{
+                                        url : firstToken.logo,
+                                        value : firstToken.ticker,
+                                        net : this.props.net
+                                    }}/>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <div>{this.showInputValue(modeStruct.field1.value)}</div>
                                 <div className="d-flex align-items-center justify-content-end">
-                                    <LogoToken data = {{url : secondToken.logo, value : secondToken.ticker}}/>
+                                    <LogoToken data = {{
+                                        url : secondToken.logo,
+                                        value : secondToken.ticker,
+                                        net : this.props.net
+                                    }}/>
                                 </div>
                             </div>
                             <div className="text-right">

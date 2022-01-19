@@ -28,6 +28,8 @@ const presets =  {
         }
     },
 
+    logoUrl : 'https://pulse.enecuum.com/info/token/logo/',
+
     swapTokens : {
         emptyToken: {
             ticker      : undefined, // undefined - flag for using i18 default meaning

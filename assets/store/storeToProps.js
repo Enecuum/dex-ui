@@ -65,7 +65,8 @@ function mapStoreToProps(component) {
                     balances                   : state.root.balances,
                     navOpened                  : state.root.navOpened,
                     tokens                     : state.root.tokens,
-                    nativeToken                : state.root.nativeToken
+                    nativeToken                : state.root.nativeToken,
+                    net                        : state.root.net
                 }
             }
         case components.SWITCH:
@@ -84,6 +85,7 @@ function mapStoreToProps(component) {
                     menuItem    : state.root.menuItem,
                     tokens      : state.root.tokens,
                     balances    : state.root.balances,
+                    net         : state.root.net
                 }
             }
         case components.ASIDE:
@@ -139,7 +141,8 @@ function mapStoreToProps(component) {
                     connectionStatus  : state.root.connectionStatus,
                     removeLiquidity   : state.swapCard.removeLiquidity,
                     liquidityRemove   : state.swapCard.liquidityRemove,
-                    nativeToken       : state.root.nativeToken
+                    nativeToken       : state.root.nativeToken,
+                    net               : state.root.net
                 }
             }
         case components.WAITING_CONFIRMATION:

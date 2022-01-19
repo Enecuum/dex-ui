@@ -1,6 +1,9 @@
 import React from 'react';
 
+import presets from '../../store/pageDataPresets'
+
 import "../../css/logo-token.css"
+
 
 class LogoToken extends React.Component {
     constructor(props) {
@@ -9,15 +12,18 @@ class LogoToken extends React.Component {
     }
 
     render () {
+        let net = 'enq'
+        if (this.props.data.net === 'bit')
+            net = 'bit'
         return (
             <div className={this.customClasses}>
                 <div className={"d-flex align-items-center"}>
                     <div className="logo-wrapper-xs mr-2"
                          style = {{
-                             backgroundImage: `url(${this.props.data.url})`
+                             backgroundImage: `url(${presets.logoUrl}${net}/${this.props.data.url})`
                          }}
                     >
-                        <div className="unknown-logo">?</div>
+                        {this.props.data.url === null && <div className="unknown-logo">?</div>}
                     </div>
                     <span>{this.props.data.value}</span>
                 </div>

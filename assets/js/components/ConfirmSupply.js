@@ -69,7 +69,12 @@ class ConfirmSupply extends React.Component {
                 <div className="h3 font-weight-bold">
                     { valueProcessor.usCommasBigIntDecimals(ltValue.value, ltValue.decimals) }
                 </div>
-                <PairLogos logos={{logo1 : firstToken.logo, logo2 : secondToken.logo, logoSize : 'sm'}} />
+                <PairLogos logos={{
+                    logo1 : firstToken.logo,
+                    logo2 : secondToken.logo,
+                    net : this.props.net,
+                    logoSize : 'sm'
+                }} />
                 <div className='h5 mb-4'>
                     {
                         (this.props.menuItem === 'liquidity')
@@ -92,7 +97,11 @@ class ConfirmSupply extends React.Component {
                         <div>
                             {firstToken.ticker} {t('trade.confirmCard.deposited')}
                         </div>
-                        <LogoToken data={{url : modeStruct.field0.token.logo, value : modeStruct.field0.value.text}} />
+                        <LogoToken data={{
+                            url : modeStruct.field0.token.logo,
+                            value : modeStruct.field0.value.text,
+                            net : this.props.net
+                        }} />
                     </div>
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
@@ -105,7 +114,11 @@ class ConfirmSupply extends React.Component {
                                 ' ' + t('trade.confirmCard.toBeReceived')
                             }
                         </div>
-                        <LogoToken data={{url : modeStruct.field1.token.logo, value : modeStruct.field1.value.text}} />
+                        <LogoToken data={{
+                            url : modeStruct.field1.token.logo,
+                            value : modeStruct.field1.value.text,
+                            net : this.props.net
+                        }} />
                     </div>
                     <div className='d-flex align-items-start justify-content-between mb-2'>
                         <div>

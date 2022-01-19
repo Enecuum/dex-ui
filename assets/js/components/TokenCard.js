@@ -98,7 +98,7 @@ class TokenCard extends React.Component {
             return (
                 <div onClick={this.assignToken.bind(this, el)}>
                     <LogoToken customClasses='token-option py-1 my-1 px-1 hover-pointer'
-                               data = {{url : el.logo, value : el.ticker}}
+                               data = {{url : el.logo, value : el.ticker, net : this.props.net}}
                                key={i}
                     />
                 </div>

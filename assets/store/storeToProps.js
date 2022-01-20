@@ -156,7 +156,6 @@ function mapStoreToProps(component) {
                     removeLiquidity : state.swapCard.removeLiquidity,
                     net             : state.root.net,
                     liquidityRemove : state.swapCard.liquidityRemove,
-                    currentTxHash   : state.root.currentTxHash
                 }
             }
         case components.WAITING_ISSUE_TOKEN_CONFIRMATION:

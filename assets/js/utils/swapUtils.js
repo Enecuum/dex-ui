@@ -21,6 +21,8 @@ function removeEndZeros (value, strLength) {
     }
     if (value.length > strLength)
         value = value.substring(0, strLength)
+    if (value === "")
+        value = "0"
     return value;
 }
 

@@ -16,7 +16,7 @@ class WaitingConfirmation extends React.Component {
         this.explorer_tx_href = undefined
         this.explorer_href = this.props.net.url
         this.explorer_href_alias = this.props.net.url.replace(/https?:\/\//, '').replace(/\/*$/, '')
-    };
+    }
 
     getHeaderPropNameByType() {
         let modalHeaderPropName = "";

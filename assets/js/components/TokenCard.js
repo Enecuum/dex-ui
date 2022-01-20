@@ -11,6 +11,10 @@ import Tooltip from '../elements/Tooltip';
 import '../../css/token-card.css';
 import LogoToken from "../elements/LogoToken";
 
+import ValueProcessor from "../utils/ValueProcessor";
+import swapUtils from "../utils/swapUtils";
+const vp = new ValueProcessor()
+
 
 class TokenCard extends React.Component {
     constructor(props) {
@@ -93,14 +97,22 @@ class TokenCard extends React.Component {
         }
     }
 
+    getTokenBalance (hash) {
+        let balance = swapUtils.getBalanceObj(this.props.balances, hash)
+        return swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(balance.amount, balance.decimals))
+    }
+
     makeList(sortDirection = 'asc') { //allowable values are: 'asc','desc','unsort'
         return this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection)).map((el, i) => {
             return (
-                <div onClick={this.assignToken.bind(this, el)}>
-                    <LogoToken customClasses='token-option py-1 my-1 px-1 hover-pointer'
+                <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
+                    <LogoToken customClasses='py-1 my-1 px-1'
                                data = {{url : el.logo, value : el.ticker, net : this.props.net}}
                                key={i}
                     />
+                    <small className="mr-2 mt-2 text-muted">
+                        {this.getTokenBalance(el.hash)}
+                    </small>
                 </div>
             )
         })

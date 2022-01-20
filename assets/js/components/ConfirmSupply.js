@@ -196,16 +196,18 @@ class ConfirmSupply extends React.Component {
                 txPromise = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem])
             }
             txPromise.then(result => {
-                this.setState({currentTxHash : result.hash})
-                this.setState({txStatus : 'submitted'})
-                lsdp.write(result.hash, 0, txType, interpolateParams)
-                resolve()
-            },
-            () => {
-                this.setState({txStatus : 'rejected'})
-                reject()
+                this.setState({currentTxHash : result.hash}, () => {
+                    this.setState({txStatus : 'submitted'})
+                    lsdp.write(result.hash, 0, txType, interpolateParams)
+                    this.openWaitingCard(this.state.currentTxHash)
+                    resolve()
+                })
+            }, () => {
+                this.setState({txStatus : 'rejected'}, () => {
+                    this.openWaitingCard()
+                    reject()
+                })
             })
-            this.openWaitingCard()
         })
     }
 
@@ -229,12 +231,11 @@ class ConfirmSupply extends React.Component {
     renderWaitingConfirmation () {
         if (this.state.waitingCardVisibility)
             return (
-                <WaitingConfirmation
-                    closeWaitingCard={this.closeWaitingCard.bind(this)}
-                    closeConfirmCard={this.closeConfirmCard.bind(this)}
-                    txStateType={this.state.txStatus}
-                    currentTxHash={this.state.currentTxHash}
-                    confirmSupplyVisibility={this.state.confirmSupplyVisibility}
+                <WaitingConfirmation closeWaitingCard={this.closeWaitingCard.bind(this)}
+                                     closeConfirmCard={this.closeConfirmCard.bind(this)}
+                                     txStateType={this.state.txStatus}
+                                     currentTxHash={this.state.currentTxHash}
+                                     confirmSupplyVisibility={this.state.confirmSupplyVisibility}
                 />
             )
     }

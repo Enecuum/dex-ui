@@ -1,0 +1,36 @@
+.c-toggle {
+    width: 36px;
+    height: 18px;
+    margin: 0;
+    background: var(--color1);
+    border: 1px solid var(--color2);
+    border-radius: 30px;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: 0.2s cubic-bezier(0.2, 0.85, 0.32, 1.2);
+}
+
+.c-toggle::after {
+    content: "";
+    font-size: 10pt;
+    position: absolute;
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 14px;
+    height: 14px;
+    background-color: var(--color5);
+    border-radius: 50%;
+    transition: 0.2s cubic-bezier(0.2, 0.85, 0.32, 1.2);
+}
+
+.c-toggle:checked::after {
+    content: "";
+    transform: translateX(calc(100% + 3px));
+    background-color: var(--color1);
+}
+.c-toggle:checked {
+    background-color: var(--color5);
+}

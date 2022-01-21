@@ -85,7 +85,8 @@ function mapStoreToProps(component) {
                     menuItem    : state.root.menuItem,
                     tokens      : state.root.tokens,
                     balances    : state.root.balances,
-                    net         : state.root.net
+                    net         : state.root.net,
+                    networkInfo : state.root.networkInfo
                 }
             }
         case components.ASIDE:

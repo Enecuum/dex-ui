@@ -46,6 +46,7 @@ class Root extends React.Component {
     constructor (props) {
         super(props)
         this.intervalDescriptors = []
+        this.supersonicIntervalFlag = true
         this.supersonicUpdDexData()
         this.intervalDescriptors.push(this.circleBalanceUpd())
         this.updNativeTokenData()
@@ -54,12 +55,13 @@ class Root extends React.Component {
             this.setPath()
         })
         this.updNetworkInfo()
-        this.prevConnectionStatus = false
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.net.url !== prevProps.net.url) {            
-            this.updNetworkInfo();
+        if (this.props.net.url !== prevProps.net.url) {
+            this.supersonicUpdDexData()
+            this.updNetworkInfo()
+            this.mustChangeLogos = true
         }
     }
 
@@ -68,10 +70,21 @@ class Root extends React.Component {
         clearInterval(this.updDexDataDescriptor)
     }
 
-    slowDownUpdDexDataInterval () {
+    setUpdDataDescriptor (timeout) {
+        if (this.updDexDataDescriptor)
+            clearInterval(this.updDexDataDescriptor)
         this.updDexDataDescriptor = setInterval(() => {
             this.updDexData(this.props.pubkey)
-        }, 5000)
+        }, timeout)
+    }
+
+    supersonicUpdDexData () {
+        this.supersonicIntervalFlag = true
+        this.setUpdDataDescriptor(1000)
+    }
+
+    slowDownUpdDexDataInterval () {
+        this.setUpdDataDescriptor(5000)
     }
 
     /* ---------------------- Routing ------------------------ */
@@ -122,25 +135,25 @@ class Root extends React.Component {
 
     /* -------------------- Data loading --------------------- */
 
-    updNetworkInfo() {
+    updNetworkInfo () {
         let networkInfo = networkApi.networkInfo();
         networkInfo.then(result => {
             if (!result.lock) {
                 result.json().then(info => {
                     this.props.updateNetworkInfo(info);
-                });
+                })
             }
-        });    
+        })
     }
 
     updDexData (pubkey) {
         if (this.props.connectionStatus) {
-            if (!this.prevConnectionStatus) {
-                this.prevConnectionStatus = true
+            if (this.supersonicIntervalFlag) {
+                this.supersonicIntervalFlag = false
                 setTimeout(() => {
                     clearInterval(this.updDexDataDescriptor)
                     this.slowDownUpdDexDataInterval()
-                }, 10 * 1000)
+                }, 5 * 1000)
             }
             this.updBalances(pubkey)
             this.updPools()
@@ -156,14 +169,6 @@ class Root extends React.Component {
                 res.json()
                 .then(res => this.props.updNativeToken(res.native_token))
         })
-    }
-
-    supersonicUpdDexData () {
-        if (this.updDexDataDescriptor)
-            clearInterval(this.updDexDataDescriptor)
-        this.updDexDataDescriptor = setInterval(() => {
-            this.updDexData(this.props.pubkey)
-        }, 1000)
     }
 
     updBalances (pubkey) {
@@ -260,6 +265,10 @@ class Root extends React.Component {
             }
             Promise.all(promises)
             .then(() => {
+                if (this.mustChangeLogos) {
+                    this.mustChangeLogos = false
+                    tokens = this.clearLogoInfo(tokens)
+                }
                 let withoutImagePlaces = this.getTokensWithoutImageName(tokens)
                 if (withoutImagePlaces.length)
                     this.updTokensImageInfo(tokens, withoutImagePlaces)
@@ -267,6 +276,13 @@ class Root extends React.Component {
                 else
                     this.props.assignAllTokens(tokens)
             })
+        })
+    }
+
+    clearLogoInfo (tokens) {
+        return tokens.map(token => {
+            token.logo = undefined
+            return token
         })
     }
 
@@ -280,8 +296,8 @@ class Root extends React.Component {
 
     updTokensImageInfo (tokens, withoutImagePlaces) {
         return new Promise(resolve => {
-            networkApi.tokenInfoStorageEnq()
-            .then(result => {
+            let p = (this.props.net.name === "bit") ? networkApi.tokenInfoStorageBit() : networkApi.tokenInfoStorageEnq()
+            p.then(result => {
                 if (!result.lock) {
                     result.json().then(infoStorageEnq => {
                         for (let index of withoutImagePlaces)

@@ -27,3 +27,13 @@
 .sort-direction-toggler {
 	transition: transform 0.2s ease-out 0.1s;
 }
+
+.token-hash {
+    margin-top: -10px;
+    font-size: 10pt;
+}
+
+.trusted-logo {
+    width: 15px;
+    height: 15px;
+}

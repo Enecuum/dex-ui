@@ -589,7 +589,7 @@ class SwapCard extends React.Component {
     };
 
     getInputField(props) {
-        let ticker = props.fieldData.token.ticker;
+        let ticker = props.fieldData.token.ticker
         if (ticker === undefined)
             ticker = this.props.t('trade.swapCard.inputField.selectToken');
         return (
@@ -620,7 +620,13 @@ class SwapCard extends React.Component {
                             >MAX</div>
                         }    
                         <div className={`token-button hover-pointer d-flex align-items-center justify-content-end`} onClick={this.openTokenList.bind(this, props.id)}>
-                            <div className='d-flex align-items-center mr-2 flex-shrink-0'>{ticker}</div>
+                            <div className='d-flex align-items-center mr-2 flex-shrink-0'>
+                                <LogoToken data = {{
+                                    url : props.fieldData.token.logo,
+                                    value : ticker,
+                                    net : this.props.net
+                                }}/>
+                            </div>
                             <span className='icon-Icon26 d-flex align-items-center chevron-down'/>
                         </div>                     
                     </div>               

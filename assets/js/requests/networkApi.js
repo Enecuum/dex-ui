@@ -79,6 +79,14 @@ class NetworkApi {
         )
     }
 
+    tokenInfoStorageBit () {
+        return trafficController.simpleRequest('https://pulse.enecuum.com/info/token-info-storage-bit.json',
+        {
+                method : 'GET'
+            }
+        )
+    }
+
     // ---------------------------------------------------------------------
 }
 

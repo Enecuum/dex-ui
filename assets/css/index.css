@@ -356,3 +356,10 @@ right: 0;
 .alert-1 {
     color: var(--color-alert1);
 }
+
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(73, 84, 114, 0.55);
+}

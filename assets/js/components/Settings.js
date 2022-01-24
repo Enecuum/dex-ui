@@ -51,19 +51,31 @@ class Settings extends React.Component {
 	}
 
 	componentDidMount() {
+		this.initSlippage()
+	}
+
+	initSlippage () {
 		this.intervalDescriptor = setInterval(() => {
 			if (lsdp._pubKey) {
 				clearInterval(this.intervalDescriptor)
-				let userSlippage = lsdp.simple.get("ENEXUserSlippage")
-				if (userSlippage === null) {
-					this.writeUserSlippageValue(this.settingsRanges[0].value)
-					this.setSlippagePercent(this.settingsRanges[0].value)
-				} else {
-					this.setSlippagePercent(userSlippage)
-				}
+				this.setSlippageFromStorage()
 				this.setState({activeStyle : "active"})
 			}
 		}, 500)
+	}
+
+	resetInputs () {
+		if (lsdp._pubKey)
+			this.setSlippageFromStorage()
+	}
+
+	setSlippageFromStorage () {
+		let userSlippage = lsdp.simple.get("ENEXUserSlippage")
+		if (userSlippage === null) {
+			this.writeUserSlippageValue(this.settingsRanges[0].value)
+			this.setSlippagePercent(this.settingsRanges[0].value)
+		} else
+			this.setSlippagePercent(userSlippage)
 	}
 
 	componentWillUnmount() {
@@ -72,11 +84,12 @@ class Settings extends React.Component {
 
 	openAction () {
 		if (this.state.activeStyle === "active")
-		this.setState({settingsVisibility : true})
+			this.setState({settingsVisibility: true})
 	}
 
 	closeAction () {
 		this.setState({settingsVisibility : false})
+		this.resetInputs()
 	}
 
 	writeUserSlippageValue (value) {
@@ -121,7 +134,7 @@ class Settings extends React.Component {
 					<Form.Control type="range"
 								  value={this.state.slippagePercent}
 								  min="0"
-								  max="49.99"
+								  max="50"
 								  step="0.01"
 								  onChange = {e => this.setSlippagePercent(e.target.value)}
 					/>

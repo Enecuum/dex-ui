@@ -27,22 +27,33 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        window.onload = this.checkConnection.bind(this)
+        window.onload = this.intervalConnection.bind(this)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.descriptor)
+    }
+
+    intervalConnection () {
+        this.descriptor = setInterval(this.checkConnection.bind(this), 100)
+        setTimeout(clearInterval,5000, this.descriptor)
     }
 
     checkConnection () {
         ENQweb3lib.connect()
         ENQweb3lib.reconnect()
             .then(res => {
-                if (res.status === true)
+                if (res.status === true) {
+                    clearInterval(this.descriptor)
                     ENQweb3lib.enable()
-                        .then(res => {
-                            cp.updateSettings(res.pubkey, '/')
-                            lsdp.updPubKey(res.pubkey)
-                            this.props.assignPubkey(res.pubkey)
-                            this.props.updDexData(res.pubkey)
-                            this.props.setConStatus(true)
-                        })
+                    .then(res => {
+                        cp.updateSettings(res.pubkey, '/')
+                        lsdp.updPubKey(res.pubkey)
+                        this.props.assignPubkey(res.pubkey)
+                        this.props.updDexData(res.pubkey)
+                        this.props.setConStatus(true)
+                    })
+                }
             })
     }
 

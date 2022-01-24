@@ -20,7 +20,7 @@ class SlippageValidationRules {
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE',
                     },
                     {
-                        method: 'lessThan',
+                        method: 'lessOrEqualThan',
                         args: {
                             value: percent,
                             max: 50

@@ -223,7 +223,7 @@ class TokenCard extends React.Component {
                             />
                             <div className="col text mb-0 ml-1"> show trusted tokens</div>
                         </div>
-                        <span className={`icon-Icon15 swap-card-top-items mr-3`}/> // TODO - change class
+                        {/*<span className={`icon-Icon15 swap-card-top-items mr-3`}/>*/}
                     </div>
 
                     <hr/>
@@ -238,13 +238,6 @@ class TokenCard extends React.Component {
                     <div id="tokensList">
                         { this.props.list }
                     </div>
-                    {/*<div className="token-setting-zone px-4 mt-3">*/}
-                    {/*    <Button variant="outline-secondary"*/}
-                    {/*            className="w-100 h-75"*/}
-                    {/*    >*/}
-                    {/*        <small></small>*/}
-                    {/*    </Button>*/}
-                    {/*</div>*/}
                 </Modal.Body>
               </Modal>
             </>

@@ -27,7 +27,7 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        window.onload = this.intervalConnection.bind(this)
+        this.intervalConnection()
     }
 
     componentWillUnmount() {

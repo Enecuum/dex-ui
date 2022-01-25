@@ -15,19 +15,16 @@ import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
 import ValueProcessor from '../utils/ValueProcessor';
-import {cookieProcessor as cp} from '../utils/cookieProcessor';
-import swapApi from '../requests/swapApi';
-import extRequests from '../requests/extRequests';
 import SwapCardValidationRules from '../utils/swapCardValidationRules';
 import Validator from  '../utils/Validator';
+import WalletList from "./WalletList";
+import Routing from "./Routing";
 
-import img1 from '../../img/logo.png';
-import img2 from '../../img/bry-logo.png';
 import '../../css/swap-card.css';
 import '../../css/font-style.css';
-import WalletList from "./WalletList";
 
 const valueProcessor = new ValueProcessor();
+
 
 class SwapCard extends React.Component {
     constructor(props) {
@@ -118,7 +115,7 @@ class SwapCard extends React.Component {
                     myPairs.push(pool);
         let pairIsExist = myPairs.find(elem => (elem.token_0.hash === paramsObj.from) && (elem.token_1.hash === paramsObj.to));
 
-        return pairIsExist !== undefined ? true : false;                   
+        return pairIsExist !== undefined
     }
 
     setTickersFromURLsHash(paramsObj) {
@@ -267,9 +264,12 @@ class SwapCard extends React.Component {
                                 })}
                             </div>
                             { mode === 'exchange' && this.activePair !== undefined &&
-                                <div className='py-2 px-3 d-flex justify-content-between align-items-center my-3'>
-                                    <div className='pr-4'>Price</div>
-                                    <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
+                                <div className="my-2">
+                                    <div className='py-2 swap-price d-flex justify-content-between align-items-center'>
+                                        <div className='pr-4'>Price</div>
+                                        <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
+                                    </div>
+                                    <Routing />
                                 </div>
                             }
                             {/* ---------------------------------------- add-liquidity: exchange rate ---------------------------------------- */}

@@ -203,7 +203,7 @@ class LiquidityTokensZone extends React.Component {
                                 as="div"
                                 className="d-flex align-items-center justify-content-between hover-pointer py-2"
                                 onClick={() => this.setState({ activeId: this.state.activeId.toString() !== index.toString() ? index.toString() : '' })}
-                                data-active-accordion-elem = {index === this.state.activeId ? 'active' : 'inactive'} >
+                                data-active-accordion-elem = {(index+'' === this.state.activeId).toString()} >
                                     <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
                                     <i className="fas fa-chevron-down accordion-chevron"/>
                             </Accordion.Toggle>

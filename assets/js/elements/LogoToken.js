@@ -11,6 +11,7 @@ class LogoToken extends React.Component {
     constructor(props) {
         super(props)
         this.customClasses = this.props.customClasses ? this.props.customClasses : ""
+        this.size = this.props.data.size ? this.props.data.size : "xs"
     }
 
     render () {
@@ -18,12 +19,12 @@ class LogoToken extends React.Component {
             <div className={this.customClasses}>
                 <div className={"d-flex align-items-center"}>
                     { this.props.data.url !== undefined &&
-                        <div className="logo-wrapper-xs mr-2"
+                        <div className={`logo-wrapper-${this.size} ${this.props.data.value ? "mr-2" : "mr-0"}`}
                              style = {{
                                  backgroundImage: `url(${presets.logoUrl}${this.props.data.net.name}/${this.props.data.url})`
                              }}
                         >
-                            {this.props.data.url === null && <div className="unknown-logo">?</div>}
+                            {this.props.data.url === null && <div className={`unknown-logo-${this.size}`}>?</div>}
                         </div>
                     }
                     {this.props.data.hash &&
@@ -31,8 +32,7 @@ class LogoToken extends React.Component {
                             <div className="row d-flex justify-content-start align-items-center">
                                 <span>{this.props.data.value}</span>
                                 { this.props.data.trustedToken &&
-                                    <img src={enqLogo} alt="*" className="trusted-logo ml-2 mb-1"/> ||
-                                    <></>
+                                    <img src={enqLogo} alt="*" className="trusted-logo ml-2 mb-1"/> || <></>
                                 }
                             </div>
                             <div className="row text-muted token-hash">

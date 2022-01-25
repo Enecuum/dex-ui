@@ -35,8 +35,8 @@
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
     --box-shadow2 : 0px 0px 98px 0px rgba(24, 29, 43, 0.6);
     --top-menu-height: 70px;
-    --border-radius1: 5px;
-    --border-radius2: 3px;
+    --border-radius1: 8px;
+    --border-radius2: 5px;
     --aside-width-open: 320px;
     --aside-width-closed: 70px;
     --font-face-regular: "Ska Sans Regular";
@@ -262,7 +262,15 @@ right: 0;
     margin-left: -5px;
 }
 
-.logo-wrapper-xs, .logo-wrapper-sm {
+.token-pair-logo-wrapper .logo-wrapper-xs:last-child {
+    margin-left: -6px;
+}
+
+.token-pair-logo-wrapper .logo-wrapper-xxs:last-child {
+    margin-left: -7px;
+}
+
+.logo-wrapper-xs, .logo-wrapper-sm, .logo-wrapper-xxs {
     flex-grow: 0;
     flex-shrink: 0;
     background-position: 50% 50%;
@@ -283,6 +291,13 @@ right: 0;
     flex-basis: 24px;
     width: 24px;
     height: 24px;
+    border: 4px solid var(--color1);
+}
+
+.logo-wrapper-xxs {
+    flex-basis: 20px;
+    width: 20px;
+    height: 20px;
     border: 4px solid var(--color1);
 }
 

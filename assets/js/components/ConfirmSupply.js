@@ -73,7 +73,7 @@ class ConfirmSupply extends React.Component {
                     logo1 : firstToken.logo,
                     logo2 : secondToken.logo,
                     net : this.props.net,
-                    logoSize : 'sm'
+                    size : 'sm'
                 }} />
                 <div className='h5 mb-4'>
                     {

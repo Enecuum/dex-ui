@@ -1,0 +1,73 @@
+.routing-card {
+    transition: 0.2s;
+    background-color: var(--color8) !important;
+}
+
+.routing-card:hover {
+    background-color: var(--color2) !important;
+}
+
+[routing-active = "false"] .routing-card {
+    border: none;
+}
+
+[routing-active = "true"] .routing-card {
+    border: 1px solid var(--color2);
+    background-color: var(--color8) !important;
+}
+
+.routing-card .card-header {
+    margin-bottom: 0 !important;
+}
+
+.routing-button {
+    width: 100%;
+    height: 34px;
+    background-color: transparent;
+    border: none;
+}
+
+.routing-button div, .routing-button span {
+    color: white;
+}
+
+.routing-button span {
+    font-weight: lighter;
+    padding: 4px;
+    font-size: 7pt;
+}
+
+.swap-route {
+    border-top: 4px dotted var(--color2);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.l-side-logo, .r-side-logo {
+    margin-top: -12px;
+}
+
+.l-side-logo {
+    margin-left: -26px;
+}
+
+.r-side-logo {
+    margin-right: -26px;
+}
+
+.routing-pool-wrapper {
+    width: 80px;
+    height: 28px;
+    padding-left: 3px;
+    padding-right: 30px;
+    border-radius: 9px;
+    background-color: var(--color2);
+    margin-top: -16px;
+}
+
+.text-pairs {
+    margin-left: 3px;
+}
+
+.routing-pair-logos{
+}

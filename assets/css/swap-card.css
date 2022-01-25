@@ -7,7 +7,7 @@
     padding-top: 100px;
     margin-left: auto;
     margin-right: auto;
-    width: 430px;
+    width: 500px;
     transition: var(--transition1);
     margin-top: 150px;
 }
@@ -243,4 +243,9 @@ a.view-in-explorer:hover {
 
 .card-body {
     padding-top: 0;
+}
+
+.swap-price {
+    margin-left: 10px;
+    margin-right: 10px;
 }

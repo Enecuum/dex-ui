@@ -1,7 +1,6 @@
 #aside {
     background-color: var(--menu-bg);
     top: var(--top-menu-height);
-    top: var(--top-menu-height);
     bottom: 0px;
     z-index: 900;
     left: 0px;    

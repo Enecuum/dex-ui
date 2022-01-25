@@ -1,8 +1,11 @@
-.unknown-logo {
+.unknown-logo-xs, .unknown-logo-sm, .unknown-logo-xxs {
     color: var(--color5) !important;
     background: transparent;
     border: 2px solid var(--color5);
     border-radius: 50%;
+}
+
+.unknown-logo-xxs {
     height: 26px !important;
     width: 26px !important;
     margin-top: -5px;
@@ -12,11 +15,17 @@
     font-size: 10pt;
 }
 
-.unknown-logo-alt {
-    color: var(--color5) !important;
-    background: transparent;
-    border: 2px solid var(--color5);
-    border-radius: 50%;
+.unknown-logo-xs {
+    height: 26px !important;
+    width: 26px !important;
+    margin-top: -5px;
+    margin-left: -5px;
+    padding-left: 8px;
+    padding-top: 1px;
+    font-size: 10pt;
+}
+
+.unknown-logo-sm {
     height: 37px !important;
     width: 37px !important;
     margin-top: -8px;

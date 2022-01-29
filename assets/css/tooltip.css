@@ -16,3 +16,11 @@
 .tooltip-info.bs-popover-bottom>.arrow::after {
     border-bottom-color: var(--bg-color-1);
 }
+
+.tooltip-info.bs-popover-top>.arrow::before {
+    border-top-color: var(--color4);
+}
+
+.tooltip-info.bs-popover-top>.arrow::after {
+    border-top-color: var(--bg-color-1);
+}

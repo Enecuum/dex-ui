@@ -79,10 +79,6 @@ class SwapCardValidationRules {
         }
     }
 
-    _tenPowerDecimals (decimals) {
-        return BigInt('1' + '0'.repeat(decimals))
-    }
-
     getPoolVolumesValidationRules (activePair, modeStruct, mode, pairExists) {
         let t0Value = 0, t0Max = 0, required = (mode === 'exchange' && pairExists)
         try {
@@ -227,6 +223,10 @@ class SwapCardValidationRules {
                 }
             ]
         }
+    }
+
+    _tenPowerDecimals (decimals) {
+        return BigInt('1' + '0'.repeat(decimals))
     }
 
     _realignValueByDecimals (value, max) {

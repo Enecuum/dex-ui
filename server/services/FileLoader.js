@@ -22,7 +22,7 @@ class FileLoader extends T_Service {
         this.app.use("/locales", localesRouter)
         this.app.use("/html/{0,}", htmlRouter)
         this.app.use("/hot/{0,}", hotRouter)
-        this.app.use(["/enex.webpack.js/{0,}", "/enqlib/{0,}"], jsRouter)
+        this.app.use(["/js/{0,}", "/enqlib/{0,}"], jsRouter)
         this.app.use(["/img/{0,}", "/file/{0,}"], filesRouter)
     }
 
@@ -42,7 +42,7 @@ class FileLoader extends T_Service {
             }
 
             let urlPath = req.body.params[1]
-            let allowedPaths = ["img", "html", "enex.webpack.js", "enqlib", "file", "locales", "hot"]
+            let allowedPaths = ["img", "html", "js", "enqlib", "file", "locales", "hot"]
 
             if (urlPath === "/") {
                 res.redirect(307, "html")

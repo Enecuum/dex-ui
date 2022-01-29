@@ -211,13 +211,32 @@ function packAddressString (addr) {
         return '---'
 }
 
+function tenPowerDecimals (decimals) {
+    return BigInt('1' + '0'.repeat(decimals))
+}
+
+function realignValueByDecimals (f, s) {
+    f.value = BigInt(f.value)
+    s.value = BigInt(s.value)
+    let diff = s.decimals - f.decimals
+    if (diff > 0) {
+        f.value *= tenPowerDecimals(diff)
+    } else if (diff < 0) {
+        diff *= -1
+        s.value *= tenPowerDecimals(diff)
+    }
+    return {f : f.value, s : s.value}
+}
+
 /* =================================================================================== */
 
 export default {
+    realignValueByDecimals,
     countPercentsByPortion,
     countExchangeRate,
     packAddressString,
     countProviderFee,
+    tenPowerDecimals,
     countPoolShare,
     removeEndZeros,
     countPortion,

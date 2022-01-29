@@ -1,7 +1,6 @@
 import utils from './swapUtils';
 import ValueProcessor from './ValueProcessor';
 import swapUtils from "./swapUtils";
-import {values} from "regenerator-runtime";
 
 const vp = new ValueProcessor();
 
@@ -143,13 +142,99 @@ function countLTValue (pair, uiPair, mode, tokens) {
     return 'wrong mode'
 }
 
-global.getAddLiquidityPrice = getAddLiquidityPrice
+function sellRoute (token0, token1, amount, pairs) {
+    let vertices = [{vertex: token0, processed: false, outcome: amount, source: null}]
+
+    let current = vertices.find(x=> x.vertex.hash === token0.hash)
+
+    while (current) {
+        let edges = pairs.filter(edge => edge.token_0.hash === current.vertex.hash || edge.token_1.hash === current.vertex.hash)
+        edges.forEach((edge) => {
+            if (edge.token_1.hash === current.vertex.hash) {
+                let tmp
+                tmp = edge.token_0
+                edge.token_0 = edge.token_1
+                edge.token_1 = tmp
+                tmp = edge.volume1
+                edge.volume1 = edge.volume2
+                edge.volume2 = tmp
+            }
+        })
+
+        edges.forEach((edge) => {
+            let adj = vertices.find((x) => x.vertex.hash === edge.token_1.hash)
+            if (adj) {
+                let outcome = getSwapPrice({
+                    value : edge.token_0.volume,
+                    decimals : 10
+                }, {
+                    value : edge.token_1.volume,
+                    decimals : 10
+                }, current.outcome, {
+                    value : edge.pool_fee,
+                    decimals : 2
+                })
+                if (outcome.value === undefined)
+                    console.log(outcome.value)
+                let tmp = swapUtils.realignValueByDecimals(outcome, adj.outcome)
+                if (tmp.f > tmp.s){
+                    adj.outcome = outcome
+                    adj.source = edge.from
+                }
+            } else {
+                let new_vertex = {
+                    vertex: edge.token_1,
+                    processed: false,
+                    outcome: getSwapPrice({
+                        value : edge.token_0.volume,
+                        decimals : 10
+                    }, {
+                        value : edge.token_1.volume,
+                        decimals : 10
+                    }, current.outcome, {
+                        value : edge.pool_fee,
+                        decimals : 2
+                    }),
+                    source: edge.token_0
+                }
+                vertices.push(new_vertex)
+            }
+        })
+
+        current.processed = true
+        vertices.sort((a,b)=> {
+            let tmp = swapUtils.realignValueByDecimals(a.outcome, b.outcome)
+            if (tmp.f > tmp.s) {
+                return -1
+            }
+            else {
+                let tmp = swapUtils.realignValueByDecimals(a.outcome, b.outcome)
+                if (tmp.f > tmp.s)
+                    return 0
+                else return 1
+            }
+        })
+
+        current = vertices.find(x => x.processed === false)
+    }
+
+    let route = []
+    current = vertices.find(x => x.vertex.hash === token1.hash)
+
+    while (current){
+        route.unshift(current)
+        current = vertices.find(x => x.vertex.hash === current.source)
+    }
+
+    return route
+}
 
 export default {
-    countPriceImpact,
     getAddLiquidityPrice,
+    countPriceImpact,
+    revGetSwapPrice,
     ltDestruction,
     countLTValue,
     getSwapPrice,
-    revGetSwapPrice
+    sellRoute
 }

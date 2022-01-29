@@ -1,5 +1,7 @@
 /* ======== code for auto reloading in dev-mode ======== */
 
+console.log(`Version ${VERSION}`)
+console.log(`Mode ${MODE}`)
 if (module.hot) {
     module.hot.accept()
     module.hot.dispose(() => location.reload())
@@ -433,6 +435,13 @@ class Root extends React.Component {
                             <Aside useSuspense={true} />
                         </Suspense>
                         {this.menuViewController()}
+                    </div>
+                    <div className="tech-info">
+                        { MODE === "development" &&
+                            <div>
+                                <small>v:{VERSION}</small>
+                            </div>
+                        }
                     </div>
                 </main>
             </div>

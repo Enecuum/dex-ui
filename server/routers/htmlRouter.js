@@ -5,7 +5,7 @@ const path    = require("path")
 const cReadFiles = require("../utils/readFiles")
 const jsonrpcResponse = require("../utils/jsonrpcResponceCreator")
 
-const webpack_config = require("../../webpack.config")
+const webpack_config = require("../../webpack.config")()
 const pubDir         = webpack_config.output.path
 
 router.post(`/*`, (req, res, next) => {

@@ -5,14 +5,23 @@ const path    = require("path")
 const cReadFiles = require("../utils/readFiles")
 const jsonrpcResponse = require("../utils/jsonrpcResponceCreator")
 
-const webpack_config = require("../../webpack.config")
+const webpack_config = require("../../webpack.config")()
 const config         = require("../../config.json")
-const bundleName     = webpack_config.output.filename
 const pubDir         = webpack_config.output.path
 
+const entries = Object.keys(webpack_config.entry)
+const bundles = bundleNames(webpack_config.output.filename)
+
+function bundleNames (hotUpdateTemplate) {
+    return entries.map(el => {
+        return `/${hotUpdateTemplate.replace("[name]", el)}`
+    })
+}
+
 router.post(`/*`, (req, res, next) => {
-    if (req.baseUrl === `/${bundleName}`) {
-        cReadFiles([{data: path.resolve(pubDir, bundleName)}])
+    let filePath = req.baseUrl + req.url
+    if (bundles.includes(filePath)) {
+        cReadFiles([{data: path.join(pubDir, req.baseUrl, req.url)}])
             .then(file => {
                 res.send(jsonrpcResponse(req.body.id, true, file.data, "application/javascript"))
             })
@@ -22,7 +31,7 @@ router.post(`/*`, (req, res, next) => {
                 res.send(jsonrpcResponse(req.body.id, true, file.data, "application/javascript"))
             })
     } else {
-        res.redirect(307, `/${bundleName}`)
+        res.redirect(307, `/enex.app.js`)
     }
 })
 

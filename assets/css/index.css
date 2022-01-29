@@ -35,8 +35,8 @@
     --box-shadow : rgba(0, 0, 0, 0.09) 0px 0px 25px 0px;
     --box-shadow2 : 0px 0px 98px 0px rgba(24, 29, 43, 0.6);
     --top-menu-height: 70px;
-    --border-radius1: 8px;
-    --border-radius2: 5px;
+    --border-radius1: 5px;
+    --border-radius2: 3px;
     --aside-width-open: 320px;
     --aside-width-closed: 70px;
     --font-face-regular: "Ska Sans Regular";
@@ -377,4 +377,10 @@ hr {
     margin-bottom: 1rem;
     border: 0;
     border-top: 1px solid rgba(73, 84, 114, 0.55);
+}
+
+.tech-info {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
 }

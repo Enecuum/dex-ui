@@ -217,9 +217,6 @@ class Service_Client {
                 .then(filesData => this._setNetUtils(filesData))
         }
 
-        // crutch - i don't know "why?", but in "hotDev.js" you mustn't use config or args for passphrase (asynchronous things)
-        // type passphrase in console when you run all services without isolated docker containers
-        // this.rl.close()
     }
 }
 

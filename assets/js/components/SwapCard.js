@@ -19,11 +19,13 @@ import SwapCardValidationRules from '../utils/swapCardValidationRules';
 import Validator from  '../utils/Validator';
 import WalletList from "./WalletList";
 import Routing from "./Routing";
+import workerProcessor from "../utils/WorkerProcessor"
 
-import '../../css/swap-card.css';
-import '../../css/font-style.css';
+import '../../css/swap-card.css'
+import '../../css/font-style.css'
+import swapUtils from "../utils/swapUtils"
 
-const valueProcessor = new ValueProcessor();
+const valueProcessor = new ValueProcessor()
 
 
 class SwapCard extends React.Component {
@@ -56,7 +58,9 @@ class SwapCard extends React.Component {
             ]
         };
         this.state = {
-            walletListVisibility : false
+            walletListVisibility : false,
+            swapIconStatus : false,
+            route : []
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -76,7 +80,7 @@ class SwapCard extends React.Component {
     }
 
     componentDidMount() {
-      window.addEventListener('hashchange', this.resolveURLHash);
+        window.addEventListener('hashchange', this.resolveURLHash);
     }
 
     componentWillUnmount() {
@@ -181,6 +185,10 @@ class SwapCard extends React.Component {
         this.countRemoveLiquidity(this.getMode(), 'ltfield', fieldObj);
     };
 
+    changeSwapIconStatus (value) {
+        this.setState({swapIconStatus : value})
+    }
+
     /* ================================ cards rendering functions ================================== */
 
     renderSwapCard () {
@@ -250,8 +258,13 @@ class SwapCard extends React.Component {
                             </div>
                             
                             { mode === 'exchange' &&
-                                <div id='exch' className="d-flex justify-content-center align-items-center mx-auto my-3" onClick={this.swapPair.bind(this)}>
-                                    <span className='icon-Icon13 exch-button hover-pointer' />
+                                <div id='exch'
+                                     className="d-flex justify-content-center align-items-center mx-auto my-3"
+                                     onClick={this.swapPair.bind(this)}
+                                     onMouseOver={() => this.changeSwapIconStatus(true)}
+                                     onMouseOut={() => this.changeSwapIconStatus(false)}
+                                >
+                                    <span className={`icon-Icon${this.state.swapIconStatus ? "14" : "13"} exch-button hover-pointer`} />
                                 </div> ||
                                 <span className='icon-Icon17 d-flex justify-content-center plus-liquidity my-4' />
                             }
@@ -269,7 +282,7 @@ class SwapCard extends React.Component {
                                         <div className='pr-4'>Price</div>
                                         <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
-                                    <Routing />
+                                    <Routing route={this.state.route} net={this.props.net} tokens={this.props.tokens}/>
                                 </div>
                             }
                             {/* ---------------------------------------- add-liquidity: exchange rate ---------------------------------------- */}
@@ -372,21 +385,21 @@ class SwapCard extends React.Component {
         );
     };
 
-    getRemoveLiquidityButton (t) {
-        let buttonName = 'removeLiquidity';
-        if (!this.pairExists)
-            buttonName = 'invalidPool';
-        return (
-            <button
-                className='btn btn-secondary w-100 py-2'
-                type='submit'
-                id='submit'
-                onClick={this.removeRequest.bind(this)}
-                style={{backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'}}>
-                { t(`trade.swapCard.submitButton.${buttonName}`) }
-            </button>
-        );
-    };
+    // getRemoveLiquidityButton (t) {
+    //     let buttonName = 'removeLiquidity';
+    //     if (!this.pairExists)
+    //         buttonName = 'invalidPool';
+    //     return (
+    //         <button
+    //             className='btn btn-secondary w-100 py-2'
+    //             type='submit'
+    //             id='submit'
+    //             onClick={this.removeRequest.bind(this)}
+    //             style={{backgroundColor : (this.props.connectionStatus) ? undefined : 'var(--color5)'}}>
+    //             { t(`trade.swapCard.submitButton.${buttonName}`) }
+    //         </button>
+    //     );
+    // };
 
     renderRemoveLiquidity(modeStruct, firstToken, secondToken) {
         const t = this.props.t;
@@ -821,12 +834,12 @@ class SwapCard extends React.Component {
             value : pair.pool_fee,
             decimals : 2
         }
-
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
-                if (activeField.token.hash === pair.token_0.hash)
+                this.countRoute()
+                if (activeField.token.hash === pair.token_0.hash) {
                     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
-                else
+                } else
                     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
                 if (activeField.token.hash === pair.token_1.hash) {
@@ -840,7 +853,23 @@ class SwapCard extends React.Component {
             else
                 return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
         }
-    };
+    }
+
+    countRoute () {
+        if (window.Worker) {
+            let id = workerProcessor.spawn("/js/enex.routingWorker.js")
+            workerProcessor.postMessage(id, {
+                token0 : this.props.exchange.field0.token,
+                token1 : this.props.exchange.field1.token,
+                amount : this.props.exchange.field0.value,
+                pairs  : this.props.pairs
+            }).then(res => {
+                console.log(res)
+                // this.setState({route: res})
+                workerProcessor.close(id)
+            })
+        }
+    }
 
     countCounterField(fieldObj, cField, removeLiquidity, aField) {
         let mode = this.getMode();

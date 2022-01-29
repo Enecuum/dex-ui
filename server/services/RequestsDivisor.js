@@ -5,7 +5,7 @@ const T_Service = require("../templates/T_Service")
 const webpack              = require("webpack")
 const webpackDevMiddleware = require("webpack-dev-middleware")
 const webpackHotMiddleware = require('webpack-hot-middleware')
-const w_config             = require("../../webpack.config")
+const w_config             = require("../../webpack.config")()
 
 
 class RequestsDivisor extends T_Service {
@@ -18,10 +18,10 @@ class RequestsDivisor extends T_Service {
 
         this.CRH_app.use(express.json())
 
-        this.CRH_app.use((req, res, next) => {
-            console.log(req.url)
-            next()
-        })
+        // this.CRH_app.use((req, res, next) => {
+        //     console.log(req.url)
+        //     next()
+        // })
 
         if (w_config.mode === "development") {
             let hmr_plugin = new webpack.HotModuleReplacementPlugin()

@@ -21,7 +21,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops',/*'info'*/,'spaceStation'];
+        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops',/*'info', */'spaceStation'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
@@ -200,7 +200,7 @@ class Aside extends React.Component {
             </div>
         );
     };
-};
+}
 
 const WAside = connect(mapStoreToProps(components.ASIDE), mapDispatchToProps(components.ASIDE))(withTranslation()(Aside));
 

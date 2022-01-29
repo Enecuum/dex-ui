@@ -6,7 +6,7 @@ const cReadFiles = require("../utils/readFiles")
 const jsonrpcResponse = require("../utils/jsonrpcResponceCreator")
 
 const jsonrpcErrors  = require("../json-rpc_errors.json")
-const webpack_config = require("../../webpack.config")
+const webpack_config = require("../../webpack.config")()
 const pubDir         = webpack_config.output.path
 
 function readAndSend (req, res, cType) {

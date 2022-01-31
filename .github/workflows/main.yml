@@ -5,6 +5,9 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  NODE_ENV: production
+
 jobs:
   docker_build_and_deploy:
     runs-on: ubuntu-latest

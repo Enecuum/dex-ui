@@ -86,3 +86,7 @@
 .routing-additional-info-button span:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+.routing-spinner {
+    font-size: 11pt !important;
+}

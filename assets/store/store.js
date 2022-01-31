@@ -22,6 +22,8 @@ const totalReducer = combineReducers({
     spaceStation    : spaceStationReducer
 });
 
-const store = createStore(totalReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const enhancer = MODE === "development" ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : undefined
+
+const store = createStore(totalReducer, enhancer);
 
 export default store;

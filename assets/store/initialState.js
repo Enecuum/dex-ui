@@ -3,16 +3,17 @@ import presets from './pageDataPresets';
 function getDefaultField(id) {
     return {
         id      : id,
-        balance : presets.swapTokens.emptyBalance, // balance of the token from 'token' property
+        balance : presets.swapTokens.emptyBalance,
         value   : {
             value   : undefined,
             decimals: undefined
         },
         token   : presets.swapTokens.emptyToken
-    };
+    }
 }
 
 const initialState = {
+
     root : {
         net                     : presets.network.defaultNet,
         networkInfo             : {},
@@ -35,6 +36,7 @@ const initialState = {
         recentTxs   : [],
         nativeToken : {}
     },
+
     swapCard : {
         exchange: {
             field0  : getDefaultField(0),
@@ -58,21 +60,26 @@ const initialState = {
         waitingConfirmation : {
         }
     },
+
     tokenCard : {
         list : [],
         sort : 'asc'
     },
+
     navbar : {
     },
+
     aside : {
         exchangeRate : ''
     },
+
     indicatorPanel : {
         coinName    : presets.network.nativeToken.ticker,
         net         : presets.network.defaultNet,
         coinAmount  : 0,
         enx         : 0
     },
+
     etm : {
         showForm : false,
         tokenData : {
@@ -116,6 +123,7 @@ const initialState = {
         showFormErrMessages : false,
         possibleToIssueToken : false
     },
+
     farms : {
         mainTokenAmount   : undefined,
         mainTokenDecimals : undefined,
@@ -139,6 +147,7 @@ const initialState = {
             stakeTokenAmount   : undefined
         }
     },
+
     drops : {
         mainTokenAmount   : undefined,
         mainTokenDecimals : undefined,
@@ -163,6 +172,7 @@ const initialState = {
             stakeTokenAmount   : undefined
         }
     },
+
     spaceStation : {
         mainTokenAmount     : undefined,
         mainTokenDecimals   : undefined,
@@ -190,6 +200,7 @@ const initialState = {
             stakeTokenAmount   : undefined
         }
     }
-};
 
-export default initialState;
+}
+
+export default initialState

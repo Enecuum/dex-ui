@@ -1,21 +1,17 @@
-import { withTranslation } from "react-i18next";
-import React, {Suspense} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
-import {Modal} from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps'
-
-import CommonModal from '../elements/CommonModal'
 
 import {cookieProcessor as cp} from "../utils/cookieProcessor"
 import lsdp from "../utils/localStorageDataProcessor"
 
-import img from "../../img/logo.png"
+import WalletList from "./WalletList"
 
 import '../../css/close-button.css'
 import '../../css/index.css'
 import '../../css/wallet-connection.css'
 import '../../css/font-style.css'
-import WalletList from "./WalletList";
 
 class Connect extends React.Component {
     constructor(props) {
@@ -107,4 +103,4 @@ const WConnect = connect(
     mapDispatchToProps(components.CONNECT)
 )(withTranslation()(Connect))
 
-export default WConnect;
+export default WConnect

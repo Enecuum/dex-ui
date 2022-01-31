@@ -1,4 +1,5 @@
 const presets =  {
+
     pending : {
         allowedTxTypes : {
             pool_create : 'pool_create',
@@ -41,10 +42,10 @@ const presets =  {
         emptyBalance: {
             amount      : '-',
             token       : undefined,
-            ticker      : undefined,// undefined - flag for using i18 default meaning
+            ticker      : undefined, // undefined - flag for using i18 default meaning
             decimals    : 0,
             minable     : 0,
-            reissuables : 0
+            reissuable  : 0
         }
     },
 
@@ -60,33 +61,9 @@ const presets =  {
                 short   : 'Ru'
             }
         },
-        preferredLocale: ['en'],
-        navbars: {
-            left: [],
-            top: {
-                connectionCard: {}
-            }
-        },
-        trade: {
-            switch: {},
-            swapCard: {
-                exchange    : {},
-                liquidity   : {},
-                submitButton: {}
-            },
-            tokenCard: {},
-            confirmCard : {
-                waitingForConfirmationInternals : {
-                    swap : {
-                    },
-                    addLiquidity : {
-                    },
-                    createPool : { 
-                    }
-                }
-            },
-        }
+        preferredLocale: ['en']
     },
+
     paths : {
         exchange     : 'swap',
         liquidity    : 'pool',
@@ -96,6 +73,7 @@ const presets =  {
         drops        : 'space-drops',
         spaceStation : 'space-station'
     },
+
     etm : {
         totalSupplyDefault : '',
         feeValueDefault : '',
@@ -103,6 +81,7 @@ const presets =  {
         nameDefault : '',
         blockRewardDefault : '---'
     },
+
     dropFarms : {
         spaceHarvestFarms : {
             whiteList : []
@@ -113,8 +92,9 @@ const presets =  {
                 '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
                 'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
             ]
-        },        
+        }
     }
-};
 
-export default presets;
+}
+
+export default presets

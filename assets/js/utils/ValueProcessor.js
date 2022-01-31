@@ -87,29 +87,36 @@ class ValueProcessor {
             op0.decimals += decimalsAddition
             op0.value *= BigInt('1'+ '0'.repeat(decimalsAddition))
         }
-        let res = this.mathOperation(operation, op0, op1);
 
-        return res;
+        let res = this.mathOperation(operation, op0, op1)
+
+        let diff = res.decimals - this.nativeDecimals - 1
+        if (diff > 0) {
+            res.value /= BigInt('1'+ '0'.repeat(diff))
+            res.decimals -= diff
+        }
+
+        return res
     }
     mathOperation (operation, op0, op1) {
-        if (operation == this.operations.ADD) {
+        if (operation === this.operations.ADD) {
             return {
                 value    : op0.value + op1.value,
                 decimals : op0.decimals,
             };
-        } else if (operation == this.operations.SUB) {
+        } else if (operation === this.operations.SUB) {
             return {
                 value    : op0.value - op1.value,
                 decimals : op0.decimals,
             };
-        } else if (operation == this.operations.MUL) {
+        } else if (operation === this.operations.MUL) {
             return {
                 value    : op0.value * op1.value,
                 decimals : op0.decimals + op1.decimals,
             };
-        } else if (operation == this.operations.DIV) {
+        } else if (operation === this.operations.DIV) {
             if (op1.value == 0n) {
-                console.log('zero division!')
+                // console.log('zero division!')
                 return {}
             }
 

@@ -215,9 +215,15 @@ function tenPowerDecimals (decimals) {
     return BigInt('1' + '0'.repeat(decimals))
 }
 
-function realignValueByDecimals (f, s) {
-    f.value = BigInt(f.value)
-    s.value = BigInt(s.value)
+function realignValueByDecimals (first, second) {
+    let f = {
+        value : BigInt(first.value),
+        decimals : first.decimals
+    }
+    let s = {
+        value : BigInt(second.value),
+        decimals : second.decimals
+    }
     let diff = s.decimals - f.decimals
     if (diff > 0) {
         f.value *= tenPowerDecimals(diff)

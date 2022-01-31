@@ -60,7 +60,9 @@ class SwapCard extends React.Component {
         this.state = {
             walletListVisibility : false,
             swapIconStatus : false,
-            route : []
+            route : [],
+            routingWaiting: false,
+            routingVisibility: false
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -80,11 +82,14 @@ class SwapCard extends React.Component {
     }
 
     componentDidMount() {
-        window.addEventListener('hashchange', this.resolveURLHash);
+        window.addEventListener('hashchange', this.resolveURLHash)
+        this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
     }
 
     componentWillUnmount() {
-       window.removeEventListener('hashchange', this.resolveURLHash);
+        window.removeEventListener('hashchange', this.resolveURLHash)
+        if (this.routingWorker)
+            this.routingWorker.close()
     }
 
     setSwapTokensFromRequest() {
@@ -282,7 +287,13 @@ class SwapCard extends React.Component {
                                         <div className='pr-4'>Price</div>
                                         <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
-                                    <Routing route={this.state.route} net={this.props.net} tokens={this.props.tokens}/>
+                                    <Routing route={this.state.route}
+                                             net={this.props.net}
+                                             tokens={this.props.tokens}
+                                             pairs={this.props.pairs}
+                                             routingWaiting={this.state.routingWaiting}
+                                             routingVisibility={this.state.routingVisibility}
+                                    />
                                 </div>
                             }
                             {/* ---------------------------------------- add-liquidity: exchange rate ---------------------------------------- */}
@@ -856,17 +867,32 @@ class SwapCard extends React.Component {
     }
 
     countRoute () {
-        if (window.Worker) {
-            let id = workerProcessor.spawn("/js/enex.routingWorker.js")
-            workerProcessor.postMessage(id, {
+        if (this.routingWorker) {
+            this.setState({
+                routingWaiting : true,
+                routingVisibility : true,
+                route : []
+            })
+            this.routingWorker.postMessage({
                 token0 : this.props.exchange.field0.token,
                 token1 : this.props.exchange.field1.token,
                 amount : this.props.exchange.field0.value,
-                pairs  : this.props.pairs
-            }).then(res => {
+                pairs  : this.props.pairs,
+                tokens : this.props.tokens
+            })
+            .then(res => {
                 console.log(res)
-                // this.setState({route: res})
-                workerProcessor.close(id)
+                this.setState({
+                    routingWaiting : false,
+                    route: res
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    routingVisibility : false
+                })
+                this.routingWorker.close()
+                this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
             })
         }
     }

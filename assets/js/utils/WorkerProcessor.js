@@ -9,44 +9,49 @@ class WorkerProcessor {
     }
 
     spawn (url) {
-        let newWorker = new Worker(url)
-        let id = this.e2eId++
-        this.workers.push({
-            id : id,
-            simpleWorker : newWorker,
-            message : null
-        })
+        if (!window.Worker)
+            return null
 
-        newWorker.onmessage = (e) => {
-            let worker = this._findById(id)
+        let workerObj = {
+            id : this.e2eId++,
+            simpleWorker : new Worker(url),
+            message : null
+        }
+        this.workers.push(workerObj)
+
+        workerObj.simpleWorker.onmessage = (e) => {
+            let worker = this._findById(workerObj.id)
             if (worker)
                 worker.message = e.data
         }
-        return id
+        workerObj.postMessage = this._postMessage.bind(workerObj)
+        workerObj.close = this._close.bind(this, workerObj)
+
+        return workerObj
     }
 
-    postMessage (id, message) {
+    _postMessage (message) {
         return new Promise((resolve, reject) => {
-            let worker = this._findById(id)
-            if (worker) {
-                worker.simpleWorker.postMessage(message)
-                let descriptor = setInterval(() => {
-                    if (worker.message !== null) {
-                        clearInterval(descriptor)
-                        resolve(worker.message)
-                        worker.message = null
-                    }
-                }, 500)
-            } else
+            this.simpleWorker.postMessage(message)
+
+            let timeoutDescriptor = setTimeout(() => {
+                clearInterval(intervalDescriptor)
                 reject()
+            }, 10 * 1000)
+            let intervalDescriptor = setInterval(() => {
+                if (this.message !== null) {
+                    clearTimeout(timeoutDescriptor)
+                    clearInterval(intervalDescriptor)
+                    resolve(this.message)
+                    this.message = null
+                }
+            }, 500)
         })
     }
 
-    close (id) {
-        let worker = this._findById(id)
-        if (worker)
-            worker.simpleWorker.terminate()
-        this.workers = this.workers.filter(el => el.id !== id)
+    _close (worker) {
+        worker.simpleWorker.terminate()
+        this.workers = this.workers.filter(el => el.id !== worker.id)
     }
 }
 

@@ -90,7 +90,7 @@ class ValueProcessor {
 
         let res = this.mathOperation(operation, op0, op1)
 
-        let diff = res.decimals - this.nativeDecimals - 1
+        let diff = res.decimals - this.nativeDecimals - 5
         if (diff > 0) {
             res.value /= BigInt('1'+ '0'.repeat(diff))
             res.decimals -= diff

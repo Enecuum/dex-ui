@@ -30,7 +30,10 @@ class History extends React.Component {
                     text : "swap",
                     types : [
                         txTypes.pool_create,
-                        txTypes.pool_swap
+                        txTypes.pool_buy_exact,
+                        txTypes.pool_buy_exact_routed,
+                        txTypes.pool_sell_exact,
+                        txTypes.pool_sell_exact_routed
                     ]
                 },
                 pool : {

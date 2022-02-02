@@ -158,9 +158,9 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
         let edges = pairs.filter(edge => edge.token_0.hash === current.vertex.hash || edge.token_1.hash === current.vertex.hash)
         edges.forEach((edge) => {
             if (edge.token_1.hash === current.vertex.hash) {
-                let tmp = _.cloneDeep(edge.token_0)
-                edge.token_0 = _.cloneDeep(edge.token_1)
-                edge.token_1 = tmp
+                // let tmp = _.cloneDeep(edge.token_0)
+                // edge.token_0 = _.cloneDeep(edge.token_1)
+                // edge.token_1 = tmp
             }
         })
 
@@ -181,7 +181,7 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
                 let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(outcome), _.cloneDeep(adj.outcome))
                 if (tmp.f > tmp.s) {
                     adj.outcome = _.cloneDeep(outcome)
-                    adj.source = _.cloneDeep(edge.token_0)
+                    adj.source = edge.from
                 }
             } else {
                 let new_vertex = {

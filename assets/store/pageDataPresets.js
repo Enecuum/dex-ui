@@ -3,9 +3,12 @@ const presets =  {
     pending : {
         allowedTxTypes : {
             pool_create : 'pool_create',
-            pool_swap : 'pool_swap',
             pool_add_liquidity : 'pool_add_liquidity',
             pool_remove_liquidity : 'pool_remove_liquidity',
+            pool_sell_exact : 'pool_sell_exact',
+            pool_sell_exact_routed : 'pool_sell_exact_routed',
+            pool_buy_exact : 'pool_buy_exact',
+            pool_buy_exact_routed : 'pool_buy_exact_routed',
             farm_create : 'farm_create',
             farm_get_reward : 'farm_get_reward',
             farm_increase_stake : 'farm_increase_stake',

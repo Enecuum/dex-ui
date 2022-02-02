@@ -787,6 +787,8 @@ class SwapCard extends React.Component {
 
         if (checkResult.dataValid) {
             rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
+            let a = this.validator.batchValidate(this.activePair, rules)
+            a = 1
             if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
                 if (this.activePair.token_1.hash === fieldData.token.hash) {
                     newValObj.value = this.activePair.token_1.volume - 1
@@ -847,7 +849,7 @@ class SwapCard extends React.Component {
         }
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
-                this.countRoute()
+                // this.countRoute()
                 if (activeField.token.hash === pair.token_0.hash) {
                     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else

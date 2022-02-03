@@ -14,12 +14,13 @@ BigInt.prototype.toJSON = function () {
 };
 
 const requestType = {
-    CREATE             : 'pool_create',
-    SWAP               : 'pool_swap',
-    ADD                : 'pool_add_liquidity',
-    REMOVE             : 'pool_remove_liquidity',
+    CREATE             : presets.pending.allowedTxTypes.pool_create,
+    SELL_EXACT         : presets.pending.allowedTxTypes.pool_sell_exact,
+    BUY_EXACT          : presets.pending.allowedTxTypes.pool_buy_exact,
+    ADD                : presets.pending.allowedTxTypes.pool_add_liquidity,
+    REMOVE             : presets.pending.allowedTxTypes.pool_remove_liquidity,
     ISSUE_TOKEN        : 'create_token',
-    DEX_CMD_DISTRIBUTE : 'dex_cmd_distribute'
+    DEX_CMD_DISTRIBUTE : presets.pending.allowedTxTypes.dex_cmd_distribute
 };
 
 class ExtRequests { 
@@ -91,18 +92,26 @@ class ExtRequests {
      * Exchange pair of tokens
      * @param {string} pubkey - users public key (get it while connecting to the extension)
      * @param {object} exchangeMode - data structure from initialState.js
+     * @param amountOutMin - according to the slippage
+     * @param swapCalculationsDirection - buy or sell calculations
      * @returns {Promise}
      */
-    swap (pubkey, exchangeMode, amountOutMin) {
-        return this.sendTx(pubkey, requestType.SWAP, {
+    swap (pubkey, exchangeMode, amountOutMin, swapCalculationsDirection) {
+        let params = {
             asset_in: exchangeMode.field0.token.hash,
-            amount_in: this.getBigIntAmount(exchangeMode.field0),
             asset_out: exchangeMode.field1.token.hash,
-            amount_out_min: this.getBigIntAmount({
+            amount_out_min: {
                 value : amountOutMin,
                 balance : exchangeMode.field1.balance
-            })
-        })
+            }
+        }
+        if (swapCalculationsDirection === "down") {
+            params.amount_in = this.getBigIntAmount(exchangeMode.field0)
+            return this.sendTx( pubkey, requestType.SELL_EXACT, params)
+        } else {
+            params.amount_out = this.getBigIntAmount(exchangeMode.field1)
+            return this.sendTx( pubkey, requestType.BUY_EXACT, params)
+        }
     }
 
     /**

@@ -62,7 +62,8 @@ class SwapCard extends React.Component {
             swapIconStatus : false,
             route : [],
             routingWaiting: false,
-            routingVisibility: false
+            routingVisibility: false,
+            swapCalculationsDirection: "down" // up and down
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -387,6 +388,7 @@ class SwapCard extends React.Component {
                                 <ConfirmSupply
                                     getSubmitButton={this.getSubmitButton.bind(this)}
                                     modeStruct={modeStruct}
+                                    swapCalculationsDirection={this.state.swapCalculationsDirection}
                                 />
                             </Suspense>}
                         </div>
@@ -847,11 +849,13 @@ class SwapCard extends React.Component {
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 // this.countRoute()
+                this.setState({swapCalculationsDirection: "down"})
                 if (activeField.token.hash === pair.token_0.hash) {
                     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
                     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
+                this.setState({swapCalculationsDirection: "up"})
                 if (activeField.token.hash === pair.token_1.hash) {
                     return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else

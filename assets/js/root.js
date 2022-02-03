@@ -179,7 +179,10 @@ class Root extends React.Component {
             .then(res => {
                 if (!res.lock)
                     res.json()
-                    .then(res => this.props.updBalances(res))
+                    .then(res => {
+                        res = res.filter(el => el.amount !== 0) // TMP solution
+                        this.props.updBalances(res)
+                    })
             })
     }
 

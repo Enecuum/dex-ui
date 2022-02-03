@@ -215,9 +215,10 @@ class StakeModalSpaceStation extends React.Component {
             decimals : decimals
           }
         }
-
-        let divRes = valueProcessor.div(numerator, denominator);
-        res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(/,/g, '');
+        if (BigInt(denominator.value) > 0n) {
+          let divRes = valueProcessor.div(numerator, denominator);
+          res = valueProcessor.usCommasBigIntDecimals(divRes.value, divRes.decimals, divRes.decimals).replace(/,/g, '');          
+        }
       } else if (!this.props.stakeData.stakeValid) {
         if (action === 'farm_increase_stake') {
           if (this.props.stakeData.stakeValue.bigIntValue > BigInt(this.props.stakeData.stakeTokenAmount))

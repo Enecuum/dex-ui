@@ -20,6 +20,7 @@ import pageDataPresets from "../../store/pageDataPresets"
 import img1 from '../../img/logo.png'
 import img2 from '../../img/bry-logo.png'
 import '../../css/confirm-supply.css'
+import swapUtils from "../utils/swapUtils.js";
 
 const valueProcessor = new ValueProcessor()
 
@@ -59,11 +60,40 @@ class ConfirmSupply extends React.Component {
         let firstToken = modeStruct.field0.token
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
-        if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
-            this.sendTransaction(pair)
-            return (<></>)
-        }
         let ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+
+        if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
+            let field0 = this.props.removeLiquidity.field0
+            let field1 = this.props.removeLiquidity.field1
+            return (
+                <>
+                    <div className="m-2 mb-4">
+                        <div className="d-flex justify-content-between mb-2">
+                            {valueProcessor.usCommasBigIntDecimals(field0.value.value, field0.value.decimals)}
+                            <LogoToken data={{
+                                url : field0.token.logo,
+                                value : field0.token.ticker,
+                                net : this.props.net
+                            }} />
+                        </div>
+                        <div className="d-flex justify-content-between mb-2">
+                            {valueProcessor.usCommasBigIntDecimals(field1.value.value, field1.value.decimals)}
+                            <LogoToken data={{
+                                url : field1.token.logo,
+                                value : field1.token.ticker,
+                                net : this.props.net
+                            }} />
+                        </div>
+                    </div>
+                    <Button
+                        className='btn-secondary confirm-supply-button w-100'
+                        onClick={this.sendTransaction.bind(this, pair)}
+                    >
+                        {this.props.t('trade.swapCard.submitButton.removeLiquidity')}
+                    </Button>
+                </>
+            )
+        }
         return (
             <>
                 <div className="h3 font-weight-bold">
@@ -195,16 +225,15 @@ class ConfirmSupply extends React.Component {
                 txType = txTypes.pool_create
                 txPromise = extRequests.createPool(this.props.pubkey, this.props[this.props.menuItem])
             }
+            this.openWaitingCard()
             txPromise.then(result => {
                 this.setState({currentTxHash : result.hash}, () => {
                     this.setState({txStatus : 'submitted'})
                     lsdp.write(result.hash, 0, txType, interpolateParams)
-                    this.openWaitingCard(this.state.currentTxHash)
                     resolve()
                 })
             }, () => {
                 this.setState({txStatus : 'rejected'}, () => {
-                    this.openWaitingCard()
                     reject()
                 })
             })

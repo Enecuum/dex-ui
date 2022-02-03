@@ -41,7 +41,7 @@ function countPriceImpact (pair, amountIn, amountOut, tokens) {
     return vp.mul(priceImpact, {value : 100, decimals: 0})
 }
 
-function getSwapPrice (volume0, volume1, amountIn, pool_fee) {   
+function sellExact (volume0, volume1, amountIn, pool_fee) {
     if (amountIn == 0)
         return 0
 
@@ -52,7 +52,7 @@ function getSwapPrice (volume0, volume1, amountIn, pool_fee) {
     return vp.sub(volume1, div)
 }
 
-function revGetSwapPrice (volume0, volume1, amountOut, pool_fee) {
+function buyExact (volume0, volume1, amountOut, pool_fee) {
     let percent = vp.valueToBigInt(1, pool_fee.decimals)
     let nominator = vp.mul(percent, vp.mul(volume0, amountOut))
     let denominator = vp.sub(vp.mul(volume1, vp.sub(percent, pool_fee)), amountOut)
@@ -162,15 +162,15 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
         let edges = pairs.filter(edge => edge.token_0.hash === current.vertex.hash || edge.token_1.hash === current.vertex.hash)
         edges.forEach((edge) => {
             if (edge.token_1.hash === current.vertex.hash) {
-                // let tmp = _.cloneDeep(edge.token_0)
-                // edge.token_0 = _.cloneDeep(edge.token_1)
-                // edge.token_1 = tmp
+                let tmp = _.cloneDeep(edge.token_0)
+                edge.token_0 = _.cloneDeep(edge.token_1)
+                edge.token_1 = tmp
             }
         })
 
         edges.forEach((edge) => {
             let adj = vertices.find((x) => x.vertex.hash === edge.token_1.hash)
-            let outcome = getSwapPrice({
+            let outcome = sellExact({
                 value : edge.token_0.volume,
                 decimals : getDecimals(tokens, edge.token_0)
             }, {
@@ -263,7 +263,7 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
 //         edges.forEach((edge) => {
 //             let adj = vertices.find((x) => x.vertex === edge.to);
 //             if (adj){
-//                 let outcome = getSwapPrice({
+//                 let outcome = sellExact({
 //                     value : edge.volume1,
 //                     decimals : getDecimals(tokens, edge.from)
 //                 }, {
@@ -288,7 +288,7 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
 //                 let new_vertex = {
 //                     vertex: edge.to,
 //                     processed: false,
-//                     outcome: getSwapPrice({
+//                     outcome: sellExact({
 //                         value : edge.volume1,
 //                         decimals : getDecimals(tokens, edge.from)
 //                     }, {
@@ -340,9 +340,9 @@ function sellRoute (token0, token1, amount, pairs, tokens) {
 export default {
     getAddLiquidityPrice,
     countPriceImpact,
-    revGetSwapPrice,
+    revGetSwapPrice: buyExact,
     ltDestruction,
     countLTValue,
-    getSwapPrice,
+    getSwapPrice: sellExact,
     sellRoute
 }

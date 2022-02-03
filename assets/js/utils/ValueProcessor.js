@@ -116,7 +116,7 @@ class ValueProcessor {
             };
         } else if (operation === this.operations.DIV) {
             if (op1.value == 0n) {
-                // console.log('zero division!')
+                // console.log('division by zero!')
                 return {}
             }
 

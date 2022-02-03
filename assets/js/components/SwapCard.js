@@ -544,7 +544,6 @@ class SwapCard extends React.Component {
     }
 
     getSubmitButton(modeStruct, openConfirmCard) {
-        const t = this.props.t
         let buttonName
         if (this.props.connectionStatus === false)
             buttonName = this.getSwapCardButtonName('beforeConnection')
@@ -787,8 +786,6 @@ class SwapCard extends React.Component {
 
         if (checkResult.dataValid) {
             rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
-            let a = this.validator.batchValidate(this.activePair, rules)
-            a = 1
             if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
                 if (this.activePair.token_1.hash === fieldData.token.hash) {
                     newValObj.value = this.activePair.token_1.volume - 1

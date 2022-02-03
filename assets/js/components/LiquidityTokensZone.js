@@ -42,8 +42,13 @@ class LiquidityTokensZone extends React.Component {
             let ltList = this.getLtData();
 
             if (ltList[activeId] !== undefined && this.state.activeId !== undefined) {
-                let ticker0 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_0.hash)).ticker;
-                let ticker1 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_1.hash)).ticker;
+                let ticker0 = '-', ticker1 = '-'
+                let token0 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_0.hash))
+                if (token0)
+                    ticker0 = token0.ticker
+                let token1 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_1.hash))
+                if (token1)
+                    ticker1 = token1.ticker
                 window.location.hash = '#!action=pool&pair=' + ticker0 + '-' + ticker1 + '&from=' + ltList[activeId].token_0.hash + '&to=' +  ltList[activeId].token_1.hash;
             }
         }

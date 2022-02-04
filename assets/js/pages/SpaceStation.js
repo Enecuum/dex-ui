@@ -645,12 +645,18 @@ class SpaceStation extends React.Component {
 
     getPoolsTable() {
         const t = this.props.t;
-        let distributeButtonClass = 'btn unselectable-text'
-        let disabledDependendClass = 'outline-border-color2-button'
+        
         let isDisabled = true;
-        if (this.props.mainTokenAmount !== undefined && this.props.mainTokenAmount > 0) {
+        if (this.props.mainTokenAmount !== undefined && this.props.mainTokenAmount > 0)
             isDisabled = false;
-            disabledDependendClass = 'outline-border-color3-button'
+
+        function getClassName(disabled, nullTreasure) {
+            let distributeButtonClass = 'btn unselectable-text'
+            let disabledDependendClass = 'outline-border-color2-button'
+            if (!disabled && !nullTreasure) {
+                disabledDependendClass = 'outline-border-color3-button'
+            } 
+            return `${distributeButtonClass} ${disabledDependendClass}`
         }
         
         return(
@@ -675,6 +681,7 @@ class SpaceStation extends React.Component {
                               </thead>
                             <tbody>
                                 {this.spaceStationPools.map(( pool, index ) => {
+                                    let nullTreasure = pool.LPTokenOnCommanderBalance.amount <= 0;
                                     let LPAlias = this.getLPAlias(pool.asset_LP, pool.ticker_LP);
                                     return (
                                         <tr key={index}>
@@ -699,8 +706,8 @@ class SpaceStation extends React.Component {
                                             </td>                                        
                                             <td>
                                                 <Button
-                                                    className={`${distributeButtonClass} ${disabledDependendClass}`}
-                                                    disabled={isDisabled}                                                
+                                                    className={getClassName(isDisabled, nullTreasure)}
+                                                    disabled={isDisabled || nullTreasure}                                                
                                                     onClick={this.showDistributeModal.bind(this, pool)}>
                                                     Distibute
                                                 </Button>

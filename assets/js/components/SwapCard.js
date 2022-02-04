@@ -63,7 +63,6 @@ class SwapCard extends React.Component {
             route : [],
             routingWaiting: false,
             routingVisibility: false,
-            swapCalculationsDirection: "down" // up and down
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -388,7 +387,7 @@ class SwapCard extends React.Component {
                                 <ConfirmSupply
                                     getSubmitButton={this.getSubmitButton.bind(this)}
                                     modeStruct={modeStruct}
-                                    swapCalculationsDirection={this.state.swapCalculationsDirection}
+                                    swapCalculationsDirection={this.props.swapCalculationsDirection}
                                 />
                             </Suspense>}
                         </div>
@@ -849,13 +848,13 @@ class SwapCard extends React.Component {
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 // this.countRoute()
-                this.setState({swapCalculationsDirection: "down"})
+                this.props.changeSwapCalcDirection("down")
                 if (activeField.token.hash === pair.token_0.hash) {
                     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
                     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
-                this.setState({swapCalculationsDirection: "up"})
+                this.props.changeSwapCalcDirection("up")
                 if (activeField.token.hash === pair.token_1.hash) {
                     return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
@@ -901,15 +900,15 @@ class SwapCard extends React.Component {
     }
 
     countCounterField(fieldObj, cField, removeLiquidity, aField) {
-        let mode = this.getMode();
+        let mode = this.getMode()
         if (!this.pairExists)
-            return;
+            return
         if (fieldObj.value.value === undefined)
-            return;
-        let counterField = this.props[mode][cField];
+            return
+        let counterField = this.props[mode][cField]
         if (fieldObj.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
-                return;
+                return
             }
             if (removeLiquidity) {
                 this.countRemoveLiquidity(mode, aField, fieldObj.value)
@@ -919,10 +918,10 @@ class SwapCard extends React.Component {
                     value : counterFieldPrice.value,
                     decimals : counterFieldPrice.decimals,
                     text : this.bigIntToString(counterFieldPrice.value, counterFieldPrice.decimals)
-                });
+                })
             }
         }
-    };
+    }
 
     assignCoinValueWithText (mode, field, value) {
         value.text = this.bigIntToString(value.value, value.decimals);

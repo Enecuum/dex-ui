@@ -45,7 +45,11 @@
                 "tooltip" : "За каждую сделку выплачивается комиссия в размере 0,35%"
             },
             "minimumReceived" : {
-                "header" : "Минимальная получаемая сумма",
+                "header" : "Минимум к получению",
+                "tooltip" : "Ваша транзакция будет возвращена, если произойдет значительное неблагоприятное изменение цены до того, как транзакция подтвердится."
+            },
+            "maximumSent" : {
+                "header" : "Максимум к продаже",
                 "tooltip" : "Ваша транзакция будет возвращена, если произойдет значительное неблагоприятное изменение цены до того, как транзакция подтвердится."
             }
         },
@@ -272,13 +276,15 @@
     "txActionWords" : {
         "meanwhileSending" : {
             "pool_create" : "Создание",
-            "pool_swap" : "Обмен",
+            "pool_sell_exact" : "Обмен",
+            "pool_buy_exact" : "Обмен",
             "pool_add_liquidity" : "Добавление",
             "pool_remove_liquidity" : "Удаление"
         },
         "history" : {
             "pool_create" : "Создание",
-            "pool_swap" : "Обмен",
+            "pool_sell_exact" : "Обмен",
+            "pool_buy_exact" : "Обмен",
             "pool_add_liquidity" : "Добавление",
             "pool_remove_liquidity" : "Удаление",
             "farm_create" : "Создание",
@@ -290,7 +296,10 @@
         }
     },
     "txActionPhrases" : {
-        "pool_swap" : {
+        "pool_sell_exact" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
+        },
+        "pool_buy_exact" : {
             "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
         },
         "pool_add_liquidity" : {

@@ -96,20 +96,24 @@ class ExtRequests {
      * @param swapCalculationsDirection - buy or sell calculations
      * @returns {Promise}
      */
-    swap (pubkey, exchangeMode, amountOutMin, swapCalculationsDirection) {
+    swap (pubkey, exchangeMode, slippageVar, swapCalculationsDirection) {
         let params = {
             asset_in: exchangeMode.field0.token.hash,
             asset_out: exchangeMode.field1.token.hash,
-            amount_out_min: {
-                value : amountOutMin,
-                balance : exchangeMode.field1.balance
-            }
         }
         if (swapCalculationsDirection === "down") {
             params.amount_in = this.getBigIntAmount(exchangeMode.field0)
+            params.amount_out_min = this.getBigIntAmount({
+                value : slippageVar,
+                balance : exchangeMode.field1.balance
+            })
             return this.sendTx( pubkey, requestType.SELL_EXACT, params)
         } else {
             params.amount_out = this.getBigIntAmount(exchangeMode.field1)
+            params.amount_in_max = this.getBigIntAmount({
+                value : slippageVar,
+                balance : exchangeMode.field0.balance
+            })
             return this.sendTx( pubkey, requestType.BUY_EXACT, params)
         }
     }

@@ -40,7 +40,7 @@ class WaitingConfirmation extends React.Component {
             let textPlace = 'waitingConfirmation', txTypes = pageDataPresets.pending.allowedTxTypes
             if (!this.props.createPool) {
                 if (this.props.menuItem === 'exchange') {
-                    return generateTxText(t, textPlace, txTypes.pool_swap, interpolateParams)
+                    return generateTxText(t, textPlace, txTypes.pool_sell_exact, interpolateParams)
                 } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
                     return generateTxText(t, textPlace, txTypes.pool_add_liquidity, interpolateParams)
                 } else if (this.props.menuItem === 'liquidity') {
@@ -63,7 +63,7 @@ class WaitingConfirmation extends React.Component {
 
     getContentByType() {
         if (this.props.txStateType === 'submitted') {
-            return  (
+            return (
                 <>
                     <div className="tx-state-icon-wrapper bordered d-flex align-items-center justify-content-center mx-auto">
                         <span className="tx-state-icon icon-Icon13"/>

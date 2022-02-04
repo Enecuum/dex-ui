@@ -58,19 +58,39 @@ class SwapAddon extends React.Component {
 
         let percent = vp.valueToBigInt(lsdp.simple.get("ENEXUserSlippage"), 8)
         percent.decimals += 2
-        percent = vp.sub(vp.valueToBigInt(1), percent)
-        let minimumReceived = vp.mul(this.props.exchange.field1.value, percent)
-        minimumReceived = vp.usCommasBigIntDecimals(minimumReceived.value, minimumReceived.decimals)
+
+        let minimumReceived, maximumSent
+        if (this.props.swapCalculationsDirection === "down") {
+            percent = vp.sub(vp.valueToBigInt(1), percent)
+            minimumReceived = vp.mul(this.props.exchange.field1.value, percent)
+            minimumReceived = vp.usCommasBigIntDecimals(minimumReceived.value, minimumReceived.decimals)
+        } else {
+            maximumSent = vp.mul(this.props.exchange.field0.value, percent)
+            maximumSent = vp.add(this.props.exchange.field0.value, maximumSent)
+            maximumSent = vp.usCommasBigIntDecimals(maximumSent.value, maximumSent.decimals)
+        }
         let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
+
         return (
             <div className="general-card p-4">
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
-                        <span className="mr-2">{t('trade.swapAddon.minimumReceived.header')}</span>
+                        {this.props.swapCalculationsDirection === "down" &&
+                            <span className="mr-2">{t('trade.swapAddon.minimumReceived.header')}</span> ||
+                            <span className="mr-2">{t('trade.swapAddon.maximumSent.header')}</span>
+                        }
                         <Tooltip text={t('trade.swapAddon.minimumReceived.tooltip')} />
                     </div>
                     <div>
-                        {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                        {this.props.swapCalculationsDirection === "down" &&
+                            <>
+                                {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                            </>
+                                ||
+                            <>
+                                {swapUtils.removeEndZeros(maximumSent ? maximumSent : "0.0")} {provider.ticker}
+                            </>
+                        }
                     </div>
                 </div>
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">

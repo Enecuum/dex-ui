@@ -201,11 +201,21 @@ class ConfirmSupply extends React.Component {
             let txPromise, txType
             if (utils.pairExists(pair)) {
                 if (this.props.menuItem === 'exchange') {
-                    txType = txTypes.pool_swap
                     let percent = valueProcessor.valueToBigInt(lsdp.simple.get("ENEXUserSlippage"), 8)
                     percent.decimals += 2
-                    percent = valueProcessor.sub(valueProcessor.valueToBigInt(1), percent)
-                    txPromise = extRequests.swap(this.props.pubkey, this.props.exchange, valueProcessor.mul(this.props.exchange.field1.value, percent), this.props.swapCalculationsDirection)
+
+                    let slippageCalc
+                    if (this.props.swapCalculationsDirection === "down") {
+                        txType = txTypes.pool_sell_exact
+                        percent = valueProcessor.sub(valueProcessor.valueToBigInt(1), percent)
+                        slippageCalc = valueProcessor.mul(this.props.exchange.field1.value, percent)
+                    } else {
+                        txType = txTypes.pool_buy_exact
+                        slippageCalc = valueProcessor.mul(this.props.exchange.field0.value, percent)
+                        slippageCalc = valueProcessor.add(this.props.exchange.field0.value, slippageCalc)
+                    }
+
+                    txPromise = extRequests.swap(this.props.pubkey, this.props.exchange, slippageCalc, this.props.swapCalculationsDirection)
                 } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {
                     txType = txTypes.pool_add_liquidity
                     txPromise = extRequests.addLiquidity(this.props.pubkey, this.props.liquidity)

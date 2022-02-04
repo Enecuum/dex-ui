@@ -53,6 +53,7 @@ const initialState = {
             ltfield : getDefaultField(6)
         },
         activeField         : 0,
+        swapCalculationsDirection : "down",
         tokenListStatus     : false,
         liquidityMain       : true,
         liquidityRemove     : false,

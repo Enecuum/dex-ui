@@ -78,8 +78,15 @@ const actionCreators = {
     changeRemoveLiquidityVisibility () {
         return {
             type : actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY
-        };
-    }
-};
+        }
+    },
 
-export default actionCreators;
+    changeSwapCalcDirection (direction) {
+        return {
+            type : actions.CHANGE_SWAP_CALC_DIRECTION,
+            direction : direction
+        }
+    }
+}
+
+export default actionCreators

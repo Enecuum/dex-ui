@@ -97,6 +97,9 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY:
             return swapCardStore(state, {liquidityRemove : !state.liquidityRemove});
 
+        case actions.CHANGE_SWAP_CALC_DIRECTION:
+            return swapCardStore(state, {swapCalculationsDirection : action.direction});
+
         default:
             return state;
     }

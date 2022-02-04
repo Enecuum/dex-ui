@@ -47,6 +47,10 @@
             "minimumReceived" : {
                 "header" : "Minimum received",
                 "tooltip" : "Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
+            },
+            "maximumSent" : {
+                "header" : "Maximum sent",
+                "tooltip" : "Your transaction will revert if there is a large, unfavorable price movement before it is confirmed."
             }
         },
         "lpTokensWalletInfo" : {
@@ -271,13 +275,15 @@
     "txActionWords" : {
         "meanwhileSending" : {
             "pool_create" : "Creating",
-            "pool_swap" : "Swapping",
+            "pool_sell_exact" : "Swapping",
+            "pool_buy_exact" : "Swapping",
             "pool_add_liquidity" : "Adding",
             "pool_remove_liquidity" : "Removing"
         },
         "history" : {
             "pool_create" : "Create",
-            "pool_swap" : "Swap",
+            "pool_sell_exact" : "Swap",
+            "pool_buy_exact" : "Swap",
             "pool_add_liquidity" : "Add",
             "pool_remove_liquidity" : "Remove",
             "farm_create" : "Create",
@@ -292,7 +298,10 @@
         "aim" : "Space station aims to distribute 0.05% Enex swap fee to ENX stakers. Fees are accumulated in Enex treasury in the form of LP tokens. Any user may call \"Distribute\" event to trade these LPs for ENX in a corresponding pools. ENX will be added to Space Station  rewards proportionally to stakers shares."
     },
     "txActionPhrases" : {
-        "pool_swap" : {
+        "pool_sell_exact" : {
+            "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
+        },
+        "pool_buy_exact" : {
             "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
         },
         "pool_add_liquidity" : {

@@ -28,6 +28,7 @@ ENV PEER_PORT       7001
 ENV CONTAINER_PORT  7071
 ENV PASSWORD        root 
 ENV OPENED_PORT     80
+ENV NODE_ENV        production
 
 CMD cd server/scripts/ ;\
 if [ "$SERVICE_TYPE" = "rd" ] ; then \

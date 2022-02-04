@@ -13,7 +13,7 @@ RUN apt-get update && apt-get upgrade -y
 # Install pm2 and project dependencies
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
-RUN apt update && apt install -y git
+RUN apt-get update && apt-get install -y git
 RUN npm i --force
 RUN node node_modules/webpack/bin/webpack.js build --config webpack.config.js
 

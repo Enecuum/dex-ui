@@ -23,21 +23,22 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        this.intervalConnection()
+        // this.intervalConnection()
+        this.checkConnection()
     }
 
     componentWillUnmount() {
         clearInterval(this.descriptor)
     }
 
-    intervalConnection () {
-        this.descriptor = setInterval(this.checkConnection.bind(this), 100)
-        setTimeout(clearInterval,5000, this.descriptor)
-    }
+    // intervalConnection () {
+    //     this.descriptor = setInterval(this.checkConnection.bind(this), 100)
+    //     setTimeout(clearInterval,5000, this.descriptor)
+    // }
 
     checkConnection () {
-        ENQweb3lib.connect()
-        ENQweb3lib.reconnect()
+        ENQweb3lib.connect().then(res => {
+            ENQweb3lib.reconnect()
             .then(res => {
                 if (res.status === true) {
                     clearInterval(this.descriptor)
@@ -51,6 +52,7 @@ class Connect extends React.Component {
                     })
                 }
             })
+        }).catch(() => {})
     }
 
     renderConnectionButton() {

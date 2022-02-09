@@ -221,7 +221,7 @@ class TokenCard extends React.Component {
                                     className="c-toggle mx-1"
                                     onClick={e => this.updTrustedTokenFlag(e.target.checked)}
                             />
-                            <div className="col text mb-0 ml-1"> show trusted tokens</div>
+                            <div className="col text mb-0 ml-1">{t("trade.tokenCard.showTrustedTokens")}</div>
                         </div>
                         {/*<span className={`icon-Icon15 swap-card-top-items mr-3`}/>*/}
                     </div>

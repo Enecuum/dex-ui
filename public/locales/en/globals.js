@@ -118,5 +118,6 @@ module.exports = {
         "advice" : "Try to reload the page"
     },
     "add" : "Add",
-    "remove" : "Remove"
+    "remove" : "Remove",
+    "pooled" : "Pooled"
 }

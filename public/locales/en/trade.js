@@ -51,8 +51,8 @@ module.exports = {
             "input1" : "Input",
             "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
             "liquidityTokensZone" : {
-                "yourPoolTokens" : "",
-                "poolShare" : ""
+                "yourPoolTokens" : "Your pool tokens",
+                "poolShare" : "Pool share"
             }
         },
         "submitButton" : {
@@ -71,7 +71,7 @@ module.exports = {
             "field0" : "Check value of the first asset",
             "field1" : "Check value of the second asset",
             "ltfield" : "Check value of the third asset",
-            "fullField0Value" : "The sum of the first asset and lt provider fee should be less than user's balance",
+            "fullField0Value" : "The amount of the first asset must be less than the user's balance, taking into account native token commission (for native token)",
             "nativeToken" : "Not enough native coin to pay the fee"
         },
         "aboutButtonInfo" : {
@@ -115,7 +115,8 @@ module.exports = {
         "header" : "Choose a token",
         "search" : "Search by name",
         "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
-        "tokenName" : "Token name"
+        "tokenName" : "Token name",
+        "showTrustedTokens" : "show trusted tokens"
     },
     "confirmCard" : {
         "header" : "You will receive",

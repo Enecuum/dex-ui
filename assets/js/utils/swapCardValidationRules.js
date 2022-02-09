@@ -162,7 +162,7 @@ class SwapCardValidationRules {
             },
             fullField0Value : {
                 ...this._getSwapCardBalanceRules({
-                    required: mode === 'exchange',
+                    required: mode === 'exchange' && swapCardData.fullField0Value !== undefined,
                     balance: swapCardData.field0.balance,
                     value: swapCardData.fullField0Value
                 })

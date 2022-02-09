@@ -1003,9 +1003,13 @@ class SwapCard extends React.Component {
             balance: nativeBalance,
             value: {value: this.props.mainTokenFee, decimals: nativeBalance.decimals}
         }
-        if (this.getMode() === 'exchange') {
-            let providerFee = valueProcessor.mul({value : this.activePair.pool_fee, decimals : 2}, modeData.field0.value)
-            modeData.fullField0Value = valueProcessor.add(providerFee, modeData.field0.value)
+        if (this.getMode() === 'exchange' && modeData.field0.token.hash === this.props.mainToken) {
+            modeData.fullField0Value = valueProcessor.add({
+                value : presets.network.nativeToken.fee,
+                decimals : modeData.field0.balance.decimals
+            }, modeData.field0.value)
+        } else {
+            modeData.fullField0Value = undefined
         }
         if (modeData.field0.value.text && modeData.field1.value.text) {
             let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData, this.getMode())

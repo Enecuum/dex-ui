@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect, connectAdvanced } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
 
 import ValueProcessor from '../utils/ValueProcessor';
 import utils from '../utils/swapUtils';
@@ -193,6 +194,7 @@ class LiquidityTokensZone extends React.Component {
                 <div className="liquidity-tokens-empty-zone"/>
             );
         else {
+            let t = this.props.t
             return ltList.map((el, index) => {
                 this.countPooledAmount(el, index);
                 let fToken  = this.getTokenByHash(el.token_0.hash);
@@ -217,19 +219,19 @@ class LiquidityTokensZone extends React.Component {
                             <Card.Body>
                                 <div className="mb-4">
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">Pooled {fToken.ticker}:</span>
+                                        <span className="mr-2">{t("pooled")} {fToken.ticker}:</span>
                                         {valueProcessor.usCommasBigIntDecimals(this.pooled[index].t0.value, this.pooled[index].t0.decimals)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">Pooled {sToken.ticker}:</span>
+                                        <span className="mr-2">{t("pooled")} {sToken.ticker}:</span>
                                         {valueProcessor.usCommasBigIntDecimals(this.pooled[index].t1.value, this.pooled[index].t1.decimals)}
                                     </div>
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">Your pool tokens:</span>
+                                        <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.yourPoolTokens")}:</span>
                                         {valueProcessor.usCommasBigIntDecimals(balance.amount, balance.decimals)}
                                     </div>  
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">Pool share:</span>
+                                        <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.poolShare")}:</span>
                                         {utils.removeEndZeros(utils.countPoolShare(el, {
                                             value0 : this.pooled[index].t0,
                                             value1 : this.pooled[index].t1
@@ -243,13 +245,13 @@ class LiquidityTokensZone extends React.Component {
                                             variant="secondary"
                                             onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}
                                     >
-                                        Add
+                                        {t("add")}
                                     </Button>
                                     <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50 py-2"
                                             variant="secondary"
                                             onClick={this.openRmLiquidityCard.bind(this, el)}
                                     >
-                                        Remove
+                                        {t("remove")}
                                     </Button>
                                 </div>
                             </Card.Body>
@@ -269,8 +271,11 @@ class LiquidityTokensZone extends React.Component {
             </>
         );
     };
-};
+}
 
-let WLiquidityTokensZone = connect(mapStoreToProps(components.LIQUIDITY_TOKEN_ZONE), mapDispatchToProps(components.LIQUIDITY_TOKEN_ZONE))(LiquidityTokensZone);
+let WLiquidityTokensZone = connect(
+    mapStoreToProps(components.LIQUIDITY_TOKEN_ZONE),
+    mapDispatchToProps(components.LIQUIDITY_TOKEN_ZONE)
+)(withTranslation()(LiquidityTokensZone))
 
-export default WLiquidityTokensZone;
+export default WLiquidityTokensZone

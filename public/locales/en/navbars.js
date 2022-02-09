@@ -1,0 +1,31 @@
+module.exports = {
+    "left" : {
+        "home" : "Home",
+        "exchange" : "Swap",
+        "liquidity" : "Pool",
+        "ido" : "IDO",
+        "farms" : "Space Harvest Farms",
+        "pools" : "Space Drop",
+        "etm" : "ETM",
+        "info" : "Info",
+        "topPairs" : "Top Pairs",
+        "docs" : "Docs",
+        "drops" : "Space Drops",
+        "spaceStation" : "Space Station"
+    },
+    "top" : {
+        "header" : "Enecuum",
+        "connect" : "Connect",
+        "connectionCard" : {
+            "header" : "Connect to a wallet",
+            "clue" : "Get Enecuum browser extension"
+        },
+        "accountShortInfo" : {
+            "header" : "Account",
+            "copyPubKey" : "copy address",
+            "viewIn" : "view in",
+            "connectInfo" : "Connected with",
+            "changeButton" : "Change"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+module.exports = {
+    "stakeNamedToken"              : "Стейк {{tokenName}}",
+    "unstakeNamedToken"            : "Отозвать {{tokenName}}",
+    "stakeLPTokens"                : "Стейк LP токенов",
+    "unstakeLPTokens"              : "Отзыв LP токенов",
+    "stake"                        : "Стейк",
+    "myStake"                      : "Мой стейк",
+    "unstake"                      : "Отозвать",
+    "getLPToken"                   : "Получить {{tokenName}} LP",
+    "getNamedToken"                : "Получить {{tokenName}}",
+    "nBlocksLeft"                  : "Осталось блоков: {{blocksLeft}}",
+    "finished"                     : "Работа завершена",
+    "pausedFarmStatusDescription"  : "Пауза. Для возобновления работы сделайте стейк {{stakeTokenName}}",
+    "liquidity"                    : "Ликвидность",
+    "earn"                         : "Доход",
+    "earned"                       : "Доход",
+    "apy"                          : "APY",
+    "rewardPerBlock"               : "Награда за блок",
+    "details"                      : "Подробнее",
+    "harvest"                      : "Собрать урожай",
+    "totalStaked"                  : "Общий стейк"
+}

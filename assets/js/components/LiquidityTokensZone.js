@@ -42,13 +42,13 @@ class LiquidityTokensZone extends React.Component {
             let ltList = this.getLtData();
 
             if (ltList[activeId] !== undefined && this.state.activeId !== undefined) {
-                // let ticker0 = '-', ticker1 = '-'
-                let ticker0 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_0.hash)).ticker
-                // if (token0)
-                //     ticker0 = token0.ticker
-                let ticker1 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_1.hash)).ticker
-                // if (token1)
-                //     ticker1 = token1.ticker
+                let ticker0 = '-', ticker1 = '-'
+                let token0 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_0.hash))
+                if (token0)
+                    ticker0 = token0.ticker
+                let token1 = this.props.tokens.find(elem => (elem.hash === ltList[activeId].token_1.hash))
+                if (token1)
+                    ticker1 = token1.ticker
                 window.location.hash = '#!action=pool&pair=' + ticker0 + '-' + ticker1 + '&from=' + ltList[activeId].token_0.hash + '&to=' +  ltList[activeId].token_1.hash;
             }
         }
@@ -239,14 +239,24 @@ class LiquidityTokensZone extends React.Component {
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50 py-2" variant="secondary" onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}>Add</Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50 py-2" variant="secondary" onClick={this.openRmLiquidityCard.bind(this, el)}>Remove</Button>
+                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50 py-2"
+                                            variant="secondary"
+                                            onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}
+                                    >
+                                        Add
+                                    </Button>
+                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50 py-2"
+                                            variant="secondary"
+                                            onClick={this.openRmLiquidityCard.bind(this, el)}
+                                    >
+                                        Remove
+                                    </Button>
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>
                     </Card>
-                );
-            });
+                )
+            })
         }
     };
 

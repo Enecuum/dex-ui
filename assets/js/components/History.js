@@ -19,15 +19,31 @@ class History extends React.Component {
         this.state = {
             historyVisibility : false
         }
+        this.prevLang = props.i18n.language
+        this.updFilters()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.i18n.language !== this.prevLang) {
+            this.prevLang = prevProps.i18n.language
+            this.updFilters()
+        }
+    }
+
+    updFilters () {
+        let t = this.props.t
+        let filtersTranslationPath = "trade.swapCard.history.filters"
+        let timeFL = `${filtersTranslationPath}.time`
+        let typeFL = `${filtersTranslationPath}.type`
         this.filters = {
             type : {
                 allTypes : {
-                    text : "All types",
+                    text : t(`${typeFL}.allTypes`),
                     types : null,
                     active : true
                 },
                 swap : {
-                    text : "swap",
+                    text : t(`${typeFL}.swap`),
                     types : [
                         txTypes.pool_create,
                         txTypes.pool_buy_exact,
@@ -37,7 +53,7 @@ class History extends React.Component {
                     ]
                 },
                 pool : {
-                    text : "pool",
+                    text : t(`${typeFL}.pool`),
                     types : [
                         txTypes.pool_create,
                         txTypes.pool_add_liquidity,
@@ -45,7 +61,7 @@ class History extends React.Component {
                     ]
                 },
                 farms : {
-                    text : "farms",
+                    text : t(`${typeFL}.farms`),
                     types : [
                         txTypes.farm_create,
                         txTypes.farm_close_stake,
@@ -55,22 +71,22 @@ class History extends React.Component {
                     ]
                 },
                 drops : {
-                    text : "drops",
+                    text : t(`${typeFL}.drops`),
                     types : []
                 },
             },
             time : {
                 oneHour : {
-                    text : "1h ago",
+                    text : t(`${timeFL}.oneHour`),
                     time : HOUR,
                     active : true
                 },
                 twelveHours : {
-                    text : "12h ago",
+                    text : t(`${timeFL}.twelveHours`),
                     time : 12 * HOUR
                 },
                 oneDay : {
-                    text : "1d ago",
+                    text : t(`${timeFL}.oneDay`),
                     time : 24 * HOUR
                 },
             }

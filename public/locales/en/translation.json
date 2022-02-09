@@ -339,5 +339,9 @@
     "LPTokenOnCommanderBalance" : "LPToken on Commander balance",
     "mainTokenAmount" : "Main token amount",
     "mainTokenDecimals" : "Main token decimals",
-    "poolData" : "Pool data"
+    "poolData" : "Pool data",
+    "errorBoundary" : {
+        "header" : "Oops, something went wrong!",
+        "advice" : "Try to reload the page"
+    }
 }

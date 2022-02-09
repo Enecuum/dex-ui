@@ -337,5 +337,9 @@
     "LPTokenOnCommanderBalance" : "LPToken on Commander balance",
     "mainTokenAmount" : "Баланс основного токена",
     "mainTokenDecimals" : "Decimals основного токена",
-    "poolData" : "Данные пула"
+    "poolData" : "Данные пула",
+    "errorBoundary" : {
+        "header" : "Ой, что-то пошло не так!",
+        "advice" : "Попробуйте перезагрузить страницу"
+    }
 }

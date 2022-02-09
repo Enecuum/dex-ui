@@ -254,6 +254,11 @@ right: 0;
     background-color: rgba(0,0,0,0.7);
 }
 
+.blankpage-addition-content {
+    position: absolute;
+    margin-top: 100px;
+}
+
 .modal-body, .modal-header {
     padding: 1.5rem;
 }

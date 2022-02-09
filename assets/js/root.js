@@ -29,6 +29,7 @@ import { Navbar, Aside, SwapCard, Switch,
          WaitingIssueTokenConfirmation,
          TopPairs, Etm, Farms, Drops, SpaceStation } from './components/entry'
 import SwapAddon from "./components/SwapAddon"
+import ErrorBoundary from  "./components/ErrorBoundary"
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'
@@ -461,7 +462,9 @@ ReactDOM.render(
     <I18nextProvider i18n={i18n}>
         <Provider store={ store } >
             <Suspense fallback={<div>---</div>}>
-                <WRoot />
+                <ErrorBoundary>
+                    <WRoot />
+                </ErrorBoundary>
             </Suspense>
         </Provider>
     </I18nextProvider>,

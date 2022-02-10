@@ -11,6 +11,7 @@ import '../../css/token-card.css'
 import '../../css/custom-toggle.css'
 
 import LogoToken from "../elements/LogoToken"
+import TokenCardSettings from "../components/TokenCardSetting"
 
 import ValueProcessor from "../utils/ValueProcessor"
 import swapUtils from "../utils/swapUtils"
@@ -187,59 +188,51 @@ class TokenCard extends React.Component {
         const t = this.props.t
         return (
             <>
-              <Modal
-                show={true}
-                aria-labelledby="example-custom-modal-styling-title"
-                onHide={this.closeTokenList.bind(this)}
-                centered
-                animation={false}
-              >
-                <Modal.Header closeButton className="pb-0">
-                  <Modal.Title id="example-custom-modal-styling-title">
-                    <div className="d-flex align-items-center justify-content-start">
-                        <span className="mr-3">
-                            {t('trade.tokenCard.header')}
-                        </span>
-                        <Tooltip text={t('trade.tokenCard.tooltipText')}/>
-                    </div>
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="mb-4">
-                        <Form.Control
-                            id='token-filter-field'
-                            onChange={this.changeList.bind(this)}
-                            className='text-input-1 form-control shadow-none'
-                            type='text'
-                            placeholder={t('trade.tokenCard.search')}
-                            autoFocus/>
-                    </div>
+                  <Modal
+                    show={true}
+                    aria-labelledby="example-custom-modal-styling-title"
+                    onHide={this.closeTokenList.bind(this)}
+                    centered
+                    animation={false}
+                  >
+                        <Modal.Header closeButton className="pb-0">
+                              <Modal.Title id="example-custom-modal-styling-title">
+                                  <div className="d-flex align-items-center justify-content-start">
+                                          <span className="mr-3">
+                                              {t('trade.tokenCard.header')}
+                                          </span>
+                                      <Tooltip text={t('trade.tokenCard.tooltipText')}/>
+                                  </div>
+                              </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="row">
+                                <div className="col">
+                                    <Form.Control
+                                    id='token-filter-field'
+                                    onChange={this.changeList.bind(this)}
+                                    className='text-input-1 form-control shadow-none'
+                                    type='text'
+                                    placeholder={t('trade.tokenCard.search')}
+                                    autoFocus/>
+                                </div>
+                            </div>
 
-                    <div className="row">
-                        <div className="col d-flex align-items-center">
-                            <input  type="checkbox"
-                                    className="c-toggle mx-1"
-                                    onClick={e => this.updTrustedTokenFlag(e.target.checked)}
-                            />
-                            <div className="col text mb-0 ml-1">{t("trade.tokenCard.showTrustedTokens")}</div>
-                        </div>
-                        {/*<span className={`icon-Icon15 swap-card-top-items mr-3`}/>*/}
-                    </div>
+                            <div className="d-flex align-items-center justify-content-between my-4">
+                                <div className="d-flex justify-content-start">
+                                    <span>{t('trade.tokenCard.tokenName')}</span>
+                                    <TokenCardSettings />
+                                </div>
+                                <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
+                                    <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
+                                </span>
+                            </div>
 
-                    <hr/>
-
-                    <div className="d-flex align-items-center justify-content-between mb-4">
-                        <span>{t('trade.tokenCard.tokenName')}</span>
-                        <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
-                            <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
-                        </span>
-                    </div>
-
-                    <div id="tokensList">
-                        { this.props.list }
-                    </div>
-                </Modal.Body>
-              </Modal>
+                            <div id="tokensList">
+                                { this.props.list }
+                            </div>
+                        </Modal.Body>
+                  </Modal>
             </>
         )
     }

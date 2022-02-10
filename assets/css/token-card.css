@@ -37,3 +37,12 @@
     width: 15px;
     height: 15px;
 }
+
+.token-card-settings {
+    cursor: pointer;
+    color: var(--color1);
+}
+
+.token-card-settings:hover {
+    color: var(--color4);
+}

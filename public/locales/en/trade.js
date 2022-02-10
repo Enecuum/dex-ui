@@ -31,7 +31,7 @@ module.exports = {
         },
         "exchange" : {
             "header" : "Swap",
-            "description" : "Trade tokens in an instant",
+            "description" : "Trade tokens with flat tx fees",
             "input0" : "From",
             "input1" : "To"
         },
@@ -116,7 +116,9 @@ module.exports = {
         "search" : "Search by name",
         "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
         "tokenName" : "Token name",
-        "showTrustedTokens" : "show trusted tokens"
+        "raiseUpTrustedTokens" : "raise up trusted tokens",
+        "raiseUpBalances" : "raise up tokens with non zero balances",
+        "raiseUpLpTokens" : "raise up lp tokens"
     },
     "confirmCard" : {
         "header" : "You will receive",

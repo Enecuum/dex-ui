@@ -203,6 +203,7 @@ right: 0;
 }
 
 .back-button { /*iconItem13*/
+    cursor: pointer;
     transform: rotate(90deg);
     font-size: 18px;
 }

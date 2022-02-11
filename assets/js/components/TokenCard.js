@@ -11,21 +11,31 @@ import '../../css/token-card.css'
 import '../../css/custom-toggle.css'
 
 import LogoToken from "../elements/LogoToken"
-import TokenCardSettings from "../components/TokenCardSetting"
+import TokenCardSettings from "./TokenCardSettings"
+import ModalMultiTab from "../elements/ModalMultiTab"
 
 import ValueProcessor from "../utils/ValueProcessor"
 import swapUtils from "../utils/swapUtils"
+import lsdp from "../utils/localStorageDataProcessor";
+
 const vp = new ValueProcessor()
 
+import {initSettings} from "../utils/tokensSettings"
 
-class TokenCard extends React.Component {
+
+class TokenCard extends React.Component  {
     constructor(props) {
         super(props)
         this.tokenFilter = ''
-        this.showTrustedTokens = false
         this.trustedTokens = []
         this.updTokens()
+
+        this.settings = initSettings()
+        this.state = {
+            tabsPointer : "main"
+        }
     }
+
 
     componentDidMount () {
         document.getElementById("token-filter-field").focus()
@@ -177,62 +187,82 @@ class TokenCard extends React.Component {
         this.props.closeTokenList(tokenObj, activeField)
     }
 
-    updTrustedTokenFlag (value) {
-        if (value === true)
-            document.getElementById("tokensList").scrollTo(0, 0)
-        this.showTrustedTokens = value
-        this.updTokens()
+    renderTokenListHeader () {
+        const t = this.props.t
+        return (
+            <div className="d-flex align-items-center justify-content-start">
+                <span className="mr-3">
+                    {t('trade.tokenCard.header')}
+                </span>
+                <Tooltip text={t('trade.tokenCard.tooltipText')}/>
+            </div>
+        )
     }
 
-    render() {
+    renderTokenListBody () {
         const t = this.props.t
         return (
             <>
-                  <Modal
-                    show={true}
-                    aria-labelledby="example-custom-modal-styling-title"
-                    onHide={this.closeTokenList.bind(this)}
-                    centered
-                    animation={false}
-                  >
-                        <Modal.Header closeButton className="pb-0">
-                              <Modal.Title id="example-custom-modal-styling-title">
-                                  <div className="d-flex align-items-center justify-content-start">
-                                          <span className="mr-3">
-                                              {t('trade.tokenCard.header')}
-                                          </span>
-                                      <Tooltip text={t('trade.tokenCard.tooltipText')}/>
-                                  </div>
-                              </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <div className="row">
-                                <div className="col">
-                                    <Form.Control
-                                    id='token-filter-field'
-                                    onChange={this.changeList.bind(this)}
-                                    className='text-input-1 form-control shadow-none'
-                                    type='text'
-                                    placeholder={t('trade.tokenCard.search')}
-                                    autoFocus/>
-                                </div>
-                            </div>
+                <div className="row">
+                    <div className="col">
+                        <Form.Control
+                        id='token-filter-field'
+                        onChange={this.changeList.bind(this)}
+                        className='text-input-1 form-control shadow-none'
+                        type='text'
+                        placeholder={t('trade.tokenCard.search')}
+                        autoFocus/>
+                    </div>
+                </div>
 
-                            <div className="d-flex align-items-center justify-content-between my-4">
-                                <div className="d-flex justify-content-start">
-                                    <span>{t('trade.tokenCard.tokenName')}</span>
-                                    <TokenCardSettings />
-                                </div>
-                                <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
+                <div className="d-flex align-items-center justify-content-between my-4">
+                    <div className="d-flex justify-content-start">
+                        <span>{t('trade.tokenCard.tokenName')}</span>
+
+                        <div className="d-flex align-items-center">
+                            <span className={`icon-Icon15 ml-3 token-card-settings`}
+                                  onClick={() => this.updTabsPointer("settings")}
+                            />
+                        </div>
+
+                    </div>
+                    <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
                                     <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
                                 </span>
-                            </div>
+                </div>
 
-                            <div id="tokensList">
-                                { this.props.list }
-                            </div>
-                        </Modal.Body>
-                  </Modal>
+                <div id="tokensList">
+                    { this.props.list }
+                </div>
+            </>
+        )
+    }
+
+    updTabsPointer (pointer) {
+        this.setState({tabsPointer : pointer})
+    }
+
+    getTabs () {
+        return {
+            main : {
+                header : this.renderTokenListHeader(),
+                body : this.renderTokenListBody()
+            },
+            settings : {
+                header : "Settings",
+                body : <TokenCardSettings />
+            }
+        }
+    }
+
+    render() {
+        return (
+            <>
+                <ModalMultiTab tabs={this.getTabs()}
+                               pointer={this.state.tabsPointer}
+                               updPointer={this.updTabsPointer.bind(this)}
+                               closeAction={this.closeTokenList.bind(this)}
+                />
             </>
         )
     }

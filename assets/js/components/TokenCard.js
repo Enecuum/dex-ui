@@ -10,17 +10,18 @@ import Tooltip from '../elements/Tooltip';
 import '../../css/token-card.css'
 import '../../css/custom-toggle.css'
 
-import LogoToken from "../elements/LogoToken"
+import {LogoToken, LogoTokenLP, LogoTokenTrusted} from "../elements/LogoToken"
 import TokenCardSettings from "./TokenCardSettings"
 import ModalMultiTab from "../elements/ModalMultiTab"
 
 import ValueProcessor from "../utils/ValueProcessor"
 import swapUtils from "../utils/swapUtils"
-import lsdp from "../utils/localStorageDataProcessor";
+import lsdp from "../utils/localStorageDataProcessor"
 
 const vp = new ValueProcessor()
 
 import {initSettings, settings} from "../utils/tokensSettings"
+import enqLogo from "../../img/ENEXlogo.png";
 
 
 class TokenCard extends React.Component  {
@@ -138,7 +139,9 @@ class TokenCard extends React.Component  {
     }
 
     isLpToken (name) {
-        return name === "LP_TKN"
+        if (name)
+            return name.trim() === "LP_TKN"
+        return false
     }
 
     isNonZeroToken (hash) {
@@ -175,18 +178,21 @@ class TokenCard extends React.Component  {
         return sorted.map((el, i) => {
             // if (i > this.maxTokensForRender)
             //     return (<></>)
+            let logoData = {
+                url : el.logo,
+                value : el.ticker,
+                hash : el.hash,
+                net : this.props.net
+            }
+
             return (
                 <div key={i}>
                     <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
-                        <LogoToken customClasses='py-1 my-1 px-1'
-                                   data = {{
-                                       url : el.logo,
-                                       value : el.ticker,
-                                       hash : el.hash,
-                                       net : this.props.net,
-                                       trustedToken : this.trustedTokens.indexOf(el.hash) !== -1
-                                   }}
-                        />
+                        {
+                            this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
+                            this.isLpToken(el.ticker) && <LogoTokenLP customClasses='py-1 my-1 px-1' data = {logoData} caption={el.caption}/> ||
+                            <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
+                        }
                         <small className="mr-2 mt-3 text-muted">
                             {this.getTokenBalance(el.hash)}
                         </small>

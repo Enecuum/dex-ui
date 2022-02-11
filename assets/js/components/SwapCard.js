@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next";
 
 import presets from '../../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
-import LogoToken from '../elements/LogoToken';
+import {LogoToken} from '../elements/LogoToken';
 import Tooltip from '../elements/Tooltip';
 import TokenCard from './TokenCard';
 import History from './History';

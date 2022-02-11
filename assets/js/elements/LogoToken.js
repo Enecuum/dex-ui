@@ -7,7 +7,7 @@ import "../../css/logo-token.css"
 import enqLogo from "../../img/ENEXlogo.png"
 
 
-class LogoToken extends React.Component {
+class LogoTokenDef extends React.Component {
     constructor(props) {
         super(props)
         this.customClasses = this.props.customClasses ? this.props.customClasses : ""
@@ -31,9 +31,7 @@ class LogoToken extends React.Component {
                         <div className="col">
                             <div className="row d-flex justify-content-start align-items-center">
                                 <span>{this.props.data.value}</span>
-                                { this.props.data.trustedToken &&
-                                    <img src={enqLogo} alt="*" className="trusted-logo ml-2 mb-1"/> || <></>
-                                }
+                                { this.props.additionalInfo }
                             </div>
                             <div className="row text-muted token-hash">
                                 {swapUtils.packAddressString(this.props.data.hash)}
@@ -47,4 +45,41 @@ class LogoToken extends React.Component {
     }
 }
 
-export default LogoToken
+class LogoTokenTrusted extends React.Component {
+    render () {
+        return (
+            <LogoTokenDef additionalInfo={<img src={enqLogo} alt="*" className="trusted-logo ml-2 mb-1"/>}
+                          customClasses={this.props.customClasses}
+                          data={this.props.data}
+            />
+        )
+    }
+}
+
+class LogoTokenLP extends React.Component {
+    render () {
+        return (
+            <LogoTokenDef additionalInfo={<div className="ml-2 token-caption">{this.props.caption}</div> }
+                          customClasses={this.props.customClasses}
+                          data={this.props.data}
+            />
+        )
+    }
+}
+
+class LogoToken extends React.Component {
+    render () {
+        return (
+            <LogoTokenDef additionalInfo={<></>}
+                          customClasses={this.props.customClasses}
+                          data={this.props.data}
+            />
+        )
+    }
+}
+
+export {
+    LogoToken,
+    LogoTokenLP,
+    LogoTokenTrusted
+}

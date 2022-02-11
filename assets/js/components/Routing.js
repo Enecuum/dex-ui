@@ -1,7 +1,7 @@
 import React from "react"
 import { Accordion, Card } from "react-bootstrap"
 
-import LogoToken from "../elements/LogoToken"
+import {LogoToken} from "../elements/LogoToken"
 import PairLogos from "./PairLogos"
 import Tooltip from "../elements/Tooltip"
 

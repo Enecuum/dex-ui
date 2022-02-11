@@ -46,3 +46,8 @@
 .token-card-settings:hover {
     color: var(--color4);
 }
+
+.token-caption {
+    font-size: 18px;
+    color: var(--color2);
+}

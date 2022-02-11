@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next"
 
 import CommonModal from "../elements/CommonModal"
 import PairLogos from '../components/PairLogos'
-import LogoToken from '../elements/LogoToken'
+import {LogoToken} from '../elements/LogoToken'
 import {WaitingConfirmation} from "./entry"
 
 import utils from '../utils/swapUtils.js'

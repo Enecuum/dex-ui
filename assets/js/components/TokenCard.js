@@ -20,7 +20,7 @@ import lsdp from "../utils/localStorageDataProcessor";
 
 const vp = new ValueProcessor()
 
-import {initSettings} from "../utils/tokensSettings"
+import {initSettings, settings} from "../utils/tokensSettings"
 
 
 class TokenCard extends React.Component  {
@@ -28,6 +28,7 @@ class TokenCard extends React.Component  {
         super(props)
         this.tokenFilter = ''
         this.trustedTokens = []
+        // this.maxTokensForRender = 500
         this.updTokens()
 
         this.settings = initSettings()
@@ -36,8 +37,10 @@ class TokenCard extends React.Component  {
         }
     }
 
-
     componentDidMount () {
+        // let tokenListEl = document.getElementById("tokensList")
+        // this.maxScroll = tokenListEl.scrollHeight - tokenListEl.offsetHeight
+        // this.updateBoundary = this.maxScroll - 200
         document.getElementById("token-filter-field").focus()
     }
 
@@ -47,27 +50,13 @@ class TokenCard extends React.Component  {
     }
 
     updTokens() {
-        this.props.assignTokenList(this.makeList())
+        this.props.assignTokenList(this.makeList(this.props.sort))
     }
 
     getTokens (searchWord) {
         let word = searchWord.trim().toLowerCase()
         let regExpWord = new RegExp(`.*${word}.*`)
         return this.props.tokens.filter(token => regExpWord.test(token.ticker.toLowerCase()) || word === token.hash)
-    }
-
-    raiseUpTrustedTokens (tokens) {
-        if (this.props.networkInfo.native_token) {
-            let trustedTokensList = []
-            for (let i = 0; i < tokens.length; i++)
-                if (this.isTrustedToken(tokens[i].hash)) {
-                    trustedTokensList.push(tokens[i])
-                    tokens.splice(i, 1)
-                    i--
-                }
-            tokens = trustedTokensList.concat(tokens)
-        }
-        return tokens
     }
 
     setTrustedTokens () {
@@ -77,10 +66,6 @@ class TokenCard extends React.Component  {
         if (this.props.networkInfo.dex && this.props.networkInfo.dex.DEX_TRUSTED_TOKENS)
             trustedTokens = trustedTokens.concat(this.props.networkInfo.dex.DEX_TRUSTED_TOKENS)
         this.trustedTokens = trustedTokens
-    }
-
-    isTrustedToken (hash) {
-        return this.trustedTokens.indexOf(hash) !== -1
     }
 
     assignToken(token) {
@@ -107,7 +92,7 @@ class TokenCard extends React.Component  {
         else
             sortOrder = 'asc';
         this.props.changeSort(sortOrder);
-        this.props.assignTokenList(this.makeList(this.props.sort));
+        this.props.assignTokenList(this.makeList(sortOrder));
     }
 
     comparator(sortDirection) {
@@ -148,14 +133,50 @@ class TokenCard extends React.Component  {
         return swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(balance.amount, balance.decimals))
     }
 
+    isTrustedToken (hash) {
+        return this.trustedTokens.indexOf(hash) !== -1
+    }
+
+    isLpToken (name) {
+        return name === "LP_TKN"
+    }
+
+    isNonZeroToken (hash) {
+        return swapUtils.getBalanceObj(this.props.balances, hash).amount != 0
+    }
+
+    checkSettings (token) {
+        let result = false
+        if (lsdp.simple.get(settings.upBalances) === "true")
+            result ||= this.isNonZeroToken(token.hash)
+        if (lsdp.simple.get(settings.upTrustedTokens) === "true")
+            result ||= this.isTrustedToken(token.hash)
+        if (lsdp.simple.get(settings.upLpTokens) === "true")
+            result ||= this.isLpToken(token.ticker)
+        return result
+    }
+
+    traverseRules (tokens) {
+        let raisedUpTokens = []
+        for (let i = 0; i < tokens.length; i++)
+            if (this.checkSettings(tokens[i])) {
+                raisedUpTokens.push(tokens[i])
+                tokens.splice(i, 1)
+                i--
+            }
+        tokens = raisedUpTokens.concat(tokens)
+        return tokens
+    }
+
     makeList(sortDirection = 'asc') { //allowable values are: 'asc','desc','unsort'
         this.setTrustedTokens()
         let sorted = this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection))
-        if (this.showTrustedTokens)
-            sorted = this.raiseUpTrustedTokens(sorted)
+        sorted = this.traverseRules(sorted)
         return sorted.map((el, i) => {
+            // if (i > this.maxTokensForRender)
+            //     return (<></>)
             return (
-                <div>
+                <div key={i}>
                     <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
                         <LogoToken customClasses='py-1 my-1 px-1'
                                    data = {{
@@ -165,7 +186,6 @@ class TokenCard extends React.Component  {
                                        net : this.props.net,
                                        trustedToken : this.trustedTokens.indexOf(el.hash) !== -1
                                    }}
-                                   key={i}
                         />
                         <small className="mr-2 mt-3 text-muted">
                             {this.getTokenBalance(el.hash)}
@@ -179,7 +199,7 @@ class TokenCard extends React.Component  {
     changeList() {
         if (['insertText', 'deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
             this.tokenFilter = document.getElementById('token-filter-field').value;
-            this.props.assignTokenList(this.makeList())
+            this.props.assignTokenList(this.makeList(this.props.sort))
         }
     }
 
@@ -206,12 +226,13 @@ class TokenCard extends React.Component  {
                 <div className="row">
                     <div className="col">
                         <Form.Control
-                        id='token-filter-field'
-                        onChange={this.changeList.bind(this)}
-                        className='text-input-1 form-control shadow-none'
-                        type='text'
-                        placeholder={t('trade.tokenCard.search')}
-                        autoFocus/>
+                            id='token-filter-field'
+                            onChange={this.changeList.bind(this)}
+                            className='text-input-1 form-control shadow-none'
+                            type='text'
+                            placeholder={t('trade.tokenCard.search')}
+                            autoFocus
+                        />
                     </div>
                 </div>
 
@@ -227,11 +248,20 @@ class TokenCard extends React.Component  {
 
                     </div>
                     <span className="sort-direction-toggler" onClick={this.toggleSortList.bind(this)}>
-                                    <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
-                                </span>
+                        <i className={'fas ' + 'fa-arrow-' + (this.props.sort === 'desc' ? 'up' : 'down') + ' hover-pointer'}/>
+                    </span>
                 </div>
 
-                <div id="tokensList">
+                <div id="tokensList"
+                    //  onScroll={e => {
+                    //     console.log(e.target.scrollTop, this.updateBoundary)
+                    //     if (e.target.scrollTop > this.updateBoundary) {
+                    //         this.maxTokensForRender += this.maxTokensForRender
+                    //         this.updateBoundary += this.maxScroll
+                    //         this.props.assignTokenList(this.makeList(this.props.sort))
+                    //     }
+                    // }}
+                >
                     { this.props.list }
                 </div>
             </>
@@ -239,6 +269,8 @@ class TokenCard extends React.Component  {
     }
 
     updTabsPointer (pointer) {
+        if (pointer === "main")
+            this.props.assignTokenList(this.makeList(this.props.sort))
         this.setState({tabsPointer : pointer})
     }
 

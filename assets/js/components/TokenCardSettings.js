@@ -9,7 +9,7 @@ class TokenCardSettings extends React.Component {
     constructor(props) {
         super(props)
 
-        this.settings = this.settings = initSettings()
+        this.settings = initSettings()
     }
 
     renderToggle (localStorageKey, description) {

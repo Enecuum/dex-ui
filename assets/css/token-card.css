@@ -51,3 +51,8 @@
     font-size: 18px;
     color: var(--color2);
 }
+
+.token-caption:hover {
+    text-decoration: none;
+    color: var(--color3);
+}

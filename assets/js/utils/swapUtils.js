@@ -153,24 +153,35 @@ function searchSwap (pairs, tokens, lpToken) {
     const emptyPair = {
         token_0 : {},
         token_1 : {}
-    };
+    }
     if (pairs.length === 0 || !Array.isArray(pairs))
-        return emptyPair;
-    let hashes = [tokens[0].hash, tokens[1].hash];
+        return emptyPair
+
+    let hashes = [tokens[0].hash, tokens[1].hash]
     let validPair = pairs.find(el => {
         if (hashes.indexOf(el.token_0.hash) !== -1 &&
             hashes.indexOf(el.token_1.hash) !== -1 &&
             el.token_0.hash !== el.token_1.hash) {
             if (lpToken)
                 if (el.lt === lpToken)
-                    return el;
+                    return el
                 else
-                    return undefined;
+                    return undefined
             else
-                return el;
+                return el
         }
-    });
-    return (validPair) ? validPair : emptyPair;
+    })
+    return (validPair) ? validPair : emptyPair
+}
+
+function searchByLt (pairs, lpToken) {
+    const emptyPair = {
+        token_0 : {},
+        token_1 : {}
+    }
+    if (pairs.length === 0 || !Array.isArray(pairs))
+        return emptyPair
+    return pairs.find(el => el.lt === lpToken)
 }
 
 function getBalanceObj (balances, hash) {
@@ -248,6 +259,7 @@ export default {
     countPortion,
     getBalanceObj,
     getTokenObj,
+    searchByLt,
     pairExists,
     searchSwap
 };

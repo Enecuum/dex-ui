@@ -138,10 +138,11 @@ class TokenCard extends React.Component  {
         return this.trustedTokens.indexOf(hash) !== -1
     }
 
-    isLpToken (name) {
-        if (name)
-            return name.trim() === "LP_TKN"
-        return false
+    isLpToken (hash) {
+        let res = swapUtils.searchByLt(this.props.pairs, hash)
+        if (res === undefined)
+            return false
+        return res
     }
 
     isNonZeroToken (hash) {
@@ -155,7 +156,7 @@ class TokenCard extends React.Component  {
         if (lsdp.simple.get(settings.upTrustedTokens) === "true")
             result ||= this.isTrustedToken(token.hash)
         if (lsdp.simple.get(settings.upLpTokens) === "true")
-            result ||= this.isLpToken(token.ticker)
+            result ||= this.isLpToken(token.hash)
         return result
     }
 
@@ -171,6 +172,8 @@ class TokenCard extends React.Component  {
         return tokens
     }
 
+
+
     makeList(sortDirection = 'asc') { //allowable values are: 'asc','desc','unsort'
         this.setTrustedTokens()
         let sorted = this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection))
@@ -185,12 +188,22 @@ class TokenCard extends React.Component  {
                 net : this.props.net
             }
 
+            let lpPair = this.isLpToken(el.hash), fToken, sToken
+            if (lpPair) {
+                fToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_0.hash)
+                sToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_1.hash)
+            }
+
             return (
                 <div key={i}>
                     <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
                         {
                             this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
-                            this.isLpToken(el.ticker) && <LogoTokenLP customClasses='py-1 my-1 px-1' data = {logoData} caption={el.caption}/> ||
+                            lpPair && <LogoTokenLP customClasses='py-1 my-1 px-1'
+                                                   data = {logoData}
+                                                   fToken={fToken}
+                                                   sToken={sToken}
+                            /> ||
                             <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
                         }
                         <small className="mr-2 mt-3 text-muted">

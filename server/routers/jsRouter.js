@@ -20,7 +20,7 @@ function bundleNames (hotUpdateTemplate) {
 
 router.post(`/*`, (req, res, next) => {
     let filePath = req.baseUrl + req.url
-    if (bundles.includes(filePath)) {
+    if (/* bundles.includes(filePath) */ /^\/js\/enex\..+\.js$/.test(filePath)) {
         cReadFiles([{data: path.join(pubDir, req.baseUrl, req.url)}])
             .then(file => {
                 res.send(jsonrpcResponse(req.body.id, true, file.data, "application/javascript"))

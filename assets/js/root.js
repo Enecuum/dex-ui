@@ -26,10 +26,15 @@ import store from '../store/store'
 /* ------------------ Dex-ui components ------------------ */
 import LPTokensWalletInfo from './components/LPTokensWalletInfo'
 import { Navbar, Aside, SwapCard, Switch,
-         WaitingIssueTokenConfirmation,
-         TopPairs, Etm, Farms, Drops, SpaceStation } from './components/entry'
-import SwapAddon from "./components/SwapAddon"
+         WaitingIssueTokenConfirmation } from './components/entry'
 import ErrorBoundary from  "./components/ErrorBoundary"
+
+const SwapAddon = React.lazy(() => import('./components/SwapAddon'))
+const TopPairs = React.lazy(() => import('./components/TopPairs'))
+const Etm = React.lazy(() => import('./pages/Etm'))
+const Farms = React.lazy(() => import('./pages/Farms'))
+const Drops = React.lazy(() => import('./pages/Drops'))
+const SpaceStation = React.lazy(() => import('./pages/SpaceStation'))
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'
@@ -386,7 +391,7 @@ class Root extends React.Component {
                     <div id="ETMPage" className="regular-page p-2 p-md-5 px-lg-0" >
                         <Suspense fallback={<div>---</div>}>
                             <Etm/>
-                        </Suspense>    
+                        </Suspense>
                         <Suspense fallback={<div>---</div>}>
                             <WaitingIssueTokenConfirmation />
                         </Suspense>

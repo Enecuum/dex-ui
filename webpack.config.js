@@ -23,6 +23,7 @@ module.exports = () => {
         output : {
             path : PUBLIC,
             filename : 'js/enex.[name].js',
+            chunkFilename: 'js/enex.[name].js',
             hotUpdateChunkFilename: 'hot/[runtime].hot-update.js',
             hotUpdateMainFilename: 'hot/[runtime].hot-update.json'
         },

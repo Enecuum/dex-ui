@@ -12,9 +12,9 @@ const allowedLocales = ["ru", "ru\\-RU", "en", "en\\-US"].reduce((previous, curr
 
 router.post(`/[${allowedLocales}]*`, (req, res, next) => {
     let locale = ""
-    if (req.url === "/ru-RU/translation.json" || req.url === "/ru/translation.json") {
+    if (req.url === "/ru-RU/translation.js" || req.url === "/ru/translation.js") {
         locale = "ru"
-    } else if (req.url === "/en-US/translation.json" || req.url === "/en/translation.json") {
+    } else if (req.url === "/en-US/translation.js" || req.url === "/en/translation.js") {
         locale = "en"
     }
     res.send(jsonrpcResponse(req.body.id, true, staticLocales[locale], "application/json"))

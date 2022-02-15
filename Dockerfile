@@ -11,6 +11,7 @@ ADD . /app
 RUN apt-get update && apt-get upgrade -y
 
 # Install pm2 and project dependencies
+RUN export NODE_ENV=development
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN apt-get update && apt-get install -y git
@@ -27,9 +28,8 @@ ENV SERVICE_TYPE    rd
 ENV PEER_HOST       https://0.0.0.0
 ENV PEER_PORT       7001
 ENV CONTAINER_PORT  7071
-ENV PASSWORD        root 
+ENV PASSWORD        root
 ENV OPENED_PORT     80
-ENV NODE_ENV        production
 
 CMD cd server/scripts/ ;\
 if [ "$SERVICE_TYPE" = "rd" ] ; then \

@@ -8,7 +8,7 @@
     "remote_service_port" : "1234",
 
     "dex_url"   : "dex_url",
-    "dex_port"  : 1234,
+    "dex_port"  : 80,
 
     "json_rcp_version": "2.0",
     "api_version"     : "v1",

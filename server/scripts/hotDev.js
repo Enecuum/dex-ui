@@ -6,7 +6,7 @@ const RequestsDivisor = require("../services/RequestsDivisor")
 const FilesLoader     = require("../services/FileLoader")
 const DexDataLoader   = require("../services/DexDataLoader")
 
-const clientsGate = 1234
+const clientsGate = config.dex_port
 const requestsDivisor = new RequestsDivisor({
     root : true,
     port : 1235,

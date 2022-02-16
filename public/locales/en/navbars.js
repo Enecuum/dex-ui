@@ -4,14 +4,14 @@ module.exports = {
         "exchange" : "Swap",
         "liquidity" : "Pool",
         "ido" : "IDO",
-        "farms" : "Space Harvest Farms",
+        "farms" : "Harvest Farms",
         "pools" : "Space Drop",
         "etm" : "ETM",
         "info" : "Info",
         "topPairs" : "Top Pairs",
         "docs" : "Docs",
-        "drops" : "Space Drops",
-        "spaceStation" : "Space Station"
+        "drops" : "Drops",
+        "spaceStation" : "Station"
     },
     "top" : {
         "header" : "Enecuum",

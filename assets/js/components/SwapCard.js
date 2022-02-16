@@ -9,8 +9,6 @@ import ConfirmSupply from './ConfirmSupply';
 import {LogoToken} from '../elements/LogoToken';
 import Tooltip from '../elements/Tooltip';
 import TokenCard from './TokenCard';
-import History from './History';
-import Settings from './Settings';
 import testFormulas from '../utils/testFormulas';
 import utils from '../utils/swapUtils';
 import LiquidityTokensZone from './LiquidityTokensZone';
@@ -20,6 +18,9 @@ import Validator from  '../utils/Validator';
 import WalletList from "./WalletList";
 import Routing from "./Routing";
 import workerProcessor from "../utils/WorkerProcessor"
+
+const History = React.lazy(() => import('./History'))
+const Settings = React.lazy(() => import('./Settings'))
 
 import '../../css/swap-card.css'
 import '../../css/font-style.css'

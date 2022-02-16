@@ -91,11 +91,13 @@ module.exports = {
             "header" : "History",
             "filters" : {
                 "time" : {
+                    "title" : "Time",
                     "oneHour" : "1h ago",
                     "twelveHours" : "12h ago",
                     "oneDay" : "1d ago"
                 },
                 "type" : {
+                    "title" : "Type",
                     "allTypes" : "all types",
                     "pool" : "pool",
                     "swap" : "swap",

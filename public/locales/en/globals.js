@@ -119,5 +119,6 @@ module.exports = {
     },
     "add" : "Add",
     "remove" : "Remove",
-    "pooled" : "Pooled"
+    "pooled" : "Pooled",
+    "all" : "All"
 }

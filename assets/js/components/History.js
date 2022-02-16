@@ -1,96 +1,54 @@
 import React from 'react'
-import {Modal, DropdownButton, Dropdown} from "react-bootstrap"
-import { withTranslation } from "react-i18next"
+import {Modal} from "react-bootstrap"
+import {withTranslation} from "react-i18next"
 
 import CommonModal from "../elements/CommonModal"
-import RecentTransactions from "./RecentTransactions"
+import {HistoryFilter} from "../elements/Filters"
 
 import pageDataPresets from "../../store/pageDataPresets"
+import RecentTransactions from "./RecentTransactions"
+import lsdp from "../utils/localStorageDataProcessor"
 
 import '../../css/history.css'
 
 const txTypes = pageDataPresets.pending.allowedTxTypes
 const HOUR = 1000 * 60 * 60
 
+
 class History extends React.Component {
     constructor(props) {
         super(props)
 
+        this.filters = {
+            time : undefined,
+            type : undefined
+        }
         this.state = {
             historyVisibility : false
         }
-        this.prevLang = props.i18n.language
-        this.updFilters()
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.i18n.language !== this.prevLang) {
-            this.prevLang = prevProps.i18n.language
-            this.updFilters()
-        }
-    }
-
-    updFilters () {
-        let t = this.props.t
-        let filtersTranslationPath = "trade.swapCard.history.filters"
-        let timeFL = `${filtersTranslationPath}.time`
-        let typeFL = `${filtersTranslationPath}.type`
-        this.filters = {
-            type : {
-                allTypes : {
-                    text : t(`${typeFL}.allTypes`),
-                    types : null,
-                    active : true
-                },
-                swap : {
-                    text : t(`${typeFL}.swap`),
-                    types : [
-                        txTypes.pool_create,
-                        txTypes.pool_buy_exact,
-                        txTypes.pool_buy_exact_routed,
-                        txTypes.pool_sell_exact,
-                        txTypes.pool_sell_exact_routed
-                    ]
-                },
-                pool : {
-                    text : t(`${typeFL}.pool`),
-                    types : [
-                        txTypes.pool_create,
-                        txTypes.pool_add_liquidity,
-                        txTypes.pool_remove_liquidity
-                    ]
-                },
-                farms : {
-                    text : t(`${typeFL}.farms`),
-                    types : [
-                        txTypes.farm_create,
-                        txTypes.farm_close_stake,
-                        txTypes.farm_increase_stake,
-                        txTypes.farm_decrease_stake,
-                        txTypes.farm_get_reward
-                    ]
-                },
-                drops : {
-                    text : t(`${typeFL}.drops`),
-                    types : []
-                },
-            },
-            time : {
-                oneHour : {
-                    text : t(`${timeFL}.oneHour`),
-                    time : HOUR,
-                    active : true
-                },
-                twelveHours : {
-                    text : t(`${timeFL}.twelveHours`),
-                    time : 12 * HOUR
-                },
-                oneDay : {
-                    text : t(`${timeFL}.oneDay`),
-                    time : 24 * HOUR
-                },
+    componentDidMount() {
+        this.intervalDescriptor = setInterval(() => {
+            let timeFilter = lsdp.simple.get(`historyTimeFilter`)
+            let typeFilter = lsdp.simple.get(`historyTypeFilter`)
+            if (this.curTimeFilter !== timeFilter || this.curTypeFilter !== typeFilter) {
+                this.curTimeFilter = timeFilter
+                this.curTypeFilter = typeFilter
+                this.filters = {
+                    time: timeFilter,
+                    type: typeFilter
+                }
+                if (this.state.historyVisibility)
+                    this.setState({historyVisibility : false}, () => {
+                        this.setState({historyVisibility : true})
+                    })
             }
-        }
+        }, 500)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalDescriptor)
     }
 
     renderModalHeader () {
@@ -105,63 +63,65 @@ class History extends React.Component {
         </>)
     }
 
-    getActiveFilter (filterName) {
-        let filter = this.filters[filterName]
-        for (let curItemName in filter)
-            if (filter[curItemName].active)
-                return filter[curItemName]
-        return filter[Object.keys(filter)[0]]
-    }
-
-    changeActiveFilter (filterName, itemName) {
-        let filter = this.filters[filterName]
-        delete this.getActiveFilter(filterName).active
-        filter[itemName].active = true
-        this.setState({historyVisibility : false}, () => {
-            this.setState({historyVisibility : true})
-        })
-    }
-
-    getFilters () {
-        return Object.keys(this.filters).map((filterName, filterIndex) => {
-            let activeItem
-            let items = Object.keys(this.filters[filterName]).map((itemName, itemIndex) => {
-                let item = this.filters[filterName][itemName]
-                if (item.active)
-                    activeItem = item
-                return (
-                    <Dropdown.Item
-                        key={itemIndex+""} active={item.active}
-                        onClick={this.changeActiveFilter.bind(this, filterName, itemName)}
-                    >
-                        {item.text}
-                    </Dropdown.Item>
-                )
-            })
-            return (
-                <DropdownButton
-                    variant="info"
-                    title={activeItem.text}
-                    className="d-flex"
-                    size="sm"
-                    key={filterIndex+""}
-                >
-                    {items}
-                </ DropdownButton>
-            )
-        })
-    }
-
     renderModalBody () {
+        let t = this.props.t
+
+        const filters = ["Type", "Time"]
         return(<>
             <div className="d-flex justify-content-start mx-0 mb-4 history-filters">
-                {this.getFilters()}
+                {filters.map((type, i) => {
+                    let lowerCaseType = type.toLowerCase()
+                    return (
+                        <HistoryFilter name={`history${type}Filter`}
+                                       title={t(`trade.swapCard.history.filters.${lowerCaseType}.title`)}
+                                       type={lowerCaseType}
+                        />
+                    )
+                })}
             </div>
             <RecentTransactions filters={{
-                type : this.getActiveFilter("type").types,
-                time : this.getActiveFilter("time").time
+                type : this.getTypeFilter(),
+                time : this.getTimeFilter()
             }}/>
         </>)
+    }
+
+    getTypeFilter () {
+        const filters = {
+            all: null,
+            swap: [
+                txTypes.pool_create,
+                txTypes.pool_buy_exact,
+                txTypes.pool_buy_exact_routed,
+                txTypes.pool_sell_exact,
+                txTypes.pool_sell_exact_routed
+            ],
+            pool: [
+                txTypes.pool_create,
+                txTypes.pool_add_liquidity,
+                txTypes.pool_remove_liquidity
+            ],
+            farms: [
+                txTypes.farm_create,
+                txTypes.farm_close_stake,
+                txTypes.farm_increase_stake,
+                txTypes.farm_decrease_stake,
+                txTypes.farm_get_reward
+            ],
+            drops: []
+        }
+
+        return filters[this.filters.type]
+    }
+
+    getTimeFilter () {
+        const filters = {
+            oneHour : HOUR,
+            twelveHours : 12 * HOUR,
+            oneDay : 24 * HOUR
+        }
+
+        return filters[this.filters.time]
     }
 
     openAction () {

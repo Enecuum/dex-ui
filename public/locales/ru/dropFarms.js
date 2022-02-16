@@ -1,4 +1,6 @@
 module.exports = {
+    "subscriptDrops" : "Размещайте ENX, чтобы получать токены новых и горячих проектов",
+    "subscriptHarvestFarms" : "Размещайте LP, чтобы получать ENX",
     "stakeNamedToken"              : "Стейк {{tokenName}}",
     "unstakeNamedToken"            : "Отозвать {{tokenName}}",
     "stakeLPTokens"                : "Стейк LP токенов",
@@ -18,5 +20,8 @@ module.exports = {
     "rewardPerBlock"               : "Награда за блок",
     "details"                      : "Подробнее",
     "harvest"                      : "Собрать урожай",
-    "totalStaked"                  : "Общий стейк"
+    "totalStaked"                  : "Общий стейк",
+    "finishedFilter"               : "Завершённый",
+    "pausedFilter"                 : "Приостановленный",
+    "activeFilter"                 : "Активный",
 }

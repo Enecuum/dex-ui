@@ -1,4 +1,6 @@
 module.exports = {
+    "subscriptDrops" : "Stake ENX, to receive tokens of New and Hot Projects",
+    "subscriptHarvestFarms" : "Stake LP to earn ENX",
     "stakeNamedToken"              : "Stake {{tokenName}}",
     "unstakeNamedToken"            : "Unstake {{tokenName}}",
     "stakeLPTokens"                : "Stake LP tokens",
@@ -18,5 +20,8 @@ module.exports = {
     "rewardPerBlock"               : "Reward per block",
     "details"                      : "Details",
     "harvest"                      : "Harvest",
-    "totalStaked"                  : "Total staked"
+    "totalStaked"                  : "Total staked",
+    "finishedFilter"               : "Finished",
+    "pausedFilter"                 : "Paused",
+    "activeFilter"                 : "Active",
 }

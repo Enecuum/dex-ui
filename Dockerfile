@@ -11,7 +11,7 @@ ADD . /app
 RUN apt-get update && apt-get upgrade -y
 
 # Install pm2 and project dependencies
-RUN export NODE_ENV=development
+RUN export NODE_ENV=production
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN apt-get update && apt-get install -y git

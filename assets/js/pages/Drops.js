@@ -21,8 +21,12 @@ import '../../css/drop-farms.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
+import {FarmsFilter} from "../elements/Filters";
 
 const valueProcessor = new ValueProcessor();
+
+const DROPS_FILTER_NAME = "dropsStatusFilter"
+
 
 class Drops extends React.Component {
     constructor(props) {
@@ -149,6 +153,21 @@ class Drops extends React.Component {
             console.log('Error')
             //this.props.changeWaitingStateType('rejected');
         });
+    }
+
+    checkByStatus(farm) {
+        let filter = lsdp.simple.get(DROPS_FILTER_NAME)
+        if (farm !== undefined && filter) {
+            if (filter === "all")
+                return true
+            if (farm.blocks_left === null) {
+                return filter === "paused"
+            } else if (farm.blocks_left <= 0)
+                return filter === "finished"
+            else if (farm.blocks_left > 0)
+                return filter === "active"
+        }
+        return false
     }
 
     updateFarms() {
@@ -625,18 +644,30 @@ class Drops extends React.Component {
       </Card>          
     </Accordion>
 </div>
-            <div className="h2 mb-5">
-                {t('navbars.left.drops')}
-            </div>
+                <div className="d-flex justify-content-between">
+                    <div>
+                        <div className="h2 mb-2">
+                            {t('navbars.left.drops')}
+                        </div>
+                        <h5 className="mb-5 text-color4">
+                            {t('dropFarms.subscriptDrops')}
+                        </h5>
+                    </div>
+                    <div className="m-2">
+                        <FarmsFilter name={DROPS_FILTER_NAME} title={t("status")}/>
+                    </div>
+                </div>
 		    	<div className="drop-farms-table-wrapper">			    		
 					<Table hover variant="dark" className="table-to-cards">
 						<tbody>
 					        {this.farms.map(( farm, index ) => {
+					            if (!this.checkByStatus(farm))
+					                return <></>
                                 let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
 					        	return (
 						          	<>
 							            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
-											<td className="text-nowrap">                                                    
+											<td className="text-nowrap">
 												<div className="cell-wrapper text-center">
                                                     <div className="text-color4">{t('dropFarms.stake')}-{t('dropFarms.earn')}</div>
 													<div>{farmTitle}</div>
@@ -744,7 +775,7 @@ class Drops extends React.Component {
     		</div>
         )
     }        
-};
+}
 
 const WDrops = connect(mapStoreToProps(components.DROPS), mapDispatchToProps(components.DROPS))(withTranslation()(Drops));
 

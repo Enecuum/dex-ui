@@ -1,4 +1,8 @@
 import React, { Suspense } from 'react';
+import { connect } from 'react-redux';
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import { withTranslation } from "react-i18next";
+
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
@@ -6,15 +10,13 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
-import { connect } from 'react-redux';
 import presets from '../../store/pageDataPresets';
-import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import StakeModal from '../components/StakeModal';
-import { withTranslation } from "react-i18next";
 import networkApi from '../requests/networkApi';
 import swapApi from '../requests/swapApi';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
+import {FarmsFilter} from "../elements/Filters";
 import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
 import '../../css/drop-farms.css';
@@ -23,6 +25,9 @@ import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
 
 const valueProcessor = new ValueProcessor();
+
+const HARVEST_FARMS_FILTER_NAME = "harvestFarmsFilter"
+
 
 class Farms extends React.Component {
     constructor(props) {
@@ -75,9 +80,10 @@ class Farms extends React.Component {
     }
 
     componentDidMount() {
+        this.curLang = this.props["i18n"].language
         this.interval = setInterval(() => {
-            this.getDataSet();
-        }, 5000);
+            this.getDataSet()
+        }, 5000)
     }
 
     componentWillUnmount() {
@@ -427,6 +433,21 @@ class Farms extends React.Component {
         return status;
     }
 
+    checkByStatus(farm) {
+        let filter = lsdp.simple.get(HARVEST_FARMS_FILTER_NAME)
+        if (farm !== undefined && filter) {
+            if (filter === "all")
+                return true
+            if (farm.blocks_left === null) {
+                return filter === "paused"
+            } else if (farm.blocks_left <= 0)
+                return filter === "finished"
+            else if (farm.blocks_left > 0)
+                return filter === "active"
+        }
+        return false
+    }
+
     getFarmsTable() {
     	const t = this.props.t;
 
@@ -434,8 +455,8 @@ class Farms extends React.Component {
     		<>
 				<div className="SET-D-FLEX-IF-READY d-none align-items-center justify-content-between pb-4">
 					<div className="d-flex align-items-center justify-content-start">
-						<i className="fas fa-grip-horizontal mr-2"></i>
-						<i className="fas fa-table mr-3"></i>
+						<i className="fas fa-grip-horizontal mr-2" />
+						<i className="fas fa-table mr-3" />
 						<Dropdown className="mr-3 sort-by">
 						  <Dropdown.Toggle variant="success" id="dropdown-basic">
 						    Sort by
@@ -458,154 +479,167 @@ class Farms extends React.Component {
                                 placeholder='Search farm' />
                     </div>
 				</div>
-<div className="d-none" id="farmActions">
-    <div className="h2">
-        Actions
-    </div>
+                <div className="d-none" id="farmActions">
+                    <div className="h2">
+                        Actions
+                    </div>
 
-    <Accordion className="mb-4">
-      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-        <Accordion.Toggle as={Card.Header} eventKey="0"   style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           borderBottom: '2px solid #454d55'
-                       }}
-                       className="hover-pointer">
-          Create a drop farm (farm_create)
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="0">
-          <Card.Body className="pt-4" style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           opacity: '0.9'
-                       }}>
-                           
-                            <Form>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>stake_token</Form.Label>
-                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_create.stake_token} onChange={(e) => this.handleChange('farm_create','stake_token', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                              <Form.Group controlId="formGroupPassword">
-                                <Form.Label>reward_token</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.reward_token} onChange={(e) => this.handleChange('farm_create','reward_token', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>block_reward</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.block_reward} onChange={(e) => this.handleChange('farm_create','block_reward', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                              <Form.Group controlId="formGroupPassword">
-                                <Form.Label>emission</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.emission} onChange={(e) => this.handleChange('farm_create','emission', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>                          
-                            </Form>
-                            <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'farm_create', this.props.pubkey, this.state.dropFarmActionsParams.farm_create)}>
-                                Create a drop farm (farm_create)
-                            </Button>
-                       </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-        <Accordion.Toggle as={Card.Header} eventKey="1"  style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           borderBottom: '2px solid #454d55'
-                       }}
-                       className="hover-pointer">
-         Stake (farm_increase_stake)
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="1">
-          <Card.Body className="pt-4" style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           opacity: '0.9'
-                       }}>
-                            <Form>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.farm_id} onChange={(e) => this.handleChange('farm_increase_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                              <Form.Group controlId="formGroupPassword">
-                                <Form.Label>amount</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.amount} onChange={(e) => this.handleChange('farm_increase_stake','amount', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>                          
-                            </Form>
-                            <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'farm_increase_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_increase_stake)}>
-                                Stake (farm_increase_stake)
-                              </Button>
-                       </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-        <Accordion.Toggle as={Card.Header} eventKey="2"  style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           borderBottom: '2px solid #454d55'
-                       }}
-                       className="hover-pointer">
-         Unstake (farm_decrease_stake)
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="2">
-          <Card.Body className="pt-4" style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           opacity: '0.9'
-                       }}>
-                            <Form>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.farm_decrease_stake.farm_id} onChange={(e) => this.handleChange('farm_decrease_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                              <Form.Group controlId="formGroupPassword">
-                                <Form.Label>amount</Form.Label>
-                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_decrease_stake.amount} onChange={(e) => this.handleChange('farm_decrease_stake','amount', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                            </Form>
-                            <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'farm_decrease_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_decrease_stake)}>
-                                Unstake (farm_decrease_stake)
-                              </Button>                        
-                       </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-        <Accordion.Toggle as={Card.Header} eventKey="4"  style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           borderBottom: '2px solid #454d55'
-                       }}
-                       className="hover-pointer">
-         Harvest reward (farm_get_reward)
-        </Accordion.Toggle>
-        <Accordion.Collapse eventKey="4">
-          <Card.Body className="pt-4" style={{
-                           color: 'white',
-                           backgroundColor: 'var(--color8)',
-                           opacity: '0.9'
-                       }}>
-                            <Form>
-                              <Form.Group controlId="formGroupEmail">
-                                <Form.Label>farm_id</Form.Label>
-                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_get_reward.farm_id} onChange={(e) => this.handleChange('farm_get_reward','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                              </Form.Group>
-                            </Form>
-                            <Button variant="primary"
-                            onClick={this.executeDropFarmAction.bind(this, 'farm_get_reward', this.props.pubkey, this.state.dropFarmActionsParams.farm_get_reward)}>
-                               Harvest reward (farm_get_reward)
-                              </Button>                          
-                       </Card.Body>
-        </Accordion.Collapse>
-      </Card>          
-    </Accordion>
-</div>
-            <div className="h2 mb-5">
-                {t('navbars.left.farms')}
-            </div>
+                    <Accordion className="mb-4">
+                      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+                        <Accordion.Toggle as={Card.Header} eventKey="0"   style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           borderBottom: '2px solid #454d55'
+                                       }}
+                                       className="hover-pointer">
+                          Create a drop farm (farm_create)
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="0">
+                          <Card.Body className="pt-4" style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           opacity: '0.9'
+                                       }}>
+                                            <Form>
+                                              <Form.Group controlId="formGroupEmail">
+                                                <Form.Label>stake_token</Form.Label>
+                                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_create.stake_token} onChange={(e) => this.handleChange('farm_create','stake_token', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                              <Form.Group controlId="formGroupPassword">
+                                                <Form.Label>reward_token</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.reward_token} onChange={(e) => this.handleChange('farm_create','reward_token', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                              <Form.Group controlId="formGroupEmail">
+                                                <Form.Label>block_reward</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.block_reward} onChange={(e) => this.handleChange('farm_create','block_reward', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                              <Form.Group controlId="formGroupPassword">
+                                                <Form.Label>emission</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.emission} onChange={(e) => this.handleChange('farm_create','emission', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                            </Form>
+                                            <Button variant="primary"
+                                            onClick={this.executeDropFarmAction.bind(this, 'farm_create', this.props.pubkey, this.state.dropFarmActionsParams.farm_create)}>
+                                                Create a drop farm (farm_create)
+                                            </Button>
+                                       </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+                        <Accordion.Toggle as={Card.Header} eventKey="1"  style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           borderBottom: '2px solid #454d55'
+                                       }}
+                                       className="hover-pointer">
+                         Stake (farm_increase_stake)
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="1">
+                          <Card.Body className="pt-4" style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           opacity: '0.9'
+                                       }}>
+                                            <Form>
+                                              <Form.Group controlId="formGroupEmail">
+                                                <Form.Label>farm_id</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.farm_id} onChange={(e) => this.handleChange('farm_increase_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                              <Form.Group controlId="formGroupPassword">
+                                                <Form.Label>amount</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.amount} onChange={(e) => this.handleChange('farm_increase_stake','amount', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                            </Form>
+                                            <Button variant="primary"
+                                            onClick={this.executeDropFarmAction.bind(this, 'farm_increase_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_increase_stake)}>
+                                                Stake (farm_increase_stake)
+                                              </Button>
+                                       </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+                        <Accordion.Toggle as={Card.Header} eventKey="2"  style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           borderBottom: '2px solid #454d55'
+                                       }}
+                                       className="hover-pointer">
+                         Unstake (farm_decrease_stake)
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="2">
+                          <Card.Body className="pt-4" style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           opacity: '0.9'
+                                       }}>
+                                            <Form>
+                                              <Form.Group controlId="formGroupEmail">
+                                                <Form.Label>farm_id</Form.Label>
+                                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.farm_decrease_stake.farm_id} onChange={(e) => this.handleChange('farm_decrease_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                              <Form.Group controlId="formGroupPassword">
+                                                <Form.Label>amount</Form.Label>
+                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_decrease_stake.amount} onChange={(e) => this.handleChange('farm_decrease_stake','amount', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                            </Form>
+                                            <Button variant="primary"
+                                            onClick={this.executeDropFarmAction.bind(this, 'farm_decrease_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_decrease_stake)}>
+                                                Unstake (farm_decrease_stake)
+                                              </Button>
+                                       </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
+                        <Accordion.Toggle as={Card.Header} eventKey="4"  style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           borderBottom: '2px solid #454d55'
+                                       }}
+                                       className="hover-pointer">
+                         Harvest reward (farm_get_reward)
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="4">
+                          <Card.Body className="pt-4" style={{
+                                           color: 'white',
+                                           backgroundColor: 'var(--color8)',
+                                           opacity: '0.9'
+                                       }}>
+                                            <Form>
+                                              <Form.Group controlId="formGroupEmail">
+                                                <Form.Label>farm_id</Form.Label>
+                                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_get_reward.farm_id} onChange={(e) => this.handleChange('farm_get_reward','farm_id', e)} style={{backgroundColor: '#777'}}/>
+                                              </Form.Group>
+                                            </Form>
+                                            <Button variant="primary"
+                                            onClick={this.executeDropFarmAction.bind(this, 'farm_get_reward', this.props.pubkey, this.state.dropFarmActionsParams.farm_get_reward)}>
+                                               Harvest reward (farm_get_reward)
+                                              </Button>
+                                       </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    </Accordion>
+                </div>
+
+                <div className="d-flex justify-content-between">
+                    <div>
+                        <div className="h2 mb-2">
+                            {t('navbars.left.farms')}
+                        </div>
+                        <h5 className="mb-5 text-color4">
+                            {t('dropFarms.subscriptHarvestFarms')}
+                        </h5>
+                    </div>
+                    <div className="m-2">
+                        <FarmsFilter name={HARVEST_FARMS_FILTER_NAME} title={t("status")}/>
+                    </div>
+                </div>
+
 		    	<div className="drop-farms-table-wrapper">			    		
 					<Table hover variant="dark" className="table-to-cards">
 						<tbody>
 					        {this.farms.map(( farm, index ) => {
+					            if (!this.checkByStatus(farm))
+					                return <></>
                                 let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
 					        	return (
 						          	<>

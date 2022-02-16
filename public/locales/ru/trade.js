@@ -89,11 +89,13 @@ module.exports = {
             "header" : "История",
             "filters" : {
                 "time" : {
+                    "title" : "Время",
                     "oneHour" : "1ч назад",
                     "twelveHours" : "12ч назад",
                     "oneDay" : "1д назад"
                 },
                 "type" : {
+                    "title" : "Тип",
                     "allTypes" : "все типы",
                     "pool" : "пулы",
                     "swap" : "свопы",

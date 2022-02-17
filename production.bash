@@ -13,6 +13,8 @@ warn="\033[31m"
 help="\033[32m"
 end="\e[0m"
 
+export NODE_ENV=production
+
 
 function help_msg() {
     echo -e "$help Args: --build $end"

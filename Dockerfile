@@ -11,12 +11,13 @@ ADD . /app
 RUN apt-get update && apt-get upgrade -y
 
 # Install pm2 and project dependencies
-RUN export NODE_ENV=production
+RUN NODE_ENV=production
+RUN export NODE_ENV
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN apt-get update && apt-get install -y git
 RUN npm i --force
-RUN node node_modules/webpack/bin/webpack.js build --config webpack.config.js
+RUN npx browserslist@latest --update-db
 
 # remove useless files
 #RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
@@ -30,6 +31,7 @@ ENV PEER_PORT       7001
 ENV CONTAINER_PORT  7071
 ENV PASSWORD        root
 ENV OPENED_PORT     80
+ENV NODE_ENV        production
 
 CMD cd server/scripts/ ;\
 if [ "$SERVICE_TYPE" = "rd" ] ; then \

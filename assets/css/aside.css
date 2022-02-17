@@ -6,6 +6,12 @@
     left: 0px;    
 }
 
+@media (max-width: 768px) and (max-height: 1000px) {
+    main.aside-closed #aside.aside-left {
+        display: none!important;
+    }
+}
+
 @media (max-width: 767px) {
     #aside {
         background-color: var(--menu-bg-non-transparent);
@@ -17,7 +23,7 @@
 }
 
 @media (max-height: 800px) {
-    #aside {
+    main.aside-open #aside {
         position: absolute!important;
         -ms-flex-pack: start!important;
         justify-content: flex-start!important;

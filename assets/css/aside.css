@@ -10,6 +10,15 @@
     main.aside-closed #aside.aside-left {
         display: none!important;
     }
+
+    .aside-menu, .aside-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #aside .menu-item {
+        height: 35px!important;
+    }
 }
 
 @media (max-width: 767px) {
@@ -20,6 +29,11 @@
     main.aside-open #aside {
         width: 100%!important;
     }
+
+    .aside-footer {
+        margin-top: 30px;
+    }
+
 }
 
 @media (max-height: 800px) {

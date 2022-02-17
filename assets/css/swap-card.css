@@ -253,42 +253,11 @@ a.view-in-explorer:hover {
 
 @media (max-width: 768px) and (max-height: 1000px) {
     .swap-card-wrapper {
-        padding-top: 10px;
-        margin-top: 120px;
-    }
-
-    .p-2, .p-3, .p-4 {
-        padding-top: 0.2rem!important;
-        padding-bottom: 0.2rem!important;
+        padding-top: 0px;
+        margin-top: 105px;
     }
 
     .swap-input {
         min-height: auto;
     }
-
-    .my-3, .my-4, .my-2 {
-        margin-top: 0.2rem!important;
-        margin-bottom: 0.2rem!important;
-    }
-
-    .mt-3, .mt-4, .mt-2 {
-        margin-top: 0.2rem!important;
-    }
-    .mb-3, .mb-4, .mb-2 {
-        margin-bottom: 0.2rem!important;
-    }
-
-    .py-3, .py-4, .py-2 {
-        padding-top: 0.2rem!important;
-        padding-bottom: 0.2rem!important;
-    }
-
-    .pt-3, .pt-4, .pt-2 {
-        padding-top: 0.2rem!important;
-    }
-    .pb-3, .pb-4, .pb-2 {
-        padding-bottom: 0.2rem!important;
-    }    
-
 }
-

@@ -477,6 +477,10 @@ class Farms extends React.Component {
         return swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash)
     }
 
+    afterUpdate () {
+        this.getDataSet()
+    }
+
     getFarmsTable() {
     	const t = this.props.t;
 
@@ -662,6 +666,7 @@ class Farms extends React.Component {
                         <FarmsFilter name={HARVEST_FARMS_FILTER_NAME}
                                      title={t("status")}
                                      getItems={this.getItems.bind(this)}
+                                     afterUpdate={this.afterUpdate.bind(this)}
                         />
                     </div>
                 </div>

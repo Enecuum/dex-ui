@@ -494,6 +494,10 @@ class Drops extends React.Component {
         }
     }
 
+    afterUpdate () {
+        this.getDataSet()
+    }
+
     getFarmsTable() {
     	const t = this.props.t;
 
@@ -679,6 +683,7 @@ class Drops extends React.Component {
                         <FarmsFilter name={DROPS_FILTER_NAME}
                                      title={t("status")}
                                      getItems={this.getItems.bind(this)}
+                                     afterUpdate={this.afterUpdate.bind(this)}
                         />
                     </div>
                 </div>

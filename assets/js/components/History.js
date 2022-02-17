@@ -30,27 +30,22 @@ class History extends React.Component {
     }
 
     componentDidMount() {
-        this.intervalDescriptor = setInterval(() => {
-            let timeFilter = lsdp.simple.get(`historyTimeFilter`)
-            let typeFilter = lsdp.simple.get(`historyTypeFilter`)
-            if (this.curTimeFilter !== timeFilter || this.curTypeFilter !== typeFilter) {
-                this.items = this.getItems()
-                this.curTimeFilter = timeFilter
-                this.curTypeFilter = typeFilter
-                this.filters = {
-                    time: timeFilter,
-                    type: typeFilter
-                }
-                if (this.state.historyVisibility)
-                    this.setState({historyVisibility : false}, () => {
-                        this.setState({historyVisibility : true})
-                    })
-            }
-        }, 500)
+        this.filters = {
+            time: lsdp.simple.get(`historyTimeFilter`),
+            type: lsdp.simple.get(`historyTypeFilter`)
+        }
+        this.rerenderHistory()
     }
 
     componentWillUnmount() {
         clearInterval(this.intervalDescriptor)
+    }
+
+    rerenderHistory () {
+        if (this.state.historyVisibility)
+            this.setState({historyVisibility : false}, () => {
+                this.setState({historyVisibility : true})
+            })
     }
 
     renderModalHeader () {
@@ -78,6 +73,7 @@ class History extends React.Component {
                                        title={t(`trade.swapCard.history.filters.${lowerCaseType}.title`)}
                                        type={lowerCaseType}
                                        getItems={this.getItems.bind(this)}
+                                       afterUpdate={this.afterUpdate.bind(this)}
                         />
                     )
                 })}
@@ -87,6 +83,14 @@ class History extends React.Component {
                 time : this.items.time[this.filters.time].value
             }}/>
         </>)
+    }
+
+    afterUpdate () {
+        this.filters = {
+            time: lsdp.simple.get(`historyTimeFilter`),
+            type: lsdp.simple.get(`historyTypeFilter`)
+        }
+        this.rerenderHistory()
     }
 
     getItems () {

@@ -27,7 +27,9 @@ class Filter extends React.Component {
 
     changeActiveFilter (itemName) {
         lsdp.simple.write(this.props.filterName, itemName)
-        this.setState({activeItem : itemName})
+        this.setState({activeItem : itemName}, () => {
+            this.props.afterUpdate()
+        })
     }
 
     renderFilter () {
@@ -80,6 +82,7 @@ class HistoryFilter extends React.Component {
                     key={this.props.key}
                     filterName={this.props.name}
                     title={this.props.title}
+                    afterUpdate={() => {this.props.afterUpdate()}}
             />
         )
     }
@@ -92,6 +95,7 @@ class FarmsFilter extends React.Component {
                     key={this.props.key}
                     filterName={this.props.name}
                     title={this.props.title}
+                    afterUpdate={() => {this.props.afterUpdate()}}
             />
         )
     }

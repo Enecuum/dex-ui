@@ -156,16 +156,16 @@ class Drops extends React.Component {
     }
 
     checkByStatus(farm) {
-        let filter = lsdp.simple.get(DROPS_FILTER_NAME)
+        let filter = lsdp.simple.get(DROPS_FILTER_NAME), items = this.getItems()
         if (farm !== undefined && filter) {
-            if (filter === "all")
+            if (filter === items.all.value)
                 return true
             if (farm.blocks_left === null) {
-                return filter === "paused"
+                return filter === items.paused.value
             } else if (farm.blocks_left <= 0)
-                return filter === "finished"
+                return filter === items.finished.value
             else if (farm.blocks_left > 0)
-                return filter === "active"
+                return filter === items.active.value
         }
         return false
     }
@@ -472,6 +472,28 @@ class Drops extends React.Component {
         return status;
     }
 
+    getItems () {
+        let t = this.props.t
+        return {
+            all : {
+                text : t('all'),
+                value: "all"
+            },
+            active : {
+                text : t('dropFarms.activeFilter'),
+                value: "active"
+            },
+            paused : {
+                text : t('dropFarms.pausedFilter'),
+                value: "paused"
+            },
+            finished : {
+                text : t('dropFarms.finishedFilter'),
+                value: "finished"
+            }
+        }
+    }
+
     getFarmsTable() {
     	const t = this.props.t;
 
@@ -654,7 +676,10 @@ class Drops extends React.Component {
                         </h5>
                     </div>
                     <div className="m-2">
-                        <FarmsFilter name={DROPS_FILTER_NAME} title={t("status")}/>
+                        <FarmsFilter name={DROPS_FILTER_NAME}
+                                     title={t("status")}
+                                     getItems={this.getItems.bind(this)}
+                        />
                     </div>
                 </div>
 		    	<div className="drop-farms-table-wrapper">			    		

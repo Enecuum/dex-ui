@@ -23,6 +23,7 @@ class History extends React.Component {
             time : undefined,
             type : undefined
         }
+        this.items = this.getItems()
         this.state = {
             historyVisibility : false
         }
@@ -33,6 +34,7 @@ class History extends React.Component {
             let timeFilter = lsdp.simple.get(`historyTimeFilter`)
             let typeFilter = lsdp.simple.get(`historyTypeFilter`)
             if (this.curTimeFilter !== timeFilter || this.curTypeFilter !== typeFilter) {
+                this.items = this.getItems()
                 this.curTimeFilter = timeFilter
                 this.curTypeFilter = typeFilter
                 this.filters = {
@@ -75,53 +77,78 @@ class History extends React.Component {
                         <HistoryFilter name={`history${type}Filter`}
                                        title={t(`trade.swapCard.history.filters.${lowerCaseType}.title`)}
                                        type={lowerCaseType}
+                                       getItems={this.getItems.bind(this)}
                         />
                     )
                 })}
             </div>
             <RecentTransactions filters={{
-                type : this.getTypeFilter(),
-                time : this.getTimeFilter()
+                type : this.items.type[this.filters.type].value,
+                time : this.items.time[this.filters.time].value
             }}/>
         </>)
     }
 
-    getTypeFilter () {
-        const filters = {
-            all: null,
-            swap: [
-                txTypes.pool_create,
-                txTypes.pool_buy_exact,
-                txTypes.pool_buy_exact_routed,
-                txTypes.pool_sell_exact,
-                txTypes.pool_sell_exact_routed
-            ],
-            pool: [
-                txTypes.pool_create,
-                txTypes.pool_add_liquidity,
-                txTypes.pool_remove_liquidity
-            ],
-            farms: [
-                txTypes.farm_create,
-                txTypes.farm_close_stake,
-                txTypes.farm_increase_stake,
-                txTypes.farm_decrease_stake,
-                txTypes.farm_get_reward
-            ],
-            drops: []
+    getItems () {
+        let t = this.props.t
+        const filtersTranslationPath = "trade.swapCard.history.filters"
+        const timeFL = `${filtersTranslationPath}.time`
+        const typeFL = `${filtersTranslationPath}.type`
+
+        return {
+            type : {
+                all: {
+                    text: t(`${typeFL}.allTypes`),
+                    value: null
+                },
+                swap: {
+                    text: t(`${typeFL}.swap`),
+                    value: [
+                        txTypes.pool_create,
+                        txTypes.pool_buy_exact,
+                        txTypes.pool_buy_exact_routed,
+                        txTypes.pool_sell_exact,
+                        txTypes.pool_sell_exact_routed
+                    ]
+                },
+                pool: {
+                    text: t(`${typeFL}.pool`),
+                    value: [
+                        txTypes.pool_create,
+                        txTypes.pool_add_liquidity,
+                        txTypes.pool_remove_liquidity
+                    ]
+                },
+                farms: {
+                    text: t(`${typeFL}.farms`),
+                    value: [
+                        txTypes.farm_create,
+                        txTypes.farm_close_stake,
+                        txTypes.farm_increase_stake,
+                        txTypes.farm_decrease_stake,
+                        txTypes.farm_get_reward
+                    ]
+                },
+                drops: {
+                    text: t(`${typeFL}.drops`),
+                    value: []
+                }
+            },
+            time : {
+                oneHour : {
+                    text : t(`${timeFL}.oneHour`),
+                    value: HOUR
+                },
+                twelveHours : {
+                    text : t(`${timeFL}.twelveHours`),
+                    value: 12 * HOUR
+                },
+                oneDay : {
+                    text : t(`${timeFL}.oneDay`),
+                    value: 24 * HOUR
+                }
+            }
         }
-
-        return filters[this.filters.type]
-    }
-
-    getTimeFilter () {
-        const filters = {
-            oneHour : HOUR,
-            twelveHours : 12 * HOUR,
-            oneDay : 24 * HOUR
-        }
-
-        return filters[this.filters.time]
     }
 
     openAction () {

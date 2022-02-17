@@ -23,6 +23,7 @@ import '../../css/drop-farms.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
+import swapUtils from "../utils/swapUtils";
 
 const valueProcessor = new ValueProcessor();
 
@@ -195,6 +196,28 @@ class Farms extends React.Component {
         this.props.updateExpandedRow({
             value : farmId
         });               
+    }
+
+    getItems () {
+        let t = this.props.t
+        return {
+            all : {
+                text : t('all'),
+                value: "all"
+            },
+            active : {
+                text : t('dropFarms.activeFilter'),
+                value: "active"
+            },
+            paused : {
+                text : t('dropFarms.pausedFilter'),
+                value: "paused"
+            },
+            finished : {
+                text : t('dropFarms.finishedFilter'),
+                value: "finished"
+            }
+        }
     }
 
     getTmpErrorElement() {
@@ -434,18 +457,24 @@ class Farms extends React.Component {
     }
 
     checkByStatus(farm) {
-        let filter = lsdp.simple.get(HARVEST_FARMS_FILTER_NAME)
+        let filter = lsdp.simple.get(HARVEST_FARMS_FILTER_NAME), items = this.getItems()
         if (farm !== undefined && filter) {
-            if (filter === "all")
+            if (filter === items.all.value)
                 return true
             if (farm.blocks_left === null) {
-                return filter === "paused"
+                return filter === items.paused.value
             } else if (farm.blocks_left <= 0)
-                return filter === "finished"
+                return filter === items.finished.value
             else if (farm.blocks_left > 0)
-                return filter === "active"
+                return filter === items.active.value
         }
         return false
+    }
+
+    checkLPtoENX (farm) {
+        if (farm.reward_token_hash !== this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
+            return false
+        return swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash)
     }
 
     getFarmsTable() {
@@ -630,7 +659,10 @@ class Farms extends React.Component {
                         </h5>
                     </div>
                     <div className="m-2">
-                        <FarmsFilter name={HARVEST_FARMS_FILTER_NAME} title={t("status")}/>
+                        <FarmsFilter name={HARVEST_FARMS_FILTER_NAME}
+                                     title={t("status")}
+                                     getItems={this.getItems.bind(this)}
+                        />
                     </div>
                 </div>
 
@@ -638,7 +670,7 @@ class Farms extends React.Component {
 					<Table hover variant="dark" className="table-to-cards">
 						<tbody>
 					        {this.farms.map(( farm, index ) => {
-					            if (!this.checkByStatus(farm))
+					            if (!this.checkByStatus(farm) || !this.checkLPtoENX(farm))
 					                return <></>
                                 let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
 					        	return (

@@ -3,7 +3,6 @@ import {Dropdown, DropdownButton} from "react-bootstrap"
 import {withTranslation} from "react-i18next"
 
 import lsdp from "../utils/localStorageDataProcessor"
-import pageDataPresets from "../../store/pageDataPresets"
 
 
 class Filter extends React.Component {
@@ -67,51 +66,11 @@ class Filter extends React.Component {
 }
 
 class HistoryFilter extends React.Component {
-    getTypeItems (t) {
-        const filtersTranslationPath = "trade.swapCard.history.filters"
-        const typeFL = `${filtersTranslationPath}.type`
-
-        return {
-            all: {
-                text: t(`${typeFL}.allTypes`),
-            },
-            swap: {
-                text: t(`${typeFL}.swap`)
-            },
-            pool: {
-                text: t(`${typeFL}.pool`)
-            },
-            farms: {
-                text: t(`${typeFL}.farms`)
-            },
-            drops: {
-                text: t(`${typeFL}.drops`)
-            }
-        }
-    }
-
-    getTimeItems (t) {
-        const filtersTranslationPath = "trade.swapCard.history.filters"
-        const timeFL = `${filtersTranslationPath}.time`
-
-        return {
-            oneHour : {
-                text : t(`${timeFL}.oneHour`),
-            },
-            twelveHours : {
-                text : t(`${timeFL}.twelveHours`),
-            },
-            oneDay : {
-                text : t(`${timeFL}.oneDay`)
-            }
-        }
-    }
-
     getItems (t) {
         if (this.type === "type")
-            return this.getTypeItems(t)
+            return this.props.getItems().type
         else if (this.type === "time")
-            return this.getTimeItems(t)
+            return this.props.getItems().time
     }
 
     render() {
@@ -127,26 +86,9 @@ class HistoryFilter extends React.Component {
 }
 
 class FarmsFilter extends React.Component {
-    getItems (t) {
-        return {
-            all : {
-                text : t('all')
-            },
-            active : {
-                text : t('dropFarms.activeFilter'),
-            },
-            paused : {
-                text : t('dropFarms.pausedFilter')
-            },
-            finished : {
-                text : t('dropFarms.finishedFilter')
-            }
-        }
-    }
-
     render() {
         return (
-            <Filter getItems={this.getItems.bind(this)}
+            <Filter getItems={this.props.getItems.bind(this)}
                     key={this.props.key}
                     filterName={this.props.name}
                     title={this.props.title}

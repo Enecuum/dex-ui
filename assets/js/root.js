@@ -30,11 +30,11 @@ import { Navbar, Aside, SwapCard, Switch,
 import ErrorBoundary from  "./components/ErrorBoundary"
 
 const SwapAddon = React.lazy(() => import('./components/SwapAddon'))
-const TopPairs = React.lazy(() => import('./components/TopPairs'))
-const Etm = React.lazy(() => import('./pages/Etm'))
-const Farms = React.lazy(() => import('./pages/Farms'))
-const Drops = React.lazy(() => import('./pages/Drops'))
-const SpaceStation = React.lazy(() => import('./pages/SpaceStation'))
+import TopPairs from './components/TopPairs'
+import Etm from './pages/Etm'
+import Farms from './pages/Farms'
+import Drops from './pages/Drops'
+import SpaceStation from './pages/SpaceStation'
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'

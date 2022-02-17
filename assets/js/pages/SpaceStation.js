@@ -23,6 +23,8 @@ import '../../css/space-station-pools.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
+import swapUtils from "../utils/swapUtils";
+import Tooltip from "../elements/Tooltip";
 
 const valueProcessor = new ValueProcessor();
 
@@ -221,7 +223,7 @@ class SpaceStation extends React.Component {
                                         decimals : 2
                                     }
 
-                                    let enxOut =  testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee);
+                                    let enxOut = testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee);
                                     enxOut.token = {
                                             hash: pool.asset_ENX
                                         }
@@ -236,8 +238,27 @@ class SpaceStation extends React.Component {
                                         token_1 : {
                                             volume : vol_ENX.value,
                                             hash : pool.asset_ENX
-                                        }
+                                        },
+                                        lt : pool.token_hash,
+                                        pool_fee : pool.pool_fee
                                     }
+
+                                    let balanceObj = utils.getBalanceObj(that.props.balances, pool.token_hash)
+                                    let ltObj = utils.getTokenObj(that.props.tokens, pool.token_hash)
+                                    let pooled = testFormulas.ltDestruction(that.props.tokens, pair, {
+                                        lt : {
+                                            value : balanceObj.amount,
+                                            decimals : balanceObj.decimals,
+                                            total_supply : {
+                                                value : ltObj.total_supply,
+                                                decimals : ltObj.decimals
+                                            }
+                                        }
+                                    }, 'ltfield')
+                                    pool.poolShare = utils.removeEndZeros(utils.countPoolShare(pair, {
+                                        value0 : pooled.t0,
+                                        value1 : pooled.t1
+                                    }, that.props.balances))
 
                                     let priceImpact = testFormulas.countPriceImpact(pair, amountIn, enxOut, that.props.tokens);
 
@@ -641,7 +662,7 @@ class SpaceStation extends React.Component {
         }
 
         return alias
-    }        
+    }
 
     getPoolsTable() {
         const t = this.props.t;
@@ -658,7 +679,7 @@ class SpaceStation extends React.Component {
             } 
             return `${distributeButtonClass} ${disabledDependendClass}`
         }
-        
+
         return(
             <>
                 <div className="h2 mb-5">
@@ -672,17 +693,29 @@ class SpaceStation extends React.Component {
                                 <tr>
                                     <th>{t('numberSign')}</th>
                                     <th>{t('name')}</th>
-                                    <th>Enex treasury</th>
-                                    <th>Estimation</th>
-                                    <th>ENX price in pool</th>
-                                    <th>Price impact</th>
-                                    <th></th>           
+                                    <th>
+                                        {t("spaceStation.treasuryFund.header")} <Tooltip text={t("spaceStation.treasuryFund.tooltip")} />
+                                    </th>
+                                    <th>
+                                        {t("spaceStation.estimation.header")} <Tooltip text={t("spaceStation.estimation.tooltip")} />
+                                    </th>
+                                    <th>
+                                        {t("spaceStation.enxPriceInPool.header")} <Tooltip text={t("spaceStation.enxPriceInPool.tooltip")} />
+                                    </th>
+                                    <th>
+                                        {t("trade.swapAddon.priceImpact.header")} <Tooltip text={t("trade.swapAddon.priceImpact.tooltip")} />
+                                    </th>
+                                    <th>
+                                        {t("spaceStation.poolShare.header")} <Tooltip text={t("spaceStation.poolShare.tooltip")} />
+                                    </th>
+                                    <th />
                                 </tr>
                               </thead>
                             <tbody>
                                 {this.spaceStationPools.map(( pool, index ) => {
                                     let nullTreasure = pool.LPTokenOnCommanderBalance.amount <= 0;
                                     let LPAlias = this.getLPAlias(pool.asset_LP, pool.ticker_LP);
+
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
@@ -703,7 +736,11 @@ class SpaceStation extends React.Component {
                                             </td>
                                             <td>
                                                 {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
-                                            </td>                                        
+                                            </td>
+                                            <td>
+                                                <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.poolShare")}:</span>
+                                                {pool.poolShare !== undefined ? pool.poolShare : "---"}%
+                                            </td>
                                             <td>
                                                 <Button
                                                     className={getClassName(isDisabled, nullTreasure)}

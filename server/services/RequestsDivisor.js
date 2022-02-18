@@ -2,9 +2,10 @@ const express = require("express")
 
 const T_Service = require("../templates/T_Service")
 
+const path = require("path")
 const webpack              = require("webpack")
 const webpackDevMiddleware = require("webpack-dev-middleware")
-const webpackHotMiddleware = require('webpack-hot-middleware')
+const webpackHotMiddleware = require("webpack-hot-middleware")
 const w_config             = require("../../webpack.config")()
 
 

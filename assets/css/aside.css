@@ -6,6 +6,21 @@
     left: 0px;    
 }
 
+@media (max-width: 768px) and (max-height: 1000px) {
+    main.aside-closed #aside.aside-left {
+        display: none!important;
+    }
+
+    .aside-menu, .aside-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #aside .menu-item {
+        height: 29px!important;
+    }
+}
+
 @media (max-width: 767px) {
     #aside {
         background-color: var(--menu-bg-non-transparent);
@@ -14,10 +29,15 @@
     main.aside-open #aside {
         width: 100%!important;
     }
+
+    .aside-footer {
+        margin-top: 30px;
+    }
+
 }
 
 @media (max-height: 800px) {
-    #aside {
+    main.aside-open #aside {
         position: absolute!important;
         -ms-flex-pack: start!important;
         justify-content: flex-start!important;

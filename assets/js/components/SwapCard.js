@@ -849,12 +849,12 @@ class SwapCard extends React.Component {
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
                 this.props.changeSwapCalcDirection("down")
-                this.countRoute(cField)
-                return
-                // if (activeField.token.hash === pair.token_0.hash) {
-                //     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
-                // } else
-                //     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
+                // this.countRoute(cField)
+                // return
+                if (activeField.token.hash === pair.token_0.hash) {
+                    return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
+                } else
+                    return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
             } else {
                 this.props.changeSwapCalcDirection("up")
                 if (activeField.token.hash === pair.token_1.hash) {
@@ -914,7 +914,7 @@ class SwapCard extends React.Component {
     countCounterField(fieldObj, cField, removeLiquidity, aField, pairExists) {
         let mode = this.getMode()
         if (!pairExists) {
-            this.countRoute(cField)
+            // this.countRoute(cField)
             return
         }
         if (fieldObj.value.value === undefined)

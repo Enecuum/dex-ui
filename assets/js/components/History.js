@@ -30,15 +30,19 @@ class History extends React.Component {
     }
 
     componentDidMount() {
-        this.filters = {
-            time: lsdp.simple.get(`historyTimeFilter`),
-            type: lsdp.simple.get(`historyTypeFilter`)
-        }
+        this.updFilters()
         this.rerenderHistory()
     }
 
     componentWillUnmount() {
         clearInterval(this.intervalDescriptor)
+    }
+
+    updFilters () {
+        this.filters = {
+            time: lsdp.simple.get(`historyTimeFilter`),
+            type: lsdp.simple.get(`historyTypeFilter`)
+        }
     }
 
     rerenderHistory () {
@@ -60,6 +64,10 @@ class History extends React.Component {
         </>)
     }
 
+    isValidFilters () {
+        return this.filters.type && this.filters.time
+    }
+
     renderModalBody () {
         let t = this.props.t
 
@@ -78,18 +86,17 @@ class History extends React.Component {
                     )
                 })}
             </div>
-            <RecentTransactions filters={{
-                type : this.items.type[this.filters.type].value,
-                time : this.items.time[this.filters.time].value
-            }}/>
+            {
+                <RecentTransactions filters={{
+                    type : this.filters.type && this.items.type[this.filters.type].value || undefined,
+                    time : this.filters.time && this.items.time[this.filters.time].value || undefined
+                }}/>
+            }
         </>)
     }
 
     afterUpdate () {
-        this.filters = {
-            time: lsdp.simple.get(`historyTimeFilter`),
-            type: lsdp.simple.get(`historyTypeFilter`)
-        }
+        this.updFilters()
         this.rerenderHistory()
     }
 

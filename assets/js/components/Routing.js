@@ -68,6 +68,10 @@ class Routing extends React.Component {
         })
     }
 
+    cutAnAmount (input) {
+        return input.substring(0, 7) + "..."
+    }
+
     renderDetailedInfo () {
         if (this.props.route.length === 1)
             return (<></>)
@@ -77,27 +81,36 @@ class Routing extends React.Component {
                 {this.props.route.map((routeNode, index, routeNodes) => {
                     if (!index)
                         return (<></>)
+                    let from = this.vp.usCommasBigIntDecimals(
+                        routeNodes[index - 1].outcome.value,
+                        routeNodes[index - 1].outcome.decimals
+                    )
+                    let to = this.vp.usCommasBigIntDecimals(
+                        routeNode.outcome.value,
+                        routeNode.outcome.decimals
+                    )
+
                     return (
                         <div className="d-flex align-items-center">
                             <div className="col-5 p-0">
-                                <div className="d-flex justify-content-center">
+                                <div className="d-flex justify-content-start">
                                     {
-                                        this.vp.usCommasBigIntDecimals(
-                                            routeNodes[index - 1].outcome.value,
-                                            routeNodes[index - 1].outcome.decimals
-                                        )
-                                    } {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
+                                        !(index - 1) && from || this.cutAnAmount(from)
+                                    }
+                                    <div className="text-muted pl-1">
+                                        {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
+                                    </div>
                                 </div>
                             </div>
                             <span className="col icon-Icon10 routing-tooltip-icon mx-1" />
                             <div className="col-5 p-0">
-                                <div className="d-flex justify-content-center">
+                                <div className="d-flex justify-content-start">
                                     {
-                                        this.vp.usCommasBigIntDecimals(
-                                            routeNode.outcome.value,
-                                            routeNode.outcome.decimals
-                                        )
-                                    } {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
+                                        routeNodes.length - 1 === index && to || this.cutAnAmount(to)
+                                    }
+                                    <div className="text-muted pl-1">
+                                        {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
+                                    </div>
                                 </div>
                             </div>
                         </div>

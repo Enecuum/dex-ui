@@ -233,17 +233,62 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
     }
 
     //backtrace
-    let route = [];
-    current = vertices.find(x => x.vertex === to);
+    let route = []
+    let _limit = limit
+    current = vertices.find(x => x.vertex === to)
+    if (!current)
+        return route
 
-    while (current) {
-        // if (!limit--)
-        //     return []
-        route.unshift(current);
-        current = vertices.find(x => x.vertex === current.source);
+    while (true) {
+        // check boundary
+        if (!_limit) {
+            // rollback
+            current.lock = ++_limit
+            route.splice(0,1)
+            current = route[0]
+            continue
+        }
+        current.leftBehind = true
+        route.unshift(current)
+
+        // (source === undefined) means that we've found the root
+        if (current.source === null)
+            break
+        current = findNodeNearby(vertices, current, _limit)
+        if (!current) {
+            // if length > 1 then just roll back and set the lock filter
+            if (route.length !== 1) {
+                route[0].lock = ++_limit
+                route[0].leftBehind = false
+                current = route.splice(0, 2)[1]
+                continue // avoid reducing of the _limit
+            } else { // if length === 1 then just find new entry point and set the lock filter
+                route[0].lock = ++_limit
+                route[0].leftBehind = false
+                route = []
+                current = findNodeNearby(vertices, {source : to}, _limit) // where current.vertex === to
+                // absence of current == absence of routes
+                if (!current)
+                    break
+                continue // avoid reducing of the _limit
+            }
+        }
+        _limit--
     }
 
-    return route;
+    return route
+}
+
+function findNodeNearby (vertices, current, curLimit) {
+    return vertices.find(x => {
+        if (x.vertex !== current.source)
+            return false
+        if (x.leftBehind !== undefined && x.leftBehind === true)
+            return false
+        if (x.lock !== undefined && x.lock >= curLimit)
+            return false
+        return true
+    })
 }
 
 export default {

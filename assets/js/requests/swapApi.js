@@ -1,4 +1,4 @@
-/** 
+ /**
  *  @fileoverview Minimal amount of API methods.
  */
 

@@ -10,7 +10,7 @@ module.exports = {
         "info" : "Info",
         "topPairs" : "Top Pairs",
         "docs" : "Docs",
-        "drops" : "Drops",
+        "drops" : "Space Drops",
         "spaceStation" : "Station"
     },
     "top" : {

@@ -3,6 +3,7 @@ config.json
 logs
 public/*
 !public/index.html
+!public/dev_index.html
 !public/locales/*
 !public/favicon.ico
 !public/site.webmanifest

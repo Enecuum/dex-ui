@@ -148,194 +148,103 @@ function countLTValue (pair, uiPair, mode, tokens) {
 }
 
 function getDecimals (tokens, token) {
-    if (!token.decimals)
-        token.decimals = swapUtils.getTokenObj(tokens, token.hash).decimals
-    return swapUtils.getTokenObj(tokens, token.hash).decimals
+    return swapUtils.getTokenObj(tokens, token).decimals
 }
 
-function sellRoute (token0, token1, amount, pairs, tokens) {
-    let vertices = [{vertex: token0, processed: false, outcome: amount, source: null}]
+function getPairs (pools) {
+    return pools.map(pool => {
+        return {
+            from : pool.token_0.hash,
+            to : pool.token_1.hash,
+            volume1 : pool.token_0.volume,
+            volume2 : pool.token_1.volume,
+            pool_fee : pool.pool_fee
+        }
+    })
+}
 
-    let current = vertices.find(x=> x.vertex.hash === token0.hash)
+function sellRoute (from, to, amount, pools, tokens, limit) {
+    let pairs = getPairs(pools)
+
+    let vertices = [{vertex: from, processed: false, outcome: amount, source: null}];
+
+    let current = vertices.find(x=> x.vertex === from);
 
     while (current) {
-        let edges = pairs.filter(edge => edge.token_0.hash === current.vertex.hash || edge.token_1.hash === current.vertex.hash)
+        // console.log(`===================\nprocesing vertex ${JSON.stringify(current)}`)
+        let edges = pairs.filter(edge => edge.from === current.vertex || edge.to === current.vertex);
         edges.forEach((edge) => {
-            if (edge.token_1.hash === current.vertex.hash) {
-                let tmp = _.cloneDeep(edge.token_0)
-                edge.token_0 = _.cloneDeep(edge.token_1)
-                edge.token_1 = tmp
+            if (edge.to === current.vertex) {
+                let tmp;
+                tmp = edge.from;
+                edge.from = edge.to;
+                edge.to = tmp;
+                tmp = edge.volume1;
+                edge.volume1 = edge.volume2;
+                edge.volume2 = tmp;
             }
-        })
+        });
+
+        // console.log('edges:', edges);
 
         edges.forEach((edge) => {
-            let adj = vertices.find((x) => x.vertex.hash === edge.token_1.hash)
-            let outcome = sellExact({
-                value : edge.token_0.volume,
-                decimals : getDecimals(tokens, edge.token_0)
-            }, {
-                value : edge.token_1.volume,
-                decimals : getDecimals(tokens, edge.token_1)
-            }, _.cloneDeep(current.outcome),
-            {
-                value : edge.pool_fee,
-                decimals : 2
-            })
+            let adj = vertices.find((x) => x.vertex === edge.to);
             if (adj) {
-                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(outcome), _.cloneDeep(adj.outcome))
-                if (tmp.f > tmp.s) {
-                    adj.outcome = _.cloneDeep(outcome)
-                    adj.source = edge.from
-                }
+
             } else {
                 let new_vertex = {
-                    vertex: _.cloneDeep(edge.token_1),
+                    vertex: edge.to,
                     processed: false,
-                    outcome: _.cloneDeep(outcome),
-                    source: _.cloneDeep(edge.token_0)
+                    outcome: sellExact({
+                        value : edge.volume1,
+                        decimals : getDecimals(tokens, edge.from)
+                    }, {
+                        value : edge.volume2,
+                        decimals : getDecimals(tokens, edge.to)
+                    }, {
+                        value : current.outcome.value,
+                        decimals : current.outcome.decimals
+                    }, {
+                        value : edge.pool_fee,
+                        decimals : 2
+                    }),
+                    source: edge.from
                 }
-                vertices.push(new_vertex)
+                vertices.push(new_vertex);
+                // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
             }
-        })
-        current.processed = true
+        });
+
+        current.processed = true;
         vertices.sort((a,b)=> {
             let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
             if (tmp.f > tmp.s) {
-                return -1
+                return -1;
             }
             else {
                 if (tmp.f === tmp.s)
-                    return 0
-                else return 1
+                    return 0;
+                else return 1;
             }
-        })
+        });
+        // console.log('vertices:', vertices);
 
-        current = vertices.find(x => x.processed === false)
+        current = vertices.find(x => x.processed === false);
     }
 
-    let route = []
-    current = vertices.find(x => x.vertex.hash === token1.hash)
+    //backtrace
+    let route = [];
+    current = vertices.find(x => x.vertex === to);
 
     while (current) {
-        route.unshift(current)
-        current = vertices.find(x => current.source && x.vertex.hash === current.source.hash)
+        // if (!limit--)
+        //     return []
+        route.unshift(current);
+        current = vertices.find(x => x.vertex === current.source);
     }
 
-    return route
+    return route;
 }
-
-// function getPairs (pools) {
-//     return pools.map(pool => {
-//         return {
-//             from : pool.token_0.hash,
-//             to : pool.token_1.hash,
-//             volume1 : pool.token_0.volume,
-//             volume2 : pool.token_1.volume,
-//             // pool_fee : pool.pool_fee
-//         }
-//     })
-// }
-//
-// function sellRoute (from, to, amount, pools, tokens) {
-//     let pairs = getPairs(pools)
-//
-//     let vertices = [{vertex: from, processed: false, outcome: amount, source: null}];
-//
-//     let current = vertices.find(x=> x.vertex === from);
-//
-//     while (current) {
-//         // console.log(`===================\nprocesing vertex ${JSON.stringify(current)}`)
-//         let edges = pairs.filter(edge => edge.from === current.vertex || edge.to === current.vertex);
-//         edges.forEach((edge) => {
-//             if (edge.to === current.vertex) {
-//                 let tmp;
-//                 tmp = edge.from;
-//                 edge.from = edge.to;
-//                 edge.to = tmp;
-//                 tmp = edge.volume1;
-//                 edge.volume1 = edge.volume2;
-//                 edge.volume2 = tmp;
-//             }
-//         });
-//
-//         // console.log('edges:', edges);
-//
-//         edges.forEach((edge) => {
-//             let adj = vertices.find((x) => x.vertex === edge.to);
-//             if (adj){
-//                 let outcome = sellExact({
-//                     value : edge.volume1,
-//                     decimals : getDecimals(tokens, edge.from)
-//                 }, {
-//                     value : edge.volume2,
-//                     decimals : getDecimals(tokens, edge.to)
-//                 }, {
-//                     value : current.outcome.value,
-//                     decimals : current.outcome.decimals
-//                 }, {
-//                     value : edge.pool_fee,
-//                     decimals : 2
-//                 })
-//                 let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(outcome), _.cloneDeep(adj.outcome))
-//                 if (tmp.f > tmp.s){
-//                     // console.log(`replacing outcome of ${JSON.stringify(adj)} with ${outcome}`);
-//                     adj.outcome = _.cloneDeep(outcome);
-//                     adj.source = edge.from;
-//                 } else {
-//                     // console.log(`outcome of ${JSON.stringify(adj)} is more them ${outcome}`)
-//                 }
-//             } else {
-//                 let new_vertex = {
-//                     vertex: edge.to,
-//                     processed: false,
-//                     outcome: sellExact({
-//                         value : edge.volume1,
-//                         decimals : getDecimals(tokens, edge.from)
-//                     }, {
-//                         value : edge.volume2,
-//                         decimals : getDecimals(tokens, edge.to)
-//                     }, {
-//                         value : current.outcome.value,
-//                         decimals : current.outcome.decimals
-//                     }, {
-//                         value : edge.pool_fee,
-//                         decimals : 2
-//                     }),
-//                     source: edge.from
-//                 }
-//                 vertices.push(new_vertex);
-//                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
-//             }
-//         });
-//
-//         current.processed = true;
-//         vertices.sort((a,b)=> {
-//             let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
-//             if (tmp.f > tmp.s) {
-//                 return -1;
-//             }
-//             else {
-//                 if (tmp.f === tmp.s)
-//                     return 0;
-//                 else return 1;
-//             }
-//         });
-//         // console.log('vertices:', vertices);
-//
-//         current = vertices.find(x => x.processed === false);
-//     }
-//
-//     //backtrace
-//     let route = [];
-//     current = vertices.find(x => x.vertex === to);
-//
-//     while (current) {
-//         route.unshift(current);
-//         current = vertices.find(x => x.vertex === current.source);
-//     }
-//
-//     return route;
-// }
 
 export default {
     getAddLiquidityPrice,

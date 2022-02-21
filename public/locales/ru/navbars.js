@@ -10,7 +10,7 @@ module.exports = {
         "info" : "Информация",
         "topPairs" : "Торговые пары",
         "docs" : "Документация",
-        "drops" : "Drops",
+        "drops" : "Space Drops",
         "spaceStation" : "Station"
     },
     "top" : {

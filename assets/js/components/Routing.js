@@ -28,12 +28,12 @@ class Routing extends React.Component {
 
     genRouteNodes () {
         return this.props.route.map((routeNode, index) => {
-            if (!index && this.props.route.length !== 1)
+            if (!index)
                 return (<></>)
-            let fToken = swapUtils.getTokenObj(this.props.tokens, routeNode.source.hash)
-            let sToken = swapUtils.getTokenObj(this.props.tokens, routeNode.vertex.hash)
+            let fToken = swapUtils.getTokenObj(this.props.tokens, routeNode.source)
+            let sToken = swapUtils.getTokenObj(this.props.tokens, routeNode.vertex)
 
-            let pool = utils.searchSwap(this.props.pairs, [routeNode.source, routeNode.vertex])
+            let pool = utils.searchSwap(this.props.pairs, [{hash: routeNode.source}, {hash: routeNode.vertex}])
 
             let triggerContent = (
                 <div className="routing-pool-wrapper d-flex justify-content-between align-items-center">
@@ -79,25 +79,25 @@ class Routing extends React.Component {
                         return (<></>)
                     return (
                         <div className="d-flex align-items-center">
-                            <div className="col-5">
+                            <div className="col-5 p-0">
                                 <div className="d-flex justify-content-center">
                                     {
                                         this.vp.usCommasBigIntDecimals(
                                             routeNodes[index - 1].outcome.value,
                                             routeNodes[index - 1].outcome.decimals
                                         )
-                                    } {routeNode.source.ticker}
+                                    } {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
                                 </div>
                             </div>
                             <span className="col icon-Icon10 routing-tooltip-icon mx-1" />
-                            <div className="col-5">
+                            <div className="col-5 p-0">
                                 <div className="d-flex justify-content-center">
                                     {
                                         this.vp.usCommasBigIntDecimals(
                                             routeNode.outcome.value,
                                             routeNode.outcome.decimals
                                         )
-                                    } {routeNode.source.ticker}
+                                    } {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
                                 </div>
                             </div>
                         </div>
@@ -109,9 +109,9 @@ class Routing extends React.Component {
 
     renderRoute () {
         let fLogo, sLogo
-        if (this.props.route.length && this.props.route[0].source) {
-            let fHash = (this.props.route.length === 1) ? this.props.route[0].source.hash : this.props.route[0].vertex.hash
-            let sHash = (this.props.route.length === 1) ? this.props.route[0].vertex.hash : this.props.route[this.props.route - 1].vertex.hash
+        if (this.props.route.length) {
+            let fHash = this.props.route[0].vertex
+            let sHash = this.props.route[this.props.route.length - 1].vertex
             fLogo = swapUtils.getTokenObj(this.props.tokens, fHash).logo
             sLogo = swapUtils.getTokenObj(this.props.tokens, sHash).logo
         }
@@ -132,7 +132,7 @@ class Routing extends React.Component {
                             }
                         </Accordion.Toggle>
                     </Card.Header>
-                    {(this.props.route.length && this.props.route[0].source) &&
+                    {(this.props.route.length) &&
                         <Accordion.Collapse eventKey="0">
                             <Card.Body className="pb-2">
                                 <div className="swap-route mt-4 mb-2 d-flex justify-content-between">

@@ -801,8 +801,8 @@ class SwapCard extends React.Component {
             this.props.assignCoinValue(mode, field, newValObj)
             let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
             checkResult = this.validator.batchValidate(this.activePair, activePairRules)
-            if (checkResult.dataValid)
-                this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field)
+
+            this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field, checkResult.dataValid)
 
             modeData[field] = fieldData
             this.establishReadiness(this.validateSwapCard(modeData))
@@ -829,7 +829,7 @@ class SwapCard extends React.Component {
         return Number(rmPercent) <= 100
     }
 
-    countPrice(mode, activeField, counterField, pair) {
+    countPrice(mode, activeField, counterField, pair, cField) {
         let decimals = [activeField.token.decimals, counterField.token.decimals];
         if (activeField.token.hash !== pair.token_0.hash)
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
@@ -848,8 +848,9 @@ class SwapCard extends React.Component {
         }
         if (this.props.menuItem === 'exchange') {
             if (activeField.token.hash === mode.field0.token.hash) {
-                // this.countRoute()
                 this.props.changeSwapCalcDirection("down")
+                // this.countRoute(cField)
+                // return
                 if (activeField.token.hash === pair.token_0.hash) {
                     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
                 } else
@@ -869,22 +870,32 @@ class SwapCard extends React.Component {
         }
     }
 
-    countRoute () {
+    countRoute (cField) {
         if (this.routingWorker) {
             this.setState({
                 routingWaiting : true,
                 routingVisibility : true,
                 route : []
             })
-            this.routingWorker.postMessage({
+            let data = {
                 token0 : this.props.exchange.field0.token,
                 token1 : this.props.exchange.field1.token,
                 amount : this.props.exchange.field0.value,
                 pairs  : this.props.pairs,
-                tokens : this.props.tokens
-            })
+                tokens : this.props.tokens,
+                limit : 4
+            }
+            // console.log(testFormulas.sellRoute(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
+            this.routingWorker.postMessage(data)
             .then(res => {
-                console.log(res)
+                if (res.length) {
+                    let finalValue = res[res.length - 1].outcome
+                    this.props.assignCoinValue(this.getMode(), cField, {
+                        value : finalValue.value,
+                        decimals : finalValue.decimals,
+                        text : this.bigIntToString(finalValue.value, finalValue.decimals)
+                    })
+                }
                 this.setState({
                     routingWaiting : false,
                     route: res
@@ -900,9 +911,9 @@ class SwapCard extends React.Component {
         }
     }
 
-    countCounterField(fieldObj, cField, removeLiquidity, aField) {
+    countCounterField(fieldObj, cField, removeLiquidity, aField, pairExists) {
         let mode = this.getMode()
-        if (!this.pairExists)
+        if (!pairExists)
             return
         if (fieldObj.value.value === undefined)
             return
@@ -914,12 +925,13 @@ class SwapCard extends React.Component {
             if (removeLiquidity) {
                 this.countRemoveLiquidity(mode, aField, fieldObj.value)
             } else {
-                let counterFieldPrice = this.countPrice(this.props[mode], fieldObj, counterField, this.activePair)
-                this.props.assignCoinValue(mode, cField, {
-                    value : counterFieldPrice.value,
-                    decimals : counterFieldPrice.decimals,
-                    text : this.bigIntToString(counterFieldPrice.value, counterFieldPrice.decimals)
-                })
+                let counterFieldPrice = this.countPrice(this.props[mode], fieldObj, counterField, this.activePair, cField)
+                if (counterFieldPrice)
+                    this.props.assignCoinValue(mode, cField, {
+                        value : counterFieldPrice.value,
+                        decimals : counterFieldPrice.decimals,
+                        text : this.bigIntToString(counterFieldPrice.value, counterFieldPrice.decimals)
+                    })
             }
         }
     }

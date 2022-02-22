@@ -37,6 +37,7 @@ CMD cd server/scripts/ ;\
 if [ "$SERVICE_TYPE" = "rd" ] ; then \
     pm2-runtime start rd.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} --o_port ${OPENED_PORT} ;\
 elif [ "$SERVICE_TYPE" = "fl" ] ; then \
+    node node_modules/webpack/bin/webpack.js build --config webpack.config.js ;\
     pm2-runtime start fl.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} ;\
 elif [ "$SERVICE_TYPE" = "ddl" ] ; then \
     pm2-runtime start ddl.js -- --peer ${PEER_HOST}:${PEER_PORT} --port ${CONTAINER_PORT} --p ${PASSWORD} ;\

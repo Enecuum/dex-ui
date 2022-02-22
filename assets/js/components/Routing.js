@@ -69,7 +69,8 @@ class Routing extends React.Component {
     }
 
     cutAnAmount (input) {
-        return input.substring(0, 7) + "..."
+        if (input.length > 9)
+            return input.substring(0, 9) + "..."
     }
 
     renderDetailedInfo () {
@@ -93,24 +94,26 @@ class Routing extends React.Component {
                     return (
                         <div className="d-flex align-items-center">
                             <div className="col-5 p-0">
-                                <div className="d-flex justify-content-start">
+                                <div className="d-flex justify-content-start hidden-routing-amounts">
                                     {
-                                        !(index - 1) && from || this.cutAnAmount(from)
+                                        this.cutAnAmount(from)
                                     }
                                     <div className="text-muted pl-1">
                                         {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
                                     </div>
+                                    <div className="full-routing-amounts">{from}</div>
                                 </div>
                             </div>
                             <span className="col icon-Icon10 routing-tooltip-icon mx-1" />
                             <div className="col-5 p-0">
-                                <div className="d-flex justify-content-start">
+                                <div className="d-flex justify-content-start hidden-routing-amounts">
                                     {
-                                        routeNodes.length - 1 === index && to || this.cutAnAmount(to)
+                                        this.cutAnAmount(to)
                                     }
                                     <div className="text-muted pl-1">
                                         {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
                                     </div>
+                                    <div className="full-routing-amounts">{to}</div>
                                 </div>
                             </div>
                         </div>
@@ -132,11 +135,10 @@ class Routing extends React.Component {
             <Accordion routing-active={this.state.showRouter.toString()}>
                 <Card className="routing-card">
                     <Card.Header className="p-0 d-flex">
-                        <Accordion.Toggle
-                        eventKey="0"
-                        className="routing-button d-flex justify-content-between align-items-center"
-                        data-active-accordion-elem={this.state.showRouter.toString()}
-                        onClick={() => this.changeRouterStatus()}
+                        <Accordion.Toggle eventKey="0"
+                                          className="routing-button d-flex justify-content-between align-items-center"
+                                          data-active-accordion-elem={this.state.showRouter.toString()}
+                                          onClick={() => this.changeRouterStatus()}
                         >
                             <div className="ml-1">Router</div>
                             {this.props.routingWaiting &&

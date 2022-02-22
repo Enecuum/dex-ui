@@ -17,6 +17,8 @@ const requestType = {
     CREATE             : presets.pending.allowedTxTypes.pool_create,
     SELL_EXACT         : presets.pending.allowedTxTypes.pool_sell_exact,
     BUY_EXACT          : presets.pending.allowedTxTypes.pool_buy_exact,
+    SELL_EXACT_ROUTED  : presets.pending.allowedTxTypes.pool_sell_exact_routed,
+    BUY_EXACT_ROUTED   : presets.pending.allowedTxTypes.pool_buy_exact_routed,
     ADD                : presets.pending.allowedTxTypes.pool_add_liquidity,
     REMOVE             : presets.pending.allowedTxTypes.pool_remove_liquidity,
     ISSUE_TOKEN        : 'create_token',
@@ -88,34 +90,69 @@ class ExtRequests {
         });
     };
 
-    /**
-     * Exchange pair of tokens
-     * @param {string} pubkey - users public key (get it while connecting to the extension)
-     * @param {object} exchangeMode - data structure from initialState.js
-     * @param amountOutMin - according to the slippage
-     * @param swapCalculationsDirection - buy or sell calculations
-     * @returns {Promise}
-     */
-    swap (pubkey, exchangeMode, slippageVar, swapCalculationsDirection) {
+
+    sellExact (pubkey, exchangeMode, slippageVar) {
+        let params = {
+            asset_in: exchangeMode.field0.token.hash,
+            asset_out: exchangeMode.field1.token.hash,
+            amount_in : this.getBigIntAmount(exchangeMode.field0),
+            amount_out_min : this.getBigIntAmount({
+                value : slippageVar,
+                balance : exchangeMode.field1.balance
+            })
+        }
+        return this.sendTx(pubkey, requestType.SELL_EXACT, params)
+    }
+
+    buyExact (pubkey, exchangeMode, slippageVar) {
         let params = {
             asset_in: exchangeMode.field0.token.hash,
             asset_out: exchangeMode.field1.token.hash,
         }
-        if (swapCalculationsDirection === "down") {
-            params.amount_in = this.getBigIntAmount(exchangeMode.field0)
-            params.amount_out_min = this.getBigIntAmount({
+        params.amount_out = this.getBigIntAmount(exchangeMode.field1)
+        params.amount_in_max = this.getBigIntAmount({
+            value : slippageVar,
+            balance : exchangeMode.field0.balance
+        })
+        return this.sendTx(pubkey, requestType.BUY_EXACT, params)
+    }
+
+    sellExactRouted (pubkey, exchangeMode, slippageVar, route) {
+        let params = {
+            amount_in : this.getBigIntAmount(exchangeMode.field0),
+            amount_out_min : this.getBigIntAmount({
                 value : slippageVar,
                 balance : exchangeMode.field1.balance
-            })
-            return this.sendTx( pubkey, requestType.SELL_EXACT, params)
-        } else {
-            params.amount_out = this.getBigIntAmount(exchangeMode.field1)
-            params.amount_in_max = this.getBigIntAmount({
+            }),
+            plength : BigInt(route.length)
+        }
+
+        let assets = route.reduce((prev, cur, i) => {
+            prev[`asset${i}`] = cur.vertex
+            return prev
+        }, {})
+        params = Object.assign(params, assets)
+
+        return this.sendTx(pubkey, requestType.SELL_EXACT_ROUTED, params)
+    }
+
+    buyExactRouted (pubkey, exchangeMode, slippageVar, route) {
+        let params = {
+            amount_out : this.getBigIntAmount(exchangeMode.field1),
+            amount_in_max : this.getBigIntAmount({
                 value : slippageVar,
                 balance : exchangeMode.field0.balance
-            })
-            return this.sendTx( pubkey, requestType.BUY_EXACT, params)
+            }),
+            plength : BigInt(route.length)
         }
+
+        let assets = route.reduce((prev, cur, i) => {
+            prev[`asset${i}`] = cur.vertex
+            return prev
+        }, {})
+        params = Object.assign(params, assets)
+
+        return this.sendTx(pubkey, requestType.BUY_EXACT_ROUTED, params)
     }
 
     /**
@@ -148,7 +185,6 @@ class ExtRequests {
     };
 
     sendTx (pubKey, reqType, params) {
-        console.log(params)
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
@@ -160,7 +196,7 @@ class ExtRequests {
                 parameters : params
             })
         };
-        // console.log(data);
+        console.log(data);
         console.log(params);
         return trafficController.sendTransaction(data);
     };

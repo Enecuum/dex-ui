@@ -52,6 +52,7 @@ class WorkerProcessor {
     _close (worker) {
         worker.simpleWorker.terminate()
         this.workers = this.workers.filter(el => el.id !== worker.id)
+        worker.close = null
     }
 }
 

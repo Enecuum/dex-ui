@@ -389,6 +389,7 @@ class SwapCard extends React.Component {
                                     getSubmitButton={this.getSubmitButton.bind(this)}
                                     modeStruct={modeStruct}
                                     swapCalculationsDirection={this.props.swapCalculationsDirection}
+                                    route={this.state.route}
                                 />
                             </Suspense>}
                         </div>
@@ -758,7 +759,7 @@ class SwapCard extends React.Component {
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];
         fieldObj.value = newValObj;
-        this.countCounterField(fieldObj, this.getFieldName(fieldProps.id, true), mode === 'removeLiquidity', field);
+        this.countCounterField(fieldObj, this.getFieldName(fieldProps.id, true), field)
 
         let modeData = this.props[mode]
         modeData[field] = fieldObj
@@ -802,7 +803,22 @@ class SwapCard extends React.Component {
             let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
             checkResult = this.validator.batchValidate(this.activePair, activePairRules)
 
-            this.countCounterField(fieldData, this.getFieldName(fieldId, true), mode === 'removeLiquidity', field, checkResult.dataValid)
+            let cField = this.getFieldName(fieldId, true)
+            if (checkResult.dataValid) {
+                this.setState({
+                    routingVisibility: false
+                })
+                this.countCounterField(fieldData, cField, field)
+            } else {
+                if (mode === "exchange") {
+                    if (fieldData.token.hash === this.props[mode].field0.token.hash) {
+                        this.props.changeSwapCalcDirection("down")
+                        this.countRoute(cField)
+                    } else {
+                        this.props.changeSwapCalcDirection("up")
+                    }
+                }
+            }
 
             modeData[field] = fieldData
             this.establishReadiness(this.validateSwapCard(modeData))
@@ -829,7 +845,7 @@ class SwapCard extends React.Component {
         return Number(rmPercent) <= 100
     }
 
-    countPrice(mode, activeField, counterField, pair, cField) {
+    countAddLiquidityPrice(activeField, counterField, pair) {
         let decimals = [activeField.token.decimals, counterField.token.decimals];
         if (activeField.token.hash !== pair.token_0.hash)
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
@@ -842,35 +858,38 @@ class SwapCard extends React.Component {
             decimals : decimals[1]
         };
         let activeAmount = activeField.value;
-        let pool_fee = {
-            value : pair.pool_fee,
-            decimals : 2
-        }
-        if (this.props.menuItem === 'exchange') {
-            if (activeField.token.hash === mode.field0.token.hash) {
-                this.props.changeSwapCalcDirection("down")
-                // this.countRoute(cField)
-                // return
-                if (activeField.token.hash === pair.token_0.hash) {
-                    return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
-                } else
-                    return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
-            } else {
-                this.props.changeSwapCalcDirection("up")
-                if (activeField.token.hash === pair.token_1.hash) {
-                    return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
-                } else
-                    return testFormulas.revGetSwapPrice(volume1, volume0, activeAmount, pool_fee)
-            }
-        } else {
-            if (activeField.token.hash === pair.token_0.hash)
-                return testFormulas.getAddLiquidityPrice(volume1, volume0, activeAmount)
-            else
-                return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
-        }
+        // let pool_fee = {
+        //     value : pair.pool_fee,
+        //     decimals : 2
+        // }
+        // if (this.props.menuItem === 'exchange') {
+        //     if (activeField.token.hash === mode.field0.token.hash) {
+        //         this.props.changeSwapCalcDirection("down")
+        //         this.countRoute(cField)
+        //         return
+        //         // if (activeField.token.hash === pair.token_0.hash) {
+        //         //     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
+        //         // } else
+        //         //     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
+        //     } else {
+        //         this.props.changeSwapCalcDirection("up")
+        //         if (activeField.token.hash === pair.token_1.hash) {
+        //             return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
+        //         } else
+        //             return testFormulas.revGetSwapPrice(volume1, volume0, activeAmount, pool_fee)
+        //     }
+        if (activeField.token.hash === pair.token_0.hash)
+            return testFormulas.getAddLiquidityPrice(volume1, volume0, activeAmount)
+        else
+            return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
     }
 
     countRoute (cField) {
+        this.props.assignCoinValue(this.getMode(), cField, {
+            value : 0n,
+            decimals : 10,
+            text : "0"
+        })
         if (this.routingWorker) {
             this.setState({
                 routingWaiting : true,
@@ -888,6 +907,8 @@ class SwapCard extends React.Component {
             // console.log(testFormulas.sellRoute(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
             this.routingWorker.postMessage(data)
             .then(res => {
+                this.pairExists = true
+                this.props.changeCreatePoolState(false)
                 if (res.length) {
                     let finalValue = res[res.length - 1].outcome
                     this.props.assignCoinValue(this.getMode(), cField, {
@@ -895,6 +916,13 @@ class SwapCard extends React.Component {
                         decimals : finalValue.decimals,
                         text : this.bigIntToString(finalValue.value, finalValue.decimals)
                     })
+                } else {
+                    this.setState({
+                        routingVisibility : false,
+                        route: res
+                    })
+                    this.pairExists = false
+                    this.props.changeCreatePoolState(true)
                 }
                 this.setState({
                     routingWaiting : false,
@@ -902,32 +930,27 @@ class SwapCard extends React.Component {
                 })
             })
             .catch(() => {
-                this.setState({
-                    routingVisibility : false
-                })
                 this.routingWorker.close()
                 this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
             })
         }
     }
 
-    countCounterField(fieldObj, cField, removeLiquidity, aField, pairExists) {
+    countCounterField(fieldObj, cField, aField) {
         let mode = this.getMode()
-        if (!pairExists) {
-            // this.countRoute(cField)
-            return
-        }
+        let counterField = this.props[mode][cField]
+
         if (fieldObj.value.value === undefined)
             return
-        let counterField = this.props[mode][cField]
+
         if (fieldObj.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
                 return
             }
-            if (removeLiquidity) {
+            if (mode === "removeLiquidity") {
                 this.countRemoveLiquidity(mode, aField, fieldObj.value)
             } else {
-                let counterFieldPrice = this.countPrice(this.props[mode], fieldObj, counterField, this.activePair, cField)
+                let counterFieldPrice = this.countAddLiquidityPrice(fieldObj, counterField, this.activePair)
                 if (counterFieldPrice)
                     this.props.assignCoinValue(mode, cField, {
                         value : counterFieldPrice.value,
@@ -1072,13 +1095,13 @@ class SwapCard extends React.Component {
             this.pairExists = true; // make an exclusion for first page render
             return;
         }
-        if (this.activePair.pool_fee === undefined) {
-            this.pairExists = false;
-            this.props.changeCreatePoolState(true);
-        } else {
-            this.pairExists = true;
-            this.props.changeCreatePoolState(false);
-        }
+        // if (this.activePair.pool_fee === undefined) {
+        //     this.pairExists = false;
+        //     this.props.changeCreatePoolState(true);
+        // } else {
+        //     this.pairExists = true;
+        //     this.props.changeCreatePoolState(false);
+        // }
     };
 
     pushBadBalanceId (id) {

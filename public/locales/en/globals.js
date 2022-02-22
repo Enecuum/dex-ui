@@ -1,3 +1,7 @@
+let exchange = {
+    "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
+}
+
 module.exports = {
     "info" : "Info",
     "submit" : "Submit",
@@ -53,11 +57,15 @@ module.exports = {
             "pool_create" : "Creating",
             "pool_sell_exact" : "Swapping",
             "pool_buy_exact" : "Swapping",
+            "pool_sell_exact_routed" : "Swapping",
+            "pool_buy_exact_routed" : "Swapping",
             "pool_add_liquidity" : "Adding",
             "pool_remove_liquidity" : "Removing"
         },
         "history" : {
             "pool_create" : "Create",
+            "pool_sell_exact_routed" : "Swap",
+            "pool_buy_exact_routed" : "Swap",
             "pool_sell_exact" : "Swap",
             "pool_buy_exact" : "Swap",
             "pool_add_liquidity" : "Add",
@@ -71,12 +79,10 @@ module.exports = {
         }
     },
     "txActionPhrases" : {
-        "pool_sell_exact" : {
-            "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
-        },
-        "pool_buy_exact" : {
-            "completePhrase" : "{{action}} {{value0}} {{ticker0}} to {{value1}} {{ticker1}}"
-        },
+        "pool_sell_exact_routed" : exchange,
+        "pool_buy_exact_routed" : exchange,
+        "pool_sell_exact" : exchange,
+        "pool_buy_exact" : exchange,
         "pool_add_liquidity" : {
             "completePhrase" : "{{action}} liquidity {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
         },

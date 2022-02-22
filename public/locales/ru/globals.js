@@ -1,3 +1,7 @@
+let exchange = {
+    "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
+}
+
 module.exports = {
     "info" : "Инфо",
     "submit" : "Отправить",
@@ -54,6 +58,8 @@ module.exports = {
             "pool_create" : "Создание",
             "pool_sell_exact" : "Обмен",
             "pool_buy_exact" : "Обмен",
+            "pool_sell_exact_routed" : "Обмен",
+            "pool_buy_exact_routed" : "Обмен",
             "pool_add_liquidity" : "Добавление",
             "pool_remove_liquidity" : "Удаление"
         },
@@ -61,6 +67,8 @@ module.exports = {
             "pool_create" : "Создание",
             "pool_sell_exact" : "Обмен",
             "pool_buy_exact" : "Обмен",
+            "pool_sell_exact_routed" : "Обмен",
+            "pool_buy_exact_routed" : "Обмен",
             "pool_add_liquidity" : "Добавление",
             "pool_remove_liquidity" : "Удаление",
             "farm_create" : "Создание",
@@ -72,12 +80,10 @@ module.exports = {
         }
     },
     "txActionPhrases" : {
-        "pool_sell_exact" : {
-            "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
-        },
-        "pool_buy_exact" : {
-            "completePhrase" : "{{action}} {{value0}} {{ticker0}} на {{value1}} {{ticker1}}"
-        },
+        "pool_sell_exact_routed" : exchange,
+        "pool_buy_exact_routed" : exchange,
+        "pool_sell_exact" : exchange,
+        "pool_buy_exact" : exchange,
         "pool_add_liquidity" : {
             "completePhrase" : "{{action}} ликвидности {{value0}} {{ticker0}} + {{value1}} {{ticker1}}"
         },

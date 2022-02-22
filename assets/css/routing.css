@@ -16,6 +16,25 @@
     background-color: var(--color8) !important;
 }
 
+.hidden-routing-amounts {
+    cursor: default;
+}
+
+.hidden-routing-amounts:hover .full-routing-amounts {
+    width: 100%;
+}
+
+.full-routing-amounts {
+    overflow: hidden;
+    position: absolute;
+    text-align: center;
+    width: 0;
+    height: 100%;
+
+    border-radius: var(--border-radius2);
+    background-color: var(--color8);
+}
+
 .routing-card .card-header {
     margin-bottom: 0 !important;
 }

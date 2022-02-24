@@ -798,25 +798,41 @@ class SwapCard extends React.Component {
                     newValObj.text = this.numWithoutCommas(this.activePair.token_0.volume - 1, newValObj.decimals)
                 }
             }
-
             this.props.assignCoinValue(mode, field, newValObj)
-            let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
-            checkResult = this.validator.batchValidate(this.activePair, activePairRules)
 
             let cField = this.getFieldName(fieldId, true)
-            if (checkResult.dataValid) {
-                this.setState({
-                    routingVisibility: false
+            if (mode === "exchange") {
+                this.props.assignCoinValue(this.getMode(), cField, {
+                    value : 0n,
+                    decimals : 10,
+                    text : "0"
                 })
-                this.countCounterField(fieldData, cField, field)
-            } else {
-                if (mode === "exchange") {
+
+                if (this.routingWorker) {
+                    this.setState({
+                        routingWaiting: true,
+                        routingVisibility: true,
+                        route: []
+                    })
+
+                    let promise
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
                         this.props.changeSwapCalcDirection("down")
-                        this.countRoute(cField)
+                        promise = this.countRouteSellExact()
                     } else {
                         this.props.changeSwapCalcDirection("up")
+                        promise = this.countRouteBuyExact()
                     }
+                    this.countRoute(promise, cField)
+                }
+            } else {
+                let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
+                checkResult = this.validator.batchValidate(this.activePair, activePairRules)
+                if (checkResult.dataValid) {
+                    this.setState({
+                        routingVisibility: false
+                    })
+                    this.countCounterField(fieldData, cField, field)
                 }
             }
 
@@ -846,94 +862,84 @@ class SwapCard extends React.Component {
     }
 
     countAddLiquidityPrice(activeField, counterField, pair) {
-        let decimals = [activeField.token.decimals, counterField.token.decimals];
+        let decimals = [activeField.token.decimals, counterField.token.decimals]
         if (activeField.token.hash !== pair.token_0.hash)
-            [decimals[0], decimals[1]] = [decimals[1], decimals[0]];
+            [decimals[0], decimals[1]] = [decimals[1], decimals[0]]
         let volume0  = {
             value : BigInt(pair.token_0.volume),
             decimals : decimals[0]
-        };
+        }
         let volume1  = {
             value : BigInt(pair.token_1.volume),
             decimals : decimals[1]
-        };
-        let activeAmount = activeField.value;
-        // let pool_fee = {
-        //     value : pair.pool_fee,
-        //     decimals : 2
-        // }
-        // if (this.props.menuItem === 'exchange') {
-        //     if (activeField.token.hash === mode.field0.token.hash) {
-        //         this.props.changeSwapCalcDirection("down")
-        //         this.countRoute(cField)
-        //         return
-        //         // if (activeField.token.hash === pair.token_0.hash) {
-        //         //     return testFormulas.getSwapPrice(volume0, volume1, activeAmount, pool_fee)
-        //         // } else
-        //         //     return testFormulas.getSwapPrice(volume1, volume0, activeAmount, pool_fee)
-        //     } else {
-        //         this.props.changeSwapCalcDirection("up")
-        //         if (activeField.token.hash === pair.token_1.hash) {
-        //             return testFormulas.revGetSwapPrice(volume0, volume1, activeAmount, pool_fee)
-        //         } else
-        //             return testFormulas.revGetSwapPrice(volume1, volume0, activeAmount, pool_fee)
-        //     }
+        }
+        let activeAmount = activeField.value
+
         if (activeField.token.hash === pair.token_0.hash)
             return testFormulas.getAddLiquidityPrice(volume1, volume0, activeAmount)
         else
             return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
     }
 
-    countRoute (cField) {
-        this.props.assignCoinValue(this.getMode(), cField, {
-            value : 0n,
-            decimals : 10,
-            text : "0"
-        })
-        if (this.routingWorker) {
-            this.setState({
-                routingWaiting : true,
-                routingVisibility : true,
-                route : []
-            })
-            let data = {
-                token0 : this.props.exchange.field0.token,
-                token1 : this.props.exchange.field1.token,
-                amount : this.props.exchange.field0.value,
-                pairs  : this.props.pairs,
-                tokens : this.props.tokens,
-                limit : 4
-            }
-            // console.log(testFormulas.sellRoute(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
-            this.routingWorker.postMessage(data)
-            .then(res => {
-                this.pairExists = true
-                this.props.changeCreatePoolState(false)
-                if (res.length) {
-                    let finalValue = res[res.length - 1].outcome
-                    this.props.assignCoinValue(this.getMode(), cField, {
-                        value : finalValue.value,
-                        decimals : finalValue.decimals,
-                        text : this.bigIntToString(finalValue.value, finalValue.decimals)
-                    })
-                } else {
-                    this.setState({
-                        routingVisibility : false,
-                        route: res
-                    })
-                    this.pairExists = false
-                    this.props.changeCreatePoolState(true)
-                }
+    countRouteSellExact () {
+        let data = {
+            token0 : this.props.exchange.field0.token,
+            token1 : this.props.exchange.field1.token,
+            amount : this.props.exchange.field0.value,
+            pairs  : this.props.pairs,
+            tokens : this.props.tokens,
+            limit : 4,
+            mode : "sell"
+        }
+
+        // console.log(testFormulas.sellRoute(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
+        return this.routingWorker.postMessage(data)
+    }
+
+    countRouteBuyExact () {
+        let data = {
+            token0 : this.props.exchange.field1.token,
+            token1 : this.props.exchange.field0.token,
+            amount : this.props.exchange.field1.value,
+            pairs  : this.props.pairs,
+            tokens : this.props.tokens,
+            limit : 4,
+            mode : "buy"
+        }
+
+        // console.log(testFormulas.sellRouteRev(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
+        return this.routingWorker.postMessage(data)
+    }
+
+    countRoute (routingExec, cField) {
+        routingExec.then(res => {
+            console.log(res)
+            this.pairExists = true
+            this.props.changeCreatePoolState(false)
+            if (res.length) {
+                let finalValue = res[(this.props.swapCalculationsDirection === "down") ? res.length - 1 : 0].outcome
+                this.props.assignCoinValue(this.getMode(), cField, {
+                    value : finalValue.value,
+                    decimals : finalValue.decimals,
+                    text : this.bigIntToString(finalValue.value, finalValue.decimals)
+                })
+            } else {
                 this.setState({
-                    routingWaiting : false,
+                    routingVisibility : false,
                     route: res
                 })
+                this.pairExists = false
+                this.props.changeCreatePoolState(true)
+            }
+            this.setState({
+                routingWaiting : false,
+                route: res
             })
-            .catch(() => {
-                this.routingWorker.close()
-                this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
-            })
-        }
+        })
+        .catch(() => {
+            this.routingWorker.close()
+            this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
+        })
     }
 
     countCounterField(fieldObj, cField, aField) {

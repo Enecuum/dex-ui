@@ -279,6 +279,129 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
     return route
 }
 
+function sellRouteRev (from, to, amount, pools, tokens, limit) {
+    let pairs = getPairs(pools)
+
+    let vertices = [{vertex: from, processed: false, outcome: amount, source: null}];
+
+    let current = vertices.find(x=> x.vertex === from);
+
+    while (current) {
+        // console.log(`===================\nprocesing vertex ${JSON.stringify(current)}`)
+        let edges = pairs.filter(edge => edge.from === current.vertex || edge.to === current.vertex);
+        edges.forEach((edge) => {
+            if (edge.to === current.vertex) {
+                let tmp;
+                tmp = edge.from;
+                edge.from = edge.to;
+                edge.to = tmp;
+                tmp = edge.volume1;
+                edge.volume1 = edge.volume2;
+                edge.volume2 = tmp;
+            }
+        });
+
+        // console.log('edges:', edges);
+
+        edges.forEach((edge) => {
+            let adj = vertices.find((x) => x.vertex === edge.to);
+            if (adj) {
+
+            } else {
+                let new_vertex = {
+                    vertex: edge.to,
+                    processed: false,
+                    outcome: buyExact({
+                        value : edge.volume2,
+                        decimals : getDecimals(tokens, edge.to)
+                    }, {
+                        value : edge.volume1,
+                        decimals : getDecimals(tokens, edge.from)
+                    }, {
+                        value : current.outcome.value,
+                        decimals : current.outcome.decimals
+                    }, {
+                        value : edge.pool_fee,
+                        decimals : 2
+                    }),
+                    source: edge.from
+                }
+                vertices.push(new_vertex);
+                // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
+            }
+        });
+
+        current.processed = true;
+        vertices.sort((a,b)=> {
+            let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
+            if (tmp.f > tmp.s) {
+                return -1;
+            }
+            else {
+                if (tmp.f === tmp.s)
+                    return 0;
+                else return 1;
+            }
+        });
+        // console.log('vertices:', vertices);
+
+        current = vertices.find(x => x.processed === false);
+    }
+
+    //backtrace
+    let route = []
+    let _limit = limit
+    current = vertices.find(x => x.vertex === to)
+    if (!current)
+        return route
+
+    while (true) {
+        // check boundary
+        if (!_limit) {
+            // rollback
+            current.lock = ++_limit
+            route.splice(0,1)
+            current = route[0]
+            continue
+        }
+        current.leftBehind = true
+        route.unshift(current)
+
+        // (source === undefined) means that we've found the root
+        if (current.source === null)
+            break
+        current = findNodeNearby(vertices, current, _limit)
+        if (!current) {
+            // if length > 1 then just roll back and set the lock filter
+            if (route.length !== 1) {
+                route[0].lock = ++_limit
+                route[0].leftBehind = false
+                current = route.splice(0, 2)[1]
+                continue // avoid reducing of the _limit
+            } else { // if length === 1 then just find new entry point and set the lock filter
+                route[0].lock = ++_limit
+                route[0].leftBehind = false
+                route = []
+                current = findNodeNearby(vertices, {source : to}, _limit) // where current.vertex === to
+                // absence of current == absence of routes
+                if (!current)
+                    break
+                continue // avoid reducing of the _limit
+            }
+        }
+        _limit--
+    }
+
+    return route.map((el, i, arr) => {
+        try {
+            el.source = arr[i + 1].vertex
+        } catch (e) {
+            el.source = null
+        }
+        return el
+    }).reverse()
+}
+
 function findNodeNearby (vertices, current, curLimit) {
     return vertices.find(x => {
         if (x.vertex !== current.source)
@@ -298,5 +421,6 @@ export default {
     ltDestruction,
     countLTValue,
     getSwapPrice: sellExact,
-    sellRoute
+    sellRoute,
+    sellRouteRev
 }

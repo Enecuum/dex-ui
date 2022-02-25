@@ -45,10 +45,6 @@ import networkApi from './requests/networkApi'
 
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
-import '../../node_modules/enq-web3/dist/enqweb3lib.node.min'
-import {cookieProcessor as cp} from "./utils/cookieProcessor"
-import lsdp from "./utils/localStorageDataProcessor"
-
 
 class Root extends React.Component {
     constructor (props) {

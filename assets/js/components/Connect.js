@@ -12,6 +12,7 @@ import '../../css/close-button.css'
 import '../../css/index.css'
 import '../../css/wallet-connection.css'
 import '../../css/font-style.css'
+import swapApi from "../requests/swapApi";
 
 class Connect extends React.Component {
     constructor(props) {
@@ -23,8 +24,10 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
+        window.onload = () => {
+            this.checkConnection()
+        }
         // this.intervalConnection()
-        this.checkConnection()
     }
 
     componentWillUnmount() {

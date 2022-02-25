@@ -9,7 +9,7 @@ import presets from '../../store/pageDataPresets';
 class SwapApi {
     constructor () {
         this.url = presets.network.defaultNet.url;
-        this.hostUrl = location.href.replace('/#', '/');
+        this.hostUrl = location.href.replace(/#.*/, '');
     };
 
     updUrl (url) {

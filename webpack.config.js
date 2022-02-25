@@ -1,6 +1,7 @@
 const path = require('path')
 const execSync = require('child_process').execSync
 const webpack = require('webpack')
+const config = require(path.join(__dirname, 'config.json'))
 
 module.exports = () => {
 

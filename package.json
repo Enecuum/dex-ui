@@ -7,7 +7,8 @@
     "make": "bash production.bash --build",
     "clear": "bash production.bash --clear",
     "prod": "bash production.bash --run",
-    "dev": "pm2 start ecosystem.config.js --only hot_dev"
+    "dev": "pm2 start ecosystem.config.js --only hot_dev",
+    "dev:stop": "pm2 delete hot_dev"
   },
   "repository": {
     "type": "git",

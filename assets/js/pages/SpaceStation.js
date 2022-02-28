@@ -196,7 +196,12 @@ class SpaceStation extends React.Component {
                     .then(balances => {
                         balances.json().then(function(commanderBalances) {
                             let enxHash = that.props.networkInfo.dex.DEX_ENX_TOKEN_HASH;
+                            let accEnxVolume = {value: 0, decimals: 0}
                             spaceStationPools.forEach(function(pool) {
+                                accEnxVolume = valueProcessor.add(accEnxVolume, {
+                                    value : pool.volume_ENX,
+                                    decimals : pool.decimals_ENX
+                                })
                                 let LPBalance = commanderBalances.find(balance => balance.token === pool.asset_LP);
                                 if (LPBalance !== undefined) {
                                     pool.LPTokenOnCommanderBalance = LPBalance;
@@ -243,23 +248,6 @@ class SpaceStation extends React.Component {
                                         pool_fee : pool.pool_fee
                                     }
 
-                                    let balanceObj = utils.getBalanceObj(that.props.balances, pool.token_hash)
-                                    let ltObj = utils.getTokenObj(that.props.tokens, pool.token_hash)
-                                    let pooled = testFormulas.ltDestruction(that.props.tokens, pair, {
-                                        lt : {
-                                            value : balanceObj.amount,
-                                            decimals : balanceObj.decimals,
-                                            total_supply : {
-                                                value : ltObj.total_supply,
-                                                decimals : ltObj.decimals
-                                            }
-                                        }
-                                    }, 'ltfield')
-                                    pool.poolShare = utils.removeEndZeros(utils.countPoolShare(pair, {
-                                        value0 : pooled.t0,
-                                        value1 : pooled.t1
-                                    }, that.props.balances))
-
                                     let priceImpact = testFormulas.countPriceImpact(pair, amountIn, enxOut, that.props.tokens);
 
                                     pool.distributeResult = {
@@ -272,6 +260,11 @@ class SpaceStation extends React.Component {
                                     };
                                 }
                             });
+
+                            that.stakeShare = valueProcessor.div({
+                                value : that.farms[0].total_stake,
+                                decimals : that.farms[0].stake_token_decimals
+                            }, accEnxVolume)
                             that.spaceStationPools = spaceStationPools;
                             that.props.updatePoolsList({
                                 value : that.spaceStationPools
@@ -591,9 +584,15 @@ class SpaceStation extends React.Component {
                 <div className="h2 mb-4">
                     {t('navbars.left.spaceStation')}
                 </div>
-                <div className="d-block h4 d-md-flex mb-5">
-                    <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.totalStaked')}</div>
-                    <div className="text-nowrap">{valueProcessor.usCommasBigIntDecimals((this.farms[0].total_stake !== undefined ? this.farms[0].total_stake : '---'), this.farms[0].stake_token_decimals, this.farms[0].stake_token_decimals)} {this.farms[0].stake_token_name}</div>            
+                <div className={"d-flex justify-content-start"}>
+                    <div className="d-block h4 d-md-flex mb-5">
+                        <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.totalStaked')}</div>
+                        <div className="text-nowrap">{valueProcessor.usCommasBigIntDecimals((this.farms[0].total_stake !== undefined ? this.farms[0].total_stake : '---'), this.farms[0].stake_token_decimals, this.farms[0].stake_token_decimals)} {this.farms[0].stake_token_name}</div>
+                    </div>
+                    <div className="d-block h4 d-md-flex mb-5 ml-4">
+                        <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.stakeShare')}</div>
+                        <div className="text-nowrap">{this.stakeShare !== undefined ? valueProcessor.usCommasBigIntDecimals(this.stakeShare.value, this.stakeShare.decimals, this.stakeShare.decimals) : '---'} %</div>
+                    </div>
                 </div>
 
                 <div className="h5 mb-4 text-color4">
@@ -705,9 +704,6 @@ class SpaceStation extends React.Component {
                                     <th>
                                         {t("trade.swapAddon.priceImpact.header")} <Tooltip text={t("trade.swapAddon.priceImpact.tooltip")} />
                                     </th>
-                                    <th>
-                                        {t("spaceStation.poolShare.header")} <Tooltip text={t("spaceStation.poolShare.tooltip")} />
-                                    </th>
                                     <th />
                                 </tr>
                               </thead>
@@ -736,10 +732,6 @@ class SpaceStation extends React.Component {
                                             </td>
                                             <td>
                                                 {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%
-                                            </td>
-                                            <td>
-                                                <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.poolShare")}:</span>
-                                                {pool.poolShare !== undefined ? pool.poolShare : "---"}%
                                             </td>
                                             <td>
                                                 <Button

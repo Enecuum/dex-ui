@@ -2,7 +2,7 @@ module.exports = {
     "swapAddon" : {
         "priceImpact" : {
             "header" : "Price impact",
-            "tooltip" : "The difference between the market price and estimated price due to trade size."
+            "tooltip" : "Difference between the price before and after the swap you make."
         },
         "providerFee" : {
             "header" : "Liquidity provider fee",

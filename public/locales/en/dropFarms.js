@@ -21,6 +21,7 @@ module.exports = {
     "details"                      : "Details",
     "harvest"                      : "Harvest",
     "totalStaked"                  : "Total staked",
+    "stakeShare"                   : "Stake share",
     "finishedFilter"               : "Finished",
     "pausedFilter"                 : "Paused",
     "activeFilter"                 : "Active",

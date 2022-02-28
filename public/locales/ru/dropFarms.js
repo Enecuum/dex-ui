@@ -21,6 +21,7 @@ module.exports = {
     "details"                      : "Подробнее",
     "harvest"                      : "Собрать урожай",
     "totalStaked"                  : "Общий стейк",
+    "stakeShare"                   : "Доля в стейке",
     "finishedFilter"               : "Завершённый",
     "pausedFilter"                 : "Приостановленный",
     "activeFilter"                 : "Активный",

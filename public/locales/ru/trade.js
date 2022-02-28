@@ -60,6 +60,7 @@ module.exports = {
             "addLiquidity" : "Добавить ликвидность",
             "removeLiquidity" : "Удалить ликвидность",
             "fillAllFields" : "Заполните все поля",
+            "lackOfSecondVolume" : "Недостаточное количество средств в пуле",
             "swap" : "Обменять",
             "createPair" : "Создать пару",
             "insufficientFunds" : "Недостаточно средств",

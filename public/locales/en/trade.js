@@ -61,6 +61,7 @@ module.exports = {
             "addLiquidity" : "Add liquidity",
             "removeLiquidity" : "Remove liquidity",
             "fillAllFields" : "Fill all fields",
+            "lackOfSecondVolume" : "Insufficient funds of the poll",
             "swap" : "Swap",
             "createPair" : "Create pair",
 

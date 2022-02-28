@@ -789,15 +789,15 @@ class SwapCard extends React.Component {
 
         if (checkResult.dataValid) {
             rules = this.swapCardValidationRules.getPoolVolumesValidationRules(this.activePair, modeData, mode, this.pairExists)
-            if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
-                if (this.activePair.token_1.hash === fieldData.token.hash) {
-                    newValObj.value = this.activePair.token_1.volume - 1
-                    newValObj.text = this.numWithoutCommas(this.activePair.token_1.volume - 1, newValObj.decimals)
-                } else {
-                    newValObj.value = this.activePair.token_0.volume - 1
-                    newValObj.text = this.numWithoutCommas(this.activePair.token_0.volume - 1, newValObj.decimals)
-                }
-            }
+            // if (!this.validator.batchValidate(this.activePair, rules).dataValid) {
+            //     if (this.activePair.token_1.hash === fieldData.token.hash) {
+            //         newValObj.value = this.activePair.token_1.volume - 1
+            //         newValObj.text = this.numWithoutCommas(this.activePair.token_1.volume - 1, newValObj.decimals)
+            //     } else {
+            //         newValObj.value = this.activePair.token_0.volume - 1
+            //         newValObj.text = this.numWithoutCommas(this.activePair.token_0.volume - 1, newValObj.decimals)
+            //     }
+            // }
             this.props.assignCoinValue(mode, field, newValObj)
 
             let cField = this.getFieldName(fieldId, true)

@@ -213,6 +213,16 @@ class SwapCardValidationRules {
                 },
                 {
                     requireToCheck: fieldData.required,
+                    method: 'moreOrEqualThan',
+                    args: {
+                        value: value,
+                        max: 0
+                    },
+                    desiredResult: true,
+                    errMsg: 'lackOfSecondVolume'
+                },
+                {
+                    requireToCheck: fieldData.required,
                     method: 'lessOrEqualThan',
                     args: {
                         value: value,

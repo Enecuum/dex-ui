@@ -913,15 +913,19 @@ class SwapCard extends React.Component {
 
     countRoute (routingExec, cField) {
         routingExec.then(res => {
-            console.log(res)
             this.pairExists = true
             this.props.changeCreatePoolState(false)
             if (res.length) {
                 let finalValue = res[(this.props.swapCalculationsDirection === "down") ? res.length - 1 : 0].outcome
+                let text
+                if (finalValue.value < 0n)
+                    text = "-" + this.bigIntToString(-finalValue.value, finalValue.decimals)
+                else
+                    text = this.bigIntToString(finalValue.value, finalValue.decimals)
                 this.props.assignCoinValue(this.getMode(), cField, {
                     value : finalValue.value,
                     decimals : finalValue.decimals,
-                    text : this.bigIntToString(finalValue.value, finalValue.decimals)
+                    text : text
                 })
             } else {
                 this.setState({

@@ -73,6 +73,13 @@ class Routing extends React.Component {
             return input.substring(0, 9) + "..."
     }
 
+    makeTextProp (objVal) {
+        if (objVal.value < 0n)
+            return "-" + this.vp.usCommasBigIntDecimals(-objVal.value, objVal.decimals)
+        else
+            return this.vp.usCommasBigIntDecimals(objVal.value, objVal.decimals)
+    }
+
     renderDetailedInfo () {
         if (this.props.route.length === 1)
             return (<></>)
@@ -82,14 +89,8 @@ class Routing extends React.Component {
                 {this.props.route.map((routeNode, index, routeNodes) => {
                     if (!index)
                         return (<></>)
-                    let from = this.vp.usCommasBigIntDecimals(
-                        routeNodes[index - 1].outcome.value,
-                        routeNodes[index - 1].outcome.decimals
-                    )
-                    let to = this.vp.usCommasBigIntDecimals(
-                        routeNode.outcome.value,
-                        routeNode.outcome.decimals
-                    )
+                    let from = this.makeTextProp(routeNodes[index - 1].outcome)
+                    let to = this.makeTextProp(routeNode.outcome)
 
                     return (
                         <div className="d-flex align-items-center">

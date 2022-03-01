@@ -96,9 +96,13 @@ function countExchangeRate (pair, firstPerSecond, modeStruct) {
             value : pair.token_1.volume,
             decimals : pair.token_1.decimals
         });
-        return vp.usCommasBigIntDecimals(res.value, res.decimals);
+        try {
+            return vp.usCommasBigIntDecimals(res.value, res.decimals);
+        } catch (e) {
+            return "---"
+        }
     } else {
-        return '-';
+        return '---';
     }
 }
 

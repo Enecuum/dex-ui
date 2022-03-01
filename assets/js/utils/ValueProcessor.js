@@ -29,7 +29,12 @@ class ValueProcessor {
         };
     }
     usCommasBigIntDecimals (input, decimals=10, fixed=10) {
+	    let neg = false
         if(typeof input === 'bigint' || !isNaN(input)) {
+            if (input < 0n) {
+                neg = true
+                input = -input
+            }
             if (decimals === undefined || decimals === null || isNaN(decimals) || input === null)
                 return '---';
             let str = BigInt(input).toString();
@@ -45,6 +50,8 @@ class ValueProcessor {
                     fractionalPart = '0' + fractionalPart;
                 }                  
             }
+            if (neg)
+                return "-" + integerPart + delimiter + fractionalPart.substring(0, fixed);
             return integerPart + delimiter + fractionalPart.substring(0, fixed);
         } else
             return input;

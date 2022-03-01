@@ -24,9 +24,7 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        window.onload = () => {
-            this.checkConnection()
-        }
+        this.checkConnection()
         // this.intervalConnection()
     }
 
@@ -36,7 +34,7 @@ class Connect extends React.Component {
 
     // intervalConnection () {
     //     this.descriptor = setInterval(this.checkConnection.bind(this), 100)
-    //     setTimeout(clearInterval,5000, this.descriptor)
+    //     setTimeout(clearInterval, 5000, this.descriptor)
     // }
 
     checkConnection () {

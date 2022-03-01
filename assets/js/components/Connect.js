@@ -24,7 +24,12 @@ class Connect extends React.Component {
     }
 
     componentDidMount() {
-        this.checkConnection()
+        this.descriptor = setInterval(() => {
+            if (document.readyState === "complete") {
+                clearInterval(this.descriptor)
+                this.checkConnection()
+            }
+        }, 100)
         // this.intervalConnection()
     }
 

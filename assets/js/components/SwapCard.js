@@ -802,11 +802,11 @@ class SwapCard extends React.Component {
 
             let cField = this.getFieldName(fieldId, true)
             if (mode === "exchange") {
-                this.props.assignCoinValue(this.getMode(), cField, {
-                    value : 0n,
-                    decimals : 10,
-                    text : "0"
-                })
+                // this.props.assignCoinValue(this.getMode(), cField, {
+                //     value : 0n,
+                //     decimals : 10,
+                //     text : "0"
+                // })
 
                 if (this.routingWorker) {
                     this.setState({

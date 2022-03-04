@@ -8,13 +8,13 @@ PORTS=(7001 7002 7003)
 SUBNET='172.18.0.0/16'
 ROOT_IP='172.18.0.5'
 NET="dex-ui_net"
+NODE_ENV=production
 
 warn="\033[31m"
 help="\033[32m"
 end="\e[0m"
 
-export NODE_ENV=production
-
+export NODE_ENV
 
 function help_msg() {
     echo -e "$help Args: --build $end"

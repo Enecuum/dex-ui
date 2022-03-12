@@ -12,5 +12,17 @@
 
     "json_rcp_version": "2.0",
     "api_version"     : "v1",
-    "last_request_id" : 0
+    "last_request_id" : 0,
+
+    "test" : {
+        "account" : {
+            "prvkey" : "prvkey",
+            "pubkey" : "pubkey",
+            "password" : "password"
+        },
+        "chromeExtension" : {
+            "path" : "/path/to/enq/extension",
+            "url" : "/path/to/enq/extension"
+        }
+    }
 }

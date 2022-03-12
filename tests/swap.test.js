@@ -1,11 +1,11 @@
 import 'regenerator-runtime/runtime'
 
-describe("SwapCard UI test", () => {
-    beforeAll(async () => {
-        await page.goto('http://localhost:1234')
-    })
+const preparations = require("./preparations.test")
+const records = require("./records/index")
 
-    it ('asd', async () => {
-        await page.screenshot({ path: 'example.png' });
-    })
+const { actions, selectors } = require("./utils")
+
+
+describe("SwapCard UI test", () => {
+    preparations()
 })

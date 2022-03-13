@@ -31,6 +31,16 @@ module.exports = () => {
         await actions.textClick("❮ Back")
         await page.reload()
 
+        // ----------------- Change network
+        await actions.selectorClick(selectors.imgSrc("./images/icons/5.png"))
+        await actions.textClick("Networks")
+        await actions.textClick("Add")
+        await actions.selectorType(selectors.inPlaceholder("Network short name"), "TESTNET")
+        await actions.selectorType(selectors.inPlaceholder("Host name, start with https://"), "http://localhost:" + config.dex_port)
+        await actions.textClick("Add")
+        await actions.textClick("SELECT")
+        await page.reload()
+
         // ----------------- Open ENEX page
         await page.goto(`http://localhost:${config.dex_port}`)
     })

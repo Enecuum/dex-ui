@@ -27,6 +27,13 @@
 ### Run tests
 * Check configs into file jest.config.js (You can find options here: https://jestjs.io/docs/configuration#options)
 * Run ENEX backend
+````shell
+    npm run dev
+````
+* Run test plug
+```shell
+    npm run dev:test
+```  
 * Run jest by command
 ```shell
     jest {file.test.js}

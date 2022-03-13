@@ -43,6 +43,16 @@ class RequestsDivisor extends T_Service {
             this.CRH_app.use(webpackHotMiddleware(compiler));
         }
 
+        // for tp-service
+        this.CRH_app.get(`/api/${this.cnfg.api_version}*`, (req, res, next) => {
+            let testPlug = this.peersByType.tp
+            let services = this._filterServices(testPlug)
+            if (!services)
+                next()
+            else
+                this._execRequestToSpecialService(testPlug, req, res)
+        })
+
         // for ddl-service
         this.CRH_app.get(`/api/${this.cnfg.api_version}*`, (req, res) => {
             let dexDataLoaders = this.peersByType.ddl

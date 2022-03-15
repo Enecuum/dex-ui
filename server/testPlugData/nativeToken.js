@@ -1,3 +1,8 @@
+// The data is current as of 13/03/2022.
+// ------------------------------------
+// Network: BIT
+// URL: https://bit.enecuum.com
+
 module.exports = {
     "hash": "0000000000000000000000000000000000000000000000000000000000000001",
     "owner": "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",

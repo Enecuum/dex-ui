@@ -1,3 +1,8 @@
+// The data is current as of 13/03/2022.
+// ------------------------------------
+// Network: BIT
+// URL: https://bit.enecuum.com
+
 module.exports = {
     "create_token": 0,
     "create_pos": 0,

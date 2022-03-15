@@ -1,3 +1,8 @@
+// The data is current as of 13/03/2022.
+// ------------------------------------
+// Network: BIT
+// URL: https://bit.enecuum.com
+
 module.exports = {
     "accounts": 34623,
     "apkUrl": null,

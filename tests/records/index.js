@@ -1,3 +1,5 @@
 module.exports = {
-    connection : require("./connection")
+    connection : require("./connection"),
+    swap : require("./swap/index"),
+    pool : require("./pool/index")
 }

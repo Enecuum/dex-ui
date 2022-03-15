@@ -24,6 +24,9 @@
 ```
 * Set environment variable "HEADLESS" to false if you want to launch a full version of Chromium
 
+### Developer tools
+* To get complex element selectors it is necessary to use "Headless Recorder" Chrome extension
+
 ### Run tests
 * Check configs into file jest.config.js (You can find options here: https://jestjs.io/docs/configuration#options)
 * Run ENEX backend

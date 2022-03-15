@@ -1,3 +1,8 @@
+// The data is current as of 13/03/2022.
+// ------------------------------------
+// Network: BIT
+// URL: https://bit.enecuum.com
+
 module.exports = [
     {
         "farm_id": "e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01",

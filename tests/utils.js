@@ -16,6 +16,10 @@ let Selector = function (property, value, tag) {
 
 module.exports = {
     actions: {
+        sleep: async (time) => {
+            await new Promise(resolve => setTimeout(resolve, time))
+        },
+
         textClick: async (text) => {
             let selector = Selector("text()", text, "//div").get()
             await page.waitForXPath(selector)
@@ -42,6 +46,11 @@ module.exports = {
         selectorGetText: async (selector) => {
             await page.waitForSelector(selector)
             return await page.$eval(selector, el => el.textContent)
+        },
+
+        selectorGetValue: async (selector) => {
+            await page.waitForSelector(selector)
+            return await page.$eval(selector, el => el.value)
         }
     },
 

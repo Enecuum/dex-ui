@@ -73,7 +73,8 @@ module.exports = {
             "field1" : "Check value of the second asset",
             "ltfield" : "Check value of the third asset",
             "fullField0Value" : "The amount of the first asset must be less than the user's balance, taking into account native token commission (for native token)",
-            "nativeToken" : "Not enough native coin to pay the fee"
+            "nativeToken" : "Not enough native coin to pay the fee",
+            "route" : "Too much liquidity for pool"
         },
         "aboutButtonInfo" : {
             "withoutPair" : "There is no such pair",

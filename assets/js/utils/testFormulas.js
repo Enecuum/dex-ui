@@ -192,6 +192,20 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
             if (adj) {
 
             } else {
+                let v1 = {
+                    value : edge.volume1,
+                    decimals : getDecimals(tokens, edge.from)
+                }, v2 = {
+                    value : edge.volume2,
+                    decimals : getDecimals(tokens, edge.to)
+                }, amountIn = {
+                    value : current.outcome.value,
+                    decimals : current.outcome.decimals
+                }
+                let k = vp.mul(v1, v2)
+                k = vp.sub(k, v1)
+                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(amountIn), _.cloneDeep(k))
+
                 let new_vertex = {
                     vertex: edge.to,
                     processed: false,
@@ -201,14 +215,12 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
                     }, {
                         value : edge.volume2,
                         decimals : getDecimals(tokens, edge.to)
-                    }, {
-                        value : current.outcome.value,
-                        decimals : current.outcome.decimals
-                    }, {
+                    }, amountIn, {
                         value : edge.pool_fee,
                         decimals : 2
                     }),
-                    source: edge.from
+                    source: edge.from,
+                    tooMuchLiquidity : tmp.f > tmp.s
                 }
                 vertices.push(new_vertex);
                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);

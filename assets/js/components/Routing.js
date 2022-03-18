@@ -74,6 +74,7 @@ class Routing extends React.Component {
     }
 
     makeTextProp (objVal) {
+        // console.log(objVal)
         if (objVal.value < 0n)
             return "-" + this.vp.usCommasBigIntDecimals(-objVal.value, objVal.decimals)
         else

@@ -517,6 +517,8 @@ class SwapCard extends React.Component {
                 return this.makeErrMsg(t(dp + "fullField0Value"), errObj.fullField0Value)
             case 'nativeToken':
                 return this.makeErrMsg(t(dp + "nativeToken"), errObj.nativeToken)
+            case 'route':
+                return this.makeErrMsg(t(dp + "route"), errObj.route)
             default:
                 return undefined
         }
@@ -1060,6 +1062,7 @@ class SwapCard extends React.Component {
             modeData.fullField0Value = undefined
         }
         if (modeData.field0.value.text && modeData.field1.value.text) {
+            modeData.route = this.state.route
             let rules = this.swapCardValidationRules.getSwapCardValidationRules(modeData, this.getMode())
             return this.validator.batchValidate(modeData, rules)
         } else {

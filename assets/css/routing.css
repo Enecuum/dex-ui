@@ -109,3 +109,15 @@
 .routing-spinner {
     font-size: 11pt !important;
 }
+
+.routing-from-item {
+    transform: rotate(90deg);
+    font-size: 6pt;
+    color: var(--color-alert1);
+}
+
+.routing-to-item {
+    transform: rotate(-90deg);
+    font-size: 6pt;
+    color: var(--color3);
+}

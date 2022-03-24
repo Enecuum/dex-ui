@@ -1,5 +1,7 @@
 import React from "react"
 import { Accordion, Card } from "react-bootstrap"
+import { withTranslation } from "react-i18next"
+import { components, mapDispatchToProps, mapStoreToProps } from "../../store/storeToProps"
 
 import {LogoToken} from "../elements/LogoToken"
 import PairLogos from "./PairLogos"
@@ -10,6 +12,7 @@ import swapUtils from "../utils/swapUtils"
 
 import '../../css/routing.css'
 import utils from "../utils/swapUtils";
+import { connect } from 'react-redux'
 
 
 class Routing extends React.Component {
@@ -74,6 +77,8 @@ class Routing extends React.Component {
     }
 
     makeTextProp (objVal) {
+        if (!objVal)
+            return "---"
         // console.log(objVal)
         if (objVal.value < 0n)
             return "-" + this.vp.usCommasBigIntDecimals(-objVal.value, objVal.decimals)
@@ -86,36 +91,68 @@ class Routing extends React.Component {
             return (<></>)
         return (
             <div>
-                <hr/>
                 {this.props.route.map((routeNode, index, routeNodes) => {
                     if (!index)
                         return (<></>)
                     let from = this.makeTextProp(routeNodes[index - 1].outcome)
                     let to = this.makeTextProp(routeNode.outcome)
 
+                    let amountOutMin = this.makeTextProp(routeNode.amountOutMin)
+                    let amountInMax = this.makeTextProp(routeNode.amountInMax)
+
                     return (
-                        <div className="d-flex align-items-center">
-                            <div className="col-5 p-0">
-                                <div className="d-flex justify-content-start hidden-routing-amounts">
-                                    {
-                                        this.cutAnAmount(from)
-                                    }
-                                    <div className="text-muted pl-1">
-                                        {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
+                        <div>
+                            <hr className="mx-0"/>
+                            <div className="px-0">
+                                <div className="d-flex align-items-center justify-content-between p-0">
+                                    <div className="">{this.props.t("trade.swapCard.exchange.input0")}</div>
+                                    <div className="d-flex justify-content-start hidden-routing-amounts">
+                                        {
+                                            // this.cutAnAmount(from)
+                                            from
+                                        }
+                                        <div className="text-muted pl-1">
+                                            {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
+                                        </div>
+                                        {/*<div className="full-routing-amounts">{from}</div>*/}
                                     </div>
-                                    <div className="full-routing-amounts">{from}</div>
                                 </div>
-                            </div>
-                            <span className="col icon-Icon10 routing-tooltip-icon mx-1" />
-                            <div className="col-5 p-0">
-                                <div className="d-flex justify-content-start hidden-routing-amounts">
-                                    {
-                                        this.cutAnAmount(to)
-                                    }
-                                    <div className="text-muted pl-1">
-                                        {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
+                                {/*<span className="col icon-Icon10 routing-tooltip-icon mx-1" />*/}
+                                <div className="d-flex align-items-center justify-content-between p-0">
+                                    <div className="">{this.props.t("trade.swapCard.exchange.input1")}</div>
+                                    <div className="d-flex justify-content-start hidden-routing-amounts">
+                                        {
+                                            // this.cutAnAmount(to)
+                                            to
+                                        }
+                                        <div className="text-muted pl-1">
+                                            {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
+                                        </div>
+                                        {/*<div className="full-routing-amounts">{to}</div>*/}
                                     </div>
-                                    <div className="full-routing-amounts">{to}</div>
+                                </div>
+                                <div className="d-flex justify-content-between">
+                                    {this.props.swapCalculationsDirection === "down" &&
+                                        <span className="mr-2">{this.props.t('trade.swapAddon.minimumReceived.header')}</span> ||
+                                        <span className="mr-2">{this.props.t('trade.swapAddon.maximumSent.header')}</span>
+                                    }
+                                    <div>
+                                        {this.props.swapCalculationsDirection === "down" &&
+                                        <div className="d-flex">
+                                            {amountOutMin ? amountOutMin : "0.0"}
+                                            <div className="ml-1 text-muted">
+                                                {swapUtils.getTokenObj(this.props.tokens, routeNode.vertex).ticker}
+                                            </div>
+                                        </div>
+                                        ||
+                                        <div className="d-flex">
+                                            {amountInMax ? amountInMax : "0.0"}
+                                            <div className="ml-1 text-muted">
+                                                {swapUtils.getTokenObj(this.props.tokens, routeNode.source).ticker}
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -191,4 +228,9 @@ class Routing extends React.Component {
     }
 }
 
-export default Routing
+const WRouting = connect(
+    mapStoreToProps(components.ROUTING),
+    mapDispatchToProps(components.ROUTING)
+)(withTranslation()(Routing))
+
+export default WRouting

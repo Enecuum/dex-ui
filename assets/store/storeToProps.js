@@ -33,7 +33,8 @@ const components = {
     FARMS                            : 0x13,
     DROPS                            : 0x14,
     SWAP_ADDON                       : 0x15,
-    SPACE_STATION                    : 0x16
+    SPACE_STATION                    : 0x16,
+    ROUTING                          : 0x17
 }
 
 function mapStoreToProps(component) {
@@ -354,6 +355,12 @@ function mapStoreToProps(component) {
                     exchange    : state.swapCard.exchange,
                     nativeToken : state.root.nativeToken,
                     tokens      : state.root.tokens,
+                    swapCalculationsDirection : state.swapCard.swapCalculationsDirection
+                }
+            }
+        case components.ROUTING:
+            return function (state) {
+                return {
                     swapCalculationsDirection : state.swapCard.swapCalculationsDirection
                 }
             }

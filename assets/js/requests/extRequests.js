@@ -117,11 +117,11 @@ class ExtRequests {
         return this.sendTx(pubkey, requestType.BUY_EXACT, params)
     }
 
-    sellExactRouted (pubkey, exchangeMode, slippageVar, route) {
+    sellExactRouted (pubkey, exchangeMode, route) {
         let params = {
             amount_in : this.getBigIntAmount(exchangeMode.field0),
             amount_out_min : this.getBigIntAmount({
-                value : slippageVar,
+                value : route[route.length-1].amountOutMin,
                 balance : exchangeMode.field1.balance
             }),
             plength : BigInt(route.length)
@@ -136,11 +136,11 @@ class ExtRequests {
         return this.sendTx(pubkey, requestType.SELL_EXACT_ROUTED, params)
     }
 
-    buyExactRouted (pubkey, exchangeMode, slippageVar, route) {
+    buyExactRouted (pubkey, exchangeMode, route) {
         let params = {
             amount_out : this.getBigIntAmount(exchangeMode.field1),
             amount_in_max : this.getBigIntAmount({
-                value : slippageVar,
+                value : route[route.length-1].amountInMax,
                 balance : exchangeMode.field0.balance
             }),
             plength : BigInt(route.length)
@@ -188,7 +188,8 @@ class ExtRequests {
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
-            value : this.nativeTokenFee,
+            value : params.plength ? (Number(params.plength)-1) * this.nativeTokenFee : this.nativeTokenFee,
+            // value : this.nativeTokenFee,
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e10),
             data : ENQweb3lib.serialize({

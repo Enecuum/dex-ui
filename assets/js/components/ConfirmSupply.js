@@ -213,7 +213,7 @@ class ConfirmSupply extends React.Component {
                             txPromise = extRequests.sellExact(this.props.pubkey, this.props.exchange, slippageCalc)
                         } else {
                             txType = txTypes.pool_sell_exact_routed
-                            txPromise = extRequests.sellExactRouted(this.props.pubkey, this.props.exchange, slippageCalc, this.props.route)
+                            txPromise = extRequests.sellExactRouted(this.props.pubkey, this.props.exchange, this.props.route)
                         }
                     } else {
                         slippageCalc = valueProcessor.mul(this.props.exchange.field0.value, percent)
@@ -223,7 +223,7 @@ class ConfirmSupply extends React.Component {
                             txPromise = extRequests.buyExact(this.props.pubkey, this.props.exchange, slippageCalc)
                         } else {
                             txType = txTypes.pool_buy_exact_routed
-                            txPromise = extRequests.buyExactRouted(this.props.pubkey, this.props.exchange, slippageCalc, this.props.route)
+                            txPromise = extRequests.buyExactRouted(this.props.pubkey, this.props.exchange, this.props.route)
                         }
                     }
                 } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove) {

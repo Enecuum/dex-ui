@@ -2,6 +2,7 @@ import utils from './swapUtils';
 import ValueProcessor from './ValueProcessor';
 import swapUtils from "./swapUtils";
 import _ from "lodash"
+import lsdp from './localStorageDataProcessor'
 
 const vp = new ValueProcessor();
 
@@ -163,7 +164,7 @@ function getPairs (pools) {
     })
 }
 
-function sellRoute (from, to, amount, pools, tokens, limit) {
+function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
     let pairs = getPairs(pools)
 
     let vertices = [{vertex: from, processed: false, outcome: amount, source: null}];
@@ -208,6 +209,9 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
 
                 let new_vertex = {
                     vertex: edge.to,
+                    volume1 : _.cloneDeep(edge.volume1),
+                    volume2 : _.cloneDeep(edge.volume2),
+                    pool_fee : _.cloneDeep(edge.pool_fee),
                     processed: false,
                     outcome: sellExact({
                         value : edge.volume1,
@@ -222,6 +226,7 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
                     source: edge.from,
                     tooMuchLiquidity : tmp.f > tmp.s
                 }
+
                 vertices.push(new_vertex);
                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
             }
@@ -244,7 +249,7 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
         current = vertices.find(x => x.processed === false);
     }
 
-    //backtrace
+    // Backtrace
     let route = []
     let _limit = limit
     current = vertices.find(x => x.vertex === to)
@@ -288,10 +293,36 @@ function sellRoute (from, to, amount, pools, tokens, limit) {
         _limit--
     }
 
+    // Count slippage tolerance
+    route = route.map((el, i) => {
+        let percent = vp.valueToBigInt(slippage, 8)
+        percent.decimals += 2
+        percent = vp.sub(vp.valueToBigInt(1), percent)
+        if (i) {
+            let amountOut
+            if (i === 1)
+                amountOut = el.outcome
+            else {
+                amountOut = sellExact({
+                    value : el.volume1,
+                    decimals : getDecimals(tokens, el.source)
+                }, {
+                    value : el.volume2,
+                    decimals : getDecimals(tokens, el.vertex)
+                }, route[i - 1].amountOutMin, {
+                    value : el.pool_fee,
+                    decimals : 2
+                })
+            }
+            el.amountOutMin = vp.mul(amountOut, percent)
+        }
+        return el
+    })
+
     return route
 }
 
-function sellRouteRev (from, to, amount, pools, tokens, limit) {
+function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
     let pairs = getPairs(pools)
 
     let vertices = [{vertex: from, processed: false, outcome: amount, source: null}];
@@ -323,6 +354,9 @@ function sellRouteRev (from, to, amount, pools, tokens, limit) {
                 let new_vertex = {
                     vertex: edge.to,
                     processed: false,
+                    volume1 : _.cloneDeep(edge.volume1),
+                    volume2 : _.cloneDeep(edge.volume2),
+                    pool_fee : _.cloneDeep(edge.pool_fee),
                     outcome: buyExact({
                         value : edge.volume2,
                         decimals : getDecimals(tokens, edge.to)
@@ -338,6 +372,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit) {
                     }),
                     source: edge.from
                 }
+
                 vertices.push(new_vertex);
                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
             }
@@ -360,7 +395,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit) {
         current = vertices.find(x => x.processed === false);
     }
 
-    //backtrace
+    // Backtrace
     let route = []
     let _limit = limit
     current = vertices.find(x => x.vertex === to)
@@ -404,14 +439,47 @@ function sellRouteRev (from, to, amount, pools, tokens, limit) {
         _limit--
     }
 
-    return route.map((el, i, arr) => {
+    // Count slippage tolerance
+    route = route.map((el, i) => {
+        let percent = vp.valueToBigInt(slippage, 8)
+        percent.decimals += 2
+
+        if (i) {
+            let amountIn
+            if (i === 1)
+                amountIn = el.outcome
+            else {
+                amountIn = buyExact({
+                    value : el.volume2,
+                    decimals : getDecimals(tokens, el.vertex)
+                }, {
+                    value : el.volume1,
+                    decimals : getDecimals(tokens, el.source)
+                }, route[i - 1].amountInMax, {
+                    value : el.pool_fee,
+                    decimals : 2
+                })
+            }
+            let addition = vp.mul(amountIn, percent)
+            el.amountInMax = vp.add(amountIn, addition)
+        }
+        return el
+    })
+
+    // Reduce to the ordinary route
+    route = route.map((el, i, arr) => {
         try {
             el.source = arr[i + 1].vertex
+            el.amountInMax = arr[i + 1].amountInMax
         } catch (e) {
             el.source = null
+            el.amountInMax = null
         }
         return el
     }).reverse()
+
+
+    return route
 }
 
 function findNodeNearby (vertices, current, curLimit) {

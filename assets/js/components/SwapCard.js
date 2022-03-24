@@ -25,6 +25,7 @@ const Settings = React.lazy(() => import('./Settings'))
 import '../../css/swap-card.css'
 import '../../css/font-style.css'
 import swapUtils from "../utils/swapUtils"
+import lsdp from '../utils/localStorageDataProcessor'
 
 const valueProcessor = new ValueProcessor()
 
@@ -890,6 +891,7 @@ class SwapCard extends React.Component {
             amount : this.props.exchange.field0.value,
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
+            slippage : lsdp.simple.get("ENEXUserSlippage"),
             limit : 4,
             mode : "sell"
         }
@@ -905,6 +907,7 @@ class SwapCard extends React.Component {
             amount : this.props.exchange.field1.value,
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
+            slippage : lsdp.simple.get("ENEXUserSlippage"),
             limit : 4,
             mode : "buy"
         }

@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
+import _ from "lodash"
 
 import presets from '../../store/pageDataPresets';
 import ConfirmSupply from './ConfirmSupply';
@@ -170,6 +171,7 @@ class SwapCard extends React.Component {
     };
 
     recalculateSwap (mode, oldHash) {
+
         if (this.props[mode].field0.token.hash !== oldHash)
             this.changeField(this.props[mode].field0.id, {value : this.props[mode].field0.value.text})
         else
@@ -202,7 +204,7 @@ class SwapCard extends React.Component {
         const t = this.props.t;
         let dp = 'trade.swapCard'; // default place (in translation file)
         let mode        = this.getMode();
-        let modeStruct  = this.props[mode];
+        let modeStruct  = _.cloneDeep(this.props[mode]);
 
         let firstToken  = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
         let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
@@ -574,7 +576,7 @@ class SwapCard extends React.Component {
             
             if (this.pairExists === false) {
                 let validationResult = {dataValid : false}
-                let modeField = this.props[this.getMode()]
+                let modeField = _.cloneDeep(this.props[this.getMode()])
                 if (modeField.field0.value.text && modeField.field1.value.text) {
                     let nativeBalance = utils.getBalanceObj(this.props.balances, this.props.mainToken)
                     let rules = this.swapCardValidationRules.getCreatePairValidationRules({
@@ -772,7 +774,7 @@ class SwapCard extends React.Component {
 
     changeField (fieldId, target) {
         let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
-        let modeData = this.props[mode], fieldData = modeData[field]
+        let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
         let oldValObj = {...fieldData.value}
 
         let decimals = fieldData.token.decimals

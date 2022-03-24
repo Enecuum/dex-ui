@@ -188,8 +188,7 @@ class ExtRequests {
         let data = {
             from : pubKey,
             to : presets.network.genesisPubKey,
-            value : params.plength ? (Number(params.plength)-1) * this.nativeTokenFee : this.nativeTokenFee,
-            // value : this.nativeTokenFee,
+            value : this.nativeTokenFee,
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e10),
             data : ENQweb3lib.serialize({

@@ -764,7 +764,7 @@ class SwapCard extends React.Component {
         this.props.assignCoinValue(mode, field, newValObj);
         let fieldObj = this.props[mode][field];
         fieldObj.value = newValObj;
-        this.countCounterField(fieldObj, this.getFieldName(fieldProps.id, true), field)
+        this.countOppositeField(fieldObj, this.getFieldName(fieldProps.id, true), field)
 
         let modeData = this.props[mode]
         modeData[field] = fieldObj
@@ -775,7 +775,7 @@ class SwapCard extends React.Component {
     changeField (fieldId, target) {
         let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
         let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
-        let oldValObj = {...fieldData.value}
+        let oldValObj = _.cloneDeep(fieldData.value)
 
         let decimals = fieldData.token.decimals
         let newValObj = (fieldData.token.amount !== '---') ? {
@@ -823,12 +823,12 @@ class SwapCard extends React.Component {
                     let promise
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
                         this.props.changeSwapCalcDirection("down")
-                        promise = this.countRouteSellExact()
+                        promise = this.countRoute(fieldData, this.props[mode][cField], "sell")
                     } else {
                         this.props.changeSwapCalcDirection("up")
-                        promise = this.countRouteBuyExact()
+                        promise = this.countRoute(fieldData, this.props[mode][cField], "buy")
                     }
-                    this.countRoute(promise, cField)
+                    this.handleRoutePromise(promise, cField)
                 }
             } else {
                 let activePairRules = this.swapCardValidationRules.getActivePairValidationRules(this.activePair)
@@ -837,7 +837,7 @@ class SwapCard extends React.Component {
                     this.setState({
                         routingVisibility: false
                     })
-                    this.countCounterField(fieldData, cField, field)
+                    this.countOppositeField(fieldData, cField, field)
                 }
             }
 
@@ -866,8 +866,8 @@ class SwapCard extends React.Component {
         return Number(rmPercent) <= 100
     }
 
-    countAddLiquidityPrice(activeField, counterField, pair) {
-        let decimals = [activeField.token.decimals, counterField.token.decimals]
+    countAddLiquidityPrice(activeField, oppositeField, pair) {
+        let decimals = [activeField.token.decimals, oppositeField.token.decimals]
         if (activeField.token.hash !== pair.token_0.hash)
             [decimals[0], decimals[1]] = [decimals[1], decimals[0]]
         let volume0  = {
@@ -886,39 +886,22 @@ class SwapCard extends React.Component {
             return testFormulas.getAddLiquidityPrice(volume0, volume1, activeAmount)
     }
 
-    countRouteSellExact () {
+    countRoute (activeField, oppositeField, mode="sell") {
         let data = {
-            token0 : this.props.exchange.field0.token,
-            token1 : this.props.exchange.field1.token,
-            amount : this.props.exchange.field0.value,
+            token0 : activeField.token,
+            token1 : oppositeField.token,
+            amount : activeField.value,
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
             slippage : lsdp.simple.get("ENEXUserSlippage"),
             limit : 4,
-            mode : "sell"
+            mode : mode
         }
 
-        // console.log(testFormulas.sellRoute(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
         return this.routingWorker.postMessage(data)
     }
 
-    countRouteBuyExact () {
-        let data = {
-            token0 : this.props.exchange.field1.token,
-            token1 : this.props.exchange.field0.token,
-            amount : this.props.exchange.field1.value,
-            pairs  : this.props.pairs,
-            tokens : this.props.tokens,
-            slippage : lsdp.simple.get("ENEXUserSlippage"),
-            limit : 4,
-            mode : "buy"
-        }
-
-        // console.log(testFormulas.sellRouteRev(data.token0.hash, data.token1.hash, data.amount, data.pairs, data.tokens, data.limit))
-        return this.routingWorker.postMessage(data)
-    }
-
-    countRoute (routingExec, cField) {
+    handleRoutePromise (routingExec, cField) {
         routingExec.then(res => {
             this.pairExists = true
             this.props.changeCreatePoolState(false)
@@ -953,26 +936,26 @@ class SwapCard extends React.Component {
         })
     }
 
-    countCounterField(fieldObj, cField, aField) {
+    countOppositeField(fieldObj, cField, aField) {
         let mode = this.getMode()
-        let counterField = this.props[mode][cField]
+        let oppositeField = this.props[mode][cField]
 
         if (fieldObj.value.value === undefined)
             return
 
-        if (fieldObj.token.ticker !== presets.swapTokens.emptyToken.ticker && counterField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
+        if (fieldObj.token.ticker !== presets.swapTokens.emptyToken.ticker && oppositeField.token.ticker !== presets.swapTokens.emptyToken.ticker) {
             if (this.activePair === undefined) {
                 return
             }
             if (mode === "removeLiquidity") {
                 this.countRemoveLiquidity(mode, aField, fieldObj.value)
             } else {
-                let counterFieldPrice = this.countAddLiquidityPrice(fieldObj, counterField, this.activePair)
-                if (counterFieldPrice)
+                let oppositeFieldPrice = this.countAddLiquidityPrice(fieldObj, oppositeField, this.activePair)
+                if (oppositeFieldPrice)
                     this.props.assignCoinValue(mode, cField, {
-                        value : counterFieldPrice.value,
-                        decimals : counterFieldPrice.decimals,
-                        text : this.bigIntToString(counterFieldPrice.value, counterFieldPrice.decimals)
+                        value : oppositeFieldPrice.value,
+                        decimals : oppositeFieldPrice.decimals,
+                        text : this.bigIntToString(oppositeFieldPrice.value, oppositeFieldPrice.decimals)
                     })
             }
         }
@@ -1060,8 +1043,8 @@ class SwapCard extends React.Component {
         }
         if (this.getMode() === 'exchange' && modeData.field0.token.hash === this.props.mainToken) {
             modeData.fullField0Value = valueProcessor.add({
-                value : presets.network.nativeToken.fee,
-                decimals : modeData.field0.balance.decimals
+                value : this.props.mainTokenFee,
+                decimals : swapUtils.getTokenObj(this.props.tokens, this.props.mainToken).decimals
             }, modeData.field0.value)
         } else {
             modeData.fullField0Value = undefined

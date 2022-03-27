@@ -1,4 +1,4 @@
-import utils from '../utils/swapUtils' 
+import utils from '../utils/swapUtils'
 
 class SwapCardValidationRules {
     constructor (translationFunction) {
@@ -177,7 +177,7 @@ class SwapCardValidationRules {
             route : {
                 checks: [
                     {
-                        requireToCheck: true,
+                        requireToCheck: mode === 'exchange',
                         method: 'isSet',
                         args: {data: tooMuchLiquidity ? null : true},
                         desiredResult: true,

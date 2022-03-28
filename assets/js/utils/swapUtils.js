@@ -1,4 +1,5 @@
 import ValueProcessor from './ValueProcessor';
+import _ from 'lodash';
 
 const vp = new ValueProcessor();
 
@@ -204,6 +205,7 @@ function getBalanceObj (balances, hash) {
 function getTokenObj (tokens, hash) {
     let tokenObj = tokens.find(el => el.hash === hash);
     if (tokenObj) {
+        tokenObj = _.cloneDeep(tokenObj)
         if (tokenObj.decimals === undefined) {
             tokenObj.decimals = 0;
             tokenObj.total_supply = 0;

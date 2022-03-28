@@ -76,11 +76,19 @@ class SwapCard extends React.Component {
 
 
     componentDidUpdate(prevProps){
-      const hasAChanged = ((this.props.tokens !== prevProps.tokens));
+        const hasAChanged = ((this.props.tokens !== prevProps.tokens));
 
-      if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
-          this.setSwapTokensFromRequest();
-          this.initByGetRequestParams = false;
+        if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
+            this.setSwapTokensFromRequest();
+            this.initByGetRequestParams = false;
+        }
+
+        if (ENQWeb.Enq.provider !== this.oldNet) {
+            this.oldNet = ENQWeb.Enq.provider
+            this.setState({
+                routingVisibility : false,
+                route: []
+            })
         }
     }
 
@@ -116,7 +124,7 @@ class SwapCard extends React.Component {
             window.location.hash = '#!action='+ paramsObj.action +'&pair=' + this.props[mode].field0.token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else {
             this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
-        }      
+        }
     }
 
     requestPairIsExist(paramsObj) {
@@ -173,7 +181,7 @@ class SwapCard extends React.Component {
     recalculateSwap (mode, oldHash) {
 
         if (this.props[mode].field0.token.hash !== oldHash)
-            this.changeField(this.props[mode].field0.id, {value : this.props[mode].field0.value.text})
+            this.changeField(this.props[mode].field0.id, {value : _.cloneDeep(this.props[mode].field0.value.text)})
         else
             setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     }
@@ -208,8 +216,12 @@ class SwapCard extends React.Component {
 
         let firstToken  = utils.getTokenObj(this.props.tokens, modeStruct.field0.token.hash);
         let secondToken = utils.getTokenObj(this.props.tokens, modeStruct.field1.token.hash);
+
         return (
-            <>
+            <div>
+                {this.props.coinName === "---" ? <div className={"swap-card-cap"}>
+                    <div className="swap-card-loading icon-Icon15" />
+                </div> : <></>}
                 <div className={`p-4 ${((!this.props.liquidityMain && mode === 'liquidity') || mode === 'removeLiquidity') ? '' : 'bottom-line-1'}`}>
                     <div className='d-flex justify-content-between align-items-center'>
                         {/* ---------------------------------------- add-liquidity and remove-liquidity header ---------------------------------------- */}
@@ -398,7 +410,7 @@ class SwapCard extends React.Component {
                         </div>
                     }
                 </div>
-            </>
+            </div>
         );
     };
 
@@ -711,7 +723,7 @@ class SwapCard extends React.Component {
     };
 
     showExchangeRate (firstToken) {
-        return utils.removeEndZeros(utils.countExchangeRate(this.activePair, firstToken, this.props[this.getMode()]))
+        return utils.removeEndZeros(utils.countExchangeRate(this.activePair, firstToken, _.cloneDeep(this.props[this.getMode()])))
     };
 
     showPercents (fixedLength=1) {
@@ -762,11 +774,11 @@ class SwapCard extends React.Component {
             text     : valueProcessor.usCommasBigIntDecimals (value, decimals, decimals).replace(',','')
         };
         this.props.assignCoinValue(mode, field, newValObj);
-        let fieldObj = this.props[mode][field];
+        let fieldObj = _.cloneDeep(this.props[mode][field]);
         fieldObj.value = newValObj;
         this.countOppositeField(fieldObj, this.getFieldName(fieldProps.id, true), field)
 
-        let modeData = this.props[mode]
+        let modeData = _.cloneDeep(this.props[mode])
         modeData[field] = fieldObj
 
         this.establishReadiness(this.validateSwapCard(modeData))
@@ -823,10 +835,10 @@ class SwapCard extends React.Component {
                     let promise
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
                         this.props.changeSwapCalcDirection("down")
-                        promise = this.countRoute(fieldData, this.props[mode][cField], "sell")
+                        promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "sell")
                     } else {
                         this.props.changeSwapCalcDirection("up")
-                        promise = this.countRoute(fieldData, this.props[mode][cField], "buy")
+                        promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "buy")
                     }
                     this.handleRoutePromise(promise, cField)
                 }
@@ -938,7 +950,7 @@ class SwapCard extends React.Component {
 
     countOppositeField(fieldObj, cField, aField) {
         let mode = this.getMode()
-        let oppositeField = this.props[mode][cField]
+        let oppositeField = _.cloneDeep(this.props[mode][cField])
 
         if (fieldObj.value.value === undefined)
             return
@@ -1060,7 +1072,7 @@ class SwapCard extends React.Component {
 
     closeTokenList(tokenObj, activeField) {
         this.props.closeTokenList()
-        let mode = this.getMode(), modeData = this.props[mode]
+        let mode = this.getMode(), modeData = _.cloneDeep(this.props[mode])
         if (tokenObj) {
             modeData[activeField].token = tokenObj
             this.establishReadiness(this.validateSwapCard(modeData))
@@ -1089,8 +1101,8 @@ class SwapCard extends React.Component {
 
     establishPairExistence() {
         let mode = this.getMode();
-        let token0 = this.props[mode].field0.token;
-        let token1 = this.props[mode].field1.token;
+        let token0 = _.cloneDeep(this.props[mode].field0.token);
+        let token1 = _.cloneDeep(this.props[mode].field1.token);
         this.activePair = utils.searchSwap(this.props.pairs, [token0, token1], (mode === 'removeLiquidity') ? this.props[mode].ltfield.token.hash : undefined);
         if (token0.hash === presets.swapTokens.emptyToken.hash || token1.hash === presets.swapTokens.emptyToken.hash) {
             this.pairExists = true; // make an exclusion for first page render
@@ -1119,8 +1131,8 @@ class SwapCard extends React.Component {
 
     countBadBalance () {
         let mode = this.getMode();
-        let f0 = this.props[mode].field0;
-        let f1 = this.props[mode].field1;
+        let f0 = _.cloneDeep(this.props[mode].field0);
+        let f1 = _.cloneDeep(this.props[mode].field1);
         let balance0 = {value : f0.balance.amount, decimals : f0.balance.decimals};
         let balance1 = {value : f1.balance.amount, decimals : f1.balance.decimals};
         let subtraction0, subtraction1;
@@ -1171,7 +1183,7 @@ class SwapCard extends React.Component {
 
     /* ================================== main rendering function ================================== */
     render() {
-        this.establishReadiness(this.validateSwapCard(this.props[this.getMode()]))
+        this.establishReadiness(this.validateSwapCard(_.cloneDeep(this.props[this.getMode()])))
         this.establishPairExistence();
         return (
             <div>

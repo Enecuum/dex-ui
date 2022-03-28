@@ -198,6 +198,19 @@ class Root extends React.Component {
     }
 
     updTokens() {
+        // if ()
+        //
+        // if (this.oldNet !== this.props.mainToken) {
+        //
+        //     while (this.oldStateLen )
+        //
+        //
+        //     this.oldNet = this.props.mainToken
+        //     setTimeout(, 2000)
+        // } else {
+        //     this.oldStateLen = this.props.pairs.length + this.props.tokens.length
+        // }
+
         swapApi.getTokens()
         .then(res => {
             if (!res.lock)
@@ -239,7 +252,6 @@ class Root extends React.Component {
                 let j = tokens.indexOf(isInTokensArr)
                 if (j !== -1) {
                     let inRootProps = this.props.tokens.find(token => token.hash === elem.hash)
-
                     if (!inRootProps) {
                         indexes[iCounter++] = j
                         promises.push(swapApi.getTokenInfo(tokens[j].hash))
@@ -335,10 +347,12 @@ class Root extends React.Component {
         let balanceObj = utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash)
         let tokenObj = utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash)
         if (tokenObj.ticker === '---') {
-            if (field === 'field0')
-                this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props.mainToken))
-            else
+            if (field === 'field0') {
+                let mainToken = utils.getTokenObj(this.props.tokens, this.props.mainToken)
+                this.props.assignTokenValue(menuItem, field, mainToken)
+            } else {
                 this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
+            }
         }
         this.props.assignBalanceObj(menuItem, field, balanceObj)
     }

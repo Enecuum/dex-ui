@@ -66,7 +66,8 @@ function mapStoreToProps(component) {
                     navOpened                  : state.root.navOpened,
                     tokens                     : state.root.tokens,
                     nativeToken                : state.root.nativeToken,
-                    net                        : state.root.net
+                    net                        : state.root.net,
+                    coinName                   : state.indicatorPanel.coinName
                 }
             }
         case components.SWITCH:
@@ -377,7 +378,8 @@ function mapDispatchToProps(component) {
                     ...rootCreator,
                     assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
                     changeMenuItem  : rootCreator.changeMenuItem,
-                    assignTokenValue: swapCardCreator.assignTokenValue
+                    assignTokenValue: swapCardCreator.assignTokenValue,
+                    assignCoinValue : swapCardCreator.assignCoinValue
                 }, dispatch)
             }
         case components.SWAP_CARD:

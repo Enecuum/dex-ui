@@ -25,6 +25,13 @@ class Routing extends React.Component {
         }
     }
 
+    componentDidUpdate (prevProps, prevState, snapshot) {
+        if (ENQWeb.Enq.provider !== this.oldNet) {
+            this.oldNet = ENQWeb.Enq.provider
+            this.setState({showRouter : false})
+        }
+    }
+
     changeRouterStatus () {
         this.setState({showRouter : !this.state.showRouter})
     }

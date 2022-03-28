@@ -19,6 +19,7 @@ module.exports = {
     "feeType" : "Fee type",
     "flat" : "Flat",
     "percent" : "Percent",
+    "native" : "Native",
     "fee" : "Fee",
     "minFee" : "Min Fee",
     "days" : "Days",

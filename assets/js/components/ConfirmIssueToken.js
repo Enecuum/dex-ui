@@ -21,8 +21,9 @@ class ConfirmIssueToken extends React.Component {
         }        
 
         this.tokenFeeTypesTitles = {
-            'type_0' : 'etm.nonReissuable',
-            'type_1' : 'etm.reissuable'
+            'type_0' : 'etm.flat',
+            'type_1' : 'etm.percent',
+            'type_2' : 'etm.native'
         }
     }
 

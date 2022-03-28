@@ -48,18 +48,24 @@ class TokenСonstraints {
         };
         this.fee_type_arr = [
             {title: 'TOKEN_FLAT_FEE', value: '0'},
-            {title: 'TOKEN_PERCENT_FEE', value: '1'}
+            {title: 'TOKEN_PERCENT_FEE', value: '1'},
+            {title: 'TOKEN_NATIVE_FEE', value: '2'},
         ];
         this.fee_value_props_arr = [
             {
-                minValue: 1,
+                minValue: 0,
                 maxValue: this.MAX_SUPPLY_LIMIT,
                 decimalPlaces: 10      
             },
             {
-                minValue: 1,
+                minValue: 0,
                 maxValue: 100,
                 decimalPlaces: 2                
+            },
+            {
+                minValue: 0,
+                maxValue: this.MAX_SUPPLY_LIMIT,
+                decimalPlaces: 10      
             }                
         ];
         this.min_fee_for_percent_fee_type = {

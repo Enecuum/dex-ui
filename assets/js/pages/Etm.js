@@ -232,6 +232,19 @@ class Etm extends React.Component {
 		}
     }
 
+    getFeeUnit() {
+    	const t = this.props.t;
+    	let unit = '';
+    	if (this.props.tokenData.fee_type === '0') {
+    		unit = this.props.msgData.ticker !== undefined || !(this.props.tokenData.ticker.length)  ? t('tokens') : this.props.tokenData.ticker;
+    	} else if (this.props.tokenData.fee_type === '1')
+    		unit = '%';
+    	else if (this.props.tokenData.fee_type === '2')
+    		unit = this.props.mainTokenTicker;
+
+    	return unit;
+    }
+
 	calculateBlockReward() {
         let block_reward = (Number(this.newToken.tokenData.max_supply) - Number(this.newToken.tokenData.total_supply))/(Number(this.newToken.tokenData.mining_period) * 5760);
         if (typeof block_reward === 'number') {
@@ -510,7 +523,16 @@ class Etm extends React.Component {
 										value="1"
 										checked={this.props.tokenData.fee_type === "1"}
 										id="setFeeType2"
-										onChange={this.handleInputChange.bind(this)} />
+										onChange={this.handleInputChange.bind(this)}
+										className="mb-2" />
+									<Form.Check
+										type="radio"
+										label={t('etm.native')}
+										name="fee_type"
+										value="2"
+										checked={this.props.tokenData.fee_type === "2"}
+										id="setFeeType3"
+										onChange={this.handleInputChange.bind(this)} />	
 								</Col>	
 							</Form.Group>
 						</fieldset>
@@ -526,7 +548,7 @@ class Etm extends React.Component {
 										value={this.props.tokenData.fee_value}
 										onChange={this.handleInputChange.bind(this)} />
 									<InputGroup.Append>
-										<InputGroup.Text>{this.props.tokenData.fee_type === '0' ? (this.props.msgData.ticker !== undefined || !(this.props.tokenData.ticker.length)  ? t('tokens') : this.props.tokenData.ticker) : '%'}</InputGroup.Text>
+										<InputGroup.Text>{this.getFeeUnit()}</InputGroup.Text>
 									</InputGroup.Append>
 								</InputGroup>	
 								<Form.Text className={`err-msg ${this.props.msgData.hasOwnProperty('fee_value') ? 'd-block' : 'd-none'}`} >

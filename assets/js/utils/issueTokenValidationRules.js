@@ -649,7 +649,7 @@ class IssueTokenValidationRules {
                     },                    
                     {
                         method: 'moreThan',
-                        args: {value: etmState.tokenBigIntData.fee_value.completeValue, max: etmState.tokenData.fee_type === '0' ? maxBigInt : BigInt(tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].maxValue * (10 ** tokenDataConstraints.fee_value_props_arr[1].decimalPlaces))},
+                        args: {value: etmState.tokenBigIntData.fee_value.completeValue, max: etmState.tokenData.fee_type === '0' || etmState.tokenData.fee_type === '2'? maxBigInt : BigInt(tokenDataConstraints.fee_value_props_arr[etmState.tokenData.fee_type].maxValue * (10 ** tokenDataConstraints.fee_value_props_arr[1].decimalPlaces))},
                         desiredResult: false,
                         errMsg: {
                                     msg: 'EXEED_MAX_VALUE_IN_TOKENS',

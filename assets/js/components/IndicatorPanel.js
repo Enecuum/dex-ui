@@ -142,6 +142,11 @@ class IndicatorPanel extends React.Component {
     }
 
     updStatuses () {
+        if (this.curNet !== this.props.net.url) {
+            this.curNet = this.props.net.url
+            this.hidePendingIndicator()
+        }
+
         if (this.updStatusesPermition === false)
             return new Promise(resolve => resolve())
 
@@ -154,6 +159,7 @@ class IndicatorPanel extends React.Component {
 
             if (promises.length === 0) {
                 this.updStatusesPermition = true
+                this.hidePendingIndicator()
                 resolve()
                 return
             }

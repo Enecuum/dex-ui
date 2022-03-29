@@ -14,7 +14,8 @@ const presets =  {
             farm_increase_stake : 'farm_increase_stake',
             farm_close_stake : 'farm_close_stake',
             farm_decrease_stake : 'farm_decrease_stake',
-            dex_cmd_distribute : 'dex_cmd_distribute'
+            dex_cmd_distribute : 'dex_cmd_distribute',
+            token_issue : 'token_issue'
         }
     },
 

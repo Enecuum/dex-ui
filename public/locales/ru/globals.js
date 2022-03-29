@@ -76,7 +76,8 @@ module.exports = {
             "farm_increase_stake" : "Увеличение стейка",
             "farm_close_stake" : "Закрыть",
             "farm_decrease_stake" : "Уменьшение стейка",
-            "dex_cmd_distribute" : "Добавление"
+            "dex_cmd_distribute" : "Добавление",
+            "token_issue" : "Выпуск токена"
         }
     },
     "txActionPhrases" : {
@@ -110,6 +111,9 @@ module.exports = {
         },
         "dex_cmd_distribute" : {
             "completePhrase" : "{{action}} {{value}} {{ticker}} на Space Station"
+        },
+        "token_issue" : {
+            "completePhrase" : "{{action}} {{ticker}}"
         }
     },
     "blockWindow" : {

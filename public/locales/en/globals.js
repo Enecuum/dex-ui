@@ -75,7 +75,8 @@ module.exports = {
             "farm_increase_stake" : "Stake",
             "farm_close_stake" : "Close",
             "farm_decrease_stake" : "Unstake",
-            "dex_cmd_distribute" : "Add"
+            "dex_cmd_distribute" : "Add",
+            "token_issue" : "Issue token"
         }
     },
     "txActionPhrases" : {
@@ -109,6 +110,9 @@ module.exports = {
         },
         "dex_cmd_distribute" : {
             "completePhrase" : "{{action}} {{value}} {{ticker}} to Space Station"
+        },
+        "token_issue" : {
+            "completePhrase" : "{{action}} {{ticker}}"
         }
     },
     "blockWindow" : {

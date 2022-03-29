@@ -6,7 +6,8 @@ import { withTranslation } from "react-i18next";
 
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-
+import lsdp from "../utils/localStorageDataProcessor";
+import presets from '../../store/pageDataPresets';
 import '../../css/confirm-supply.css';
 
 const valueProcessor = new ValueProcessor();
@@ -65,6 +66,12 @@ class ConfirmIssueToken extends React.Component {
         extRequests.issueToken(this.props.pubkey, this.props.issueTokenTxAmount, parameters)
         .then(result => {
             console.log('Success', result.hash)
+            let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+            let actionType = presets.pending.allowedTxTypes.token_issue;
+            interpolateParams = {                    
+                    ticker : parameters.ticker
+                }
+            lsdp.write(result.hash, 0, actionType, interpolateParams)
             this.props.updCurrentTxHash(result.hash);
             this.props.changeWaitingStateType('submitted');
             this.props.resetStore();

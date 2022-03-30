@@ -83,7 +83,7 @@ class SwapCard extends React.Component {
             this.initByGetRequestParams = false;
         }
 
-        if (ENQWeb.Enq.provider !== this.oldNet) {
+        if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
             this.oldNet = ENQWeb.Enq.provider
             this.setState({
                 routingVisibility : false,

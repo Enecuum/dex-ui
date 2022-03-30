@@ -906,7 +906,7 @@ class SwapCard extends React.Component {
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
             slippage : lsdp.simple.get("ENEXUserSlippage"),
-            limit : 4,
+            limit : 2,
             mode : mode
         }
 

@@ -19,9 +19,8 @@ RUN apt-get update && apt-get install -y git
 RUN npm i --force
 RUN npx browserslist@latest --update-db
 RUN node node_modules/webpack/bin/webpack.js build --config webpack.config.js
-
-# remove useless files
-#RUN bash remove_useless_files.bash --stype $SERVICE_TYPE
+RUN rm -rf node_modules
+RUN npm install --production
 
 # point out ports
 EXPOSE 7000-8000

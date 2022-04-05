@@ -1,3 +1,10 @@
 .idea
 README.md
 logs
+tests
+node_modules
+data
+doc_img
+server_structure.md
+service_requests.md
+service_structure.md

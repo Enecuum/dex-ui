@@ -66,8 +66,8 @@ if [ -z "$1" ] ; then
 fi
 
 if [ "$1" == "--build" ] ; then
-    cp config.json.example config.json || echo "config has already been created"
-    node node_modules/webpack/bin/webpack.js build --config webpack.config.js
+#    cp config.json.example config.json || echo "config has already been created"
+#    node node_modules/webpack/bin/webpack.js build --config webpack.config.js
     build_images
 elif [ "$1" == "--run" ] ; then
     if [ -n "$2" ] ; then

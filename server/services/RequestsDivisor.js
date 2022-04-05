@@ -2,11 +2,7 @@ const express = require("express")
 
 const T_Service = require("../templates/T_Service")
 
-const path = require("path")
-const webpack              = require("webpack")
-const webpackDevMiddleware = require("webpack-dev-middleware")
-const webpackHotMiddleware = require("webpack-hot-middleware")
-const w_config             = require("../../webpack.config")()
+const w_config = require("../../webpack.config")()
 
 
 class RequestsDivisor extends T_Service {
@@ -25,6 +21,10 @@ class RequestsDivisor extends T_Service {
         // })
 
         if (w_config.mode === "development") {
+            const webpack              = require("webpack")
+            const webpackDevMiddleware = require("webpack-dev-middleware")
+            const webpackHotMiddleware = require("webpack-hot-middleware")
+
             let hmr_plugin = new webpack.HotModuleReplacementPlugin()
             w_config.entry.app.unshift('webpack-hot-middleware/client?reload=true&timeout=1000')
             if (w_config.plugins && Array.isArray(w_config.plugins))

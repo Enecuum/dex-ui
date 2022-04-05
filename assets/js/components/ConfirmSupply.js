@@ -208,7 +208,7 @@ class ConfirmSupply extends React.Component {
                     if (this.props.swapCalculationsDirection === "down") {
                         percent = valueProcessor.sub(valueProcessor.valueToBigInt(1), percent)
                         slippageCalc = valueProcessor.mul(this.props.exchange.field1.value, percent)
-                        if (this.props.route.length === 1) {
+                        if (this.props.route.length === 2) {
                             txType = txTypes.pool_sell_exact
                             txPromise = extRequests.sellExact(this.props.pubkey, this.props.exchange, slippageCalc)
                         } else {

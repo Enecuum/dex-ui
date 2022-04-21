@@ -140,7 +140,7 @@ class ExtRequests {
         let params = {
             amount_out : this.getBigIntAmount(exchangeMode.field1),
             amount_in_max : this.getBigIntAmount({
-                value : route[route.length-1].amountInMax,
+                value : route[1].amountInMax,
                 balance : exchangeMode.field0.balance
             }),
             plength : BigInt(route.length)

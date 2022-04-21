@@ -22,7 +22,7 @@ function help_msg() {
 }
 
 function build_images() {
-    docker build -t ${IMG_TAG} ./
+    docker build -t ${IMG_TAG} ./ --no-cache=True
 }
 
 function run_images() {

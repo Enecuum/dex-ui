@@ -228,7 +228,7 @@ class SpaceStation extends React.Component {
                                         decimals : 2
                                     }
 
-                                    let enxOut = testFormulas.getSwapPrice(vol_LP, vol_ENX, amountIn, pool_fee);
+                                    let enxOut = testFormulas.getSwapPrice(vol_ENX, vol_LP, amountIn, pool_fee);
                                     enxOut.token = {
                                             hash: pool.asset_ENX
                                         }

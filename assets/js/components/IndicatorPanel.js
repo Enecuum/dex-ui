@@ -94,9 +94,24 @@ class IndicatorPanel extends React.Component {
         this.props.updCoinName(tokenName.ticker)
     }
 
-    getDecimals (asset_out) {
+    getDecimals (params , type) {
         return new Promise(resolve => {
-            resolve(swapUtils.getTokenObj(this.props.tokens, asset_out).decimals)
+            if (type === txTypes.pool_swap)
+                resolve(swapUtils.getTokenObj(this.props.tokens, params.asset_out).decimals)
+            else if (type === txTypes.farm_get_reward) {
+                resolve(this.getFarmInfo(params.farm_id).reward_token_decimals)
+            }
+        })
+    }
+
+    getFarmInfo (farmId) {
+        return new Promise(resolve => {
+            networkApi.getDexFarms(this.props.pubkey, [farmId])
+                .then(res => {
+                    res.json()
+                        .then(farmInfo => resolve(farmInfo))
+                })
+                .catch(resolve({}))
         })
     }
 
@@ -123,7 +138,7 @@ class IndicatorPanel extends React.Component {
             if (allowedTypes.indexOf(objData.type) !== -1) {
                 Promise.allSettled([
                     this.getEIndexData(txHash),
-                    this.getDecimals(objData.parameters.asset_out)
+                    this.getDecimals(objData.parameters, objData.type)
                 ]).then(results => {
                     let value
                     if (objData.type === txTypes.pool_swap) {

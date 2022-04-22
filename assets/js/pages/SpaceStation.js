@@ -167,6 +167,7 @@ class SpaceStation extends React.Component {
             if (!result.lock && (this.props.networkInfo.dex.DEX_SPACE_STATION_ID !== undefined)) {
                 result.json().then(resultFarmsList => {
                     this.farms = resultFarmsList;
+                    let sStation = this.farms.find(farm => farm.farm_id === this.props.networkInfo.dex.DEX_SPACE_STATION_ID);
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });
@@ -175,8 +176,19 @@ class SpaceStation extends React.Component {
                         value : this.props.networkInfo.dex.DEX_SPACE_STATION_ID
                     });
                     this.props.updateManagedFarmData({
-                        value : this.farms.find(farm => farm.farm_id === this.props.networkInfo.dex.DEX_SPACE_STATION_ID)
-                    });                                    
+                        value : sStation
+                    });
+                    
+                    if (!(sStation.stake > 0))
+                        sStation.stake = 0;
+
+                    if (sStation.total_stake > 0) {                        
+                        let stakeShare =  valueProcessor.div({value: BigInt(sStation.stake) * 100n, decimals: 2}, {value: BigInt(sStation.total_stake), decimals: 2});
+                        this.stakeShare = this.getValueAsFormattedString(stakeShare);
+                    } else
+                        this.stakeShare = '---'
+
+                    
                 })
             }
         }, () => {
@@ -196,12 +208,7 @@ class SpaceStation extends React.Component {
                     .then(balances => {
                         balances.json().then(function(commanderBalances) {
                             let enxHash = that.props.networkInfo.dex.DEX_ENX_TOKEN_HASH;
-                            let accEnxVolume = {value: 0, decimals: 0}
                             spaceStationPools.forEach(function(pool) {
-                                accEnxVolume = valueProcessor.add(accEnxVolume, {
-                                    value : pool.volume_ENX,
-                                    decimals : pool.decimals_ENX
-                                })
                                 let LPBalance = commanderBalances.find(balance => balance.token === pool.asset_LP);
                                 if (LPBalance !== undefined) {
                                     pool.LPTokenOnCommanderBalance = LPBalance;
@@ -252,7 +259,7 @@ class SpaceStation extends React.Component {
 
                                     pool.distributeResult = {
                                         enxOut : enxOut,
-                                        priceImpact : that.showPriceImpact(priceImpact)
+                                        priceImpact : that.getValueAsFormattedString(priceImpact)
                                     }
                                 } else {
                                     pool.LPTokenOnCommanderBalance = {
@@ -261,10 +268,6 @@ class SpaceStation extends React.Component {
                                 }
                             });
 
-                            that.stakeShare = valueProcessor.div({
-                                value : that.farms[0].total_stake,
-                                decimals : that.farms[0].stake_token_decimals
-                            }, accEnxVolume)
                             that.spaceStationPools = spaceStationPools;
                             that.props.updatePoolsList({
                                 value : that.spaceStationPools
@@ -283,13 +286,15 @@ class SpaceStation extends React.Component {
         })
     }
 
-    showPriceImpact(priceImpact) {
-        if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
+    getValueAsFormattedString(data) {
+        if (data.value == 0)
+            return "0.00"
+        else if (data.decimals - String(data.value).length > 2 || !Object.keys(data).length)
             return  "< 0.001"
         try {
-            return valueProcessor.usCommasBigIntDecimals(priceImpact.value, priceImpact.decimals)
+            return valueProcessor.usCommasBigIntDecimals(data.value, data.decimals)
         } catch (e) {
-            return ""
+            return "---"
         }         
     }
 
@@ -591,7 +596,7 @@ class SpaceStation extends React.Component {
                     </div>
                     <div className="d-block h4 d-md-flex mb-5 ml-4">
                         <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.stakeShare')}</div>
-                        <div className="text-nowrap">{this.stakeShare !== undefined ? valueProcessor.usCommasBigIntDecimals(this.stakeShare.value, this.stakeShare.decimals, this.stakeShare.decimals) : '---'} %</div>
+                        <div className="text-nowrap">{this.stakeShare !== undefined ? this.stakeShare : '---'} %</div>
                     </div>
                 </div>
 

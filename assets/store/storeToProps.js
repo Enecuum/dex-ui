@@ -129,6 +129,7 @@ function mapStoreToProps(component) {
                     mainToken       : state.root.mainToken,
                     mainTokenFee    : state.root.mainTokenFee,
                     connectionStatus: state.root.connectionStatus,
+                    networkInfo     : state.root.networkInfo
                 }
             }
         case components.CONFIRM_SUPPLY:

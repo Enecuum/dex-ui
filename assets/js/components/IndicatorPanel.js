@@ -63,7 +63,7 @@ class IndicatorPanel extends React.Component {
                     <span className='text-uppercase mx-2'>{this.props.net.name}</span>
                 </div>
                 <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-0 mr-sm-3'>
-                    {this.props.enx} ENX
+                    {this.enx} ENX
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
@@ -92,6 +92,11 @@ class IndicatorPanel extends React.Component {
         let tokenName = utils.getTokenObj(this.props.tokens, this.props.mainToken)
         this.props.updCoinAmount(vp.usCommasBigIntDecimals(tokenObj.amount, tokenObj.decimals))
         this.props.updCoinName(tokenName.ticker)
+
+        if (this.props.networkInfo.dex) {
+            let enxCoin = utils.getBalanceObj(this.props.balances, this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
+            this.enx = vp.usCommasBigIntDecimals(enxCoin.amount, enxCoin.decimals)
+        }
     }
 
     getDecimals (params , type) {
@@ -103,6 +108,8 @@ class IndicatorPanel extends React.Component {
             }
         })
     }
+
+    // this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH
 
     getFarmInfo (farmId) {
         return new Promise(resolve => {
@@ -230,8 +237,8 @@ class IndicatorPanel extends React.Component {
     updNetwork () {
         extRequests.getProvider(true)
         .then(res => {
-            if (this.state.blockTheWindow)
-                this.setState({blockTheWindow : false})
+            // if (this.state.blockTheWindow)
+            //     this.setState({blockTheWindow : false})
             if (!res.lock && res.net) {
                 ENQWeb.Enq.provider = res.net
                 this.updMainTokenData(res.net)

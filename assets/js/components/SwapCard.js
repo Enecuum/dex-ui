@@ -99,8 +99,11 @@ class SwapCard extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('hashchange', this.resolveURLHash)
-        if (this.routingWorker)
-            this.routingWorker.close()
+        if (this.routingWorker) {
+            try {
+                this.routingWorker.close()
+            } catch (e) {}
+        }
     }
 
     setSwapTokensFromRequest() {
@@ -184,6 +187,14 @@ class SwapCard extends React.Component {
             this.changeField(this.props[mode].field0.id, {value : _.cloneDeep(this.props[mode].field0.value.text)})
         else
             setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+    }
+
+    recalculateSwapForNewToken (mode, newHash, activeField) {
+        let field = this.getFieldName(activeField)
+        if (this.props[mode][field].token.hash === newHash)
+            this.changeField(this.props[mode][field].id, {value : _.cloneDeep(this.props[mode][field].value.text)})
+        else
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, newHash, activeField)
     }
 
     changeBalance(field, hash) {
@@ -685,6 +696,7 @@ class SwapCard extends React.Component {
                     <TokenCard
                         changeBalance={this.changeBalance.bind(this)}
                         getMode={this.getMode.bind(this)}
+                        recalculateSwapForNewToken={this.recalculateSwapForNewToken.bind(this)}
                         useSuspense={false} />
                 </>
             );
@@ -785,7 +797,9 @@ class SwapCard extends React.Component {
     }
 
     changeField (fieldId, target) {
-        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString()
+        if (target.value === undefined)
+            return
+        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString().replace(/[^0-9]+/g, '')
         let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
         let oldValObj = _.cloneDeep(fieldData.value)
 
@@ -943,7 +957,9 @@ class SwapCard extends React.Component {
             })
         })
         .catch(() => {
-            this.routingWorker.close()
+            try {
+                this.routingWorker.close()
+            } catch (e) {}
             this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
         })
     }
@@ -1104,6 +1120,7 @@ class SwapCard extends React.Component {
         let token0 = _.cloneDeep(this.props[mode].field0.token);
         let token1 = _.cloneDeep(this.props[mode].field1.token);
         this.activePair = utils.searchSwap(this.props.pairs, [token0, token1], (mode === 'removeLiquidity') ? this.props[mode].ltfield.token.hash : undefined);
+        this.pairExists = utils.pairExists(this.activePair)
         if (token0.hash === presets.swapTokens.emptyToken.hash || token1.hash === presets.swapTokens.emptyToken.hash) {
             this.pairExists = true; // make an exclusion for first page render
             return;

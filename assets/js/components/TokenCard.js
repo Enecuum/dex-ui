@@ -22,6 +22,7 @@ const vp = new ValueProcessor()
 
 import {initSettings, settings} from "../utils/tokensSettings"
 import enqLogo from "../../img/ENEXlogo.png";
+import _ from 'lodash'
 
 
 class TokenCard extends React.Component  {
@@ -78,6 +79,7 @@ class TokenCard extends React.Component  {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + this.props[mode].field0.token.ticker + '-' + token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  token.hash;
         }
 
+        this.props.recalculateSwapForNewToken(this.props.getMode(), token.hash, this.props.activeField)
         let tokenObj = utils.getTokenObj(this.props.tokens, token.hash)
         this.props.assignTokenValue(this.props.getMode(), this.props.activeField, tokenObj)
         this.props.closeTokenList(tokenObj, this.props.activeField)
@@ -215,11 +217,9 @@ class TokenCard extends React.Component  {
         })
     }
 
-    changeList() {
-        if (['insertText', 'deleteContentBackward', 'deleteContentForward', 'deleteWordBackward', 'deleteWordForward'].indexOf(event.inputType) !== -1) {
-            this.tokenFilter = document.getElementById('token-filter-field').value;
-            this.props.assignTokenList(this.makeList(this.props.sort))
-        }
+    changeList(value) {
+        this.tokenFilter = value
+        this.props.assignTokenList(this.makeList(this.props.sort))
     }
 
     closeTokenList (tokenObj, activeField) {
@@ -246,7 +246,9 @@ class TokenCard extends React.Component  {
                     <div className="col">
                         <Form.Control
                             id='token-filter-field'
-                            onChange={this.changeList.bind(this)}
+                            onChange={e => {
+                                this.changeList(e.target.value)
+                            }}
                             className='text-input-1 form-control shadow-none'
                             type='text'
                             placeholder={t('trade.tokenCard.search')}

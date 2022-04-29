@@ -71,6 +71,7 @@ class Routing extends React.Component {
             return (
                 <Tooltip triggerContent={triggerContent}
                          text={popoverContent}
+                         key={index}
                          placement="top"
                          customClasses=""
                 />
@@ -108,7 +109,7 @@ class Routing extends React.Component {
                     let amountInMax = this.makeTextProp(routeNode.amountInMax)
 
                     return (
-                        <div>
+                        <div key={index}>
                             <hr className="mx-0"/>
                             <div className="px-0">
                                 <div className="d-flex align-items-center justify-content-between p-0">

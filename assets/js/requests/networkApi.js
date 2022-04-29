@@ -71,8 +71,8 @@ class NetworkApi {
         );        
     }
 
-    tokenInfoStorageEnq () {
-        return trafficController.simpleRequest('https://pulse.enecuum.com/info/token-info-storage-enq.json',
+    tokenInfoStorageBitDev () {
+        return trafficController.simpleRequest('https://bit-dev.enecuum.com/info/token-info-storage-bit.json',
             {
                 method : 'GET'
             }
@@ -80,7 +80,7 @@ class NetworkApi {
     }
 
     tokenInfoStorageBit () {
-        return trafficController.simpleRequest('https://pulse.enecuum.com/info/token-info-storage-bit.json',
+        return trafficController.simpleRequest('https://bit.enecuum.com/info/token-info-storage-bit.json',
         {
                 method : 'GET'
             }

@@ -74,7 +74,6 @@ class SwapCard extends React.Component {
         this.validator = new Validator
     };
 
-
     componentDidUpdate(prevProps){
         const hasAChanged = ((this.props.tokens !== prevProps.tokens));
 
@@ -83,18 +82,25 @@ class SwapCard extends React.Component {
             this.initByGetRequestParams = false;
         }
 
-        if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
-            this.oldNet = ENQWeb.Enq.provider
-            this.setState({
-                routingVisibility : false,
-                route: []
-            })
-        }
+        // if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
+        //     this.oldNet = ENQWeb.Enq.provider
+        //     // this.setState({
+        //     //     routingVisibility : false,
+        //     //     route: []
+        //     // })
+        // }
     }
 
     componentDidMount() {
         window.addEventListener('hashchange', this.resolveURLHash)
         this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
+
+        let mode = this.getMode();
+        let token0 = this.props[mode].field0.token
+        let token1 = this.props[mode].field1.token
+        if (token0.hash !== presets.swapTokens.emptyToken.hash && token1.hash !== presets.swapTokens.emptyToken.hash) {
+            this.changeField(this.props[mode].field0.id, {value: _.cloneDeep(this.props[mode].field0.value.text)})
+        }
     }
 
     componentWillUnmount() {

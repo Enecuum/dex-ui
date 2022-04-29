@@ -15,13 +15,14 @@ class LogoTokenDef extends React.Component {
     }
 
     render () {
+        let targetLogoSet = this.props.data.net.name === "bit" || this.props.data.net.name === "bit-dev" ? "bit" : "enq"
         return (
             <div className={this.customClasses}>
                 <div className={"d-flex align-items-center"}>
                     { this.props.data.url !== undefined &&
                         <div className={`logo-wrapper-${this.size} ${this.props.data.value ? "mr-2" : "mr-0"}`}
                              style = {(this.props.data.url !== null) ? {
-                                 backgroundImage: `url(${presets.logoUrl}${this.props.data.net.name}/${this.props.data.url})`
+                                 backgroundImage: `url(${this.props.data.net.url}/info/token/logo/${targetLogoSet}/${this.props.data.url})`
                              } : {}}
                         >
                             {this.props.data.url === null && <div className={`unknown-logo-${this.size}`}>?</div>}

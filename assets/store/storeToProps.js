@@ -363,7 +363,8 @@ function mapStoreToProps(component) {
         case components.ROUTING:
             return function (state) {
                 return {
-                    swapCalculationsDirection : state.swapCard.swapCalculationsDirection
+                    swapCalculationsDirection : state.swapCard.swapCalculationsDirection,
+                    net : state.root.net
                 }
             }
         default:

@@ -315,7 +315,7 @@ class Root extends React.Component {
 
     updTokensImageInfo (tokens, withoutImagePlaces) {
         return new Promise(resolve => {
-            let p = (this.props.net.name === "bit") ? networkApi.tokenInfoStorageBit() : networkApi.tokenInfoStorageEnq()
+            let p = (this.props.net.name === "bit") ? networkApi.tokenInfoStorageBit() : networkApi.tokenInfoStorageBitDev()
             p.then(result => {
                 if (!result.lock) {
                     result.json().then(infoStorageEnq => {

@@ -21,14 +21,7 @@ class Routing extends React.Component {
 
         this.vp = new ValueProcessor()
         this.state = {
-            showRouter : false
-        }
-    }
-
-    componentDidUpdate (prevProps, prevState, snapshot) {
-        if (ENQWeb.Enq.provider !== this.oldNet) {
-            this.oldNet = ENQWeb.Enq.provider
-            this.setState({showRouter : false})
+            showRouter : true
         }
     }
 
@@ -51,7 +44,7 @@ class Routing extends React.Component {
                     logos={{
                         logo1 : fToken.logo,
                         logo2 : sToken.logo,
-                        net : {name : "bit"},
+                        net : this.props.net,
                         size : 'xxs'
                     }}
                     customClasses="routing-pair-logos"
@@ -79,10 +72,10 @@ class Routing extends React.Component {
         })
     }
 
-    cutAnAmount (input) {
-        if (input.length > 9)
-            return input.substring(0, 9) + "..."
-    }
+    // cutAnAmount (input) {
+    //     if (input.length > 9)
+    //         return input.substring(0, 9) + "..."
+    // }
 
     makeTextProp (objVal) {
         if (!objVal)
@@ -179,7 +172,7 @@ class Routing extends React.Component {
             sLogo = swapUtils.getTokenObj(this.props.tokens, sHash).logo
         }
         return (
-            <Accordion routing-active={this.state.showRouter.toString()}>
+            <Accordion routing-active={this.state.showRouter.toString()} defaultActiveKey="0">
                 <Card className="routing-card">
                     <Card.Header className="p-0 d-flex">
                         <Accordion.Toggle eventKey="0"

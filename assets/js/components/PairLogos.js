@@ -10,12 +10,13 @@ class PairLogos extends React.Component {
     }
 
     render () {
+        let targetLogoSet = this.props.logos.net.name === "bit" || this.props.logos.net.name === "bit-dev" ? "bit" : "enq"
         return (
             <div className={"d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3" + this.customClasses}>
                 <div
                     className={`logo-wrapper-${this.size}`}
                     style = {(this.props.logos.logo1 !== null) ? {
-                        backgroundImage: `url(${presets.logoUrl}${this.props.logos.net.name}/${this.props.logos.logo1})`
+                        backgroundImage: `url(${this.props.logos.net.url}/info/token/logo/${targetLogoSet}/${this.props.logos.logo1})`
                     } : {}}
                 >
                     {this.props.logos.logo1 === null && <div className={`unknown-logo-${this.size}`}>?</div>}
@@ -23,7 +24,7 @@ class PairLogos extends React.Component {
                 <div
                     className={`logo-wrapper-${this.size}`}
                     style = {(this.props.logos.logo2 !== null) ? {
-                        backgroundImage: `url(${presets.logoUrl}${this.props.logos.net.name}/${this.props.logos.logo2})`
+                        backgroundImage: `url(${this.props.logos.net.url}/info/token/logo/${targetLogoSet}/${this.props.logos.logo2})`
                     } : {}}
                 >
                     {this.props.logos.logo2 === null && <div className={`unknown-logo-${this.size}`}>?</div>}

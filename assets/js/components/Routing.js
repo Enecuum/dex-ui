@@ -41,13 +41,13 @@ class Routing extends React.Component {
             let triggerContent = (
                 <div className="routing-pool-wrapper d-flex justify-content-between align-items-center">
                     <PairLogos
-                    logos={{
-                        logo1 : fToken.logo,
-                        logo2 : sToken.logo,
-                        net : this.props.net,
-                        size : 'xxs'
-                    }}
-                    customClasses="routing-pair-logos"
+                        logos={{
+                            logo1 : fToken.logo,
+                            logo2 : sToken.logo,
+                            net : this.props.net,
+                            size : 'xxs'
+                        }}
+                    // customClasses="routing-pair-logos"
                     />
                     <div className="text-pairs">
                         {(Number(pool.pool_fee) / 100).toFixed(1)}%

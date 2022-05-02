@@ -10,6 +10,7 @@ import testFormulas from '../utils/testFormulas';
 import '../../css/top-pairs.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
+import PairLogos from './PairLogos'
 
 const valueProcessor = new ValueProcessor();
 
@@ -161,11 +162,19 @@ class TopPairs extends React.Component {
 					          return (
 					            <tr key={index}>
 									<td>{index + 1}</td>
-									<td className="text-nowrap">
+									<td className="text-nowrap d-flex">
+										<PairLogos
+											logos={{
+												logo1 : swapUtils.getTokenObj(this.props.tokens, pair.token_0.hash).logo,
+												logo2 : swapUtils.getTokenObj(this.props.tokens, pair.token_1.hash).logo,
+												net : this.props.net,
+												size : 'xs'
+											}}
+										/>
 										<a
 											href = {"/#!action=swap&pair=" + pair.token_0.ticker + "-" + pair.token_1.ticker + '&from=' + pair.token_0.hash + "&to=" + pair.token_1.hash}
 											onClick={this.switchToSwap.bind(this)}
-											className="text-color4-link hover-pointer">
+											className="text-color4-link hover-pointer ml-2">
 											{pair.token_0.ticker}-{pair.token_1.ticker}
 										</a>
 									</td>

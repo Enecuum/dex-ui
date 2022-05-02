@@ -100,11 +100,12 @@ class ConfirmSupply extends React.Component {
                     { valueProcessor.usCommasBigIntDecimals(ltValue.value, ltValue.decimals) }
                 </div>
                 <PairLogos logos={{
-                    logo1 : firstToken.logo,
-                    logo2 : secondToken.logo,
-                    net : this.props.net,
-                    size : 'sm'
-                }} />
+                        logo1 : firstToken.logo,
+                        logo2 : secondToken.logo,
+                        net : this.props.net,
+                        size : 'sm'
+                    }}
+                />
                 <div className='h5 mb-4'>
                     {
                         (this.props.menuItem === 'liquidity')

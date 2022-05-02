@@ -9,6 +9,8 @@ import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
 import swapApi from '../requests/swapApi';
 import '../../css/accordion.css';
+import swapUtils from '../utils/swapUtils'
+import PairLogos from './PairLogos'
 
 const valueProcessor = new ValueProcessor();
 
@@ -211,7 +213,19 @@ class LiquidityTokensZone extends React.Component {
                                 className="d-flex align-items-center justify-content-between hover-pointer py-2"
                                 onClick={() => this.setState({ activeId: this.state.activeId.toString() !== index.toString() ? index.toString() : '' })}
                                 data-active-accordion-elem = {(index+'' === this.state.activeId).toString()} >
-                                    <span className="mr-2">{fToken.ticker}/{sToken.ticker}</span>
+                                    <div className="d-flex">
+                                        {fToken.logo !== undefined && sToken.logo !== undefined &&
+                                            <PairLogos
+                                                logos={{
+                                                    logo1 : fToken.logo,
+                                                    logo2 : sToken.logo,
+                                                    net : this.props.net,
+                                                    size : 'xs'
+                                                }}
+                                            />
+                                        }
+                                        <span className="mx-2">{fToken.ticker}/{sToken.ticker}</span>
+                                    </div>
                                     <i className="fas fa-chevron-down accordion-chevron"/>
                             </Accordion.Toggle>
                         </Card.Header>

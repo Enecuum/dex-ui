@@ -179,6 +179,7 @@ function mapStoreToProps(component) {
                     pairs            : state.root.pairs,
                     tokens           : state.root.tokens,
                     balances         : state.root.balances,
+                    net              : state.root.net
                 }
             }
         case components.LP_WALLET_INFO:

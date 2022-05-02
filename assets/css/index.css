@@ -457,15 +457,15 @@ right: 0;
 }
 
 .token-pair-logo-wrapper .logo-wrapper-sm:last-child {
-    margin-left: -5px;
+    margin-left: -10px !important;
 }
 
 .token-pair-logo-wrapper .logo-wrapper-xs:last-child {
-    margin-left: -6px;
+    margin-left: -7px !important;
 }
 
 .token-pair-logo-wrapper .logo-wrapper-xxs:last-child {
-    margin-left: -7px;
+    margin-left: -7px !important;
 }
 
 .logo-wrapper-xs, .logo-wrapper-sm, .logo-wrapper-xxs {

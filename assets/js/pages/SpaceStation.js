@@ -25,6 +25,7 @@ import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
 import swapUtils from "../utils/swapUtils";
 import Tooltip from "../elements/Tooltip";
+import PairLogos from '../components/PairLogos'
 
 const valueProcessor = new ValueProcessor();
 
@@ -720,11 +721,19 @@ class SpaceStation extends React.Component {
                                     return (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
-                                            <td className="text-nowrap">
+                                            <td className="text-nowrap d-flex">
+                                                <PairLogos
+                                                    logos={{
+                                                        logo1 : swapUtils.getTokenObj(this.props.tokens, pool.asset_ENX).logo,
+                                                        logo2 : swapUtils.getTokenObj(this.props.tokens, pool.asset_LP).logo,
+                                                        net : this.props.net,
+                                                        size : 'xs'
+                                                    }}
+                                                />
                                                 <a
                                                     href = {"/#!action=pool&pair=" + pool.ticker_LP + "-" + pool.ticker_ENX + '&from=' + pool.asset_LP + "&to=" + pool.asset_ENX}
                                                     onClick={this.switchToPool.bind(this)}
-                                                    className="text-color4-link hover-pointer">
+                                                    className="text-color4-link hover-pointer ml-2">
                                                     {LPAlias}-{pool.ticker_ENX}
                                                 </a>
                                             </td>

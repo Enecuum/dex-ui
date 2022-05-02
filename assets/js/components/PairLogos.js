@@ -12,7 +12,7 @@ class PairLogos extends React.Component {
     render () {
         let targetLogoSet = this.props.logos.net.name === "bit" || this.props.logos.net.name === "bit-dev" ? "bit" : "enq"
         return (
-            <div className={"d-flex align-items-center justify-content-center token-pair-logo-wrapper mb-3" + this.customClasses}>
+            <div className={"d-flex align-items-center justify-content-center token-pair-logo-wrapper" + this.customClasses}>
                 <div
                     className={`logo-wrapper-${this.size}`}
                     style = {(this.props.logos.logo1 !== null) ? {

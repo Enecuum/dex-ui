@@ -203,9 +203,6 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
                     value : current.outcome.value,
                     decimals : current.outcome.decimals
                 }
-                let k = vp.mul(v1, v2)
-                k = vp.sub(k, v1)
-                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(amountIn), _.cloneDeep(k))
 
                 let new_vertex = {
                     vertex: edge.to,
@@ -223,8 +220,7 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
                         value : edge.pool_fee,
                         decimals : 2
                     }),
-                    source: edge.from,
-                    tooMuchLiquidity : tmp.f > tmp.s
+                    source: edge.from
                 }
 
                 vertices.push(new_vertex);

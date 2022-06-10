@@ -136,12 +136,6 @@ class SwapCardValidationRules {
             errMsg: 'fillAllFields'
         })
 
-        let tooMuchLiquidity = swapCardData.route.reduce((prev, cur) => {
-            if (cur.tooMuchLiquidity)
-                prev = true
-            return prev
-        }, false)
-
         return {
             field0: {
                 ...field0Check
@@ -176,13 +170,13 @@ class SwapCardValidationRules {
             },
             route : {
                 checks: [
-                    {
-                        requireToCheck: mode === 'exchange',
-                        method: 'isSet',
-                        args: {data: tooMuchLiquidity ? null : true},
-                        desiredResult: true,
-                        errMsg: 'fillAllFields'
-                    }
+                    // {
+                    //     requireToCheck: mode === 'exchange',
+                    //     method: 'isSet',
+                    //     args: {data: tooMuchLiquidity ? null : true},
+                    //     desiredResult: true,
+                    //     errMsg: 'fillAllFields'
+                    // }
                 ]
             }
         }

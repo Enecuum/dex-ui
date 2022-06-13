@@ -272,6 +272,10 @@ a.view-in-explorer:hover {
     color: var(--color2);
 }
 
+.offset-field-tooltip {
+    margin-left: 100px;
+}
+
 @keyframes rotation {
     0% {
         transform:rotate(0deg);

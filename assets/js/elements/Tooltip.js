@@ -12,6 +12,7 @@ class Tooltip extends React.Component {
         this.defaultTriggerContent = <span className="icon-Icon4 fire-tooltip hover-pointer" />
         this.triggerContent = props.triggerContent ? props.triggerContent : this.defaultTriggerContent
         this.customClasses = props.customClasses ? props.customClasses : "tooltip-info"
+        this.show = props.show
     }
 
     render() {
@@ -24,7 +25,7 @@ class Tooltip extends React.Component {
           )
 
         return (
-            <OverlayTrigger placement={this.placement} overlay={popover}>
+            <OverlayTrigger show={this.show} placement={this.placement} overlay={popover}>
                 {this.triggerContent}
             </OverlayTrigger>
         )

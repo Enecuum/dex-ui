@@ -65,7 +65,7 @@ class SwapCard extends React.Component {
             swapIconStatus : false,
             route : [],
             routingWaiting: false,
-            routingVisibility: false,
+            routingVisibility: false
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -805,7 +805,7 @@ class SwapCard extends React.Component {
     changeField (fieldId, target) {
         if (target.value === undefined)
             return
-        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString().replace(/[^0-9]+/g, '')
+        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString().replace(/[^0-9|\.]+/g, '')
         let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
         let oldValObj = _.cloneDeep(fieldData.value)
 
@@ -944,11 +944,13 @@ class SwapCard extends React.Component {
                     text = "-" + this.bigIntToString(-finalValue.value, finalValue.decimals)
                 else
                     text = this.bigIntToString(finalValue.value, finalValue.decimals)
-                this.props.assignCoinValue(this.getMode(), cField, {
-                    value : finalValue.value,
-                    decimals : finalValue.decimals,
-                    text : text
-                })
+
+                // if (finalValue.value >= 0n)
+                    this.props.assignCoinValue(this.getMode(), cField, {
+                        value : finalValue.value,
+                        decimals : finalValue.decimals,
+                        text : text
+                    })
             } else {
                 this.setState({
                     routingVisibility : false,

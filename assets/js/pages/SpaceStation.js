@@ -669,6 +669,13 @@ class SpaceStation extends React.Component {
         return alias
     }
 
+    isLpToken (hash) {
+        let res = swapUtils.searchByLt(this.props.pairs, hash)
+        if (res === undefined)
+            return false
+        return res
+    }
+
     getPoolsTable() {
         const t = this.props.t;
         
@@ -684,7 +691,7 @@ class SpaceStation extends React.Component {
             } 
             return `${distributeButtonClass} ${disabledDependendClass}`
         }
-
+        let poolCounter = 0
         return(
             <>
                 <div className="h2 mb-5">
@@ -714,13 +721,17 @@ class SpaceStation extends React.Component {
                                 </tr>
                               </thead>
                             <tbody>
+
                                 {this.spaceStationPools.map(( pool, index ) => {
+                                    if (!this.isLpToken(pool.asset_LP))
+                                        return (<></>)
+
                                     let nullTreasure = pool.LPTokenOnCommanderBalance.amount <= 0;
                                     let LPAlias = this.getLPAlias(pool.asset_LP, pool.ticker_LP);
 
                                     return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
+                                        <tr key={++poolCounter}>
+                                            <td>{poolCounter}</td>
                                             <td className="text-nowrap d-flex">
                                                 <PairLogos
                                                     logos={{

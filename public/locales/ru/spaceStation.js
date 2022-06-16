@@ -12,5 +12,8 @@ module.exports = {
         "header" : "Цена ENX в пуле",
         "tooltip" : "Приблизительная цена ENX в LP/ENX пуле которые находятся в Station"
     },
-    // priceImpact from trade.swapAddon.priceImpact
+    "priceImpact" : {
+        "header" : "Влияние на цену",
+        "tooltip" : "Разница между ценами до и после выполнения распределения."
+    }
 }

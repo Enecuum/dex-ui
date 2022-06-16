@@ -715,7 +715,7 @@ class SpaceStation extends React.Component {
                                         {t("spaceStation.enxPriceInPool.header")} <Tooltip text={t("spaceStation.enxPriceInPool.tooltip")} />
                                     </th>
                                     <th>
-                                        {t("trade.swapAddon.priceImpact.header")} <Tooltip text={t("trade.swapAddon.priceImpact.tooltip")} />
+                                        {t("spaceStation.priceImpact.header")} <Tooltip text={t("spaceStation.priceImpact.tooltip")} />
                                     </th>
                                     <th />
                                 </tr>
@@ -763,7 +763,7 @@ class SpaceStation extends React.Component {
                                                     className={getClassName(isDisabled, nullTreasure)}
                                                     disabled={isDisabled || nullTreasure}                                                
                                                     onClick={this.showDistributeModal.bind(this, pool)}>
-                                                    Distibute
+                                                    Distribute
                                                 </Button>
                                             </td>
                                         </tr>

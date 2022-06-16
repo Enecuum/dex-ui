@@ -12,5 +12,8 @@ module.exports = {
         "header" : "ENX price in pool",
         "tooltip" : "Approximate ENX price in LP/ENX pools that take part in Station"
     },
-    // priceImpact from trade.swapAddon.priceImpact
+    "priceImpact" : {
+        "header" : "Price impact",
+        "tooltip" : "Difference between the price before and after the distribution you make"
+    }
 }

@@ -56,7 +56,7 @@ function sellExact (volume0, volume1, amountIn, pool_fee) {
 function buyExact (volume0, volume1, amountOut, pool_fee) {
     let percent = vp.valueToBigInt(100, pool_fee.decimals)
     let nominator = vp.mul(percent, vp.mul(volume0, amountOut))
-    let denominator = vp.sub(vp.mul(volume1, vp.sub(percent, pool_fee)), amountOut)
+    let denominator = vp.sub(vp.mul(volume1, vp.sub(percent, pool_fee)), vp.mul(percent, amountOut))
 
     // let nominator = vp.sub(vp.div(vp.mul(volume0, volume1), vp.sub(volume1, amountOut)), volume0)
     // let denominator = vp.sub(vp.valueToBigInt(100, pool_fee.decimals), pool_fee)

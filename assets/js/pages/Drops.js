@@ -172,12 +172,12 @@ class Drops extends React.Component {
 
     updateFarms() {
         let whiteList = presets.dropFarms.spaceDrops.whiteList;
-        let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
+        let farmsList = networkApi.getDexFarms(this.props.pubkey, []);
 
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
-                    this.farms = resultFarmsList;
+                    this.farms = resultFarmsList.filter(farm => farm.stake_token_hash === this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });

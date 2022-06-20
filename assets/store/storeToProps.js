@@ -312,6 +312,7 @@ function mapStoreToProps(component) {
                     currentAction     : state.drops.currentAction,
                     expandedRow       : state.drops.expandedRow,
                     exchangeRate      : state.aside.exchangeRate,
+                    networkInfo       : state.root.networkInfo,
                     stakeData         : {
                         actionCost         : state.drops.stakeData.actionCost,
                         stakeValue         : state.drops.stakeData.stakeValue,  

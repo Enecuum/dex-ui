@@ -131,11 +131,6 @@ class TokenCard extends React.Component  {
         }
     }
 
-    getTokenBalance (hash) {
-        let balance = swapUtils.getBalanceObj(this.props.balances, hash)
-        return swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(balance.amount, balance.decimals))
-    }
-
     isTrustedToken (hash) {
         return this.trustedTokens.indexOf(hash) !== -1
     }
@@ -196,6 +191,8 @@ class TokenCard extends React.Component  {
                 sToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_1.hash)
             }
 
+            let tBalance = swapUtils.getBalanceObj(this.props.balances, el.hash)
+
             return (
                 <div key={i}>
                     <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
@@ -210,16 +207,21 @@ class TokenCard extends React.Component  {
                         }
                         <div className={"ml-3 pt-2 text-muted"}>
                             <small className="mr-2 justify-content-end row">
-                                {this.getTokenBalance(el.hash)}
+                                {swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(tBalance.amount, tBalance.decimals))}
                             </small>
-                            <small className="mr-2 usd-price justify-content-end row">
-                                {el.dex_price_usd || 0}$
+                            <small className="mr-2 usd-price justify-content-end row" style={{marginRight: "9px"}}>
+                                {(el.price_raw && el.price_raw.dex_price) && this.getUSDPrice(tBalance, el) || 0}$
                             </small>
                         </div>
                     </div>
                 </div>
             )
         })
+    }
+
+    getUSDPrice (balance, tokenInfo) {
+        balance.value = balance.amount
+        return swapUtils.countUSDPrice(balance, tokenInfo)
     }
 
     changeList(value) {

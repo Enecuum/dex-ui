@@ -29,7 +29,7 @@ import swapUtils from "../utils/swapUtils"
 import lsdp from '../utils/localStorageDataProcessor'
 
 const valueProcessor = new ValueProcessor()
-
+const JUST_TOKEN_PRICE = true
 
 class SwapCard extends React.Component {
     constructor(props) {
@@ -316,10 +316,13 @@ class SwapCard extends React.Component {
                             </div>
                             { mode === 'exchange' && this.activePair !== undefined &&
                                 <div className="my-2">
-                                    <div className='py-2 swap-price d-flex justify-content-between align-items-center'>
+                                    <div className='pt-2 swap-price d-flex justify-content-between align-items-center'>
                                         <div className='pr-4'>Price</div>
                                         <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
+                                    <small className="pb-2 mr-2 usd-price d-flex justify-content-end">
+                                        {secondToken.ticker !== "---" && 1 || <></>} {secondToken.ticker} = {swapUtils.countUSDPrice(null, secondToken, JUST_TOKEN_PRICE)}$
+                                    </small>
                                     <Routing route={this.state.route}
                                              net={this.props.net}
                                              tokens={this.props.tokens}
@@ -649,12 +652,12 @@ class SwapCard extends React.Component {
     };
 
     getInputField(props) {
-        let ticker = props.fieldData.token.ticker
+        let ticker = props.fieldData.token.ticker, tokenBalance = {value: 0, decimals: 0}
         if (ticker === undefined)
             ticker = this.props.t('trade.swapCard.inputField.selectToken');
         return (
             <div>
-                <div className="d-flex align-items-center justify-content-between mb-3">
+                <div className="d-flex align-items-center justify-content-between">
                     <div className='input-name'>
                         {props.fieldName}
                     </div>
@@ -662,7 +665,10 @@ class SwapCard extends React.Component {
                         {this.showBalance(valueProcessor.usCommasBigIntDecimals(props.fieldData.balance.amount, props.fieldData.balance.decimals, props.fieldData.balance.decimals))}
                     </div>
                 </div>
-                <div className="d-flex align-items-center justify-content-between">                    
+                <small className="usd-price d-flex justify-content-end">
+                    {swapUtils.countUSDPrice(props.fieldData.balance, props.fieldData.token)}$
+                </small>
+                <div className="d-flex align-items-center justify-content-between mt-3 mb-2">
                     <input id={props.id}
                         onChange={e => this.changeField(props.id, e.target)}
                         className='c-input-field mr-2'

@@ -192,7 +192,7 @@ function searchByLt (pairs, lpToken) {
 function getBalanceObj (balances, hash) {
     let balanceObj = balances.find(el => el.token === hash);
     if (balanceObj) {
-        return balanceObj;
+        return _.cloneDeep(balanceObj);
     } else
         return {
             amount : (hash) ? 0 : '---',
@@ -251,7 +251,42 @@ function realignValueByDecimals (first, second) {
     return {f : f.value, s : s.value}
 }
 
-/* =================================================================================== */
+function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
+
+    let getResultString = function (inUsd) {
+        inUsd = removeEndZeros(vp.usCommasBigIntDecimals(inUsd.value, inUsd.decimals))
+        return inUsd === "undefined" ? "---" : inUsd
+    }
+
+    let usdPrice
+    if (tokenInfo && tokenInfo.price_raw) {
+        usdPrice = _.cloneDeep(tokenInfo.price_raw)
+        usdPrice.value = tokenInfo.price_raw.dex_price
+    } else {
+        usdPrice = {
+            value : 0,
+            decimals : 0
+        }
+    }
+
+    if (justTokenPrice)
+        return getResultString(usdPrice)
+
+    let tokenAmount
+    if (tokenVal) {
+        tokenAmount = _.cloneDeep(tokenVal)
+        if (Number.isInteger(tokenAmount.amount))
+            tokenAmount.value = tokenAmount.amount
+    } else {
+        tokenAmount = {
+            value : 0,
+            decimals : 0
+        }
+    }
+
+    return getResultString(vp.mul(tokenAmount, usdPrice))
+}
+
 
 export default {
     realignValueByDecimals,
@@ -263,6 +298,7 @@ export default {
     countPoolShare,
     removeEndZeros,
     countPortion,
+    countUSDPrice,
     getBalanceObj,
     getTokenObj,
     searchByLt,

@@ -49,7 +49,7 @@ class LogoTokenDef extends React.Component {
 class LogoTokenTrusted extends React.Component {
     render () {
         return (
-            <LogoTokenDef additionalInfo={<img src={enqLogo} alt="*" className="trusted-logo ml-2 mb-1"/>}
+            <LogoTokenDef additionalInfo={<img src={enqLogo} alt="*" className="trusted-logo mb-1"/>}
                           customClasses={this.props.customClasses}
                           data={this.props.data}
             />

@@ -208,9 +208,14 @@ class TokenCard extends React.Component  {
                             /> ||
                             <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
                         }
-                        <small className="mr-2 mt-3 text-muted">
-                            {this.getTokenBalance(el.hash)}
-                        </small>
+                        <div className={"ml-3 pt-2 text-muted"}>
+                            <small className="mr-2 justify-content-end row">
+                                {this.getTokenBalance(el.hash)}
+                            </small>
+                            <small className="mr-2 usd-price justify-content-end row">
+                                {el.dex_price_usd || 0}$
+                            </small>
+                        </div>
                     </div>
                 </div>
             )

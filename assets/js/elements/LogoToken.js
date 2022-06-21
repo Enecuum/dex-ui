@@ -31,7 +31,7 @@ class LogoTokenDef extends React.Component {
                     {this.props.data.hash &&
                         <div className="col">
                             <div className="row d-flex justify-content-start align-items-center">
-                                <span>{this.props.data.value}</span>
+                                <span className={"mr-2"}>{this.props.data.value}</span>
                                 { this.props.additionalInfo }
                             </div>
                             <div className="row text-muted token-hash">
@@ -60,7 +60,7 @@ class LogoTokenTrusted extends React.Component {
 class LogoTokenLP extends React.Component {
 
     render () {
-        let addInfo = <div className="ml-2">
+        let addInfo = <div>
             <a href = {"/#!action=swap&pair=" + this.props.fToken.ticker + "-" + this.props.sToken.ticker + '&from=' + this.props.fToken.hash + "&to=" + this.props.sToken.hash}
                className="token-caption"
             >

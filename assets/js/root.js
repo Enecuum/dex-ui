@@ -262,6 +262,7 @@ class Root extends React.Component {
                         } else {
                             tokens[j].decimals = inRootProps.decimals
                             tokens[j].total_supply = inRootProps.total_supply
+                            tokens[j].dex_price_usd = inRootProps.dex_price_usd
                         }
                     }
                 }
@@ -279,6 +280,7 @@ class Root extends React.Component {
                         info = info[0]
                         tokens[indexes[i]].decimals = info.decimals
                         tokens[indexes[i]].total_supply = info.total_supply
+                        tokens[indexes[i]].dex_price_usd = info.dex_price_usd
                     })
                 )
             }

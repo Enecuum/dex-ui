@@ -317,11 +317,17 @@ class SwapCard extends React.Component {
                             { mode === 'exchange' && this.activePair !== undefined &&
                                 <div className="my-2">
                                     <div className='pt-2 swap-price d-flex justify-content-between align-items-center'>
-                                        <div className='pr-4'>Price</div>
+                                        <div className='pr-4'>{t("price")}</div>
                                         <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
                                     <small className="pb-2 mr-2 usd-price d-flex justify-content-end">
-                                        {secondToken.ticker !== "---" && 1 || <></>} {secondToken.ticker} = {swapUtils.countUSDPrice(null, secondToken, JUST_TOKEN_PRICE)}$
+                                        {
+                                            (secondToken.hash !== undefined && firstToken.hash !== undefined)
+                                            &&
+                                            "1 " + secondToken.ticker + " = " + swapUtils.countUSDPrice(null, secondToken, JUST_TOKEN_PRICE) + "$"
+                                            ||
+                                            <></>
+                                        }
                                     </small>
                                     <Routing route={this.state.route}
                                              net={this.props.net}
@@ -377,7 +383,7 @@ class SwapCard extends React.Component {
                         <>
                             <div className="p-3 border-solid-2 c-border-radius2 border-color2">
                                 <div className="d-flex justify-content-between">
-                                    <div>Amount</div>
+                                    <div>{t("amount")}</div>
                                     <div onClick={this.toggleView.bind(this)} className="hover-pointer no-selectable hover-color3">{ this.props.removeLiquiditySimpleView ? t(dp + `.removeLiquidity.detailed`) : t(dp + `.removeLiquidity.simple`) }</div>
                                 </div>
                                 <div className="h1 font-weight-bold my-3">{this.showPercents()}%</div>
@@ -409,10 +415,12 @@ class SwapCard extends React.Component {
                     { this.props.liquidityRemove && mode !== 'exchange' &&
                         <>
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
-                                <div>Price</div>
+                                <div>{t("price")}</div>
                                 <div>
-                                    <div>1 {firstToken.ticker} = {this.showExchangeRate(true)} {secondToken.ticker}</div>
-                                    <div>1 {secondToken.ticker} = {this.showExchangeRate(false)} {firstToken.ticker}</div>
+                                    <div className={"d-flex justify-content-end"}>1 {firstToken.ticker} = {this.showExchangeRate(true)} {secondToken.ticker}</div>
+                                    {this.renderExchangeRateUsdPrice(secondToken, firstToken)}
+                                    <div className={"d-flex justify-content-end"}>1 {secondToken.ticker} = {this.showExchangeRate(false)} {firstToken.ticker}</div>
+                                    {this.renderExchangeRateUsdPrice(firstToken, secondToken)}
                                 </div>
                             </div>
                         </>
@@ -450,9 +458,29 @@ class SwapCard extends React.Component {
     //     );
     // };
 
+    renderExchangeRateUsdPrice (firstToken, secondToken) {
+        return (
+            <>
+                <small className="pb-2 usd-price d-flex justify-content-end">
+                    {
+                        (secondToken.hash !== undefined && firstToken.hash !== undefined)
+                        &&
+                        "1 " + secondToken.ticker + " = " + swapUtils.countUSDPrice(null, secondToken, JUST_TOKEN_PRICE) + "$"
+                        ||
+                        <></>
+                    }
+                </small>
+            </>
+        )
+    }
+
     renderRemoveLiquidity(modeStruct, firstToken, secondToken) {
-        const t = this.props.t;
-        let dp = 'trade.swapCard';
+        const t = this.props.t
+        let dp = 'trade.swapCard'
+
+        let firstTokenUsd = swapUtils.countUSDPrice(modeStruct.field0.value, firstToken)
+        let secondTokenUsd = swapUtils.countUSDPrice(modeStruct.field1.value, secondToken)
+
         return (
             <>
                 { this.props.removeLiquiditySimpleView &&
@@ -462,7 +490,14 @@ class SwapCard extends React.Component {
                         </div>
                         <div className="swap-input py-2 px-3">
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{this.showInputValue(modeStruct.field0.value)}</div>
+                                <div>
+                                    <div className={"d-flex justify-content-start"}>
+                                        {swapUtils.removeEndZeros(this.showInputValue(modeStruct.field0.value))}
+                                    </div>
+                                    <small className={"d-flex justify-content-start usd-price"}>
+                                        {swapUtils.showUSDPrice(firstTokenUsd)}
+                                    </small>
+                                </div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{
                                         url : firstToken.logo,
@@ -472,7 +507,14 @@ class SwapCard extends React.Component {
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between mb-3">
-                                <div>{this.showInputValue(modeStruct.field1.value)}</div>
+                                <div>
+                                    <div className={"d-flex justify-content-start"}>
+                                        {swapUtils.removeEndZeros(this.showInputValue(modeStruct.field1.value))}
+                                    </div>
+                                    <small className={"d-flex justify-content-start usd-price"}>
+                                        {swapUtils.showUSDPrice(secondTokenUsd)}
+                                    </small>
+                                </div>
                                 <div className="d-flex align-items-center justify-content-end">
                                     <LogoToken data = {{
                                         url : secondToken.logo,
@@ -482,7 +524,7 @@ class SwapCard extends React.Component {
                                 </div>
                             </div>
                             <div className="text-right">
-                                Receive
+                                {t("trade.swapCard.removeLiquidity.receive")}
                             </div>
                         </div>
                     </>
@@ -606,7 +648,7 @@ class SwapCard extends React.Component {
                     buttonName = this.getSwapCardButtonName('fillAllFields')
             }
             
-            if (this.pairExists === false) {
+            if (this.pairExists === false && this.state.route.length === 0) {
                 let validationResult = {dataValid : false}
                 let modeField = _.cloneDeep(this.props[this.getMode()])
                 if (modeField.field0.value.text && modeField.field1.value.text) {
@@ -655,8 +697,10 @@ class SwapCard extends React.Component {
         let ticker = props.fieldData.token.ticker, tokenBalance = {value: 0, decimals: 0}
         if (ticker === undefined)
             ticker = this.props.t('trade.swapCard.inputField.selectToken');
+        let balanceInUsd = swapUtils.countUSDPrice(props.fieldData.balance, props.fieldData.token)
+        let inputValueInUsd = swapUtils.countUSDPrice(props.fieldData.value, props.fieldData.token)
         return (
-            <div>
+            <div className={"pb-2"}>
                 <div className="d-flex align-items-center justify-content-between">
                     <div className='input-name'>
                         {props.fieldName}
@@ -666,18 +710,23 @@ class SwapCard extends React.Component {
                     </div>
                 </div>
                 <small className="usd-price d-flex justify-content-end">
-                    {swapUtils.countUSDPrice(props.fieldData.balance, props.fieldData.token)}$
+                    {swapUtils.showUSDPrice(balanceInUsd)}
                 </small>
-                <div className="d-flex align-items-center justify-content-between mt-3 mb-2">
-                    <input id={props.id}
-                        onChange={e => this.changeField(props.id, e.target)}
-                        className='c-input-field mr-2'
-                        type='text'
-                        value={this.showInputValue(props.fieldData.value)}
-                        placeholder='0.0'
-                        autoComplete='off'
-                        style={this.getBalanceColor(props.id)}>
-                    </input>
+                <div className="d-flex align-items-center justify-content-between mt-3">
+                    <div>
+                        <input id={props.id}
+                               onChange={e => this.changeField(props.id, e.target)}
+                               className='c-input-field mr-2'
+                               type='text'
+                               value={this.showInputValue(props.fieldData.value)}
+                               placeholder='0.0'
+                               autoComplete='off'
+                               style={this.getBalanceColor(props.id)}>
+                        </input>
+                        <small className="input-field-usd d-flex">
+                            {swapUtils.showUSDPrice(inputValueInUsd)}
+                        </small>
+                    </div>
                     <div className="d-flex align-items-center justify-content-end">
                         {props.fieldData.balance.amount > 0 &&
                             <div

@@ -57,7 +57,11 @@
     color: var(--color3);
 }
 
-.usd-price {
+.usd-price .input-field-usd {
     margin-top: -2px;
     font-size: 10pt;
+}
+
+.input-field-usd {
+    margin-left: 3px;
 }

@@ -200,7 +200,7 @@ class SpaceStation extends React.Component {
     updateSpaceStationPools() {
         let that = this;
         let spaceStationPools = networkApi.getSpaceStationPools();
-        spaceStationPools.then(result => {            
+        spaceStationPools.then(result => {
             if (!result.lock) {
                 result.json().then(resultSpaceStationPools => {
                     let spaceStationPools = resultSpaceStationPools;

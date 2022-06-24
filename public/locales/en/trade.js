@@ -81,8 +81,7 @@ module.exports = {
             "lackOfLiquidity" : "Insufficient liquidity for this trade"
         },
         "removeLiquidity" : {
-            "amount" : "Amount",
-            "price" : "Price",
+            "receive" : "Receive",
             "simple" : "Simple",
             "detailed" : "Detailed",
             "header" : "Remove Liquidity",

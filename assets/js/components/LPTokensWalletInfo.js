@@ -7,6 +7,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import PairLogos from '../components/PairLogos';
 import utils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
+import swapUtils from '../utils/swapUtils'
 
 const valueProcessor = new ValueProcessor();
 
@@ -20,19 +21,18 @@ class LPTokensWalletInfo extends React.Component {
         };
     };
 
-    hasItPair () {
-        let data = this.props[this.props.menuItem];
-        this.pair = utils.searchSwap(this.props.pairs, [data.field0.token, data.field1.token]);
-        if (utils.pairExists(this.pair))
-            return true;
-        return false;
+    checkPair () {
+        let data = this.props[this.props.menuItem]
+        this.pair = utils.searchSwap(this.props.pairs, [data.field0.token, data.field1.token])
+        return utils.pairExists(this.pair)
+
     };
 
     mustBeVisible () {
         if (this.props.menuItem == 'exchange')
-            return this.hasItPair();
+            return this.checkPair();
         else if (this.props.menuItem == 'liquidity' && !this.props.liquidityRemove && !this.props.liquidityMain)
-            return this.hasItPair();
+            return this.checkPair();
         else
             return false;
     };
@@ -54,9 +54,17 @@ class LPTokensWalletInfo extends React.Component {
 
     render () {
         if (this.mustBeVisible()) {
-            this.countPooledAmount();
-            let firstToken = utils.getTokenObj(this.props.tokens, this.pair.token_0.hash);
-            let secondToken = utils.getTokenObj(this.props.tokens, this.pair.token_1.hash);
+            this.countPooledAmount()
+            let firstToken = utils.getTokenObj(this.props.tokens, this.pair.token_0.hash)
+            let secondToken = utils.getTokenObj(this.props.tokens, this.pair.token_1.hash)
+            let ltToken = utils.getTokenObj(this.props.tokens, this.pair.lt)
+
+            let ltBalance = utils.getBalanceObj(this.props.balances, this.pair.lt)
+            ltBalance.value = ltBalance.amount
+
+            let firstTokenUsd = swapUtils.countUSDPrice(this.pooled.t0, firstToken)
+            let secondTokenUsd = swapUtils.countUSDPrice(this.pooled.t1, secondToken)
+
             return (
                 <div className="general-card p-4">
                     <div id='under-header'>{this.props.t('trade.lpTokensWalletInfo.header')}</div>
@@ -66,7 +74,12 @@ class LPTokensWalletInfo extends React.Component {
                             {firstToken.ticker}/{secondToken.ticker}
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(utils.getBalanceObj(this.props.balances, this.pair.lt).amount)}
+                            <div className={"d-flex"}>
+                                {valueProcessor.usCommasBigIntDecimals(ltBalance.value, ltBalance.decimals)}
+                            </div>
+                            <small className={"d-flex justify-content-end"}>
+                                {swapUtils.showUSDPrice(swapUtils.countUSDPrice(ltBalance, ltToken))}
+                            </small>
                         </div>
                     </div>
                     <div className="d-block d-md-flex align-items-center justify-content-between py-2">
@@ -74,7 +87,12 @@ class LPTokensWalletInfo extends React.Component {
                             {firstToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.t0.value, this.pooled.t0.decimals)}
+                            <div className={"d-flex"}>
+                                {valueProcessor.usCommasBigIntDecimals(this.pooled.t0.value, this.pooled.t0.decimals)}
+                            </div>
+                            <small className={"d-flex justify-content-end"}>
+                                {swapUtils.showUSDPrice(firstTokenUsd)}
+                            </small>
                         </div>
                     </div>
                     <div className="d-block d-md-flex align-items-center justify-content-between py-2">
@@ -82,7 +100,12 @@ class LPTokensWalletInfo extends React.Component {
                             {secondToken.ticker}:
                         </div>
                         <div>
-                            {valueProcessor.usCommasBigIntDecimals(this.pooled.t1.value, this.pooled.t0.decimals)}
+                            <div className={"d-flex"}>
+                                {valueProcessor.usCommasBigIntDecimals(this.pooled.t1.value, this.pooled.t1.decimals)}
+                            </div>
+                            <small className={"d-flex justify-content-end"}>
+                                {swapUtils.showUSDPrice(secondTokenUsd)}
+                            </small>
                         </div>
                     </div>                                
                 </div>

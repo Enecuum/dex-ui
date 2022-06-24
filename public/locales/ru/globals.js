@@ -3,6 +3,8 @@ let exchange = {
 }
 
 module.exports = {
+    "amount" : "Количество",
+    "price" : "Цена",
     "info" : "Инфо",
     "submit" : "Отправить",
     "close" : "Закрыть",

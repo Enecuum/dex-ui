@@ -36,7 +36,7 @@ class ValueProcessor {
                 input = -input
             }
             if (decimals === undefined || decimals === null || isNaN(decimals) || input === null)
-                return '---';
+                return undefined;
             let str = BigInt(input).toString();
             let integerPart = '0';
             let fractionalPart = '0';

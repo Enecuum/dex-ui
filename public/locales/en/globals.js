@@ -3,6 +3,8 @@ let exchange = {
 }
 
 module.exports = {
+    "amount" : "Amount",
+    "price" : "Price",
     "info" : "Info",
     "submit" : "Submit",
     "close" : "Close",

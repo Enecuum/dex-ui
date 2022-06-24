@@ -59,17 +59,27 @@ class SwapAddon extends React.Component {
         let percent = vp.valueToBigInt(lsdp.simple.get("ENEXUserSlippage"), 8)
         percent.decimals += 2
 
-        let minimumReceived, maximumSent
+        let minimumReceived, minimumReceivedUSD, maximumSent, maximumSentUSD, providerFeeUSD
         if (this.props.swapCalculationsDirection === "down") {
             percent = vp.sub(vp.valueToBigInt(1), percent)
             minimumReceived = vp.mul(this.props.exchange.field1.value, percent)
+            minimumReceivedUSD = swapUtils.countUSDPrice(minimumReceived, this.props.exchange.field1.token)
             minimumReceived = vp.usCommasBigIntDecimals(minimumReceived.value, minimumReceived.decimals)
         } else {
             maximumSent = vp.mul(this.props.exchange.field0.value, percent)
             maximumSent = vp.add(this.props.exchange.field0.value, maximumSent)
+            maximumSentUSD = swapUtils.countUSDPrice(maximumSent, this.props.exchange.field0.token)
             maximumSent = vp.usCommasBigIntDecimals(maximumSent.value, maximumSent.decimals)
         }
         let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
+
+        try {
+            providerFeeUSD = swapUtils.countUSDPrice(providerFee, this.props.exchange.field0.token)
+            providerFee = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals))
+        } catch (e) {
+            providerFee = "0.0"
+            providerFeeUSD = "0$"
+        }
 
         return (
             <div className="general-card p-4">
@@ -84,11 +94,21 @@ class SwapAddon extends React.Component {
                     <div>
                         {this.props.swapCalculationsDirection === "down" &&
                             <>
-                                {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                                <div className={"d-flex justify-content-end"}>
+                                    {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                                </div>
+                                <small className={"d-flex justify-content-end usd-price"}>
+                                    {swapUtils.showUSDPrice(minimumReceivedUSD)}
+                                </small>
                             </>
                                 ||
                             <>
-                                {swapUtils.removeEndZeros(maximumSent ? maximumSent : "0.0")} {provider.ticker}
+                                <div className={"d-flex justify-content-end"}>
+                                    {swapUtils.removeEndZeros(maximumSent ? maximumSent : "0.0")} {provider.ticker}
+                                </div>
+                                <small className={"d-flex justify-content-end usd-price"}>
+                                    {swapUtils.showUSDPrice(maximumSentUSD)}
+                                </small>
                             </>
                         }
                     </div>
@@ -108,7 +128,12 @@ class SwapAddon extends React.Component {
                         <Tooltip text={t('trade.swapAddon.providerFee.tooltip')} />
                     </div>
                     <div>
-                        {swapUtils.removeEndZeros(providerFee ? providerFee : "0.0")} {provider.ticker}
+                        <div className={"d-flex justify-content-end"}>
+                            {providerFee} {provider.ticker}
+                        </div>
+                        <small className={"d-flex justify-content-end usd-price"}>
+                            {swapUtils.showUSDPrice(providerFeeUSD)}
+                        </small>
                     </div>
                 </div>
             </div>

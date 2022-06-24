@@ -79,8 +79,7 @@ module.exports = {
             "lackOfLiquidity" : "Недостаточная ликвидность для обмена"
         },
         "removeLiquidity" : {
-            "amount" : "Количество",
-            "price" : "Цена",
+            "receive" : "К получению",
             "simple" : "Упрощённый вид",
             "detailed" : "Детальный вид",
             "header" : "Удалить Ликвидность",

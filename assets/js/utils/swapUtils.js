@@ -1,5 +1,6 @@
 import ValueProcessor from './ValueProcessor';
 import _ from 'lodash';
+import React from 'react'
 
 const vp = new ValueProcessor();
 
@@ -10,6 +11,8 @@ function pairExists (pair) {
 }
 
 function removeEndZeros (value, strLength) {
+    if (value === undefined)
+        return "0"
     value = String(value)
     if (strLength === undefined) {
         let parts = String(value).split(/[\.]/)
@@ -43,11 +46,6 @@ function countPercentsByPortion (fullAmount, portion) {
 
 function countProviderFee (pool_fee, field0ValueObj) {
     let providerFee = vp.mul({value : pool_fee, decimals : 2}, field0ValueObj)
-    try {
-        providerFee = vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals)
-    } catch (e) {
-        providerFee = undefined
-    }
     return providerFee
 }
 
@@ -255,7 +253,7 @@ function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
 
     let getResultString = function (inUsd) {
         inUsd = removeEndZeros(vp.usCommasBigIntDecimals(inUsd.value, inUsd.decimals))
-        return inUsd === "undefined" ? "---" : inUsd
+        return inUsd === "undefined" ? undefined : inUsd
     }
 
     let usdPrice
@@ -287,6 +285,12 @@ function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
     return getResultString(vp.mul(tokenAmount, usdPrice))
 }
 
+function showUSDPrice (price) {
+    if (Number.isNaN(price))
+        return <></>
+    return price + "$"
+}
+
 
 export default {
     realignValueByDecimals,
@@ -294,8 +298,8 @@ export default {
     countExchangeRate,
     packAddressString,
     countProviderFee,
-    tenPowerDecimals,
     countPoolShare,
+    showUSDPrice,
     removeEndZeros,
     countPortion,
     countUSDPrice,

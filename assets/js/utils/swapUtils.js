@@ -285,10 +285,10 @@ function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
     return getResultString(vp.mul(tokenAmount, usdPrice))
 }
 
-function showUSDPrice (price) {
+function showUSDPrice (price, prefix="") {
     if (!price || price === "0")
         return <></>
-    return price + "$"
+    return prefix + price + "$"
 }
 
 

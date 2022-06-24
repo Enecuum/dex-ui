@@ -95,7 +95,7 @@ class LPTokensWalletInfo extends React.Component {
                             </small>
                         </div>
                     </div>
-                    <div className="d-block d-md-flex align-items-center justify-content-between py-2">
+                    <div className="d-block d-md-flex align-items-center justify-content-between pt-2">
                         <div className="mr-3 d-flex align-items-center">
                             {secondToken.ticker}:
                         </div>

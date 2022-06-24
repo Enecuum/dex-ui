@@ -753,7 +753,12 @@ class SpaceStation extends React.Component {
                                                 {pool.distributeResult !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.distributeResult.enxOut.value, pool.distributeResult.enxOut.decimals, pool.decimals_ENX) : '---'} ENX
                                             </td>
                                             <td>
-                                                {pool.enxPrice !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.enxPrice.value, pool.enxPrice.decimals, pool.decimals_LP) : '---'} {LPAlias}
+                                                <div>
+                                                    {pool.enxPrice !== undefined ? valueProcessor.usCommasBigIntDecimals(pool.enxPrice.value, pool.enxPrice.decimals, pool.decimals_LP) : '---'} {LPAlias}
+                                                </div>
+                                                <small className="usd-price d-flex">
+                                                    {swapUtils.showUSDPrice(swapUtils.countUSDPrice(pool.enxPrice, swapUtils.getTokenObj(this.props.tokens, this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)), "≈ ")}
+                                                </small>
                                             </td>
                                             <td>
                                                 {pool.distributeResult !== undefined ? pool.distributeResult.priceImpact : '---'}%

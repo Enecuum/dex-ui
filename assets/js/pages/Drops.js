@@ -22,6 +22,7 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
 import {FarmsFilter} from "../elements/Filters";
+import swapUtils from '../utils/swapUtils'
 
 const valueProcessor = new ValueProcessor();
 
@@ -712,13 +713,18 @@ class Drops extends React.Component {
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.earned')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
+													<div className="long-value">{
+                                                        farm.earned !== undefined && swapUtils.removeEndZeros(
+                                                            valueProcessor.usCommasBigIntDecimals(farm.earned, farm.reward_token_decimals, farm.reward_token_decimals)
+                                                        ) || "0.0"
+                                                    } {farm.reward_token_name}
+													</div>
 												</div>	
 											</td>
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.apy')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.apy !== undefined ? farm.apy : '---'), 2, 2)}%</div>
+													<div className="long-value">{farm.apy && farm.blocks_left > 0 ? valueProcessor.usCommasBigIntDecimals(farm.apy, 2, 2) : '---'}%</div>
 												</div>	
 											</td>
 											<td>
@@ -730,7 +736,11 @@ class Drops extends React.Component {
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
-													<div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
+													<div className="long-value">{
+													    swapUtils.removeEndZeros(
+													        valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.reward_token_decimals, farm.reward_token_decimals)
+                                                        )
+													}</div>
 												</div>	
 											</td>
 

@@ -178,12 +178,42 @@ class TopPairs extends React.Component {
 											{pair.token_0.ticker}-{pair.token_1.ticker}
 										</a>
 									</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)} {pair.lt.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)} {pair.token_0.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)} {pair.token_1.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t0.value !== undefined ? pair.your_lp_tokens.t0.value : '---'), pair.your_lp_tokens.t0.decimals)} {pair.token_0.ticker}</td>
-									<td>{valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t1.value !== undefined ? pair.your_lp_tokens.t1.value : '---'), pair.your_lp_tokens.t1.decimals)} {pair.token_1.ticker}</td>
-									<td>{pair.your_pool_share}%</td>
+									<td>
+										{
+											swapUtils.removeEndZeros(
+												valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)
+											)
+										} {pair.lt.ticker}
+									</td>
+									<td>
+										{
+											swapUtils.removeEndZeros(
+												valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)
+											)
+										} {pair.token_0.ticker}
+									</td>
+									<td>
+										{
+											swapUtils.removeEndZeros(
+												valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)
+											)
+										} {pair.token_1.ticker}
+									</td>
+									<td>
+										{
+											swapUtils.removeEndZeros(
+												valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t0.value !== undefined ? pair.your_lp_tokens.t0.value : '---'), pair.your_lp_tokens.t0.decimals)
+											)
+										} {pair.token_0.ticker}
+									</td>
+									<td>
+										{
+											swapUtils.removeEndZeros(
+												valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t1.value !== undefined ? pair.your_lp_tokens.t1.value : '---'), pair.your_lp_tokens.t1.decimals)
+											)
+										} {pair.token_1.ticker}
+									</td>
+									<td>{swapUtils.removeEndZeros(pair.your_pool_share)}%</td>
 					            </tr>
 					          );
 					        })}

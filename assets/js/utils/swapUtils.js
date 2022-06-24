@@ -286,7 +286,7 @@ function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
 }
 
 function showUSDPrice (price) {
-    if (Number.isNaN(price))
+    if (!price || price === "0")
         return <></>
     return price + "$"
 }

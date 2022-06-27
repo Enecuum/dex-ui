@@ -13,6 +13,7 @@ import swapUtils from "../utils/swapUtils"
 import '../../css/routing.css'
 import utils from "../utils/swapUtils";
 import { connect } from 'react-redux'
+import lsdp from '../utils/localStorageDataProcessor'
 
 
 class Routing extends React.Component {
@@ -133,12 +134,12 @@ class Routing extends React.Component {
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between">
-                                    {this.props.swapCalculationsDirection === "down" &&
+                                    {lsdp.simple.get("ENEXSwapCalcDirection", true) === "down" &&
                                         <span className="mr-2">{this.props.t('trade.swapAddon.minimumReceived.header')}</span> ||
                                         <span className="mr-2">{this.props.t('trade.swapAddon.maximumSent.header')}</span>
                                     }
                                     <div>
-                                        {this.props.swapCalculationsDirection === "down" &&
+                                        {lsdp.simple.get("ENEXSwapCalcDirection", true) === "down" &&
                                         <div className="d-flex">
                                             {amountOutMin ? amountOutMin : "0.0"}
                                             <div className="ml-1 text-muted">

@@ -66,12 +66,14 @@ class LocalStorageDataProcessor {
         }))
     }
 
-    _writeNonHistoricalData (key, value) {
-        localStorage.setItem(this._pubKey + key, value)
+    _writeNonHistoricalData (key, value, withoutPubKey=false) {
+        let pubkey = withoutPubKey ? "" : this._pubKey
+        localStorage.setItem(pubkey + key, value)
     }
 
-    _getNonHistoricalData (key) {
-        return localStorage.getItem(this._pubKey + key)
+    _getNonHistoricalData (key, withoutPubKey=false) {
+        let pubkey = withoutPubKey ?  "" : this._pubKey
+        return localStorage.getItem(pubkey + key)
     }
 
     _removeNote (txHash, concatenated) {

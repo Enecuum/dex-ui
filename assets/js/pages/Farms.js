@@ -759,7 +759,7 @@ class Farms extends React.Component {
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.liquidity')}</div>
 													<div className="long-value">${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
-												</div>	
+												</div>
 											</td>
 											<td>
 												<div className="cell-wrapper">

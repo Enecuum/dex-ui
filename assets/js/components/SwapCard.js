@@ -185,7 +185,7 @@ class SwapCard extends React.Component {
         let oldHash = this.props[mode].field0.token.hash
         this.props.swapFields(this.props.menuItem)
         setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
-    };
+    }
 
     recalculateSwap (mode, oldHash) {
 
@@ -909,10 +909,10 @@ class SwapCard extends React.Component {
 
                     let promise
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
-                        this.props.changeSwapCalcDirection("down")
+                        lsdp.simple.write("ENEXSwapCalcDirection", "down", true)
                         promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "sell")
                     } else {
-                        this.props.changeSwapCalcDirection("up")
+                        lsdp.simple.write("ENEXSwapCalcDirection", "up", true)
                         promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "buy")
                     }
                     this.handleRoutePromise(promise, cField)
@@ -993,7 +993,7 @@ class SwapCard extends React.Component {
             this.pairExists = true
             this.props.changeCreatePoolState(false)
             if (res.length) {
-                let finalValue = res[(this.props.swapCalculationsDirection === "down") ? res.length - 1 : 0].outcome
+                let finalValue = res[(lsdp.simple.get("ENEXSwapCalcDirection", true) === "down") ? res.length - 1 : 0].outcome
                 let text
                 if (finalValue.value < 0n)
                     text = "-" + this.bigIntToString(-finalValue.value, finalValue.decimals)

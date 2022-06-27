@@ -21,7 +21,7 @@ function hotUpdateNames (hotUpdateTemplate) {
 router.post(`/*`, (req, res, next) => {
     let filePath = (req.baseUrl + req.url).replace("_", entries[0])
 
-    console.log(hotChunkNames, filePath)
+    // console.log(hotChunkNames, filePath)
     if (hotChunkNames.includes(filePath)) {
         let hotPath = path.join(pubDir, filePath)
         cReadFiles([{data: hotPath}])

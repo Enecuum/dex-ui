@@ -60,7 +60,7 @@ class SwapAddon extends React.Component {
         percent.decimals += 2
 
         let minimumReceived, minimumReceivedUSD, maximumSent, maximumSentUSD, providerFeeUSD
-        if (this.props.swapCalculationsDirection === "down") {
+        if (lsdp.simple.get("ENEXSwapCalcDirection", true) === "down") {
             percent = vp.sub(vp.valueToBigInt(1), percent)
             minimumReceived = vp.mul(this.props.exchange.field1.value, percent)
             minimumReceivedUSD = swapUtils.countUSDPrice(minimumReceived, this.props.exchange.field1.token)
@@ -85,14 +85,14 @@ class SwapAddon extends React.Component {
             <div className="general-card p-4">
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
-                        {this.props.swapCalculationsDirection === "down" &&
+                        {lsdp.simple.get("ENEXSwapCalcDirection", true) === "down" &&
                             <span className="mr-2">{t('trade.swapAddon.minimumReceived.header')}</span> ||
                             <span className="mr-2">{t('trade.swapAddon.maximumSent.header')}</span>
                         }
                         <Tooltip text={t('trade.swapAddon.minimumReceived.tooltip')} />
                     </div>
                     <div>
-                        {this.props.swapCalculationsDirection === "down" &&
+                        {lsdp.simple.get("ENEXSwapCalcDirection", true) === "down" &&
                             <>
                                 <div className={"d-flex justify-content-end"}>
                                     {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}

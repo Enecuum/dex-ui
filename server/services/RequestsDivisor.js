@@ -1,4 +1,6 @@
 const express = require("express")
+const fs = require("fs")
+const path = require("path")
 
 const T_Service = require("../templates/T_Service")
 
@@ -42,6 +44,12 @@ class RequestsDivisor extends T_Service {
             ))
             this.CRH_app.use(webpackHotMiddleware(compiler));
         }
+
+        // this.CRH_app.use((req, res, next) => {
+        //     let usrIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+        //     fs.appendFileSync(path.join(__dirname, "../../logs/usrs.log"), `${usrIp}\n`, {encoding: "utf-8"})
+        //     next()
+        // })
 
         // for tp-service
         this.CRH_app.get(`/api/${this.cnfg.api_version}*`, (req, res, next) => {

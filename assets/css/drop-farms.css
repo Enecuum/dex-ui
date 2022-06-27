@@ -229,7 +229,8 @@
 
 .farm-status {
     white-space: normal;
-    max-width: 200px;
+    max-width: 210px;
+    border: white;
 }
 
 .long-value {

@@ -23,6 +23,7 @@ import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
 import {FarmsFilter} from "../elements/Filters";
 import swapUtils from '../utils/swapUtils'
+import Tooltip from '../elements/Tooltip'
 
 const valueProcessor = new ValueProcessor();
 
@@ -468,9 +469,48 @@ class Drops extends React.Component {
             else if (farm.blocks_left <= 0)
                 status = t('dropFarms.finished');
             else if (farm.blocks_left > 0)
-                status = t('dropFarms.nBlocksLeft', {blocksLeft : farm.blocks_left});         
+                status = this.countTime(farm.blocks_left);
         }
         return status;
+    }
+
+    countTime (blocks_left) {
+        const t = this.props.t
+
+        let formatDate = function (dateNum) {
+            // return dateNum < 10 ? `0${dateNum}` : dateNum
+            return dateNum
+        }
+
+        if (this.props.networkInfo && this.props.networkInfo.target_speed) {
+            let curTime = new Date()
+            let endTime = new Date().getTime() + blocks_left * this.props.networkInfo.target_speed * 1000
+            let diffTime = endTime - curTime.getTime()
+
+            let days = formatDate(Math.floor(diffTime / (1000 * 60 * 60 * 24)))
+            let hours = formatDate(Math.floor(diffTime / (1000 * 60 * 60)) % 24)
+            let minutes = formatDate(Math.floor(diffTime / (1000 * 60)) % 60)
+            let timeIntParams = {days: days, hours: hours, minutes: minutes}, langPath = "dropFarms.nDaysLeft"
+            if (days == 0) {
+                delete timeIntParams.days
+                if (hours == 0) {
+                    delete timeIntParams.hours
+                    langPath = "dropFarms.nMinutesLeft"
+                } else
+                    langPath = "dropFarms.nHoursLeft"
+            }
+            let datetime = new Date(endTime).toLocaleString()
+            return {
+                main : t(langPath, timeIntParams),
+                tooltip : <>
+                    <div className={"row mx-1"}>{t("dropFarms.approximateDeadline", {datetime : datetime.substring(0, datetime.length - 3)})}</div>
+                    <hr className="my-1 mx-2"/>
+                    <div className={"row mx-1"}>{t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}</div>
+                </>
+            }
+        } else {
+            return { main : t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}
+        }
     }
 
     getItems () {
@@ -694,7 +734,8 @@ class Drops extends React.Component {
 					        {this.farms.map(( farm, index ) => {
 					            if (!this.checkByStatus(farm))
 					                return <></>
-                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
+                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
+                                let farmStatus = this.getFarmStatus(farm)
 					        	return (
 						          	<>
 							            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
@@ -704,10 +745,13 @@ class Drops extends React.Component {
 													<div>{farmTitle}</div>
 												</div>
 											</td>
-                                            <td className="">                                                    
+                                            <td className="">
                                                 <div className="cell-wrapper">
                                                     <div className="text-color4">{t('status')}</div>
-                                                    <div className="farm-status">{this.getFarmStatus(farm)}</div>
+                                                    <div className="d-flex farm-status align-items-center">
+                                                        <div className="mr-1">{farmStatus.main ? farmStatus.main : farmStatus}</div>
+                                                        {farmStatus.tooltip && <Tooltip text={farmStatus.tooltip} /> || <></>}
+                                                    </div>
                                                 </div>
                                             </td>                                                
 											<td>

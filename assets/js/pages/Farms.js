@@ -24,6 +24,7 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
 import swapUtils from "../utils/swapUtils";
+import Tooltip from '../elements/Tooltip'
 
 const valueProcessor = new ValueProcessor();
 
@@ -84,18 +85,18 @@ class Farms extends React.Component {
         this.curLang = this.props["i18n"].language
         this.interval = setInterval(() => {
             this.getDataSet()
-        }, 5000)
+        }, 1000)
     }
 
     componentWillUnmount() {
-      clearInterval(this.interval);
+        clearInterval(this.interval);
     }
 
     handleChange(action, param, event) {
         console.log(action, param)
         let value = event.target.value;
         this.setState(state => (state.dropFarmActionsParams[action][param] = value, state))
-        console.log(this.state)
+        // console.log(this.state)
     }
 
     executeDropFarmAction(actionType, pubkey, params) {
@@ -109,7 +110,7 @@ class Farms extends React.Component {
 
         extRequests.farmAction(pubkey, actionType, BigInt(presets.network.nativeToken.fee), obj)        
         .then(result => {
-            console.log(obj)
+            // console.log(obj)
             console.log('Success', result.hash)
             let interpolateParams, txTypes = presets.pending.allowedTxTypes
             if (actionType === txTypes.farm_decrease_stake || actionType === txTypes.farm_increase_stake) {
@@ -450,10 +451,50 @@ class Farms extends React.Component {
                 status = t('dropFarms.pausedFarmStatusDescription', {stakeTokenName : farm.stake_token_name});            
             else if (farm.blocks_left <= 0)
                 status = t('dropFarms.finished');
-            else if (farm.blocks_left > 0)
-                status = t('dropFarms.nBlocksLeft', {blocksLeft : farm.blocks_left});         
+            else if (farm.blocks_left > 0) {
+                status = this.countTime(farm.blocks_left);
+            }
         }
         return status;
+    }
+
+    countTime (blocks_left) {
+        const t = this.props.t
+
+        let formatDate = function (dateNum) {
+            // return dateNum < 10 ? `0${dateNum}` : dateNum
+            return dateNum
+        }
+
+        if (this.props.networkInfo && this.props.networkInfo.target_speed) {
+            let curTime = new Date()
+            let endTime = new Date().getTime() + blocks_left * this.props.networkInfo.target_speed * 1000
+            let diffTime = endTime - curTime.getTime()
+
+            let days = formatDate(Math.floor(diffTime / (1000 * 60 * 60 * 24)))
+            let hours = formatDate(Math.floor(diffTime / (1000 * 60 * 60)) % 24)
+            let minutes = formatDate(Math.floor(diffTime / (1000 * 60)) % 60)
+            let timeIntParams = {days: days, hours: hours, minutes: minutes}, langPath = "dropFarms.nDaysLeft"
+            if (days == 0) {
+                delete timeIntParams.days
+                if (hours == 0) {
+                    delete timeIntParams.hours
+                    langPath = "dropFarms.nMinutesLeft"
+                } else
+                    langPath = "dropFarms.nHoursLeft"
+            }
+            let datetime = new Date(endTime).toLocaleString()
+            return {
+                main : t(langPath, timeIntParams),
+                tooltip : <>
+                    <div className={"row mx-1"}>{t("dropFarms.approximateDeadline", {datetime : datetime.substring(0, datetime.length - 3)})}</div>
+                    <hr className="my-1 mx-2"/>
+                    <div className={"row mx-1"}>{t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}</div>
+                </>
+            }
+        } else {
+            return { main : t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}
+        }
     }
 
     checkByStatus(farm) {
@@ -677,7 +718,8 @@ class Farms extends React.Component {
 					        {this.farms.map(( farm, index ) => {
 					            if (!this.checkByStatus(farm) || !this.checkLPtoENX(farm))
 					                return <></>
-                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;                                   
+                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
+					            let farmStatus = this.getFarmStatus(farm)
 					        	return (
 						          	<>
 							            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
@@ -690,9 +732,12 @@ class Farms extends React.Component {
                                             <td className="">                                                    
                                                 <div className="cell-wrapper">
                                                     <div className="text-color4">{t('status')}</div>
-                                                    <div className="farm-status">{this.getFarmStatus(farm)}</div>
+                                                    <div className="d-flex farm-status align-items-center">
+                                                        <div className="mr-1">{farmStatus.main ? farmStatus.main : farmStatus}</div>
+                                                        {farmStatus.tooltip && <Tooltip text={farmStatus.tooltip} /> || <></>}
+                                                    </div>
                                                 </div>
-                                            </td>                                                
+                                            </td>
 											<td>
 												<div className="cell-wrapper">
 													<div className="text-color4">{t('dropFarms.earned')}</div>

@@ -15,6 +15,11 @@ class Tooltip extends React.Component {
         this.show = props.show
     }
 
+    componentDidUpdate (prevProps, prevState, snapshot) {
+        this.text = prevProps.text
+        this.show = prevProps.show
+    }
+
     render() {
         const popover = (
             <Popover className={this.customClasses}>

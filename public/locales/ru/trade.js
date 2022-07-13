@@ -50,7 +50,9 @@ module.exports = {
             "input1" : "Ввод",
             "tooltipText" : "Когда вы добавляете ликвидность, вам выдаются токены пула, которые представляют вашу долю.",
             "liquidityTokensZone" : {
-                "yourPoolTokens" : "Токены ликвидности",
+                "yourPoolTokens" : "Доступные LP токены",
+                "stakedLPTokens" : "Вложенные LP токены",
+                "totalLPTokens" : "Общее количество LP токенов",
                 "poolShare" : "Доля в пуле"
             }
         },

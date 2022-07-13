@@ -67,7 +67,8 @@ function mapStoreToProps(component) {
                     tokens                     : state.root.tokens,
                     nativeToken                : state.root.nativeToken,
                     net                        : state.root.net,
-                    coinName                   : state.indicatorPanel.coinName
+                    coinName                   : state.indicatorPanel.coinName,
+                    farmsList                  : state.farms.farmsList
                 }
             }
         case components.SWITCH:
@@ -146,7 +147,8 @@ function mapStoreToProps(component) {
                     removeLiquidity   : state.swapCard.removeLiquidity,
                     liquidityRemove   : state.swapCard.liquidityRemove,
                     nativeToken       : state.root.nativeToken,
-                    net               : state.root.net
+                    net               : state.root.net,
+                    farmsList         : state.farms.farmsList
                 }
             }
         case components.WAITING_CONFIRMATION:
@@ -179,7 +181,8 @@ function mapStoreToProps(component) {
                     pairs            : state.root.pairs,
                     tokens           : state.root.tokens,
                     balances         : state.root.balances,
-                    net              : state.root.net
+                    net              : state.root.net,
+                    farmsList        : state.farms.farmsList
                 }
             }
         case components.LP_WALLET_INFO:
@@ -193,7 +196,8 @@ function mapStoreToProps(component) {
                     pairs           : state.root.pairs,
                     tokens          : state.root.tokens,
                     balances        : state.root.balances,
-                    liquidityMain   : state.swapCard.liquidityMain
+                    liquidityMain   : state.swapCard.liquidityMain,
+                    farmsList       : state.farms.farmsList
                 }
             }
         case components.TOP_PAIRS:
@@ -392,6 +396,7 @@ function mapDispatchToProps(component) {
                     ...swapCardCreator,
                     updCurrentTxHash : rootCreator.updCurrentTxHash,
                     assignTokenValue : swapCardCreator.assignTokenValue,
+                    updateFarmsList  : farmsCreator.updateFarmsList
                 }, dispatch)
             }
         case components.SWITCH:
@@ -474,7 +479,7 @@ function mapDispatchToProps(component) {
                     changeLiquidityMode             : swapCardCreator.changeLiquidityMode,
                     assignTokenValue                : swapCardCreator.assignTokenValue,
                     changeRemoveLiquidityVisibility : swapCardCreator.changeRemoveLiquidityVisibility,
-                    assignCoinValue                 : swapCardCreator.assignCoinValue 
+                    assignCoinValue                 : swapCardCreator.assignCoinValue
                 }, dispatch)
             }
         case components.ETM:

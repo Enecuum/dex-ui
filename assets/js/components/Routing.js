@@ -51,7 +51,7 @@ class Routing extends React.Component {
                     // customClasses="routing-pair-logos"
                     />
                     <div className="text-pairs">
-                        {(Number(pool.pool_fee) / 100).toFixed(1)}%
+                        {(Number(pool.pool_fee) / 100).toFixed(2)}%
                     </div>
                 </div>
             )

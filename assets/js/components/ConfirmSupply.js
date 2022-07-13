@@ -94,6 +94,9 @@ class ConfirmSupply extends React.Component {
                 </>
             )
         }
+
+
+
         return (
             <>
                 <div className="h3 font-weight-bold">
@@ -173,10 +176,7 @@ class ConfirmSupply extends React.Component {
                             {t('trade.confirmCard.shareOfPool')}
                         </div>
                         <div>
-                            {utils.countPoolShare(pair, {
-                                value0 : modeStruct.field0.value,
-                                value1 : modeStruct.field1.value
-                            }, this.props.balances, true)}%
+                            {utils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, pair, modeStruct)}%
                         </div>
                     </div>
                 </div>

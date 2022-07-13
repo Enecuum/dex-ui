@@ -40,10 +40,16 @@ class LPTokensWalletInfo extends React.Component {
     countPooledAmount () {
         let ltBalance = utils.getBalanceObj(this.props.balances, this.pair.lt);
         let ltObj = utils.getTokenObj(this.props.tokens, this.pair.lt);
+        ltBalance.value = ltBalance.amount
+        let farm
+        if (this.props.farmsList) {
+            farm = this.props.farmsList.find(farm => farm.stake_token_hash === this.pair.lt && farm.stake)
+            if (farm)
+                ltBalance = valueProcessor.add(ltBalance, {value: farm.stake, decimals: 10})
+        }
         this.pooled = testFormulas.ltDestruction(this.props.tokens, this.pair, {
-            lt : { 
-                value : ltBalance.amount,
-                decimals : ltBalance.decimals,
+            lt : {
+                ...ltBalance,
                 total_supply : {
                     value : ltObj.total_supply,
                     decimals : ltObj.decimals
@@ -61,6 +67,9 @@ class LPTokensWalletInfo extends React.Component {
 
             let ltBalance = utils.getBalanceObj(this.props.balances, this.pair.lt)
             ltBalance.value = ltBalance.amount
+            let farm = this.props.farmsList.find(farm => farm.stake_token_hash === this.pair.lt && farm.stake)
+            if (farm)
+                ltBalance = valueProcessor.add(ltBalance, {value: farm.stake, decimals: 10})
 
             let firstTokenUsd = swapUtils.countUSDPrice(this.pooled.t0, firstToken)
             let secondTokenUsd = swapUtils.countUSDPrice(this.pooled.t1, secondToken)

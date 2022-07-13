@@ -3,6 +3,7 @@ import { Card, Accordion, Button } from 'react-bootstrap';
 import { connect, connectAdvanced } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
+const _ = require("lodash")
 
 import ValueProcessor from '../utils/ValueProcessor';
 import utils from '../utils/swapUtils';
@@ -11,6 +12,8 @@ import swapApi from '../requests/swapApi';
 import '../../css/accordion.css';
 import swapUtils from '../utils/swapUtils'
 import PairLogos from './PairLogos'
+import networkApi from '../requests/networkApi'
+import farmsCreator from '../../store/actionCreators/farms'
 
 const valueProcessor = new ValueProcessor();
 
@@ -26,11 +29,11 @@ class LiquidityTokensZone extends React.Component {
     };
 
     componentDidMount() {
-      window.addEventListener('hashchange', this.resolveURLHash);
+        window.addEventListener('hashchange', this.resolveURLHash);
     }
 
     componentWillUnmount() {
-       window.removeEventListener('hashchange', this.resolveURLHash);
+        window.removeEventListener('hashchange', this.resolveURLHash);
     }    
 
     componentDidUpdate(prevProps, prevState){
@@ -102,13 +105,24 @@ class LiquidityTokensZone extends React.Component {
     };
 
     getLtData () { // returns [{t1, t2, v1, v2, lt}] - only pairs that contain user's liquidity tokens
-        let filtered = [];
+        let filtered = []
         for (let pool of this.props.pairs)
-            for (let balance of this.props.balances)
-                if (balance.token === pool.lt)
-                    filtered.push(pool);
-        return filtered;
-    };
+            for (let balance of this.props.balances) {
+                let farm = this.stakedOnFarm(pool.lt)
+                if (balance.token === pool.lt || (farm !== undefined && filtered.find(el => el.lt === pool.lt) === undefined)) {
+                    let filteredPair = _.cloneDeep(pool)
+                    if (farm !== undefined) {
+                        filteredPair.stake = farm.stake
+                    }
+                    filtered.push(filteredPair)
+                }
+            }
+        return filtered
+    }
+
+    stakedOnFarm (poolLt) {
+        return this.props.farmsList.find(farm => farm.stake_token_hash === poolLt && farm.stake)
+    }
 
     assignDataForRemoveLiquidity (field, data) {
         let mode = 'removeLiquidity';
@@ -142,11 +156,14 @@ class LiquidityTokensZone extends React.Component {
                 t1 : 0
             };
         let balanceObj = utils.getBalanceObj(this.props.balances, pair.lt);
+        if (pair.stake)
+            balanceObj = valueProcessor.add({value: balanceObj.amount, decimals: balanceObj.decimals}, {value: pair.stake, decimals: 10})
+        else
+            balanceObj.value = balanceObj.amount
         let ltObj = utils.getTokenObj(this.props.tokens, pair.lt);
         this.pooled[index] = testFormulas.ltDestruction(this.props.tokens, pair, {
             lt : {
-                value : balanceObj.amount,
-                decimals : balanceObj.decimals,
+                ...balanceObj,
                 total_supply : {
                     value : ltObj.total_supply,
                     decimals : ltObj.decimals
@@ -190,7 +207,7 @@ class LiquidityTokensZone extends React.Component {
     };
 
     renderLtList () {
-        let ltList = this.getLtData();
+        let ltList = this.getLtData()
         if (ltList.length === 0)
             return (
                 <div className="liquidity-tokens-empty-zone"/>
@@ -202,7 +219,13 @@ class LiquidityTokensZone extends React.Component {
                 let fToken  = this.getTokenByHash(el.token_0.hash);
                 let sToken  = this.getTokenByHash(el.token_1.hash);
                 let balance = utils.getBalanceObj(this.props.balances, el.lt)
+                balance.value = balance.amount
+
                 this.userPoolToken = this.getYourPoolToken(el.lt);
+
+                let totalLP = balance
+                if (el.stake)
+                    totalLP = valueProcessor.add(totalLP, {value: el.stake, decimals: 10})
 
                 return (
                     <Card className="liquidity-tokens-zone" key={index}>
@@ -240,10 +263,25 @@ class LiquidityTokensZone extends React.Component {
                                         <span className="mr-2">{t("pooled")} {sToken.ticker}:</span>
                                         {valueProcessor.usCommasBigIntDecimals(this.pooled[index].t1.value, this.pooled[index].t1.decimals)}
                                     </div>
+
+
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.yourPoolTokens")}:</span>
-                                        {valueProcessor.usCommasBigIntDecimals(balance.amount, balance.decimals)}
-                                    </div>  
+                                        <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.totalLPTokens")}:</span>
+                                        {valueProcessor.usCommasBigIntDecimals(totalLP.value, totalLP.decimals)}
+                                    </div>
+
+                                    {el.stake &&
+                                        <>
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.yourPoolTokens")}:</span>
+                                                {valueProcessor.usCommasBigIntDecimals(balance.value, balance.decimals)}
+                                            </div>
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.stakedLPTokens")}:</span>
+                                                {valueProcessor.usCommasBigIntDecimals(el.stake, 10)}
+                                            </div>
+                                        </>
+                                    }
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span className="mr-2">{t("trade.swapCard.liquidity.liquidityTokensZone.poolShare")}:</span>
                                         {utils.removeEndZeros(utils.countPoolShare(el, {
@@ -255,18 +293,20 @@ class LiquidityTokensZone extends React.Component {
 
                                 {/* Your pool share is absent because of lack of data. */}
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <Button className="mr-2 btn liquidity-btn flex-grow-1 w-50 py-2"
+                                    <Button className="btn liquidity-btn flex-grow-1 w-50 py-2"
                                             variant="secondary"
                                             onClick={this.openAddLiquidityCard.bind(this, fToken, sToken)}
                                     >
                                         {t("add")}
                                     </Button>
-                                    <Button className="ml-2 btn liquidity-btn flex-grow-1 w-50 py-2"
-                                            variant="secondary"
-                                            onClick={this.openRmLiquidityCard.bind(this, el)}
-                                    >
-                                        {t("remove")}
-                                    </Button>
+                                    {balance.value != 0 &&
+                                        <Button className="ml-4 btn liquidity-btn flex-grow-1 w-50 py-2"
+                                                variant="secondary"
+                                                onClick={this.openRmLiquidityCard.bind(this, el)}
+                                        >
+                                            {t("remove")}
+                                        </Button>
+                                    }
                                 </div>
                             </Card.Body>
                         </Accordion.Collapse>

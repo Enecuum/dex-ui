@@ -1,6 +1,7 @@
-import ValueProcessor from './ValueProcessor';
-import _ from 'lodash';
+import ValueProcessor from './ValueProcessor'
+import _ from 'lodash'
 import React from 'react'
+import testFormulas from './testFormulas'
 
 const vp = new ValueProcessor();
 
@@ -45,7 +46,7 @@ function countPercentsByPortion (fullAmount, portion) {
 }
 
 function countProviderFee (pool_fee, field0ValueObj) {
-    let providerFee = vp.mul({value : pool_fee, decimals : 2}, field0ValueObj)
+    let providerFee = vp.mul({value : pool_fee, decimals : 4}, field0ValueObj)
     return providerFee
 }
 
@@ -113,7 +114,7 @@ function countExchangeRate (pair, firstPerSecond, modeStruct) {
  * @param {object} balances - balance object from redux state
  * @returns {string} - percents
  */
-function countPoolShare (pair, values, balances, addition) {
+function countPoolShare (pair, values, balances, addition, pooled) {
     if (!pairExists(pair))
         return '100';
 
@@ -139,8 +140,10 @@ function countPoolShare (pair, values, balances, addition) {
         decimals : getBalanceObj(balances, pair.token_1.hash).decimals
     };
     if (addition) {
-        volumeObj0 = vp.add(volumeObj0, value0); 
+        volumeObj0 = vp.add(volumeObj0, value0);
         volumeObj1 = vp.add(volumeObj1, value1);
+        value0 = vp.add(value0, pooled.t0)
+        value1 = vp.add(value1, pooled.t1)
     }
     let inputVolume = vp.mul(value0, value1);
     let poolVolume = vp.mul(volumeObj0, volumeObj1);
@@ -285,6 +288,33 @@ function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
     return getResultString(vp.mul(tokenAmount, usdPrice))
 }
 
+function poolShareWithStaked (tokens, balances, farms, activePair, mode) {
+    let ltBalance = getBalanceObj(balances, activePair.lt);
+    let ltObj = getTokenObj(tokens, activePair.lt);
+    ltBalance.value = ltBalance.amount
+    let farm
+    if (farms) {
+        farm = farms.find(farm => farm.stake_token_hash === activePair.lt && farm.stake)
+        if (farm)
+            ltBalance = vp.add(ltBalance, {value: farm.stake, decimals: 10})
+    }
+
+    let pooled = testFormulas.ltDestruction(tokens, activePair, {
+        lt : {
+            ...ltBalance,
+            total_supply : {
+                value : ltObj.total_supply,
+                decimals : ltObj.decimals
+            }
+        }
+    }, 'ltfield')
+
+    return countPoolShare(activePair, {
+        value0 : mode.field0.value,
+        value1 : mode.field1.value
+    }, balances, true, pooled)
+}
+
 function showUSDPrice (price, prefix="") {
     if (!price || price === "0")
         return <></>
@@ -295,6 +325,7 @@ function showUSDPrice (price, prefix="") {
 export default {
     realignValueByDecimals,
     countPercentsByPortion,
+    poolShareWithStaked,
     countExchangeRate,
     packAddressString,
     countProviderFee,

@@ -27,6 +27,7 @@ import '../../css/swap-card.css'
 import '../../css/font-style.css'
 import swapUtils from "../utils/swapUtils"
 import lsdp from '../utils/localStorageDataProcessor'
+import networkApi from '../requests/networkApi'
 
 const valueProcessor = new ValueProcessor()
 const JUST_TOKEN_PRICE = true
@@ -37,6 +38,7 @@ class SwapCard extends React.Component {
         this.pairExists = false
         this.readyToSubmit = {dataValid : false}
         this.enoughMoney = []
+        this.farms = []
         this.insufficientFunds = false
         this.activePair = {}
         this.rmPercents = 50
@@ -74,12 +76,29 @@ class SwapCard extends React.Component {
         this.validator = new Validator
     };
 
-    componentDidUpdate(prevProps){
+    updFarmsData () {
+        networkApi.getDexFarms(this.props.pubkey)
+        .then(res => {
+            if (!res.lock)
+                res.json().then(farms => {
+                    this.farms = farms.filter(farm => farm.stake)
+                    this.props.updateFarmsList({
+                        value : this.farms
+                    })
+                })
+        })
+    }
+
+    componentDidUpdate (prevProps) {
         const hasAChanged = ((this.props.tokens !== prevProps.tokens));
 
         if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
             this.setSwapTokensFromRequest();
             this.initByGetRequestParams = false;
+        }
+
+        if (prevProps.net.name !== this.props.net.name) {
+            this.updFarmsData()
         }
 
         // if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
@@ -92,6 +111,8 @@ class SwapCard extends React.Component {
     }
 
     componentDidMount() {
+        this.updFarmsData()
+        this.descriptor = setInterval(this.updFarmsData.bind(this), 5000)
         window.addEventListener('hashchange', this.resolveURLHash)
         this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
 
@@ -110,6 +131,7 @@ class SwapCard extends React.Component {
                 this.routingWorker.close()
             } catch (e) {}
         }
+        clearInterval(this.descriptor)
     }
 
     setSwapTokensFromRequest() {
@@ -139,9 +161,16 @@ class SwapCard extends React.Component {
     requestPairIsExist(paramsObj) {
         let myPairs = [];
         for (let pool of this.props.pairs)
-            for (let balance of this.props.balances)
-                if (balance.token === pool.lt)
-                    myPairs.push(pool);
+            for (let balance of this.props.balances) {
+                let farm = this.farms.find(farm => farm.stake_token_hash === pool.lt && farm.stake)
+                if (balance.token === pool.lt || (farm !== undefined && myPairs.find(el => el.lt === pool.lt) === undefined)) {
+                    let filteredPair = _.cloneDeep(pool)
+                    if (farm !== undefined) {
+                        filteredPair.stake = farm.stake
+                    }
+                    myPairs.push(filteredPair)
+                }
+            }
         let pairIsExist = myPairs.find(elem => (elem.token_0.hash === paramsObj.from) && (elem.token_1.hash === paramsObj.to));
 
         return pairIsExist !== undefined
@@ -780,10 +809,7 @@ class SwapCard extends React.Component {
     }
 
     showPoolShare () {
-        let res =  utils.countPoolShare(this.activePair, {
-            value0 : this.props.liquidity.field0.value,
-            value1 : this.props.liquidity.field1.value
-        }, this.props.balances, true);
+        let res = swapUtils.poolShareWithStaked(this.props.tokens, this.props.balances, this.farms, this.activePair, this.props.liquidity)
         if (res === undefined)
             return '-';
         if (res < 0.001)

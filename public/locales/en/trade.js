@@ -51,7 +51,9 @@ module.exports = {
             "input1" : "Input",
             "tooltipText" : "When you add liquidity, you are given pool tokens that represent your share.",
             "liquidityTokensZone" : {
-                "yourPoolTokens" : "Your pool tokens",
+                "yourPoolTokens" : "Available LP tokens",
+                "stakedLPTokens" : "Staked LP tokens",
+                "totalLPTokens" : "Total LP tokens",
                 "poolShare" : "Pool share"
             }
         },

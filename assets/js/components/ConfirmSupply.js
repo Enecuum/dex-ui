@@ -60,7 +60,11 @@ class ConfirmSupply extends React.Component {
         let firstToken = modeStruct.field0.token
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
-        let ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+        let ltValue
+        if (this.props.menuItem === 'liquidity')
+            ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+        else
+            ltValue = 0
 
         if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
             let field0 = this.props.removeLiquidity.field0
@@ -94,8 +98,6 @@ class ConfirmSupply extends React.Component {
                 </>
             )
         }
-
-
 
         return (
             <>

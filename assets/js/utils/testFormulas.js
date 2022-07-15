@@ -138,11 +138,15 @@ function countLTValue (pair, uiPair, mode, tokens) {
     } else if (mode === 'liquidity') {
         let tObj0 = {value : pair.token_0.volume, decimals : utils.getTokenObj(tokens, pair.token_0.hash).decimals}
         let tObj1 = {value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals}
+
         let required_1 = vp.div(vp.mul(tObj0, uiPair.field1.value), tObj1)
         let res = vp.mul(required_1, uiPair.field1.value)
         if (res.value === undefined)
-            return {};
-        return vp.valueToBigInt(Math.sqrt(Number(res.value / BigInt(Math.pow(10, res.decimals)))), res.decimals)
+            return {}
+
+        let mulRes = bigIntSqrt(res.value) * bigIntSqrt(BigInt("1" + "0".repeat(res.decimals)))
+
+        return { value: mulRes, decimals: res.decimals }
     }
     // dev warning
     return 'wrong mode'

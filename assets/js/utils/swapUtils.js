@@ -255,6 +255,8 @@ function realignValueByDecimals (first, second) {
 function countUSDPrice (tokenVal, tokenInfo, justTokenPrice) {
 
     let getResultString = function (inUsd) {
+        if (inUsd.value < 0n)
+            inUsd.value = 0n
         inUsd = removeEndZeros(vp.usCommasBigIntDecimals(inUsd.value, inUsd.decimals))
         return inUsd === "undefined" ? undefined : inUsd
     }

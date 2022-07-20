@@ -11,6 +11,7 @@ import '../../css/top-pairs.css';
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import PairLogos from './PairLogos'
+import utils from '../utils/swapUtils'
 
 const valueProcessor = new ValueProcessor();
 
@@ -24,6 +25,7 @@ class TopPairs extends React.Component {
     	let balances = this.props.balances;
 		let pairs = this.props.pairs;
 		let tokens = this.props.tokens;
+		let farmsList = this.props.farmsList;
     	let result = [];
     	let uniquePairsTokensList = {};
     	if (pairs !== undefined && Array.isArray(pairs) && pairs.length > 0 && tokens !== undefined && Array.isArray(tokens) && tokens.length > 0) {
@@ -69,18 +71,23 @@ class TopPairs extends React.Component {
 					}
 
 					let ltObj = swapUtils.getTokenObj(tokens, pair.lt);
+					let ltBalance = utils.getBalanceObj(balances, pair.lt);
+					ltBalance.value = ltBalance.amount
+					let farm
+					if (farmsList) {
+						farm = farmsList.find(farm => farm.stake_token_hash === pair.lt && farm.stake)
+						if (farm)
+							ltBalance = valueProcessor.add(ltBalance, {value: farm.stake, decimals: 10})
+					}
                     let ltDestructionResult = testFormulas.ltDestruction(tokens, pair, {
                         lt : {
-                            value : amountLT,
-							decimals : decimalsLT,
+							...ltBalance,
 							total_supply : {
 								value : ltObj.total_supply,
 								decimals : ltObj.decimals
 							}
                         }
                     }, 'ltfield');
-
-					// !!! DEPRECATED !!! let ltDestructionResult = testFormulas.ltDestruction(pair, uniquePairsTokensList[pair.lt].total_supply, {amount_lt : amountLT}, 'ltfield'); !!! DEPRECATED !!!
 
 					result.push({
 						token_0 : {

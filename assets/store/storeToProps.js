@@ -207,7 +207,8 @@ function mapStoreToProps(component) {
                     connectionStatus  : state.root.connectionStatus,
                     pairs             : state.root.pairs,
                     balances          : state.root.balances,
-                    tokens            : state.root.tokens
+                    tokens            : state.root.tokens,
+                    farmsList         : state.farms.farmsList
                 }
             }
         case components.ETM:
@@ -387,7 +388,8 @@ function mapDispatchToProps(component) {
                     assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
                     changeMenuItem  : rootCreator.changeMenuItem,
                     assignTokenValue: swapCardCreator.assignTokenValue,
-                    assignCoinValue : swapCardCreator.assignCoinValue
+                    assignCoinValue : swapCardCreator.assignCoinValue,
+                    updateFarmsList : farmsCreator.updateFarmsList
                 }, dispatch)
             }
         case components.SWAP_CARD:

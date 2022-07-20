@@ -27,7 +27,8 @@ module.exports = {
     "swapCard" : {
         "inputField" : {
             "balance" : "Баланс",
-            "selectToken" : "Выберите токен"
+            "selectToken" : "Выберите токен",
+            "notEnoughLiquidity" : "недостаточно ликвидности пула"
         },
         "exchange" : {
             "header" : "Обмен",

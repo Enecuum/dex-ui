@@ -27,7 +27,8 @@ module.exports = {
     "swapCard" : {
         "inputField" : {
             "balance" : "Balance",
-            "selectToken" : "Select a token"
+            "selectToken" : "Select a token",
+            "notEnoughLiquidity" : "not enough liquidity in the pool"
         },
         "exchange" : {
             "header" : "Swap",
@@ -63,7 +64,7 @@ module.exports = {
             "addLiquidity" : "Add liquidity",
             "removeLiquidity" : "Remove liquidity",
             "fillAllFields" : "Fill all fields",
-            "lackOfSecondVolume" : "Insufficient funds of the poll",
+            "lackOfSecondVolume" : "Insufficient funds of the pool",
             "swap" : "Swap",
             "createPair" : "Create pair",
 

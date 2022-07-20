@@ -38,7 +38,6 @@ class SwapCard extends React.Component {
         this.pairExists = false
         this.readyToSubmit = {dataValid : false}
         this.enoughMoney = []
-        this.farms = []
         this.insufficientFunds = false
         this.activePair = {}
         this.rmPercents = 50
@@ -76,19 +75,6 @@ class SwapCard extends React.Component {
         this.validator = new Validator
     };
 
-    updFarmsData () {
-        networkApi.getDexFarms(this.props.pubkey)
-        .then(res => {
-            if (!res.lock)
-                res.json().then(farms => {
-                    this.farms = farms.filter(farm => farm.stake)
-                    this.props.updateFarmsList({
-                        value : this.farms
-                    })
-                })
-        })
-    }
-
     componentDidUpdate (prevProps) {
         const hasAChanged = ((this.props.tokens !== prevProps.tokens));
 
@@ -96,11 +82,6 @@ class SwapCard extends React.Component {
             this.setSwapTokensFromRequest();
             this.initByGetRequestParams = false;
         }
-
-        if (prevProps.net.name !== this.props.net.name) {
-            this.updFarmsData()
-        }
-
         // if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
         //     this.oldNet = ENQWeb.Enq.provider
         //     // this.setState({
@@ -111,8 +92,6 @@ class SwapCard extends React.Component {
     }
 
     componentDidMount() {
-        this.updFarmsData()
-        this.descriptor = setInterval(this.updFarmsData.bind(this), 5000)
         window.addEventListener('hashchange', this.resolveURLHash)
         this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
 
@@ -131,7 +110,6 @@ class SwapCard extends React.Component {
                 this.routingWorker.close()
             } catch (e) {}
         }
-        clearInterval(this.descriptor)
     }
 
     setSwapTokensFromRequest() {
@@ -162,7 +140,7 @@ class SwapCard extends React.Component {
         let myPairs = [];
         for (let pool of this.props.pairs)
             for (let balance of this.props.balances) {
-                let farm = this.farms.find(farm => farm.stake_token_hash === pool.lt && farm.stake)
+                let farm = this.props.farmsList.find(farm => farm.stake_token_hash === pool.lt && farm.stake)
                 if (balance.token === pool.lt || (farm !== undefined && myPairs.find(el => el.lt === pool.lt) === undefined)) {
                     let filteredPair = _.cloneDeep(pool)
                     if (farm !== undefined) {
@@ -805,11 +783,15 @@ class SwapCard extends React.Component {
             }
         else
             res = ''
+        if (valueObj.value < 0n) {
+            valueObj.value = 0n
+            return this.props.t("trade.swapCard.inputField.notEnoughLiquidity")
+        }
         return res
     }
 
     showPoolShare () {
-        let res = swapUtils.poolShareWithStaked(this.props.tokens, this.props.balances, this.farms, this.activePair, this.props.liquidity)
+        let res = swapUtils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, this.activePair, this.props.liquidity)
         if (res === undefined)
             return '-';
         if (res < 0.001)

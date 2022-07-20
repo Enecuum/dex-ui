@@ -109,7 +109,7 @@ class LiquidityTokensZone extends React.Component {
         for (let pool of this.props.pairs)
             for (let balance of this.props.balances) {
                 let farm = this.stakedOnFarm(pool.lt)
-                if (balance.token === pool.lt || (farm !== undefined && filtered.find(el => el.lt === pool.lt) === undefined)) {
+                if ((balance.token === pool.lt || farm !== undefined) && filtered.find(el => el.lt === pool.lt) === undefined) {
                     let filteredPair = _.cloneDeep(pool)
                     if (farm !== undefined) {
                         filteredPair.stake = farm.stake

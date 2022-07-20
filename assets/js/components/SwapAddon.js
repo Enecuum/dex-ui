@@ -46,6 +46,12 @@ class SwapAddon extends React.Component {
         }
     }
 
+    showValues (value) {
+        if (typeof value === "object" || typeof value === "string" && value.search("-") === -1)
+            return value
+        return "---"
+    }
+
     render () {
         let data = this.props.exchange
         let pair = swapUtils.searchSwap(this.props.pairs, [data.field0.token, data.field1.token])
@@ -95,19 +101,19 @@ class SwapAddon extends React.Component {
                         {lsdp.simple.get("ENEXSwapCalcDirection", true) === "down" &&
                             <>
                                 <div className={"d-flex justify-content-end"}>
-                                    {swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0")} {received.ticker}
+                                    {this.showValues(swapUtils.removeEndZeros(minimumReceived ? minimumReceived : "0.0"))} {received.ticker}
                                 </div>
                                 <small className={"d-flex justify-content-end usd-price"}>
-                                    {swapUtils.showUSDPrice(minimumReceivedUSD)}
+                                    {this.showValues(swapUtils.showUSDPrice(minimumReceivedUSD))}
                                 </small>
                             </>
                                 ||
                             <>
                                 <div className={"d-flex justify-content-end"}>
-                                    {swapUtils.removeEndZeros(maximumSent ? maximumSent : "0.0")} {provider.ticker}
+                                    {this.showValues(swapUtils.removeEndZeros(maximumSent ? maximumSent : "0.0"))} {provider.ticker}
                                 </div>
                                 <small className={"d-flex justify-content-end usd-price"}>
-                                    {swapUtils.showUSDPrice(maximumSentUSD)}
+                                    {this.showValues(swapUtils.showUSDPrice(maximumSentUSD))}
                                 </small>
                             </>
                         }
@@ -119,7 +125,7 @@ class SwapAddon extends React.Component {
                         <Tooltip text={t('trade.swapAddon.priceImpact.tooltip')} />
                     </div>
                     <div>
-                        <span className="text-color3">{this.showPriceImpact(pair)}%</span>
+                        <span className="text-color3">{this.showValues(this.showPriceImpact(pair))}%</span>
                     </div>
                 </div>
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
@@ -129,10 +135,10 @@ class SwapAddon extends React.Component {
                     </div>
                     <div>
                         <div className={"d-flex justify-content-end"}>
-                            {providerFee} {provider.ticker}
+                            {this.showValues(providerFee)} {provider.ticker}
                         </div>
                         <small className={"d-flex justify-content-end usd-price"}>
-                            {swapUtils.showUSDPrice(providerFeeUSD)}
+                            {this.showValues(swapUtils.showUSDPrice(providerFeeUSD))}
                         </small>
                     </div>
                 </div>

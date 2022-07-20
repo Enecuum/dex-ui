@@ -30,6 +30,12 @@ class Routing extends React.Component {
         this.setState({showRouter : !this.state.showRouter})
     }
 
+    showValues (value) {
+        if (typeof value === "object" || typeof value === "string" && value.search("-") === -1)
+            return value
+        return "---"
+    }
+
     genRouteNodes () {
         return this.props.route.map((routeNode, index) => {
             if (!index)
@@ -96,11 +102,11 @@ class Routing extends React.Component {
                 {this.props.route.map((routeNode, index, routeNodes) => {
                     if (!index)
                         return (<></>)
-                    let from = this.makeTextProp(routeNodes[index - 1].outcome)
-                    let to = this.makeTextProp(routeNode.outcome)
+                    let from = this.showValues(this.makeTextProp(routeNodes[index - 1].outcome))
+                    let to = this.showValues(this.makeTextProp(routeNode.outcome))
 
-                    let amountOutMin = this.makeTextProp(routeNode.amountOutMin)
-                    let amountInMax = this.makeTextProp(routeNode.amountInMax)
+                    let amountOutMin = this.showValues(this.makeTextProp(routeNode.amountOutMin))
+                    let amountInMax = this.showValues(this.makeTextProp(routeNode.amountInMax))
 
                     return (
                         <div key={index}>

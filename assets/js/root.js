@@ -159,6 +159,7 @@ class Root extends React.Component {
                     this.slowDownUpdDexDataInterval()
                 }, 5 * 1000)
             }
+            this.updFarmsData()
             this.updBalances(pubkey)
             this.updPools()
             this.updTokens()
@@ -184,6 +185,19 @@ class Root extends React.Component {
                     .then(res => {
                         res = res.filter(el => el.amount !== 0) // TMP solution
                         this.props.updBalances(res)
+                    })
+            })
+    }
+
+    updFarmsData () {
+        networkApi.getDexFarms(this.props.pubkey)
+            .then(res => {
+                if (!res.lock)
+                    res.json().then(farms => {
+                        this.farms = farms.filter(farm => farm.stake)
+                        this.props.updateFarmsList({
+                            value : this.farms
+                        })
                     })
             })
     }

@@ -140,13 +140,30 @@ function countLTValue (pair, uiPair, mode, tokens) {
         let tObj1 = {value : pair.token_1.volume, decimals : utils.getTokenObj(tokens, pair.token_1.hash).decimals}
 
         let required_1 = vp.div(vp.mul(tObj0, uiPair.field1.value), tObj1)
-        let res = vp.mul(required_1, uiPair.field1.value)
-        if (res.value === undefined)
-            return {}
+        let required_2 = vp.div(vp.mul(tObj1, uiPair.field0.value), tObj0)
+        let amount_1, amount_2
+        let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(uiPair.field0.value), _.cloneDeep(required_1))
+        if(tmp.f >= tmp.s){
+            amount_1 = required_1
+            amount_2 = uiPair.field1.value
+        } else {
+            amount_1 = uiPair.field0.value
+            amount_2 = required_2
+        }
 
-        let mulRes = bigIntSqrt(res.value) * bigIntSqrt(BigInt("1" + "0".repeat(res.decimals)))
+        let ltObj = utils.getTokenObj(tokens, pair.lt)
+        let lt_amount_1 = vp.div(vp.mul(amount_1, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj0)
+        let lt_amount_2 = vp.div(vp.mul(amount_2, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj1)
+        tmp = swapUtils.realignValueByDecimals(_.cloneDeep(lt_amount_1), _.cloneDeep(lt_amount_2))
+        let lt_amount = tmp.f < tmp.s ? lt_amount_1 : lt_amount_2
 
-        return { value: mulRes, decimals: res.decimals }
+        // let res = vp.mul(required_1, uiPair.field1.value)
+        // if (res.value === undefined)
+        //     return {}
+        //
+        // let mulRes = bigIntSqrt(res.value) * bigIntSqrt(BigInt("1" + "0".repeat(res.decimals)))
+
+        return lt_amount
     }
     // dev warning
     return 'wrong mode'

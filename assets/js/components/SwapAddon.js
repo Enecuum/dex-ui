@@ -125,7 +125,9 @@ class SwapAddon extends React.Component {
                         <Tooltip text={t('trade.swapAddon.priceImpact.tooltip')} />
                     </div>
                     <div>
-                        <span className="text-color3">{this.showValues(this.showPriceImpact(pair))}%</span>
+                        <span className="text-color3">{ (minimumReceived && minimumReceived.search("-") === -1 || maximumSent && maximumSent.search("-") === -1) &&
+                            this.showValues(this.showPriceImpact(pair)) || 0
+                        }%</span>
                     </div>
                 </div>
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">

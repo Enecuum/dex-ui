@@ -66,7 +66,8 @@ class SwapCard extends React.Component {
             swapIconStatus : false,
             route : [],
             routingWaiting: false,
-            routingVisibility: false
+            routingVisibility: false,
+            notEnoughLiquidity : false
         }
         this.swapCardValidationRules = new SwapCardValidationRules(this.props.t)
         this.resolveURLHash = this.setSwapTokensFromRequest.bind(this)
@@ -690,8 +691,13 @@ class SwapCard extends React.Component {
     }
 
     getBalanceColor (id) {
-        let c_color = { danger : '#61c2d077', simple : '#61c2d0' };
-        let danger = { color : c_color.danger }, simple = { color : c_color.simple };
+        let c_color = { danger : '#61c2d077', simple : '#61c2d0', alert: '#e03266' };
+        let danger = { color : c_color.danger },
+            simple = { color : c_color.simple },
+            withoutLiquidity = {color: c_color.alert};
+
+        if (id === 1 && this.state.notEnoughLiquidity)
+            return withoutLiquidity;
         if (id === 4 || id === 5)
             return simple;
         if (this.enoughMoney.indexOf(id) === -1)
@@ -1022,10 +1028,19 @@ class SwapCard extends React.Component {
                 this.pairExists = false
                 this.props.changeCreatePoolState(true)
             }
-            this.setState({
-                routingWaiting : false,
-                route: res
-            })
+            if (res.find(node => node.notEnoughLiquidity))
+                this.setState({
+                    notEnoughLiquidity : true,
+                    routingWaiting : false,
+                    routingVisibility : false,
+                    route: []
+                })
+            else
+                this.setState({
+                    notEnoughLiquidity : false,
+                    routingWaiting : false,
+                    route: res
+                })
         })
         .catch(() => {
             try {

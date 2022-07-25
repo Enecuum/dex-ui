@@ -155,7 +155,6 @@ function countLTValue (pair, uiPair, mode, tokens) {
         let lt_amount_1 = vp.div(vp.mul(amount_1, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj0)
         let lt_amount_2 = vp.div(vp.mul(amount_2, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj1)
         tmp = swapUtils.realignValueByDecimals(_.cloneDeep(lt_amount_1), _.cloneDeep(lt_amount_2))
-        let lt_amount = tmp.f < tmp.s ? lt_amount_1 : lt_amount_2
 
         // let res = vp.mul(required_1, uiPair.field1.value)
         // if (res.value === undefined)
@@ -163,7 +162,7 @@ function countLTValue (pair, uiPair, mode, tokens) {
         //
         // let mulRes = bigIntSqrt(res.value) * bigIntSqrt(BigInt("1" + "0".repeat(res.decimals)))
 
-        return lt_amount
+        return tmp.f < tmp.s ? lt_amount_1 : lt_amount_2
     }
     // dev warning
     return 'wrong mode'
@@ -368,26 +367,28 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
             if (adj) {
 
             } else {
+                let outcome = buyExact({
+                    value : edge.volume2,
+                    decimals : getDecimals(tokens, edge.to)
+                }, {
+                    value : edge.volume1,
+                    decimals : getDecimals(tokens, edge.from)
+                }, {
+                    value : current.outcome.value,
+                    decimals : current.outcome.decimals
+                }, {
+                    value : edge.pool_fee,
+                    decimals : 2
+                })
                 let new_vertex = {
                     vertex: edge.to,
                     processed: false,
                     volume1 : _.cloneDeep(edge.volume1),
                     volume2 : _.cloneDeep(edge.volume2),
                     pool_fee : _.cloneDeep(edge.pool_fee),
-                    outcome: buyExact({
-                        value : edge.volume2,
-                        decimals : getDecimals(tokens, edge.to)
-                    }, {
-                        value : edge.volume1,
-                        decimals : getDecimals(tokens, edge.from)
-                    }, {
-                        value : current.outcome.value,
-                        decimals : current.outcome.decimals
-                    }, {
-                        value : edge.pool_fee,
-                        decimals : 2
-                    }),
-                    source: edge.from
+                    outcome: outcome,
+                    source: edge.from,
+                    notEnoughLiquidity : outcome.value < 0n
                 }
 
                 vertices.push(new_vertex);
@@ -494,7 +495,6 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         }
         return el
     }).reverse()
-
 
     return route
 }

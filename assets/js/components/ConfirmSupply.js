@@ -61,9 +61,13 @@ class ConfirmSupply extends React.Component {
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
         let ltValue
-        if (this.props.menuItem === 'liquidity')
-            ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
-        else
+        if (this.props.menuItem === 'liquidity') {
+            try {
+                ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+            } catch (e) {
+                ltValue = 0
+            }
+        } else
             ltValue = 0
 
         if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {

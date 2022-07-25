@@ -28,6 +28,7 @@ import '../../css/font-style.css'
 import swapUtils from "../utils/swapUtils"
 import lsdp from '../utils/localStorageDataProcessor'
 import networkApi from '../requests/networkApi'
+import swapApi from '../requests/swapApi'
 
 const valueProcessor = new ValueProcessor()
 const JUST_TOKEN_PRICE = true
@@ -74,6 +75,7 @@ class SwapCard extends React.Component {
         this.initByGetRequestParams = true
         this.handBack = false
         this.validator = new Validator
+        this.lastTotalSupplyUpdate = new Date().getTime()
     };
 
     componentDidUpdate (prevProps) {
@@ -1088,7 +1090,20 @@ class SwapCard extends React.Component {
             return undefined;
     }
 
-    countRemoveLiquidity (mode, cField, fieldValue, forcedLt) {
+    countRemoveLiquidity (mode, cField, fieldValue) {
+        if (new Date().getTime() - this.lastTotalSupplyUpdate > 5000) {
+            this.lastTotalSupplyUpdate = new Date().getTime()
+
+            swapApi.getTokenInfo(this.props.removeLiquidity.ltfield.token.hash).then(res => {
+                res.json().then(info => {
+                    this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, info[0].total_supply)
+                })
+            })
+        } else
+            this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined,  this.props.removeLiquidity.ltfield.token.total_supply)
+    }
+
+    countFullRemoveLiquidity (mode, cField, fieldValue, forcedLt, total_supply) {
         let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, {
             t0 : this.props.removeLiquidity.field0.value,
             t1 : this.props.removeLiquidity.field1.value,
@@ -1096,7 +1111,7 @@ class SwapCard extends React.Component {
                 value : (forcedLt) ? forcedLt : fieldValue.value,
                 decimals : fieldValue.decimals,
                 total_supply : {
-                    value : this.props.removeLiquidity.ltfield.token.total_supply,
+                    value : total_supply,
                     decimals : this.props.removeLiquidity.ltfield.token.decimals
                 }
             }
@@ -1118,7 +1133,7 @@ class SwapCard extends React.Component {
                 decimals : fieldValue.decimals,
                 text : this.bigIntToString(full, fieldValue.decimals)
             });
-            this.countRemoveLiquidity(mode, 'ltfield', fieldValue, full);
+            this.countFullRemoveLiquidity(mode, 'ltfield', fieldValue, full, total_supply);
         } else {
             this.rmPercents = rmPercent;
             if (cField !== 'field0')

@@ -76,6 +76,7 @@ class SwapCard extends React.Component {
         this.handBack = false
         this.validator = new Validator
         this.lastTotalSupplyUpdate = new Date().getTime()
+        this.lastActiveLT = {}
     };
 
     componentDidUpdate (prevProps) {
@@ -104,9 +105,11 @@ class SwapCard extends React.Component {
         if (token0.hash !== presets.swapTokens.emptyToken.hash && token1.hash !== presets.swapTokens.emptyToken.hash) {
             this.changeField(this.props[mode].field0.id, {value: _.cloneDeep(this.props[mode].field0.value.text)})
         }
+        this.updRemoveLiquidity()
     }
 
     componentWillUnmount() {
+        clearInterval(this.descriptor)
         window.removeEventListener('hashchange', this.resolveURLHash)
         if (this.routingWorker) {
             try {
@@ -155,6 +158,18 @@ class SwapCard extends React.Component {
         let pairIsExist = myPairs.find(elem => (elem.token_0.hash === paramsObj.from) && (elem.token_1.hash === paramsObj.to));
 
         return pairIsExist !== undefined
+    }
+
+    updRemoveLiquidity () {
+        this.descriptor = setInterval(() => {
+            let newVal = this.props.removeLiquidity.ltfield.balance.amount
+            let newDecimals = this.props.removeLiquidity.ltfield.balance.decimals
+            let fieldObj = utils.countPortion({
+                value : newVal,
+                decimals : newDecimals
+            }, this.rmPercents);
+            this.countRemoveLiquidity("removeLiquidity", 'ltfield', fieldObj)
+        }, 2000)
     }
 
     setTickersFromURLsHash(paramsObj) {
@@ -1091,16 +1106,16 @@ class SwapCard extends React.Component {
     }
 
     countRemoveLiquidity (mode, cField, fieldValue) {
-        if (new Date().getTime() - this.lastTotalSupplyUpdate > 5000) {
+        if (new Date().getTime() - this.lastTotalSupplyUpdate > 5000 || this.props.removeLiquidity.ltfield.token.hash !== this.lastActiveLT.hash) {
             this.lastTotalSupplyUpdate = new Date().getTime()
-
             swapApi.getTokenInfo(this.props.removeLiquidity.ltfield.token.hash).then(res => {
                 res.json().then(info => {
-                    this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, info[0].total_supply)
+                    this.lastActiveLT = info[0]
+                    this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
                 })
             })
         } else
-            this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined,  this.props.removeLiquidity.ltfield.token.total_supply)
+            this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
     }
 
     countFullRemoveLiquidity (mode, cField, fieldValue, forcedLt, total_supply) {

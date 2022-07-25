@@ -162,13 +162,7 @@ class SwapCard extends React.Component {
 
     updRemoveLiquidity () {
         this.descriptor = setInterval(() => {
-            let newVal = this.props.removeLiquidity.ltfield.balance.amount
-            let newDecimals = this.props.removeLiquidity.ltfield.balance.decimals
-            let fieldObj = utils.countPortion({
-                value : newVal,
-                decimals : newDecimals
-            }, this.rmPercents);
-            this.countRemoveLiquidity("removeLiquidity", 'ltfield', fieldObj)
+            this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
         }, 2000)
     }
 

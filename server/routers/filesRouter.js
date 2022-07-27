@@ -8,6 +8,7 @@ const jsonrpcResponse = require("../utils/jsonrpcResponceCreator")
 const jsonrpcErrors  = require("../json-rpc_errors.json")
 const webpack_config = require("../../webpack.config")()
 const pubDir         = webpack_config.output.path
+const tokenList      = require(path.join(pubDir, "tokenList.js"))
 
 function readAndSend (req, res, cType) {
     cReadFiles([{data: path.join(pubDir, req.url)}], null)
@@ -35,6 +36,8 @@ router.post(`/site\.webmanifest`, (req, res, next) => {
     readAndSend(req, res, "image/png")
 }).post(`/*\.(jpeg|jpg)$`, (req, res, next) => {
     readAndSend(req, res, "image/jpeg")
+}).post(`/token_list$`, (req, res, next) => {
+    res.send(jsonrpcResponse(req.body.id, true, tokenList, "application/json"))
 })
 
 module.exports = router

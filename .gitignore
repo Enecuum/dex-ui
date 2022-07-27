@@ -9,5 +9,6 @@ public/*
 !public/site.webmanifest
 !public/favicon-16x16.png
 !public/favicon-32x32.png
+!public/tokenList.js
 package-lock.json
 .idea

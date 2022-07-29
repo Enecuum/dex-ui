@@ -212,7 +212,7 @@ class ConfirmSupply extends React.Component {
                     percent.decimals += 2
 
                     let slippageCalc
-                    if (this.props.swapCalculationsDirection === "down") {
+                    if (lsdp.simple.get("ENEXSwapCalcDirection", true) === "down") {
                         percent = valueProcessor.sub(valueProcessor.valueToBigInt(1), percent)
                         slippageCalc = valueProcessor.mul(this.props.exchange.field1.value, percent)
                         if (this.props.route.length === 2) {
@@ -273,6 +273,7 @@ class ConfirmSupply extends React.Component {
 
     closeConfirmCard () {
         this.setState({confirmSupplyVisibility : false})
+        this.setState({txStatus : 'waiting'})
     }
 
     openWaitingCard () {

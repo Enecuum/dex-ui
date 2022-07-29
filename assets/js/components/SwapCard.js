@@ -86,6 +86,8 @@ class SwapCard extends React.Component {
             this.setSwapTokensFromRequest();
             this.initByGetRequestParams = false;
         }
+
+        // if (lsdp.simple.get())
         // if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
         //     this.oldNet = ENQWeb.Enq.provider
         //     // this.setState({
@@ -162,7 +164,9 @@ class SwapCard extends React.Component {
 
     updRemoveLiquidity () {
         this.descriptor = setInterval(() => {
-            this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
+            try {
+                this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
+            } catch (e) {}
         }, 2000)
     }
 
@@ -450,7 +454,6 @@ class SwapCard extends React.Component {
                                 <ConfirmSupply
                                     getSubmitButton={this.getSubmitButton.bind(this)}
                                     modeStruct={modeStruct}
-                                    swapCalculationsDirection={this.props.swapCalculationsDirection}
                                     route={this.state.route}
                                 />
                             </Suspense>}
@@ -854,27 +857,44 @@ class SwapCard extends React.Component {
     };
 
     setMax(fieldProps) {
-        let mode = this.getMode();
-        let field = this.getFieldName(fieldProps.id);
-        let decimals = this.props[mode][field].token.decimals;
-        let value = BigInt(fieldProps.fieldData.balance.amount)
+        let mode = this.getMode()
+        let field = this.getFieldName(fieldProps.id)
 
-        if (fieldProps.fieldData.token.hash === this.props.mainToken) {
-          value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee);
-          if (value < 0) {
-            value = 0n
-          }
+        if (mode === "exchange") {
+            field = "field0"
+            if (fieldProps.id === 0)
+                lsdp.simple.write("ENEXSwapCalcDirection", "down", true)
+            else
+                lsdp.simple.write("ENEXSwapCalcDirection", "up", true)
+
+        }
+
+        let decimals = this.props[mode][field].token.decimals
+        let value, activeHash
+        if (mode === "exchange") {
+            activeHash = this.props[mode][field].token.hash
+            value = BigInt(this.props[mode][field].balance.amount)
+        } else {
+            activeHash = fieldProps.fieldData.token.hash
+            value = BigInt(fieldProps.fieldData.balance.amount)
+        }
+
+        if (activeHash === this.props.mainToken) {
+            value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee)
+            if (value < 0) {
+                value = 0n
+            }
         }
 
         let newValObj = {
             value    : value,
             decimals : decimals,
             text     : valueProcessor.usCommasBigIntDecimals (value, decimals, decimals).replace(',','')
-        };
-        this.props.assignCoinValue(mode, field, newValObj);
-        let fieldObj = _.cloneDeep(this.props[mode][field]);
-        fieldObj.value = newValObj;
-        this.countOppositeField(fieldObj, this.getFieldName(fieldProps.id, true), field)
+        }
+        this.props.assignCoinValue(mode, field, newValObj)
+        let fieldObj = _.cloneDeep(this.props[mode][field])
+        fieldObj.value = newValObj
+        this.countOppositeField(fieldObj, this.getFieldName((mode === "exchange") ? 0 : fieldProps.id, true), field)
 
         let modeData = _.cloneDeep(this.props[mode])
         modeData[field] = fieldObj
@@ -1100,16 +1120,19 @@ class SwapCard extends React.Component {
     }
 
     countRemoveLiquidity (mode, cField, fieldValue) {
-        if (new Date().getTime() - this.lastTotalSupplyUpdate > 5000 || this.props.removeLiquidity.ltfield.token.hash !== this.lastActiveLT.hash) {
+        if (new Date().getTime() - this.lastTotalSupplyUpdate > 5000 || this.lastActiveLT && this.props.removeLiquidity.ltfield.token.hash !== this.lastActiveLT.hash) {
             this.lastTotalSupplyUpdate = new Date().getTime()
             swapApi.getTokenInfo(this.props.removeLiquidity.ltfield.token.hash).then(res => {
                 res.json().then(info => {
                     this.lastActiveLT = info[0]
-                    this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
+                    if (this.lastActiveLT)
+                        this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
                 })
             })
-        } else
-            this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
+        } else {
+            if (this.lastActiveLT)
+                this.countFullRemoveLiquidity(mode, cField, fieldValue, undefined, this.lastActiveLT.total_supply)
+        }
     }
 
     countFullRemoveLiquidity (mode, cField, fieldValue, forcedLt, total_supply) {

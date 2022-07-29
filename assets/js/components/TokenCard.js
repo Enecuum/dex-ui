@@ -33,7 +33,6 @@ class TokenCard extends React.Component  {
         // this.maxTokensForRender = 500
         this.updTokens()
 
-        this.settings = initSettings()
         this.state = {
             tabsPointer : "main"
         }
@@ -148,17 +147,18 @@ class TokenCard extends React.Component  {
 
     checkSettings (token) {
         let result = false
-        if (lsdp.simple.get(settings.upBalances) === "true")
+        if (this.settings[settings.upBalances].toString() === "true")
             result ||= this.isNonZeroToken(token.hash)
-        if (lsdp.simple.get(settings.upTrustedTokens) === "true")
+        if (this.settings[settings.upTrustedTokens].toString() === "true")
             result ||= this.isTrustedToken(token.hash)
-        if (lsdp.simple.get(settings.upLpTokens) === "true")
+        if (this.settings[settings.upLpTokens].toString() === "true")
             result ||= this.isLpToken(token.hash)
         return result
     }
 
     traverseRules (tokens) {
         let raisedUpTokens = []
+        this.settings = initSettings()
         for (let i = 0; i < tokens.length; i++)
             if (this.checkSettings(tokens[i])) {
                 raisedUpTokens.push(tokens[i])

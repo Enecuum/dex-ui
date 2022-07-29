@@ -13,12 +13,29 @@ function initSettings () {
         [settings.upLpTokens] : initSetting(settings.upLpTokens)
     }
 }
+
+function defaultSetting (localStorageKey) {
+    if (localStorageKey === settings.upTrustedTokens) {
+        lsdp.simple.write(localStorageKey, "true")
+        return "true"
+    } else if (localStorageKey === settings.upBalances) {
+        lsdp.simple.write(localStorageKey, "true")
+        return "true"
+    } else if (localStorageKey === settings.upLpTokens) {
+        return false
+    }
+}
+
 function initSetting (localStorageKey) {
     let res = lsdp.simple.get(localStorageKey)
-    return res === null ? false : res === "true"
+    if (res === null) {
+        return defaultSetting(localStorageKey)
+    } else
+        return res === "true"
 }
 
 export {
     initSettings,
+    defaultSetting,
     settings
 }

@@ -894,7 +894,8 @@ class SwapCard extends React.Component {
         this.props.assignCoinValue(mode, field, newValObj)
         let fieldObj = _.cloneDeep(this.props[mode][field])
         fieldObj.value = newValObj
-        this.countOppositeField(fieldObj, this.getFieldName((mode === "exchange") ? 0 : fieldProps.id, true), field)
+
+        this.changeField((mode === "exchange") ? 0 : fieldProps.id, {value: _.cloneDeep(newValObj.text)})
 
         let modeData = _.cloneDeep(this.props[mode])
         modeData[field] = fieldObj

@@ -70,7 +70,7 @@ class SwapCardValidationRules {
                     },
                     {
                         method: 'matchToFixed',
-                        args: {value: fieldData.value.text, n: fieldData.balance.decimals},
+                        args: {value: fieldData.value.text, n: fieldData.token.decimals},
                         desiredResult: true,
                         errMsg: 'TOO_LONG_FRACTIONAL_PART',
                     }

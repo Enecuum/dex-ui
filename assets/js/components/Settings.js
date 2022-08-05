@@ -23,7 +23,7 @@ class Settings extends React.Component {
 		this.state = {
 			activeStyle : "inactive",
 			settingsVisibility : false,
-			slippagePercent : 0.01,
+			slippagePercent : 0.1,
 			errorMessage : undefined
 		}
 		this.settingsRanges = [

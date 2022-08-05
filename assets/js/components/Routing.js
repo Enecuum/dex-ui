@@ -39,7 +39,7 @@ class Routing extends React.Component {
     genRouteNodes () {
         return this.props.route.map((routeNode, index) => {
             if (!index)
-                return (<></>)
+                return (<div key={"route0"}/>)
             let fToken = swapUtils.getTokenObj(this.props.tokens, routeNode.source)
             let sToken = swapUtils.getTokenObj(this.props.tokens, routeNode.vertex)
 
@@ -71,7 +71,7 @@ class Routing extends React.Component {
             return (
                 <Tooltip triggerContent={triggerContent}
                          text={popoverContent}
-                         key={index}
+                         key={index.toString()}
                          placement="top"
                          customClasses=""
                 />
@@ -96,12 +96,12 @@ class Routing extends React.Component {
 
     renderDetailedInfo () {
         if (this.props.route.length === 1)
-            return (<></>)
+            return (<div key={"body1"}/>)
         return (
             <div>
                 {this.props.route.map((routeNode, index, routeNodes) => {
                     if (!index)
-                        return (<></>)
+                        return (<div key={index.toString()}/>)
                     let from = this.showValues(this.makeTextProp(routeNodes[index - 1].outcome))
                     let to = this.showValues(this.makeTextProp(routeNode.outcome))
 
@@ -109,7 +109,7 @@ class Routing extends React.Component {
                     let amountInMax = this.showValues(this.makeTextProp(routeNode.amountInMax))
 
                     return (
-                        <div key={index}>
+                        <div key={index.toString()}>
                             <hr className="mx-0"/>
                             <div className="px-0">
                                 <div className="d-flex align-items-center justify-content-between p-0">
@@ -197,7 +197,7 @@ class Routing extends React.Component {
                     {(this.props.route.length) &&
                         <Accordion.Collapse eventKey="0">
                             <Card.Body className="pb-2">
-                                <div className="swap-route mt-4 mb-2 d-flex justify-content-between">
+                                <div className="swap-route mt-4 mb-2 d-flex justify-content-between" key={"body0"}>
                                     <LogoToken
                                         data={{
                                             url : fLogo,
@@ -205,6 +205,7 @@ class Routing extends React.Component {
                                             size : "xxs"
                                         }}
                                         customClasses="l-side-logo"
+                                        key={"logo0"}
                                     />
                                     {this.genRouteNodes()}
                                     <LogoToken
@@ -214,6 +215,7 @@ class Routing extends React.Component {
                                             size : "xxs"
                                         }}
                                         customClasses="r-side-logo"
+                                        key={"logo1"}
                                     />
                                 </div>
                                 {this.renderDetailedInfo()}

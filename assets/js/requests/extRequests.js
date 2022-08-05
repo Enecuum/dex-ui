@@ -44,7 +44,7 @@ class ExtRequests {
     }
 
     getBigIntAmount (field) { // utility
-        let diff = field.balance.decimals - field.value.decimals;
+        let diff = field.token.decimals - field.value.decimals;
         if (diff > 0)
             return BigInt(field.value.value) * this.tenPowerDecimals(Math.abs(diff))
         else if (diff < 0)
@@ -98,7 +98,8 @@ class ExtRequests {
             amount_in : this.getBigIntAmount(exchangeMode.field0),
             amount_out_min : this.getBigIntAmount({
                 value : slippageVar,
-                balance : exchangeMode.field1.balance
+                balance : exchangeMode.field1.balance,
+                token : exchangeMode.field1.token
             })
         }
         return this.sendTx(pubkey, requestType.SELL_EXACT, params)
@@ -112,7 +113,8 @@ class ExtRequests {
         params.amount_out = this.getBigIntAmount(exchangeMode.field1)
         params.amount_in_max = this.getBigIntAmount({
             value : slippageVar,
-            balance : exchangeMode.field0.balance
+            balance : exchangeMode.field0.balance,
+            token : exchangeMode.field0.token
         })
         return this.sendTx(pubkey, requestType.BUY_EXACT, params)
     }
@@ -122,7 +124,8 @@ class ExtRequests {
             amount_in : this.getBigIntAmount(exchangeMode.field0),
             amount_out_min : this.getBigIntAmount({
                 value : route[route.length-1].amountOutMin,
-                balance : exchangeMode.field1.balance
+                balance : exchangeMode.field1.balance,
+                token : exchangeMode.field1.token
             }),
             plength : BigInt(route.length)
         }
@@ -141,7 +144,8 @@ class ExtRequests {
             amount_out : this.getBigIntAmount(exchangeMode.field1),
             amount_in_max : this.getBigIntAmount({
                 value : route[1].amountInMax,
-                balance : exchangeMode.field0.balance
+                balance : exchangeMode.field0.balance,
+                token : exchangeMode.field0.token
             }),
             plength : BigInt(route.length)
         }
@@ -196,8 +200,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        console.log(data);
-        console.log(params);
+        // console.log(data);
+        // console.log(params);
         return trafficController.sendTransaction(data);
     };
 
@@ -247,8 +251,8 @@ class ExtRequests {
                 parameters : params
             })
         };
-        console.log(data);
-        console.log(params);
+        // console.log(data);
+        // console.log(params);
         return trafficController.sendTransaction(data);
     };    
 }

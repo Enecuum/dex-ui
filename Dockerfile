@@ -10,7 +10,7 @@ ADD . /app
 # Upgrade all system dependencies
 RUN apt-get update && apt-get upgrade -y
 
-ENV NODE_ENV = production
+ENV NODE_ENV production
 
 # Install pm2 and project dependencies
 RUN mv config.json.example config.json

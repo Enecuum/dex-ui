@@ -10,14 +10,13 @@ ADD . /app
 # Upgrade all system dependencies
 RUN apt-get update && apt-get upgrade -y
 
-ENV NODE_ENV production
-
 # Install pm2 and project dependencies
 RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN apt-get update && apt-get install -y git
 RUN npm i --force
-RUN npx webpack-cli build --config webpack.config.js
+ENV NODE_ENV production
+RUN npx webpack build --config webpack.config.js
 RUN rm -rf node_modules
 RUN npm install --production
 

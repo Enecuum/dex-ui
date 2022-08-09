@@ -29,8 +29,7 @@
     "chokidar": "^3.5.2",
     "glob-parent": "^6.0.0",
     "axios": "^0.21.1",
-    "webpack": "^5.28.0",
-    "babel-loader": "^8.2.2"
+    "webpack": "^5.28.0"
   },
   "devDependencies": {
     "babel-watch": "^7.5.0",

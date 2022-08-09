@@ -29,7 +29,8 @@
     "chokidar": "^3.5.2",
     "glob-parent": "^6.0.0",
     "axios": "^0.21.1",
-    "webpack": "^5.28.0"
+    "webpack": "^5.28.0",
+    "babel-loader": "^8.2.2"
   },
   "devDependencies": {
     "babel-watch": "^7.5.0",
@@ -57,13 +58,13 @@
     "@babel/preset-react": "^7.13.13",
     "@types/regenerator-runtime": "^0.13.1",
     "@types/webpack-hot-middleware": "^2.25.5",
-    "babel-loader": "^8.2.2",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
     "jest": "^27.5.1",
     "webpack-cli": "^4.7.1",
     "webpack-dev-server": "^4.0.0",
-    "webpack-hot-middleware": "^2.25.0"
+    "webpack-hot-middleware": "^2.25.0",
+    "babel-loader": "^8.2.2"
   },
   "babel": {
     "presets": [

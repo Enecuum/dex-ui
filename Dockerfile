@@ -17,8 +17,7 @@ RUN mv config.json.example config.json
 RUN npm install pm2 -g
 RUN apt-get update && apt-get install -y git
 RUN npm i --force
-RUN npx browserslist@latest --update-db
-RUN node node_modules/webpack/bin/webpack.js build --config webpack.config.js
+RUN npx webpack-cli build --config webpack.config.js
 RUN rm -rf node_modules
 RUN npm install --production
 

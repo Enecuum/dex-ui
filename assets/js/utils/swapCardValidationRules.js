@@ -31,6 +31,8 @@ class SwapCardValidationRules {
     }
 
     getSwapFieldValidationRules (fieldData) {
+        let fractPath = fieldData.value.text.split(".")
+        fractPath = fractPath.length > 1 ? fractPath[1] : ""
         return {
             balance: {
                 checks: [
@@ -70,7 +72,7 @@ class SwapCardValidationRules {
                     },
                     {
                         method: 'matchToFixed',
-                        args: {value: fieldData.value.text, n: fieldData.balance.decimals},
+                        args: {value: fractPath.length, n: fieldData.balance.decimals},
                         desiredResult: true,
                         errMsg: 'TOO_LONG_FRACTIONAL_PART',
                     }

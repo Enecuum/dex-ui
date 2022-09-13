@@ -55,7 +55,8 @@ class SwapAddon extends React.Component {
     render () {
         let data = this.props.exchange
         let pair = swapUtils.searchSwap(this.props.pairs, [data.field0.token, data.field1.token])
-        if (!swapUtils.pairExists(pair))
+        
+        if (!this.props.route.length)
             return (<></>)
 
         let t = this.props.t
@@ -77,7 +78,8 @@ class SwapAddon extends React.Component {
             maximumSentUSD = swapUtils.countUSDPrice(maximumSent, this.props.exchange.field0.token)
             maximumSent = vp.usCommasBigIntDecimals(maximumSent.value, maximumSent.decimals)
         }
-        let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
+        let fee = this.props.route[1].pool_fee
+        let providerFee = swapUtils.countProviderFee(fee, this.props.exchange.field0.value)
 
         try {
             providerFeeUSD = swapUtils.countUSDPrice(providerFee, this.props.exchange.field0.token)

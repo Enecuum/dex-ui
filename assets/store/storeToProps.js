@@ -364,7 +364,8 @@ function mapStoreToProps(component) {
                     exchange    : state.swapCard.exchange,
                     nativeToken : state.root.nativeToken,
                     tokens      : state.root.tokens,
-                    swapCalculationsDirection : state.swapCard.swapCalculationsDirection
+                    swapCalculationsDirection : state.swapCard.swapCalculationsDirection,
+                    route       : state.swapCard.route
                 }
             }
         case components.ROUTING:

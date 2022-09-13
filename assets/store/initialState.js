@@ -59,7 +59,8 @@ const initialState = {
         liquidityRemove     : false,
         createPool          : false,
         waitingConfirmation : {
-        }
+        },
+        route : []
     },
 
     tokenCard : {

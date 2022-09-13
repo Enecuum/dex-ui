@@ -75,6 +75,13 @@ const actionCreators = {
         }
     },
 
+    setRoute (route) {
+        return {
+            type : actions.SET_ROUTE,
+            value : route
+        }
+    },
+
     changeRemoveLiquidityVisibility () {
         return {
             type : actions.CHANGE_REMOVE_LIQUDITY_VISIBILITY

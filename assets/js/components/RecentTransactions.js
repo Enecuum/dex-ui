@@ -103,7 +103,7 @@ class RecentTransactions extends React.Component {
         let recentTxListLen = recentTxList.length
 
         let txsForRender = recentTxList.reduce((arrForRender, note, index) => {
-            let yPadding = (index === recentTxListLen-1) ? "pb-3" : ""
+            let yPadding = (index === recentTxListLen-1) ? "pb-1" : ""
             if (note.interpolateParams !== undefined) {
                 let txStatusIcon
                 if (note.status === 3)
@@ -126,7 +126,7 @@ class RecentTransactions extends React.Component {
         }, [])
 
         if (!recentTxListLen)
-            txsForRender.unshift((<p className={`py-3 px-0`} key={'-1'}>{ t('recentTxs.withoutTxs') }</p>))
+            txsForRender.unshift((<p className={`pt-3 pb-1 px-0`} key={'-1'}>{ t('recentTxs.withoutTxs') }</p>))
         else
             txsForRender.unshift((<div className="px-0 d-flex justify-content-between" key={'-1'}>
                 <p className="pt-3" >{ t('recentTxs.withTxs') }</p>

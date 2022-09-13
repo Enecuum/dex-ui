@@ -306,7 +306,7 @@ class SwapCard extends React.Component {
                         </button>
                     }
                 </div>
-                <div className="p-4">
+                <div className="p-4 swap-card-body">
                     {/* ---------------------------------------- exchange or add-liquidity: body ---------------------------------------- */}
                     { ((mode === 'liquidity' && !this.props.liquidityMain) || mode === 'exchange') &&
                         <>
@@ -906,7 +906,14 @@ class SwapCard extends React.Component {
     changeField (fieldId, target) {
         if (target.value === undefined)
             return
-        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString().replace(/[^0-9|\.]+/g, '')
+        let mode = this.getMode(), field = this.getFieldName(fieldId), 
+        
+        newValue = target.value.toString()
+        if (newValue === "." || newValue === ",")
+            newValue = "0."
+        newValue = newValue.replace(/[^0-9|\.]+/g, '')
+        
+        
         let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
         let oldValObj = _.cloneDeep(fieldData.value)
 
@@ -1053,6 +1060,7 @@ class SwapCard extends React.Component {
                         text : text
                     })
             } else {
+                this.props.setRoute(res)
                 this.setState({
                     routingVisibility : false,
                     route: res
@@ -1060,19 +1068,22 @@ class SwapCard extends React.Component {
                 this.pairExists = false
                 this.props.changeCreatePoolState(true)
             }
-            if (res.find(node => node.notEnoughLiquidity))
+            if (res.find(node => node.notEnoughLiquidity)) {
+                this.props.setRoute([])
                 this.setState({
                     notEnoughLiquidity : true,
                     routingWaiting : false,
                     routingVisibility : false,
                     route: []
                 })
-            else
+            } else {
+                this.props.setRoute(res)
                 this.setState({
                     notEnoughLiquidity : false,
                     routingWaiting : false,
                     route: res
                 })
+            }
         })
         .catch(() => {
             try {
@@ -1297,7 +1308,7 @@ class SwapCard extends React.Component {
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.pairExists))
+        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.state.route.length))
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

@@ -31,8 +31,6 @@ class SwapCardValidationRules {
     }
 
     getSwapFieldValidationRules (fieldData) {
-        let fractPath = fieldData.value.text.split(".")
-        fractPath = fractPath.length > 1 ? fractPath[1] : ""
         return {
             balance: {
                 checks: [
@@ -60,7 +58,7 @@ class SwapCardValidationRules {
                 checks: [
                     {
                         method: 'testTheRegExp',
-                        args: {str: fieldData.value.text, regExpObj: /^([0-9]+(\.|,))?[0-9]*$/},
+                        args: {str: fieldData.value.text, regExpObj: /^([0-9]+(\.|,))?([0-9]{0,10})$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
                     },
@@ -69,12 +67,6 @@ class SwapCardValidationRules {
                         args: {str: fieldData.value.text, regExpObj: /^0(0)+/},
                         desiredResult: false,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
-                    },
-                    {
-                        method: 'matchToFixed',
-                        args: {value: fractPath.length, n: fieldData.balance.decimals},
-                        desiredResult: true,
-                        errMsg: 'TOO_LONG_FRACTIONAL_PART',
                     }
                 ]
             }

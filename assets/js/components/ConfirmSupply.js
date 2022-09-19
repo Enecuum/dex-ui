@@ -165,8 +165,8 @@ class ConfirmSupply extends React.Component {
                             {t('trade.confirmCard.rates')}
                         </div>
                         <div className='text-right'>
-                            <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
-                            <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
+                            <div>1 {firstToken.ticker} = {utils.countExchangeRate(this.props.route, true, this.props.tokens)} {secondToken.ticker}</div>
+                            <div>1 {secondToken.ticker} = {utils.countExchangeRate(this.props.route, false, this.props.tokens)} {firstToken.ticker}</div>
                         </div>
                     </div>
                     <div className='d-flex align-items-start justify-content-between'>

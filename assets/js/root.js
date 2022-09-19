@@ -363,12 +363,12 @@ class Root extends React.Component {
         let balanceObj = utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash)
         let tokenObj = utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash)
         if (tokenObj.ticker === '---') {
-            if (field === 'field0') {
-                let mainToken = utils.getTokenObj(this.props.tokens, this.props.mainToken)
-                this.props.assignTokenValue(menuItem, field, mainToken)
-            } else {
-                this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
-            }
+            // if (field === 'field0') {
+            //     // let mainToken = utils.getTokenObj(this.props.tokens, this.props.mainToken)
+            //     // this.props.assignTokenValue(menuItem, field, mainToken)
+            // } else {
+            //     this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
+            // }
         }
         this.props.assignBalanceObj(menuItem, field, balanceObj)
     }

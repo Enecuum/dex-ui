@@ -81,7 +81,6 @@ class SwapCard extends React.Component {
 
     componentDidUpdate (prevProps) {
         const hasAChanged = ((this.props.tokens !== prevProps.tokens));
-
         if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
             this.setSwapTokensFromRequest();
             this.initByGetRequestParams = false;
@@ -140,7 +139,7 @@ class SwapCard extends React.Component {
         } else if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {            
             window.location.hash = '#!action='+ paramsObj.action +'&pair=' + this.props[mode].field0.token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else {
-            this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
+            this.props.assignTokenValue(mode, 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
         }
     }
 
@@ -785,6 +784,7 @@ class SwapCard extends React.Component {
                         changeBalance={this.changeBalance.bind(this)}
                         getMode={this.getMode.bind(this)}
                         recalculateSwapForNewToken={this.recalculateSwapForNewToken.bind(this)}
+                        swapPair={this.swapPair.bind(this)}
                         useSuspense={false} />
                 </>
             );

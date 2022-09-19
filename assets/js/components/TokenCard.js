@@ -69,9 +69,24 @@ class TokenCard extends React.Component  {
         this.trustedTokens = trustedTokens
     }
 
+    getCField (activeField) {
+        const fields = ["field0", "field1"]
+        return fields[(fields.indexOf(activeField) + 1) % 2]
+    }
+
     assignToken(token) {
-        let mode = this.props.getMode();
-        let modeAlias = presets.paths[mode];
+        let mode = this.props.getMode()
+        let modeAlias = presets.paths[mode]
+
+        if (this.props.getMode() === "exchange" || this.props.getMode() === "liquidity") {
+            let cField = this.getCField(this.props.activeField)
+            if (this.props[mode][cField].token.hash === token.hash) {
+                this.props.closeTokenList({}, this.props.activeField)
+                this.props.swapPair()
+                return
+            }
+        }
+
         if (this.props.activeField === 'field0' && this.props[mode].field1.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else if (this.props.activeField === 'field1' && this.props[mode].field0.token.hash !== undefined) {

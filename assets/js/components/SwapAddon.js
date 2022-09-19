@@ -78,10 +78,10 @@ class SwapAddon extends React.Component {
             maximumSentUSD = swapUtils.countUSDPrice(maximumSent, this.props.exchange.field0.token)
             maximumSent = vp.usCommasBigIntDecimals(maximumSent.value, maximumSent.decimals)
         }
-        let fee = this.props.route[1].pool_fee
-        let providerFee = swapUtils.countProviderFee(fee, this.props.exchange.field0.value)
-
+        let providerFee
         try {
+            let fee = this.props.route[1].pool_fee
+            providerFee = swapUtils.countProviderFee(fee, this.props.exchange.field0.value)
             providerFeeUSD = swapUtils.countUSDPrice(providerFee, this.props.exchange.field0.token)
             providerFee = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals))
         } catch (e) {

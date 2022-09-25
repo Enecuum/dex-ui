@@ -452,6 +452,8 @@ class SwapCard extends React.Component {
                             {<Suspense fallback={<div>---</div>}>
                                 <ConfirmSupply
                                     getSubmitButton={this.getSubmitButton.bind(this)}
+                                    assignCoinValueWithText={this.assignCoinValueWithText.bind(this)}
+                                    changeLiquidityMode={this.props.changeLiquidityMode.bind(this)}
                                     modeStruct={modeStruct}
                                     route={this.state.route}
                                 />
@@ -579,7 +581,7 @@ class SwapCard extends React.Component {
                                     id : 5,
                                     fieldData :  modeStruct.field1
                                 })}
-                            </div>                      
+                            </div>   
                         </div>
                     </>
                 }

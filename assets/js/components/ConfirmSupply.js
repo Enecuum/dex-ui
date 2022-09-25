@@ -135,7 +135,7 @@ class ConfirmSupply extends React.Component {
                 <div className="my-5">
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
-                            {firstToken.ticker} {t('trade.confirmCard.deposited')}
+                            {firstToken.ticker} {this.props.menuItem === 'liquidity' && t('trade.confirmCard.deposited') || t('trade.confirmCard.swapped')}
                         </div>
                         <LogoToken data={{
                             url : modeStruct.field0.token.logo,
@@ -177,14 +177,16 @@ class ConfirmSupply extends React.Component {
                             {valueProcessor.usCommasBigIntDecimals(this.props.nativeToken.fee_value, this.props.nativeToken.decimals)} {this.props.nativeToken.ticker}
                         </div>
                     </div>
-                    <div className='d-flex align-items-start justify-content-between'>
-                        <div>
-                            {t('trade.confirmCard.shareOfPool')}
-                        </div>
-                        <div>
-                            {utils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, pair, modeStruct)}%
-                        </div>
-                    </div>
+                    { this.props.menuItem === 'liquidity' &&
+                        <div className='d-flex align-items-start justify-content-between'>
+                            <div>
+                                {t('trade.confirmCard.shareOfPool')}
+                            </div>
+                            <div>
+                                {utils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, pair, modeStruct)}%
+                            </div>
+                        </div> || <></>
+                    }
                 </div>
                 <Button
                     className='btn-secondary confirm-supply-button w-100'
@@ -254,6 +256,13 @@ class ConfirmSupply extends React.Component {
             }
             this.openWaitingCard()
             txPromise.then(result => {
+                let emptyField = {value: undefined, decimals: 0, text: ""}
+                if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove) {
+                } else {
+                    this.props.assignCoinValueWithText(this.props.menuItem, 'field0', emptyField)
+                    this.props.assignCoinValueWithText(this.props.menuItem, 'field1', emptyField)
+                }
+
                 this.setState({currentTxHash : result.hash}, () => {
                     this.setState({txStatus : 'submitted'})
                     lsdp.write(result.hash, 0, txType, interpolateParams)

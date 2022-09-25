@@ -131,11 +131,12 @@ module.exports = {
         "poolTokens" : "Pool Tokens",
         "description" : "Output is estimated. If the price changes by more than 1% your transaction will revert.",
         "deposited" : "Deposited",
+        "swapped" : "Swapped",
         "toBeReceived" : "To be received",
         "rates" : "Rates",
         "shareOfPool" : "Share of pool",
         "feeData" : "Fee of transaction",
-        "confirm" : "Confirm Supply",
+        "confirm" : "Confirm Swap",
         "waitingForConfirmation" : "Waiting for confirmation",
         "confirmInWallet" : "Confirm this transaction in your wallet",
         "waitingForConfirmationInternals" : {

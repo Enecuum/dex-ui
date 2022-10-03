@@ -42,6 +42,7 @@ class SwapCard extends React.Component {
         this.insufficientFunds = false
         this.activePair = {}
         this.rmPercents = 50
+        this.routePromises = []
         this.removeLiquidity = {
             ranges : [
                 {
@@ -206,14 +207,17 @@ class SwapCard extends React.Component {
         }
         let oldHash = this.props[mode].field0.token.hash
         this.props.swapFields(this.props.menuItem)
+        this.recalculationStart = false
         setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     }
 
     recalculateSwap (mode, oldHash) {
-
-        if (this.props[mode].field0.token.hash !== oldHash)
+        if (this.props[mode].field0.token.hash !== oldHash) {
+            if (this.recalculationStart)
+                return
+            this.recalculationStart = true
             this.changeField(this.props[mode].field0.id, {value : _.cloneDeep(this.props[mode].field0.value.text)})
-        else
+        } else
             setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     }
 
@@ -921,6 +925,10 @@ class SwapCard extends React.Component {
     }
 
     changeField (fieldId, target) {
+        try {
+            this.routingWorker.close()
+        } catch (e) {console.log(e)}
+        this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
         if (target.value === undefined)
             return
         let mode = this.getMode(), field = this.getFieldName(fieldId), 
@@ -976,8 +984,10 @@ class SwapCard extends React.Component {
                         routingVisibility: true,
                         route: []
                     })
-
                     let promise
+                    // if (this.abortController)
+                    //     this.abortController.abort()
+                    // this.abortController = new AbortController()
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
                         lsdp.simple.write("ENEXSwapCalcDirection", "down", true)
                         promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "sell")
@@ -1054,7 +1064,6 @@ class SwapCard extends React.Component {
             limit : 4,
             mode : mode
         }
-
         return this.routingWorker.postMessage(data)
     }
 
@@ -1071,11 +1080,11 @@ class SwapCard extends React.Component {
                     text = this.bigIntToString(finalValue.value, finalValue.decimals)
 
                 // if (finalValue.value >= 0n)
-                    this.props.assignCoinValue(this.getMode(), cField, {
-                        value : finalValue.value,
-                        decimals : finalValue.decimals,
-                        text : text
-                    })
+                this.props.assignCoinValue(this.getMode(), cField, {
+                    value : finalValue.value,
+                    decimals : finalValue.decimals,
+                    text : text
+                })
             } else {
                 this.props.setRoute(res)
                 this.setState({
@@ -1105,7 +1114,7 @@ class SwapCard extends React.Component {
         .catch(() => {
             try {
                 this.routingWorker.close()
-            } catch (e) {}
+            } catch (e) {console.log(e)}
             this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
         })
     }

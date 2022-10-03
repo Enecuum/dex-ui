@@ -406,14 +406,17 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
 
         current.processed = true;
         vertices.sort((a,b)=> {
-            let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
-            if (tmp.f > tmp.s) {
-                return -1;
-            }
-            else {
-                if (tmp.f === tmp.s)
-                    return 0;
-                else return 1;
+            try {
+                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
+                if (tmp.f > tmp.s) {
+                    return -1;
+                } else {
+                    if (tmp.f === tmp.s)
+                        return 0;
+                    else return 1;
+                }
+            } catch (e) {
+                return 0
             }
         });
         // console.log('vertices:', vertices);

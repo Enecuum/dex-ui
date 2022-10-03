@@ -28,7 +28,7 @@ module.exports = {
         "inputField" : {
             "balance" : "Баланс",
             "selectToken" : "Выберите токен",
-            "notEnoughLiquidity" : "недостаточно ликвидности пула"
+            "notEnoughLiquidity" : "недостаточно ликвидности в пуле"
         },
         "exchange" : {
             "header" : "Обмен",

@@ -81,6 +81,8 @@ class SwapAddon extends React.Component {
         let providerFee
         try {
             let fee = this.props.route[1].pool_fee
+            if (fee === undefined)
+                fee = this.props.route[0].pool_fee
             providerFee = swapUtils.countProviderFee(fee, this.props.exchange.field0.value)
             providerFeeUSD = swapUtils.countUSDPrice(providerFee, this.props.exchange.field0.token)
             providerFee = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals))

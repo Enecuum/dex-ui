@@ -363,20 +363,28 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         // console.log('edges:', edges);
 
         edges.forEach((edge) => {
+            edge.volume1 = BigInt(edge.volume1)
+            edge.volume2 = BigInt(edge.volume2)
             let adj = vertices.find((x) => x.vertex === edge.to);
             if (adj) {
 
             } else {
-                let outcome = buyExact({
+                let vol0 = {
                     value : edge.volume2,
                     decimals : getDecimals(tokens, edge.to)
-                }, {
+                }
+                let vol1 = {
                     value : edge.volume1,
                     decimals : getDecimals(tokens, edge.from)
-                }, {
+                }
+                let amOut = {
                     value : current.outcome.value,
                     decimals : current.outcome.decimals
-                }, {
+                }
+                if (vp.sub(vol1, amOut).value === 0n)
+                    return
+
+                let outcome = buyExact(vol0, vol1, amOut, {
                     value : edge.pool_fee,
                     decimals : 2
                 })
@@ -391,7 +399,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
                     notEnoughLiquidity : outcome.value < 0n
                 }
 
-                vertices.push(new_vertex);
+                vertices.push(new_vertex)
                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
             }
         });

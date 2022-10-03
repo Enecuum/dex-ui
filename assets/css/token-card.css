@@ -1,6 +1,6 @@
 #tokensList {
 	height: 340px;
-	overflow-y: scroll;
+	overflow-y: hidden;
 }
 
 .token-option {

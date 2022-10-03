@@ -64,7 +64,7 @@ module.exports = {
             "addLiquidity" : "Add liquidity",
             "removeLiquidity" : "Remove liquidity",
             "fillAllFields" : "Fill all fields",
-            "lackOfSecondVolume" : "Insufficient funds of the pool",
+            "lackOfSecondVolume" : "Insufficient funds in the pool",
             "swap" : "Swap",
             "createPair" : "Create pair",
 

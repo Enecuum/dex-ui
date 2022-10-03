@@ -224,13 +224,12 @@ class IndicatorPanel extends React.Component {
     }
 
     updMainTokenData (net) {
-        let actualNativeToken = ENQWeb.Enq.token[net]
+        let netInfo = this.props.networkInfo
+        let actualNativeToken = netInfo.native_token.hash
         if (extRequests.nativeTokenHash !== actualNativeToken) {
-            ENQweb3lib.fee_counter(actualNativeToken)
-            .then(fee => {
-                this.props.updMainTokenData(actualNativeToken, fee)
-                extRequests.updNativeTokenData(actualNativeToken, fee)
-            }).catch(err => console.log(err))
+            let fee = netInfo.native_token.fee_value
+            this.props.updMainTokenData(actualNativeToken, fee)
+            extRequests.updNativeTokenData(actualNativeToken, fee, netInfo.origin.publisher)
         }
     }
 

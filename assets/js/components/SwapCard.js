@@ -245,6 +245,18 @@ class SwapCard extends React.Component {
         this.setState({swapIconStatus : value})
     }
 
+    routeImmitation (asset1, asset2) {
+        let pair = swapUtils.searchSwap(this.props.pairs, [{hash: asset1}, {hash: asset2}])
+        return [
+            {}, {
+                source : asset1,
+                vertex : asset2,
+                volume1 : pair.token_0.volume,
+                volume2 : pair.token_1.volume
+            }
+        ]
+    }
+
     /* ================================ cards rendering functions ================================== */
 
     renderSwapCard () {
@@ -340,7 +352,7 @@ class SwapCard extends React.Component {
                                 <div className="my-2">
                                     <div className='pt-2 swap-price d-flex justify-content-between align-items-center'>
                                         <div className='pr-4'>{t("price")}</div>
-                                        <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
+                                        <div className='pl-4'>{this.showExchangeRate(this.props.route, false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
                                     <small className="pb-2 mr-2 usd-price d-flex justify-content-end">
                                         {
@@ -366,11 +378,11 @@ class SwapCard extends React.Component {
                                     <div className='pool-prices my-3'>{t(dp + `.${mode}.priceAndPoolShare`)}</div>
                                     <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(false)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.props.route, false)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), true)}</div>
                                         </div>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(true)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.props.route, true)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), false)}</div>
                                         </div>
                                         <div>
@@ -439,9 +451,9 @@ class SwapCard extends React.Component {
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
                                 <div>{t("price")}</div>
                                 <div>
-                                    <div className={"d-flex justify-content-end"}>1 {firstToken.ticker} = {this.showExchangeRate(true)} {secondToken.ticker}</div>
+                                    <div className={"d-flex justify-content-end"}>1 {firstToken.ticker} = {this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), true)} {secondToken.ticker}</div>
                                     {this.renderExchangeRateUsdPrice(secondToken, firstToken)}
-                                    <div className={"d-flex justify-content-end"}>1 {secondToken.ticker} = {this.showExchangeRate(false)} {firstToken.ticker}</div>
+                                    <div className={"d-flex justify-content-end"}>1 {secondToken.ticker} = {this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), false)} {firstToken.ticker}</div>
                                     {this.renderExchangeRateUsdPrice(firstToken, secondToken)}
                                 </div>
                             </div>
@@ -607,8 +619,11 @@ class SwapCard extends React.Component {
     handleErrorsForSwapCard (errObj) {
         let errProp = Object.keys(errObj)[0], t = this.props.t, dp = "trade.swapCard.errorDescription."
         switch (errProp) {
-            case 'field0':
+            case 'field0': {
+                if (errObj.field0.msg === "lackOfSecondVolume")
+                    return this.makeErrMsg(t(dp + "field1"), errObj.field0)
                 return this.makeErrMsg(t(dp + "field0"), errObj.field0)
+            }
             case 'field1':
                 return this.makeErrMsg(t(dp + "field1"), errObj.field1)
             case 'ltfield':
@@ -807,7 +822,7 @@ class SwapCard extends React.Component {
             res = ''
         if (valueObj.value < 0n) {
             valueObj.value = 0n
-            return this.props.t("trade.swapCard.inputField.notEnoughLiquidity")
+            res = ''
         }
         return res
     }
@@ -825,8 +840,8 @@ class SwapCard extends React.Component {
         return (balance === '-') ? balance : `${this.props.t('trade.swapCard.inputField.balance')}: ${balance}`;
     };
 
-    showExchangeRate (firstToken) {
-        return utils.removeEndZeros(utils.countExchangeRate(this.state.route, firstToken, this.props.tokens))
+    showExchangeRate (route, firstToken) {
+        return utils.removeEndZeros(utils.countExchangeRate(route, firstToken, this.props.tokens))
     };
 
     showPercents (fixedLength=1) {

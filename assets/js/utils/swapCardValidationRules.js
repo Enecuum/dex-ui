@@ -58,7 +58,7 @@ class SwapCardValidationRules {
                 checks: [
                     {
                         method: 'testTheRegExp',
-                        args: {str: fieldData.value.text, regExpObj: /^([0-9]+(\.|,))?([0-9]{0,10})$/},
+                        args: {str: fieldData.value.text, regExpObj: /^([0-9]*)((\.|,)[0-9]{0,10})?$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
                     },

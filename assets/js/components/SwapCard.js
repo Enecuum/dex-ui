@@ -163,11 +163,11 @@ class SwapCard extends React.Component {
     }
 
     updRemoveLiquidity () {
-        this.descriptor = setInterval(() => {
-            try {
-                this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
-            } catch (e) {}
-        }, 2000)
+        // this.descriptor = setInterval(() => {
+        //     try {
+        //         this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
+        //     } catch (e) {}
+        // }, 2000)
     }
 
     setTickersFromURLsHash(paramsObj) {
@@ -232,6 +232,10 @@ class SwapCard extends React.Component {
     changeBalance(field, hash) {
         this.props.assignBalanceObj(this.getMode(), field, utils.getBalanceObj(this.props.balances, hash));
     };
+
+    setRmPercent (val) {
+        this.rmPercents = val
+    }
 
     setRemoveLiquidityValue(value) {
         this.rmPercents = value;
@@ -409,7 +413,7 @@ class SwapCard extends React.Component {
                                 <Tooltip text={t('trade.swapCard.liquidity.yourLiquidityTooltip')}/>
                             </div>
                             <div className='your-liquidity-field my-3'>
-                                <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
+                                <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)} setRmPercent={this.setRmPercent.bind(this)}/>
                             </div>
                             <div className='your-liquidity-header'>
                                 {t(dp + `.${mode}.additionInfo`)}
@@ -848,10 +852,22 @@ class SwapCard extends React.Component {
         return utils.removeEndZeros(utils.countExchangeRate(route, firstToken, this.props.tokens))
     };
 
+    toFixedPercent (num, fixedLength) {
+        if (num > 100)
+            return "> 100"
+        num = num.toString().split(".")
+        if (num.length === 2)
+            return num[0] + "." + num[1].substring(0, fixedLength)
+        return num[0]
+    }
+
     showPercents (fixedLength=1) {
+        let percents = this.rmPercents
+        if (typeof percents === "string")
+            percents = percents.replace(/,/g, "")
         let result = '-';
-        if (!Number.isNaN(this.rmPercents))
-            result = Number(this.rmPercents).toFixed(fixedLength);
+        if (!Number.isNaN(percents))
+            result = this.toFixedPercent(percents, fixedLength);
         if (result == 0)
             return `< 0.${'0'.repeat(fixedLength - 1)}1`;
         return result;
@@ -880,7 +896,9 @@ class SwapCard extends React.Component {
     setMax(fieldProps) {
         let mode = this.getMode()
         let field = this.getFieldName(fieldProps.id)
-
+        if (mode === "removeLiquidity") {
+            field = "ltfield"
+        }
         if (mode === "exchange") {
             field = "field0"
             if (fieldProps.id === 0)
@@ -892,7 +910,7 @@ class SwapCard extends React.Component {
 
         let decimals = this.props[mode][field].token.decimals
         let value, activeHash
-        if (mode === "exchange") {
+        if (mode === "exchange" || mode === "removeLiquidity") {
             activeHash = this.props[mode][field].token.hash
             value = BigInt(this.props[mode][field].balance.amount)
         } else {
@@ -900,7 +918,7 @@ class SwapCard extends React.Component {
             value = BigInt(fieldProps.fieldData.balance.amount)
         }
 
-        if (activeHash === this.props.mainToken) {
+        if (activeHash === this.props.mainToken && mode !== "removeLiquidity") {
             value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee)
             if (value < 0) {
                 value = 0n
@@ -916,7 +934,12 @@ class SwapCard extends React.Component {
         let fieldObj = _.cloneDeep(this.props[mode][field])
         fieldObj.value = newValObj
 
-        this.changeField((mode === "exchange") ? 0 : fieldProps.id, {value: _.cloneDeep(newValObj.text)})
+        if (mode === "exchange")
+            this.changeField(0, {value: _.cloneDeep(newValObj.text)})
+        else if (mode === "removeLiquidity") 
+            this.changeField(6, {value: _.cloneDeep(newValObj.text)})
+        else 
+            this.changeField(fieldProps.id, {value: _.cloneDeep(newValObj.text)})
 
         let modeData = _.cloneDeep(this.props[mode])
         modeData[field] = fieldObj
@@ -1195,24 +1218,31 @@ class SwapCard extends React.Component {
         }
         let balanceObj = {value : this.props.removeLiquidity.ltfield.balance.amount, decimals : this.props.removeLiquidity.ltfield.balance.decimals};
         let rmPercent = utils.countPercentsByPortion(balanceObj, counted.lt);
-        if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
-            let full = this.props.removeLiquidity.ltfield.balance.amount;
-            this.rmPercents = 100;
-            this.props.assignCoinValue(mode, 'ltfield', {
-                value : full,
-                decimals : fieldValue.decimals,
-                text : this.bigIntToString(full, fieldValue.decimals)
-            });
-            this.countFullRemoveLiquidity(mode, 'ltfield', fieldValue, full, total_supply);
-        } else {
-            this.rmPercents = rmPercent;
-            if (cField !== 'field0')
-                this.assignCoinValueWithText(mode, 'field0',  counted.t0);
-            if (cField !== 'field1')
-                this.assignCoinValueWithText(mode, 'field1',  counted.t1);
-            if (cField !== 'ltfield')
-                this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
-        }
+        this.rmPercents = rmPercent;
+        if (cField !== 'field0')
+            this.assignCoinValueWithText(mode, 'field0',  counted.t0);
+        if (cField !== 'field1')
+            this.assignCoinValueWithText(mode, 'field1',  counted.t1);
+        if (cField !== 'ltfield')
+            this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
+        // if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
+        //     let full = this.props.removeLiquidity.ltfield.balance.amount;
+        //     this.rmPercents = 100;
+        //     this.props.assignCoinValue(mode, 'ltfield', {
+        //         value : full,
+        //         decimals : fieldValue.decimals,
+        //         text : this.bigIntToString(full, fieldValue.decimals)
+        //     });
+        //     this.countFullRemoveLiquidity(mode, 'ltfield', fieldValue, full, total_supply);
+        // } else {
+        //     this.rmPercents = rmPercent;
+        //     if (cField !== 'field0')
+        //         this.assignCoinValueWithText(mode, 'field0',  counted.t0);
+        //     if (cField !== 'field1')
+        //         this.assignCoinValueWithText(mode, 'field1',  counted.t1);
+        //     if (cField !== 'ltfield')
+        //         this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
+        // }
     };
 
     getExchTokenName(name) {

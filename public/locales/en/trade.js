@@ -89,7 +89,7 @@ module.exports = {
             "detailed" : "Detailed",
             "header" : "Remove Liquidity",
             "tooltipText" : "Remove liquidity tokens to get pool tokens",
-            "input" : "input"
+            "input" : "Input"
         },
         "history" : {
             "header" : "History",

@@ -178,6 +178,7 @@ class LiquidityTokensZone extends React.Component {
             value : ltData.amount,
             decimals : ltData.decimals
         }, 50);
+        this.props.setRmPercent(50)
 
         this.assignDataForRemoveLiquidity('ltfield', {
             token : this.getTokenByHash(pool.lt),

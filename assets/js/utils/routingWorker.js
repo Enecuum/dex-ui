@@ -2,7 +2,7 @@ import testFormulas from "./testFormulas"
 
 self.addEventListener("message", (msg) => {
     let data = msg.data, route
-    if (msg.data.mode === "sell")
+    if (data.mode === "sell")
         route = testFormulas.sellRoute(
             data.token0.hash,
             data.token1.hash,

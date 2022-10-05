@@ -386,11 +386,11 @@ class SwapCard extends React.Component {
                                     <div className='pool-prices my-3'>{t(dp + `.${mode}.priceAndPoolShare`)}</div>
                                     <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.props.route, false)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), false)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), true)}</div>
                                         </div>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.props.route, true)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), true)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), false)}</div>
                                         </div>
                                         <div>

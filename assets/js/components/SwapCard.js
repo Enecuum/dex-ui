@@ -108,6 +108,7 @@ class SwapCard extends React.Component {
             this.changeField(this.props[mode].field0.id, {value: _.cloneDeep(this.props[mode].field0.value.text)})
         }
         this.updRemoveLiquidity()
+        this.recalculateSwap(mode, undefined)
     }
 
     componentWillUnmount() {
@@ -241,7 +242,10 @@ class SwapCard extends React.Component {
             if (this.recalculationStart)
                 return
             this.recalculationStart = true
-            this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
+            if (!this.props[mode][activeField].value.text)
+                this.changeField(this.props[mode][activeField].id, {value : "0"})
+            else
+                this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
         } else
             setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash, activeField)
     }

@@ -78,6 +78,8 @@ class TokenCard extends React.Component  {
     assignToken(token) {
         let mode = this.props.getMode()
         let modeAlias = presets.paths[mode]
+        if (!modeAlias && mode === "removeLiquidity")
+            modeAlias = "pool"
 
         if (this.props.getMode() === "exchange" || this.props.getMode() === "liquidity") {
             let cField = this.getCField(this.props.activeField)

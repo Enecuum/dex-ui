@@ -23,25 +23,25 @@ class Settings extends React.Component {
 		this.state = {
 			activeStyle : "inactive",
 			settingsVisibility : false,
-			slippagePercent : 0.01,
+			slippagePercent : 0.1,
 			errorMessage : undefined
 		}
 		this.settingsRanges = [
 			{
-				value : 0.01,
+				value : 0.1,
 				alias : this.props.t(`trade.swapCard.settings.autoButton`)
 			},
 			{
-				value : 0.1,
-				alias : '0.1%'
+				value : 0.5,
+				alias : '0.5%'
 			},
 			{
-				value : 10,
-				alias : '10%'
+				value : 1,
+				alias : '1%'
 			},
 			{
-				value : 25,
-				alias : '25%'
+				value : 5,
+				alias : '5%'
 			}
 		]
 	}

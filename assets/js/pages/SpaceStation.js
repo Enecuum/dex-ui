@@ -590,12 +590,12 @@ class SpaceStation extends React.Component {
                 <div className="h2 mb-4">
                     {t('navbars.left.spaceStation')}
                 </div>
-                <div className={"d-flex justify-content-start"}>
-                    <div className="d-block h4 d-md-flex mb-5">
+                <div className={"d-flex row ml-1"}>
+                    <div className="h4 d-md-flex mr-4">
                         <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.totalStaked')}</div>
                         <div className="text-nowrap">{valueProcessor.usCommasBigIntDecimals((this.farms[0].total_stake !== undefined ? this.farms[0].total_stake : '---'), this.farms[0].stake_token_decimals, this.farms[0].stake_token_decimals)} {this.farms[0].stake_token_name}</div>
                     </div>
-                    <div className="d-block h4 d-md-flex mb-5 ml-4">
+                    <div className="h4 d-md-flex mb-5">
                         <div className="text-color3 mr-3 text-nowrap">{t('dropFarms.stakeShare')}</div>
                         <div className="text-nowrap">{this.stakeShare !== undefined ? this.stakeShare : '---'} %</div>
                     </div>

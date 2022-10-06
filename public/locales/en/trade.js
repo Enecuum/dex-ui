@@ -113,7 +113,7 @@ module.exports = {
         "settings" : {
             "header" : "Transaction settings",
             "slippageHeader" : "Slippage tolerance",
-            "autoButton" : "Auto",
+            "autoButton" : "Default",
             "slippageTooltip" : "Your transaction will revert if the price changes unfavorably by more than this percentage"
         }
     },

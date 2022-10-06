@@ -24,7 +24,6 @@ const vp = new ValueProcessor();
 class IndicatorPanel extends React.Component {
     constructor (props) {
         super(props);
-        this.updData();
         this.intervalDescriptors = []
         this.intervalDescriptors.push(this.circleUpd())
         // this.intervalDescriptors.push(this.updPendingSpinner())
@@ -37,8 +36,13 @@ class IndicatorPanel extends React.Component {
         }
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
+    }
+
+    componentDidMount () {
+        this._mounted = true
+        this.updData()
     }
 
     renderPendingIndicator () {
@@ -86,6 +90,8 @@ class IndicatorPanel extends React.Component {
     }
 
     updData () {
+        if (!this._mounted)
+            return
         this.updStatuses()
         this.updNetwork()
         let tokenObj = utils.getBalanceObj(this.props.balances, this.props.mainToken)

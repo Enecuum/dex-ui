@@ -2,8 +2,8 @@ class TrafficController {
     constructor () {
         this.permission = true;
         this.timeout = 60 * 1000;
-        this.timeoutDescriptor = this.createTimeout();
-        this.establishListener();
+        // this.timeoutDescriptor = this.createTimeout();
+        // this.establishListener();
     };
 
     establishListener () { // inactivity controller

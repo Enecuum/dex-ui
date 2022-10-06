@@ -275,7 +275,7 @@ class ConfirmSupply extends React.Component {
                 })
             }, () => {
                 this.setState({txStatus : 'rejected'}, () => {
-                    reject()
+                    resolve()
                 })
             })
         })

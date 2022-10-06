@@ -61,13 +61,12 @@ class ConfirmSupply extends React.Component {
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
         let ltValue
-        if (this.props.menuItem === 'liquidity') {
-            try {
-                ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
-            } catch (e) {
-                ltValue = 0
-            }
-        } else
+        try {
+            ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+        } catch (e) {
+            ltValue = 0
+        }
+        if (this.props.route.length && !utils.pairExists(pair))
             ltValue = 0
 
         if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
@@ -117,7 +116,7 @@ class ConfirmSupply extends React.Component {
                 />
                 <div className='h5 mb-4'>
                     {
-                        (this.props.menuItem === 'liquidity')
+                        (this.props.menuItem === 'liquidity' || this.props.route.length === 0 && !utils.pairExists(pair))
                         &&
                         t('pairPoolTokens', {
                             token0: (firstToken.ticker) ? firstToken.ticker : '',
@@ -130,12 +129,18 @@ class ConfirmSupply extends React.Component {
                     }
                 </div>
                 <div className='confirm-supply-description'>
-                    {(this.props.menuItem === 'liquidity') && t('trade.confirmCard.description')}
+                    {(this.props.menuItem === 'liquidity' && utils.pairExists(pair)) && t('trade.confirmCard.description')}
                 </div>
                 <div className="my-5">
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
-                            {firstToken.ticker} {this.props.menuItem === 'liquidity' && t('trade.confirmCard.deposited') || t('trade.confirmCard.swapped')}
+                            { firstToken.ticker} 
+                                {(this.props.menuItem === 'liquidity' || (this.props.menuItem === 'exchange' && this.props.route.length === 0 && !utils.pairExists(pair)))
+                                && 
+                                ' ' + t('trade.confirmCard.deposited') 
+                                || 
+                                ' ' + t('trade.confirmCard.swapped')
+                            }
                         </div>
                         <LogoToken data={{
                             url : modeStruct.field0.token.logo,
@@ -147,7 +152,7 @@ class ConfirmSupply extends React.Component {
                         <div>
                             {secondToken.ticker}
                             {
-                                (this.props.menuItem === 'liquidity')
+                                (this.props.menuItem === 'liquidity' || this.props.route.length === 0 && !utils.pairExists(pair))
                                 &&
                                 ' ' + t('trade.confirmCard.deposited')
                                 ||

@@ -454,7 +454,6 @@ right: 0;
 
 .modal-body {
     max-height: 500px;
-    overflow: auto;
 }
 
 .modal-body, .modal-header {

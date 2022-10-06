@@ -126,10 +126,12 @@ function bigIntSqrt(value) {
 function countLTValue (pair, uiPair, mode, tokens) {
     // create pool case
     if (!utils.pairExists(pair)) {
-        let mul = uiPair.field0.value.value * uiPair.field1.value.value
+        let tmp = swapUtils.realignValueByDecimals(uiPair.field0.value, uiPair.field1.value)
+        let dec = Math.max(uiPair.field0.value.decimals, uiPair.field1.value.decimals)
+        let mul = tmp.f * tmp.s
         if (!mul)
             return {value: 0, decimals: 0}
-        return {value: bigIntSqrt(mul), decimals: 10}
+        return {value: bigIntSqrt(mul), decimals: dec}
     }
     // exchange mode has no lt-calculations
     // https://github.com/Enecuum/docs/issues/6

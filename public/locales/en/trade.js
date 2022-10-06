@@ -136,7 +136,7 @@ module.exports = {
         "rates" : "Rates",
         "shareOfPool" : "Share of pool",
         "feeData" : "Fee of transaction",
-        "confirm" : "Confirm Swap",
+        "confirm" : "Confirm",
         "waitingForConfirmation" : "Waiting for confirmation",
         "confirmInWallet" : "Confirm this transaction in your wallet",
         "waitingForConfirmationInternals" : {

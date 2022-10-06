@@ -35,7 +35,11 @@ class SwapAddon extends React.Component {
         return testFormulas.countPriceImpact(pair, amountIn, amountOut, this.props.tokens)
     }
 
-    showPriceImpact (pair) {
+    showPriceImpact (route) {
+        let pair = {
+            token_0 : {hash : route[1].source, volume : route[1].volume1},
+            token_1 : {hash : route[route.length-1].vertex, volume : route[route.length-1].volume2}
+        }
         let priceImpact = this.countPriceImpact(pair)
         if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
             return  "< 0.001"
@@ -130,7 +134,7 @@ class SwapAddon extends React.Component {
                     </div>
                     <div>
                         <span className="text-color3">{ (minimumReceived && minimumReceived.search("-") === -1 || maximumSent && maximumSent.search("-") === -1) &&
-                            this.showValues(this.showPriceImpact(pair)) || 0
+                            this.showValues(this.showPriceImpact(this.props.route, pair)) || 0
                         }%</span>
                     </div>
                 </div>

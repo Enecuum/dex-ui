@@ -39,7 +39,7 @@ class Routing extends React.Component {
     genRouteNodes () {
         return this.props.route.map((routeNode, index) => {
             if (!index)
-                return (<div key={"route0"}/>)
+                return (<></>)
             let fToken = swapUtils.getTokenObj(this.props.tokens, routeNode.source)
             let sToken = swapUtils.getTokenObj(this.props.tokens, routeNode.vertex)
 

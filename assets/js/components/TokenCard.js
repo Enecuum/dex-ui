@@ -95,8 +95,7 @@ class TokenCard extends React.Component  {
         } else if (this.props.activeField === 'field1' && this.props[mode].field0.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + this.props[mode].field0.token.ticker + '-' + token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  token.hash;
         }
-
-        this.props.recalculateSwapForNewToken(this.props.getMode(), token.hash, this.props.activeField)
+        this.props.recalculateSwapForNewToken(this.props.getMode(), this.props[mode][this.props.activeField].token.hash, this.props.activeField)
         let tokenObj = utils.getTokenObj(this.props.tokens, token.hash)
         this.props.assignTokenValue(this.props.getMode(), this.props.activeField, tokenObj)
         this.props.closeTokenList(tokenObj, this.props.activeField)

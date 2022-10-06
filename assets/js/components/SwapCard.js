@@ -236,23 +236,22 @@ class SwapCard extends React.Component {
         setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     }
 
-    recalculateSwap (mode, oldHash) {
-        if (this.props[mode].field0.token.hash !== oldHash) {
+    recalculateSwap (mode, oldHash, activeField="field0") {
+        if (this.props[mode][activeField].token.hash !== oldHash) {
             if (this.recalculationStart)
                 return
             this.recalculationStart = true
-            this.changeField(this.props[mode].field0.id, {value : _.cloneDeep(this.props[mode].field0.value.text)})
+            this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
         } else
-            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash, activeField)
     }
 
-    recalculateSwapForNewToken (mode, newHash, activeField) {
+    recalculateSwapForNewToken (mode, oldHash, activeField) {
         this.recalculationStart = false
-        let field = this.getFieldName(activeField)
-        if (this.props[mode][field].token.hash === newHash)
-            this.changeField(this.props[mode][field].id, {value : _.cloneDeep(this.props[mode][field].value.text)})
+        if (this.props[mode][activeField].token.hash !== oldHash)
+            this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
         else
-            setTimeout(this.recalculateSwap.bind(this), 100, mode, newHash, activeField)
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash, activeField)
     }
 
     changeBalance(field, hash) {
@@ -720,7 +719,7 @@ class SwapCard extends React.Component {
                     buttonName = this.getSwapCardButtonName('fillAllFields')
             }
             
-            if (this.pairExists === false && this.state.route.length === 0) {
+            if (this.pairExists === false && this.state.route.length === 0 && !this.insufficientFunds || this.props.menuItem === 'liquidity' && this.pairExists === false) {
                 let validationResult = {dataValid : false}
                 let modeField = _.cloneDeep(this.props[this.getMode()])
                 if (modeField.field0.value.text && modeField.field1.value.text) {
@@ -1151,6 +1150,7 @@ class SwapCard extends React.Component {
                     routingVisibility : false,
                     route: []
                 })
+                this.insufficientFunds = true
             } else {
                 this.props.setRoute(res)
                 this.setState({
@@ -1158,6 +1158,7 @@ class SwapCard extends React.Component {
                     routingWaiting : false,
                     route: res
                 })
+                this.insufficientFunds = false
             }
         })
         .catch(() => {

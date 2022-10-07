@@ -1228,18 +1228,30 @@ class SwapCard extends React.Component {
     }
 
     countFullRemoveLiquidity (mode, cField, fieldValue, forcedLt, total_supply) {
-        let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, {
+       
+        let trio = {
             t0 : this.props.removeLiquidity.field0.value,
             t1 : this.props.removeLiquidity.field1.value,
             lt : {
-                value : (forcedLt) ? forcedLt : fieldValue.value,
-                decimals : fieldValue.decimals,
+                value : this.props.removeLiquidity.ltfield.value.value,
+                decimals : this.props.removeLiquidity.ltfield.value.decimals,
                 total_supply : {
                     value : total_supply,
                     decimals : this.props.removeLiquidity.ltfield.token.decimals
                 }
             }
-        }, cField);
+        }
+
+        if (cField === "field0") {
+            trio.t0 = fieldValue
+        } else if (cField === "field1") {
+            trio.t1 = fieldValue
+        } else if (cField === "ltfield") {
+            trio.lt.value = fieldValue.value
+            trio.lt.decimals = fieldValue.decimals
+        }
+
+        let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, trio, cField);
         if (!Object.keys(counted.t0).length || !Object.keys(counted.t1).length) { // invalid ltDestruction
             let zeroValue = {value: 0, decimals: 0, text: '0'};
             this.assignCoinValueWithText(mode, 'field0',  zeroValue);

@@ -127,7 +127,8 @@ class SwapAddon extends React.Component {
                         }
                     </div>
                 </div>
-                <div className="d-block d-md-flex align-items-center justify-content-between py-2">
+                { this.props.route.length < 3 &&
+                    <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         <span className="mr-2">{t('trade.swapAddon.priceImpact.header')}</span>
                         <Tooltip text={t('trade.swapAddon.priceImpact.tooltip')} />
@@ -137,7 +138,7 @@ class SwapAddon extends React.Component {
                             this.showValues(this.showPriceImpact(this.props.route, pair)) || 0
                         }%</span>
                     </div>
-                </div>
+                </div> || <></>}
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         <span className="mr-2">{t('trade.swapAddon.providerFee.header')}</span>

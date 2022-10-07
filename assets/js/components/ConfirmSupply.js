@@ -61,13 +61,12 @@ class ConfirmSupply extends React.Component {
         let secondToken = modeStruct.field1.token
         let pair = utils.searchSwap(this.props.pairs, [modeStruct.field0.token, modeStruct.field1.token])
         let ltValue
-        if (this.props.menuItem === 'liquidity') {
-            try {
-                ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
-            } catch (e) {
-                ltValue = 0
-            }
-        } else
+        try {
+            ltValue = testFormulas.countLTValue(pair, modeStruct, this.props.menuItem, this.props.tokens)
+        } catch (e) {
+            ltValue = 0
+        }
+        if (this.props.route.length && !utils.pairExists(pair))
             ltValue = 0
 
         if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove && !this.state.waitingCardVisibility) {
@@ -117,7 +116,7 @@ class ConfirmSupply extends React.Component {
                 />
                 <div className='h5 mb-4'>
                     {
-                        (this.props.menuItem === 'liquidity')
+                        (this.props.menuItem === 'liquidity' || this.props.route.length === 0 && !utils.pairExists(pair))
                         &&
                         t('pairPoolTokens', {
                             token0: (firstToken.ticker) ? firstToken.ticker : '',
@@ -130,12 +129,18 @@ class ConfirmSupply extends React.Component {
                     }
                 </div>
                 <div className='confirm-supply-description'>
-                    {(this.props.menuItem === 'liquidity') && t('trade.confirmCard.description')}
+                    {(this.props.menuItem === 'liquidity' && utils.pairExists(pair)) && t('trade.confirmCard.description')}
                 </div>
                 <div className="my-5">
                     <div className='d-flex align-items-center justify-content-between mb-2'>
                         <div>
-                            {firstToken.ticker} {t('trade.confirmCard.deposited')}
+                            { firstToken.ticker} 
+                                {(this.props.menuItem === 'liquidity' || (this.props.menuItem === 'exchange' && this.props.route.length === 0 && !utils.pairExists(pair)))
+                                && 
+                                ' ' + t('trade.confirmCard.deposited') 
+                                || 
+                                ' ' + t('trade.confirmCard.swapped')
+                            }
                         </div>
                         <LogoToken data={{
                             url : modeStruct.field0.token.logo,
@@ -147,7 +152,7 @@ class ConfirmSupply extends React.Component {
                         <div>
                             {secondToken.ticker}
                             {
-                                (this.props.menuItem === 'liquidity')
+                                (this.props.menuItem === 'liquidity' || this.props.route.length === 0 && !utils.pairExists(pair))
                                 &&
                                 ' ' + t('trade.confirmCard.deposited')
                                 ||
@@ -165,8 +170,8 @@ class ConfirmSupply extends React.Component {
                             {t('trade.confirmCard.rates')}
                         </div>
                         <div className='text-right'>
-                            <div>1 {firstToken.ticker} = {utils.countExchangeRate(pair, true, modeStruct)} {secondToken.ticker}</div>
-                            <div>1 {secondToken.ticker} = {utils.countExchangeRate(pair, false, modeStruct)} {firstToken.ticker}</div>
+                            <div>1 {firstToken.ticker} = {utils.countExchangeRate(this.props.route, true, this.props.tokens)} {secondToken.ticker}</div>
+                            <div>1 {secondToken.ticker} = {utils.countExchangeRate(this.props.route, false, this.props.tokens)} {firstToken.ticker}</div>
                         </div>
                     </div>
                     <div className='d-flex align-items-start justify-content-between'>
@@ -177,14 +182,16 @@ class ConfirmSupply extends React.Component {
                             {valueProcessor.usCommasBigIntDecimals(this.props.nativeToken.fee_value, this.props.nativeToken.decimals)} {this.props.nativeToken.ticker}
                         </div>
                     </div>
-                    <div className='d-flex align-items-start justify-content-between'>
-                        <div>
-                            {t('trade.confirmCard.shareOfPool')}
-                        </div>
-                        <div>
-                            {utils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, pair, modeStruct)}%
-                        </div>
-                    </div>
+                    { this.props.menuItem === 'liquidity' &&
+                        <div className='d-flex align-items-start justify-content-between'>
+                            <div>
+                                {t('trade.confirmCard.shareOfPool')}
+                            </div>
+                            <div>
+                                {utils.poolShareWithStaked(this.props.tokens, this.props.balances, this.props.farmsList, pair, modeStruct)}%
+                            </div>
+                        </div> || <></>
+                    }
                 </div>
                 <Button
                     className='btn-secondary confirm-supply-button w-100'
@@ -254,6 +261,13 @@ class ConfirmSupply extends React.Component {
             }
             this.openWaitingCard()
             txPromise.then(result => {
+                let emptyField = {value: undefined, decimals: 0, text: ""}
+                if (this.props.menuItem === 'liquidity' && this.props.liquidityRemove) {
+                } else {
+                    this.props.assignCoinValueWithText(this.props.menuItem, 'field0', emptyField)
+                    this.props.assignCoinValueWithText(this.props.menuItem, 'field1', emptyField)
+                }
+
                 this.setState({currentTxHash : result.hash}, () => {
                     this.setState({txStatus : 'submitted'})
                     lsdp.write(result.hash, 0, txType, interpolateParams)

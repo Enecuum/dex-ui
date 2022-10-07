@@ -48,9 +48,9 @@ class AccountShortInfo extends React.Component {
                     <Card.Body>
                         <div className="d-flex justify-content-between mt-2">
                             <small className="mr-5 connected-with">{t('navbars.top.accountShortInfo.connectInfo')} ENQ-wallet</small>
-                            <button className="ml-lg-2 extra-small-button" onClick={this.reloadPage.bind(this)}>
+                            {/* <button className="ml-lg-2 extra-small-button" onClick={this.reloadPage.bind(this)}>
                                 {t('navbars.top.accountShortInfo.changeButton')}
-                            </button>
+                            </button> */}
                         </div>
                         <div className="d-flex justify-content-start mt-2">
                             <div className="mr-3">

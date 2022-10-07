@@ -64,7 +64,7 @@ module.exports = {
             "addLiquidity" : "Add liquidity",
             "removeLiquidity" : "Remove liquidity",
             "fillAllFields" : "Fill all fields",
-            "lackOfSecondVolume" : "Insufficient funds of the pool",
+            "lackOfSecondVolume" : "Insufficient funds in the pool",
             "swap" : "Swap",
             "createPair" : "Create pair",
 
@@ -89,7 +89,7 @@ module.exports = {
             "detailed" : "Detailed",
             "header" : "Remove Liquidity",
             "tooltipText" : "Remove liquidity tokens to get pool tokens",
-            "input" : "input"
+            "input" : "Input"
         },
         "history" : {
             "header" : "History",
@@ -131,11 +131,12 @@ module.exports = {
         "poolTokens" : "Pool Tokens",
         "description" : "Output is estimated. If the price changes by more than 1% your transaction will revert.",
         "deposited" : "Deposited",
+        "swapped" : "Swapped",
         "toBeReceived" : "To be received",
         "rates" : "Rates",
         "shareOfPool" : "Share of pool",
         "feeData" : "Fee of transaction",
-        "confirm" : "Confirm Supply",
+        "confirm" : "Confirm",
         "waitingForConfirmation" : "Waiting for confirmation",
         "confirmInWallet" : "Confirm this transaction in your wallet",
         "waitingForConfirmationInternals" : {

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Modal, Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import presets from '../../store/pageDataPresets';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
 import utils from '../utils/swapUtils';
 import Tooltip from '../elements/Tooltip';
+import { FixedSizeList } from "react-window"
 
 import '../../css/token-card.css'
 import '../../css/custom-toggle.css'
@@ -69,16 +70,32 @@ class TokenCard extends React.Component  {
         this.trustedTokens = trustedTokens
     }
 
+    getCField (activeField) {
+        const fields = ["field0", "field1"]
+        return fields[(fields.indexOf(activeField) + 1) % 2]
+    }
+
     assignToken(token) {
-        let mode = this.props.getMode();
-        let modeAlias = presets.paths[mode];
+        let mode = this.props.getMode()
+        let modeAlias = presets.paths[mode]
+        if (!modeAlias && mode === "removeLiquidity")
+            modeAlias = "pool"
+
+        if (this.props.getMode() === "exchange" || this.props.getMode() === "liquidity") {
+            let cField = this.getCField(this.props.activeField)
+            if (this.props[mode][cField].token.hash === token.hash) {
+                this.props.closeTokenList({}, this.props.activeField)
+                this.props.swapPair()
+                return
+            }
+        }
+
         if (this.props.activeField === 'field0' && this.props[mode].field1.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else if (this.props.activeField === 'field1' && this.props[mode].field0.token.hash !== undefined) {
             window.location.hash = '#!action=' + modeAlias + '&pair=' + this.props[mode].field0.token.ticker + '-' + token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  token.hash;
         }
-
-        this.props.recalculateSwapForNewToken(this.props.getMode(), token.hash, this.props.activeField)
+        this.props.recalculateSwapForNewToken(this.props.getMode(), this.props[mode][this.props.activeField].token.hash, this.props.activeField)
         let tokenObj = utils.getTokenObj(this.props.tokens, token.hash)
         this.props.assignTokenValue(this.props.getMode(), this.props.activeField, tokenObj)
         this.props.closeTokenList(tokenObj, this.props.activeField)
@@ -175,48 +192,59 @@ class TokenCard extends React.Component  {
         this.setTrustedTokens()
         let sorted = this.getTokens(this.tokenFilter).sort(this.comparator(sortDirection))
         sorted = this.traverseRules(sorted)
-        return sorted.map((el, i) => {
-            // if (i > this.maxTokensForRender)
-            //     return (<></>)
-            let logoData = {
-                url : el.logo,
-                value : el.ticker,
-                hash : el.hash,
-                net : this.props.net
-            }
+        return(
+            <FixedSizeList
+                innerElementType="ul"
+                itemCount={sorted.length}
+                itemSize={60}
+                height={340}
+                width={350}
+            >
+                {({ index, style }) => {
+                    let el = sorted[index]
+                    // if (index > this.maxTokensForRender)
+                    //     return (<></>)
+                    let logoData = {
+                        url : el.logo,
+                        value : el.ticker,
+                        hash : el.hash,
+                        net : this.props.net
+                    }
 
-            let lpPair = this.isLpToken(el.hash), fToken, sToken
-            if (lpPair) {
-                fToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_0.hash)
-                sToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_1.hash)
-            }
+                    let lpPair = this.isLpToken(el.hash), fToken, sToken
+                    if (lpPair) {
+                        fToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_0.hash)
+                        sToken = swapUtils.getTokenObj(this.props.tokens, lpPair.token_1.hash)
+                    }
 
-            let tBalance = swapUtils.getBalanceObj(this.props.balances, el.hash)
+                    let tBalance = swapUtils.getBalanceObj(this.props.balances, el.hash)
 
-            return (
-                <div key={i}>
-                    <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
-                        {
-                            this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
-                            lpPair && <LogoTokenLP customClasses='py-1 my-1 px-1'
-                                                   data = {logoData}
-                                                   fToken={fToken}
-                                                   sToken={sToken}
-                            /> ||
-                            <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
-                        }
-                        <div className={"ml-3 pt-2 text-muted"}>
-                            <small className="mr-2 justify-content-end row">
-                                {swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(tBalance.amount, tBalance.decimals))}
-                            </small>
-                            <small className="mr-2 usd-price justify-content-end row" style={{marginRight: "9px"}}>
-                                {(el.price_raw && el.price_raw.dex_price) && this.getUSDPrice(tBalance, el) || 0}$
-                            </small>
+                    return (
+                        <div style={style} key={index}>
+                            <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
+                                {
+                                    this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
+                                    lpPair && <LogoTokenLP customClasses='py-1 my-1 px-1'
+                                                        data = {logoData}
+                                                        fToken={fToken}
+                                                        sToken={sToken}
+                                    /> ||
+                                    <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
+                                }
+                                <div className={"ml-3 pt-2 text-muted"}>
+                                    <small className="mr-2 justify-content-end row">
+                                        {swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(tBalance.amount, tBalance.decimals))}
+                                    </small>
+                                    <small className="mr-2 usd-price justify-content-end row" style={{marginRight: "9px"}}>
+                                        {(el.price_raw && el.price_raw.dex_price) && this.getUSDPrice(tBalance, el) || 0}$
+                                    </small>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )
-        })
+                    )
+                }}
+            </FixedSizeList>
+        )
     }
 
     getUSDPrice (balance, tokenInfo) {

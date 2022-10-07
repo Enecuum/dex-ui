@@ -305,10 +305,12 @@ class Root extends React.Component {
                     tokens = this.clearLogoInfo(tokens)
                 }
                 let withoutImagePlaces = this.getTokensWithoutImageName(tokens)
-                if (withoutImagePlaces.length)
+                if (withoutImagePlaces.length) {
                     this.updTokensImageInfo(tokens, withoutImagePlaces)
-                    .then(tokens => this.props.assignAllTokens(tokens))
-                else
+                    .then(tokens => {
+                        this.props.assignAllTokens(tokens)
+                    })
+                } else
                     this.props.assignAllTokens(tokens)
             })
         })
@@ -331,8 +333,14 @@ class Root extends React.Component {
 
     updTokensImageInfo (tokens, withoutImagePlaces) {
         return new Promise(resolve => {
-            let p = (this.props.net.name === "bit") ? networkApi.tokenInfoStorageBit() : networkApi.tokenInfoStorageBitDev()
-            p.then(result => {
+            let networkCut = ""
+            if (this.props.networkInfo && this.props.networkInfo.native_token.ticker)
+                networkCut = this.props.networkInfo.native_token.ticker.toLowerCase()
+            else {
+                resolve(tokens)
+                return
+            }
+            networkApi.tokenInfoStorage(networkCut).then(result => {
                 if (!result.lock) {
                     result.json().then(infoStorageEnq => {
                         for (let index of withoutImagePlaces)
@@ -363,12 +371,12 @@ class Root extends React.Component {
         let balanceObj = utils.getBalanceObj(this.props.balances, this.props[menuItem][field].token.hash)
         let tokenObj = utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash)
         if (tokenObj.ticker === '---') {
-            if (field === 'field0') {
-                let mainToken = utils.getTokenObj(this.props.tokens, this.props.mainToken)
-                this.props.assignTokenValue(menuItem, field, mainToken)
-            } else {
-                this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
-            }
+            // if (field === 'field0') {
+            //     // let mainToken = utils.getTokenObj(this.props.tokens, this.props.mainToken)
+            //     // this.props.assignTokenValue(menuItem, field, mainToken)
+            // } else {
+            //     this.props.assignTokenValue(menuItem, field, utils.getTokenObj(this.props.tokens, this.props[menuItem][field].token.hash))
+            // }
         }
         this.props.assignBalanceObj(menuItem, field, balanceObj)
     }

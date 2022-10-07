@@ -126,10 +126,12 @@ function bigIntSqrt(value) {
 function countLTValue (pair, uiPair, mode, tokens) {
     // create pool case
     if (!utils.pairExists(pair)) {
-        let mul = uiPair.field0.value.value * uiPair.field1.value.value
+        let tmp = swapUtils.realignValueByDecimals(uiPair.field0.value, uiPair.field1.value)
+        let dec = Math.max(uiPair.field0.value.decimals, uiPair.field1.value.decimals)
+        let mul = tmp.f * tmp.s
         if (!mul)
             return {value: 0, decimals: 0}
-        return {value: bigIntSqrt(mul), decimals: 10}
+        return {value: bigIntSqrt(mul), decimals: dec}
     }
     // exchange mode has no lt-calculations
     // https://github.com/Enecuum/docs/issues/6
@@ -363,20 +365,28 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         // console.log('edges:', edges);
 
         edges.forEach((edge) => {
+            edge.volume1 = BigInt(edge.volume1)
+            edge.volume2 = BigInt(edge.volume2)
             let adj = vertices.find((x) => x.vertex === edge.to);
             if (adj) {
 
             } else {
-                let outcome = buyExact({
+                let vol0 = {
                     value : edge.volume2,
                     decimals : getDecimals(tokens, edge.to)
-                }, {
+                }
+                let vol1 = {
                     value : edge.volume1,
                     decimals : getDecimals(tokens, edge.from)
-                }, {
+                }
+                let amOut = {
                     value : current.outcome.value,
                     decimals : current.outcome.decimals
-                }, {
+                }
+                if (vp.sub(vol1, amOut).value === 0n)
+                    return
+
+                let outcome = buyExact(vol0, vol1, amOut, {
                     value : edge.pool_fee,
                     decimals : 2
                 })
@@ -391,21 +401,24 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
                     notEnoughLiquidity : outcome.value < 0n
                 }
 
-                vertices.push(new_vertex);
+                vertices.push(new_vertex)
                 // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
             }
         });
 
         current.processed = true;
         vertices.sort((a,b)=> {
-            let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
-            if (tmp.f > tmp.s) {
-                return -1;
-            }
-            else {
-                if (tmp.f === tmp.s)
-                    return 0;
-                else return 1;
+            try {
+                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
+                if (tmp.f > tmp.s) {
+                    return -1;
+                } else {
+                    if (tmp.f === tmp.s)
+                        return 0;
+                    else return 1;
+                }
+            } catch (e) {
+                return 0
             }
         });
         // console.log('vertices:', vertices);

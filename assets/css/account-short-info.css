@@ -47,8 +47,10 @@
 
 .recent-txs-place {
     width: 108%;
-    margin-left: -12px;
-    margin-bottom: -29px;
+    max-height: 510px;
+    overflow: auto;
+    margin-left: -13px;
+    margin-bottom: -15px;
     border-radius: 0 0 var(--border-radius2) var(--border-radius2);
     background-color: var(--color5);
 }

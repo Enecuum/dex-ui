@@ -42,6 +42,7 @@ class SwapCard extends React.Component {
         this.insufficientFunds = false
         this.activePair = {}
         this.rmPercents = 50
+        this.routePromises = []
         this.removeLiquidity = {
             ranges : [
                 {
@@ -81,7 +82,6 @@ class SwapCard extends React.Component {
 
     componentDidUpdate (prevProps) {
         const hasAChanged = ((this.props.tokens !== prevProps.tokens));
-
         if (hasAChanged && this.props.connectionStatus === true && this.initByGetRequestParams) {
             this.setSwapTokensFromRequest();
             this.initByGetRequestParams = false;
@@ -108,6 +108,7 @@ class SwapCard extends React.Component {
             this.changeField(this.props[mode].field0.id, {value: _.cloneDeep(this.props[mode].field0.value.text)})
         }
         this.updRemoveLiquidity()
+        this.recalculateSwap(mode, undefined)
     }
 
     componentWillUnmount() {
@@ -120,6 +121,31 @@ class SwapCard extends React.Component {
         }
     }
 
+    changeLiquidityMode () {
+        let dec0, dec1
+        try {
+            dec0 = this.props.liquidity.field0.token.decimals
+        } catch (e) {
+            dec0 = 0
+        }
+        try {
+            dec1 = this.props.liquidity.field1.token.decimals
+        } catch (e) {
+            dec1 = 0
+        }
+        this.props.assignCoinValue("liquidity", "field0", {
+            value : 0n,
+            decimals : dec0,
+            text : ""
+        })
+        this.props.assignCoinValue("liquidity", "field1", {
+            value : 0n,
+            decimals : dec1,
+            text : ""
+        })
+        this.props.changeLiquidityMode()
+    }
+
     setSwapTokensFromRequest() {
         let paramsObj = this.parseFromToTokensRequest();
         let mode;
@@ -130,7 +156,7 @@ class SwapCard extends React.Component {
         if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && paramsObj.from !== undefined && paramsObj.to !== undefined) {
             if (paramsObj.action === 'pool') {
                 if (this.props.liquidityMain === true && this.handBack === false && !this.requestPairIsExist(paramsObj)) {
-                    this.props.changeLiquidityMode();
+                    this.changeLiquidityMode();
                 }
                 this.handBack = false;
             }
@@ -140,7 +166,7 @@ class SwapCard extends React.Component {
         } else if ((paramsObj.action === 'swap' || paramsObj.action === 'pool') && this.props[mode].field0.token.hash !== undefined && this.props[mode].field1.token.hash !== undefined) {            
             window.location.hash = '#!action='+ paramsObj.action +'&pair=' + this.props[mode].field0.token.ticker + '-' + this.props[mode].field1.token.ticker + '&from=' + this.props[mode].field0.token.hash + '&to=' +  this.props[mode].field1.token.hash;
         } else {
-            this.props.assignTokenValue(this.getMode(), 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
+            this.props.assignTokenValue(mode, 'field0', utils.getTokenObj(this.props.tokens, this.props.mainToken));
         }
     }
 
@@ -163,11 +189,11 @@ class SwapCard extends React.Component {
     }
 
     updRemoveLiquidity () {
-        this.descriptor = setInterval(() => {
-            try {
-                this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
-            } catch (e) {}
-        }, 2000)
+        // this.descriptor = setInterval(() => {
+        //     try {
+        //         this.countRemoveLiquidity("removeLiquidity", 'ltfield', this.props.removeLiquidity.ltfield.value)
+        //     } catch (e) {}
+        // }, 2000)
     }
 
     setTickersFromURLsHash(paramsObj) {
@@ -207,28 +233,38 @@ class SwapCard extends React.Component {
         }
         let oldHash = this.props[mode].field0.token.hash
         this.props.swapFields(this.props.menuItem)
+        this.recalculationStart = false
         setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
     }
 
-    recalculateSwap (mode, oldHash) {
-
-        if (this.props[mode].field0.token.hash !== oldHash)
-            this.changeField(this.props[mode].field0.id, {value : _.cloneDeep(this.props[mode].field0.value.text)})
-        else
-            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+    recalculateSwap (mode, oldHash, activeField="field0") {
+        if (this.props[mode][activeField].token.hash !== oldHash) {
+            if (this.recalculationStart)
+                return
+            this.recalculationStart = true
+            if (!this.props[mode][activeField].value.text)
+                this.changeField(this.props[mode][activeField].id, {value : "0"})
+            else
+                this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
+        } else
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash, activeField)
     }
 
-    recalculateSwapForNewToken (mode, newHash, activeField) {
-        let field = this.getFieldName(activeField)
-        if (this.props[mode][field].token.hash === newHash)
-            this.changeField(this.props[mode][field].id, {value : _.cloneDeep(this.props[mode][field].value.text)})
+    recalculateSwapForNewToken (mode, oldHash, activeField) {
+        this.recalculationStart = false
+        if (this.props[mode][activeField].token.hash !== oldHash)
+            this.changeField(this.props[mode][activeField].id, {value : _.cloneDeep(this.props[mode][activeField].value.text)})
         else
-            setTimeout(this.recalculateSwap.bind(this), 100, mode, newHash, activeField)
+            setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash, activeField)
     }
 
     changeBalance(field, hash) {
         this.props.assignBalanceObj(this.getMode(), field, utils.getBalanceObj(this.props.balances, hash));
     };
+
+    setRmPercent (val) {
+        this.rmPercents = val
+    }
 
     setRemoveLiquidityValue(value) {
         this.rmPercents = value;
@@ -244,6 +280,18 @@ class SwapCard extends React.Component {
 
     changeSwapIconStatus (value) {
         this.setState({swapIconStatus : value})
+    }
+
+    routeImmitation (asset1, asset2) {
+        let pair = swapUtils.searchSwap(this.props.pairs, [{hash: asset1}, {hash: asset2}])
+        return [
+            {}, {
+                source : asset1,
+                vertex : asset2,
+                volume1 : pair.token_0.volume,
+                volume2 : pair.token_1.volume
+            }
+        ]
     }
 
     /* ================================ cards rendering functions ================================== */
@@ -306,7 +354,7 @@ class SwapCard extends React.Component {
                         </button>
                     }
                 </div>
-                <div className="p-4">
+                <div className="p-4 swap-card-body">
                     {/* ---------------------------------------- exchange or add-liquidity: body ---------------------------------------- */}
                     { ((mode === 'liquidity' && !this.props.liquidityMain) || mode === 'exchange') &&
                         <>
@@ -341,7 +389,7 @@ class SwapCard extends React.Component {
                                 <div className="my-2">
                                     <div className='pt-2 swap-price d-flex justify-content-between align-items-center'>
                                         <div className='pr-4'>{t("price")}</div>
-                                        <div className='pl-4'>{this.showExchangeRate(false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
+                                        <div className='pl-4'>{this.showExchangeRate(this.props.route, false)} {firstToken.ticker} {t(dp + `.liquidity.per`)} {secondToken.ticker}</div>
                                     </div>
                                     <small className="pb-2 mr-2 usd-price d-flex justify-content-end">
                                         {
@@ -367,11 +415,11 @@ class SwapCard extends React.Component {
                                     <div className='pool-prices my-3'>{t(dp + `.${mode}.priceAndPoolShare`)}</div>
                                     <div className='swap-input py-2 px-3 d-flex align-items-center justify-content-between mb-5'>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(false)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), false)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), true)}</div>
                                         </div>
                                         <div>
-                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(true)}</div>
+                                            <div className='d-flex justify-content-center'>{this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), true)}</div>
                                             <div className='d-flex justify-content-center'>{this.getExchangeText(t(dp + `.${mode}.per`), false)}</div>
                                         </div>
                                         <div>
@@ -394,7 +442,7 @@ class SwapCard extends React.Component {
                                 <Tooltip text={t('trade.swapCard.liquidity.yourLiquidityTooltip')}/>
                             </div>
                             <div className='your-liquidity-field my-3'>
-                                <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)}/>
+                                <LiquidityTokensZone changeBalance={this.changeBalance.bind(this)} setRmPercent={this.setRmPercent.bind(this)}/>
                             </div>
                             <div className='your-liquidity-header'>
                                 {t(dp + `.${mode}.additionInfo`)}
@@ -440,9 +488,9 @@ class SwapCard extends React.Component {
                             <div className="d-flex align-items-start justify-content-between mb-3 mt-4">
                                 <div>{t("price")}</div>
                                 <div>
-                                    <div className={"d-flex justify-content-end"}>1 {firstToken.ticker} = {this.showExchangeRate(true)} {secondToken.ticker}</div>
+                                    <div className={"d-flex justify-content-end"}>1 {firstToken.ticker} = {this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), true)} {secondToken.ticker}</div>
                                     {this.renderExchangeRateUsdPrice(secondToken, firstToken)}
-                                    <div className={"d-flex justify-content-end"}>1 {secondToken.ticker} = {this.showExchangeRate(false)} {firstToken.ticker}</div>
+                                    <div className={"d-flex justify-content-end"}>1 {secondToken.ticker} = {this.showExchangeRate(this.routeImmitation(modeStruct.field0.token.hash, modeStruct.field1.token.hash), false)} {firstToken.ticker}</div>
                                     {this.renderExchangeRateUsdPrice(firstToken, secondToken)}
                                 </div>
                             </div>
@@ -453,6 +501,8 @@ class SwapCard extends React.Component {
                             {<Suspense fallback={<div>---</div>}>
                                 <ConfirmSupply
                                     getSubmitButton={this.getSubmitButton.bind(this)}
+                                    assignCoinValueWithText={this.assignCoinValueWithText.bind(this)}
+                                    changeLiquidityMode={this.changeLiquidityMode.bind(this)}
                                     modeStruct={modeStruct}
                                     route={this.state.route}
                                 />
@@ -580,7 +630,7 @@ class SwapCard extends React.Component {
                                     id : 5,
                                     fieldData :  modeStruct.field1
                                 })}
-                            </div>                      
+                            </div>   
                         </div>
                     </>
                 }
@@ -606,8 +656,11 @@ class SwapCard extends React.Component {
     handleErrorsForSwapCard (errObj) {
         let errProp = Object.keys(errObj)[0], t = this.props.t, dp = "trade.swapCard.errorDescription."
         switch (errProp) {
-            case 'field0':
+            case 'field0': {
+                if (errObj.field0.msg === "lackOfSecondVolume")
+                    return this.makeErrMsg(t(dp + "field1"), errObj.field0)
                 return this.makeErrMsg(t(dp + "field0"), errObj.field0)
+            }
             case 'field1':
                 return this.makeErrMsg(t(dp + "field1"), errObj.field1)
             case 'ltfield':
@@ -670,7 +723,7 @@ class SwapCard extends React.Component {
                     buttonName = this.getSwapCardButtonName('fillAllFields')
             }
             
-            if (this.pairExists === false && this.state.route.length === 0) {
+            if (this.pairExists === false && this.state.route.length === 0 && !this.insufficientFunds || this.props.menuItem === 'liquidity' && this.pairExists === false) {
                 let validationResult = {dataValid : false}
                 let modeField = _.cloneDeep(this.props[this.getMode()])
                 if (modeField.field0.value.text && modeField.field1.value.text) {
@@ -694,7 +747,7 @@ class SwapCard extends React.Component {
                         <div className='about-button-info d-flex justify-content-center align-items-center w-100'>
                             { this.props.t('trade.swapCard.aboutButtonInfo.withoutPair') }
                         </div>
-                        { this.renderSwapCardButton(buttonName, openConfirmCard, validationResult.dataValid) }
+                        {this.getMode() !== 'removeLiquidity' && this.renderSwapCardButton(buttonName, openConfirmCard, validationResult.dataValid) || <></> }
                     </div>
                 )
             }
@@ -785,6 +838,7 @@ class SwapCard extends React.Component {
                         changeBalance={this.changeBalance.bind(this)}
                         getMode={this.getMode.bind(this)}
                         recalculateSwapForNewToken={this.recalculateSwapForNewToken.bind(this)}
+                        swapPair={this.swapPair.bind(this)}
                         useSuspense={false} />
                 </>
             );
@@ -805,7 +859,7 @@ class SwapCard extends React.Component {
             res = ''
         if (valueObj.value < 0n) {
             valueObj.value = 0n
-            return this.props.t("trade.swapCard.inputField.notEnoughLiquidity")
+            res = ''
         }
         return res
     }
@@ -823,14 +877,26 @@ class SwapCard extends React.Component {
         return (balance === '-') ? balance : `${this.props.t('trade.swapCard.inputField.balance')}: ${balance}`;
     };
 
-    showExchangeRate (firstToken) {
-        return utils.removeEndZeros(utils.countExchangeRate(this.activePair, firstToken, _.cloneDeep(this.props[this.getMode()])))
+    showExchangeRate (route, firstToken) {
+        return utils.removeEndZeros(utils.countExchangeRate(route, firstToken, this.props.tokens))
     };
 
+    toFixedPercent (num, fixedLength) {
+        if (num > 100)
+            return "> 100"
+        num = num.toString().split(".")
+        if (num.length === 2)
+            return num[0] + "." + num[1].substring(0, fixedLength)
+        return num[0]
+    }
+
     showPercents (fixedLength=1) {
+        let percents = this.rmPercents
+        if (typeof percents === "string")
+            percents = percents.replace(/,/g, "")
         let result = '-';
-        if (!Number.isNaN(this.rmPercents))
-            result = Number(this.rmPercents).toFixed(fixedLength);
+        if (!Number.isNaN(percents))
+            result = this.toFixedPercent(percents, fixedLength);
         if (result == 0)
             return `< 0.${'0'.repeat(fixedLength - 1)}1`;
         return result;
@@ -859,7 +925,9 @@ class SwapCard extends React.Component {
     setMax(fieldProps) {
         let mode = this.getMode()
         let field = this.getFieldName(fieldProps.id)
-
+        if (mode === "removeLiquidity") {
+            field = "ltfield"
+        }
         if (mode === "exchange") {
             field = "field0"
             if (fieldProps.id === 0)
@@ -871,7 +939,7 @@ class SwapCard extends React.Component {
 
         let decimals = this.props[mode][field].token.decimals
         let value, activeHash
-        if (mode === "exchange") {
+        if (mode === "exchange" || mode === "removeLiquidity") {
             activeHash = this.props[mode][field].token.hash
             value = BigInt(this.props[mode][field].balance.amount)
         } else {
@@ -879,7 +947,7 @@ class SwapCard extends React.Component {
             value = BigInt(fieldProps.fieldData.balance.amount)
         }
 
-        if (activeHash === this.props.mainToken) {
+        if (activeHash === this.props.mainToken && mode !== "removeLiquidity") {
             value -= BigInt(this.props.mainTokenFee !== undefined ? this.props.mainTokenFee : presets.network.nativeToken.fee)
             if (value < 0) {
                 value = 0n
@@ -895,7 +963,12 @@ class SwapCard extends React.Component {
         let fieldObj = _.cloneDeep(this.props[mode][field])
         fieldObj.value = newValObj
 
-        this.changeField((mode === "exchange") ? 0 : fieldProps.id, {value: _.cloneDeep(newValObj.text)})
+        if (mode === "exchange")
+            this.changeField(0, {value: _.cloneDeep(newValObj.text)})
+        else if (mode === "removeLiquidity") 
+            this.changeField(6, {value: _.cloneDeep(newValObj.text)})
+        else 
+            this.changeField(fieldProps.id, {value: _.cloneDeep(newValObj.text)})
 
         let modeData = _.cloneDeep(this.props[mode])
         modeData[field] = fieldObj
@@ -904,9 +977,20 @@ class SwapCard extends React.Component {
     }
 
     changeField (fieldId, target) {
+        try {
+            this.routingWorker.close()
+        } catch (e) {console.log(e)}
+        this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
         if (target.value === undefined)
             return
-        let mode = this.getMode(), field = this.getFieldName(fieldId), newValue = target.value.toString().replace(/[^0-9|\.]+/g, '')
+        let mode = this.getMode(), field = this.getFieldName(fieldId), 
+        
+        newValue = target.value.toString()
+        if (newValue === "." || newValue === ",")
+            newValue = "0."
+        newValue = newValue.replace(/[^0-9|\.]+/g, '')
+        
+        
         let modeData = _.cloneDeep(this.props[mode]), fieldData = _.cloneDeep(modeData[field])
         let oldValObj = _.cloneDeep(fieldData.value)
 
@@ -952,8 +1036,10 @@ class SwapCard extends React.Component {
                         routingVisibility: true,
                         route: []
                     })
-
                     let promise
+                    // if (this.abortController)
+                    //     this.abortController.abort()
+                    // this.abortController = new AbortController()
                     if (fieldData.token.hash === this.props[mode].field0.token.hash) {
                         lsdp.simple.write("ENEXSwapCalcDirection", "down", true)
                         promise = this.countRoute(fieldData, _.cloneDeep(this.props[mode][cField]), "sell")
@@ -1030,7 +1116,6 @@ class SwapCard extends React.Component {
             limit : 4,
             mode : mode
         }
-
         return this.routingWorker.postMessage(data)
     }
 
@@ -1047,12 +1132,13 @@ class SwapCard extends React.Component {
                     text = this.bigIntToString(finalValue.value, finalValue.decimals)
 
                 // if (finalValue.value >= 0n)
-                    this.props.assignCoinValue(this.getMode(), cField, {
-                        value : finalValue.value,
-                        decimals : finalValue.decimals,
-                        text : text
-                    })
+                this.props.assignCoinValue(this.getMode(), cField, {
+                    value : finalValue.value,
+                    decimals : finalValue.decimals,
+                    text : text
+                })
             } else {
+                this.props.setRoute(res)
                 this.setState({
                     routingVisibility : false,
                     route: res
@@ -1060,24 +1146,29 @@ class SwapCard extends React.Component {
                 this.pairExists = false
                 this.props.changeCreatePoolState(true)
             }
-            if (res.find(node => node.notEnoughLiquidity))
+            if (res.find(node => node.notEnoughLiquidity)) {
+                this.props.setRoute([])
                 this.setState({
                     notEnoughLiquidity : true,
                     routingWaiting : false,
                     routingVisibility : false,
                     route: []
                 })
-            else
+                this.insufficientFunds = true
+            } else {
+                this.props.setRoute(res)
                 this.setState({
                     notEnoughLiquidity : false,
                     routingWaiting : false,
                     route: res
                 })
+                this.insufficientFunds = false
+            }
         })
         .catch(() => {
             try {
                 this.routingWorker.close()
-            } catch (e) {}
+            } catch (e) {console.log(e)}
             this.routingWorker = workerProcessor.spawn("/js/enex.routingWorker.js")
         })
     }
@@ -1137,18 +1228,30 @@ class SwapCard extends React.Component {
     }
 
     countFullRemoveLiquidity (mode, cField, fieldValue, forcedLt, total_supply) {
-        let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, {
+       
+        let trio = {
             t0 : this.props.removeLiquidity.field0.value,
             t1 : this.props.removeLiquidity.field1.value,
             lt : {
-                value : (forcedLt) ? forcedLt : fieldValue.value,
-                decimals : fieldValue.decimals,
+                value : this.props.removeLiquidity.ltfield.value.value,
+                decimals : this.props.removeLiquidity.ltfield.value.decimals,
                 total_supply : {
                     value : total_supply,
                     decimals : this.props.removeLiquidity.ltfield.token.decimals
                 }
             }
-        }, cField);
+        }
+
+        if (cField === "field0") {
+            trio.t0 = fieldValue
+        } else if (cField === "field1") {
+            trio.t1 = fieldValue
+        } else if (cField === "ltfield") {
+            trio.lt.value = fieldValue.value
+            trio.lt.decimals = fieldValue.decimals
+        }
+
+        let counted = testFormulas.ltDestruction(this.props.tokens, this.activePair, trio, cField);
         if (!Object.keys(counted.t0).length || !Object.keys(counted.t1).length) { // invalid ltDestruction
             let zeroValue = {value: 0, decimals: 0, text: '0'};
             this.assignCoinValueWithText(mode, 'field0',  zeroValue);
@@ -1158,24 +1261,31 @@ class SwapCard extends React.Component {
         }
         let balanceObj = {value : this.props.removeLiquidity.ltfield.balance.amount, decimals : this.props.removeLiquidity.ltfield.balance.decimals};
         let rmPercent = utils.countPercentsByPortion(balanceObj, counted.lt);
-        if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
-            let full = this.props.removeLiquidity.ltfield.balance.amount;
-            this.rmPercents = 100;
-            this.props.assignCoinValue(mode, 'ltfield', {
-                value : full,
-                decimals : fieldValue.decimals,
-                text : this.bigIntToString(full, fieldValue.decimals)
-            });
-            this.countFullRemoveLiquidity(mode, 'ltfield', fieldValue, full, total_supply);
-        } else {
-            this.rmPercents = rmPercent;
-            if (cField !== 'field0')
-                this.assignCoinValueWithText(mode, 'field0',  counted.t0);
-            if (cField !== 'field1')
-                this.assignCoinValueWithText(mode, 'field1',  counted.t1);
-            if (cField !== 'ltfield')
-                this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
-        }
+        this.rmPercents = rmPercent;
+        if (cField !== 'field0')
+            this.assignCoinValueWithText(mode, 'field0',  counted.t0);
+        if (cField !== 'field1')
+            this.assignCoinValueWithText(mode, 'field1',  counted.t1);
+        if (cField !== 'ltfield')
+            this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
+        // if (!this.isValidPercent(rmPercent) && forcedLt === undefined) {
+        //     let full = this.props.removeLiquidity.ltfield.balance.amount;
+        //     this.rmPercents = 100;
+        //     this.props.assignCoinValue(mode, 'ltfield', {
+        //         value : full,
+        //         decimals : fieldValue.decimals,
+        //         text : this.bigIntToString(full, fieldValue.decimals)
+        //     });
+        //     this.countFullRemoveLiquidity(mode, 'ltfield', fieldValue, full, total_supply);
+        // } else {
+        //     this.rmPercents = rmPercent;
+        //     if (cField !== 'field0')
+        //         this.assignCoinValueWithText(mode, 'field0',  counted.t0);
+        //     if (cField !== 'field1')
+        //         this.assignCoinValueWithText(mode, 'field1',  counted.t1);
+        //     if (cField !== 'ltfield')
+        //         this.assignCoinValueWithText(mode, 'ltfield', counted.lt);
+        // }
     };
 
     getExchTokenName(name) {
@@ -1232,7 +1342,7 @@ class SwapCard extends React.Component {
     changeAddRemoveCards(mode) {
         if (mode === 'liquidity') {
             this.handBack = true;
-            this.props.changeLiquidityMode();
+            this.changeLiquidityMode();
         }
         else if (mode === 'removeLiquidity')
             this.props.changeRemoveLiquidityVisibility();
@@ -1297,7 +1407,7 @@ class SwapCard extends React.Component {
             this.pushBadBalanceId(f0.id);
         else
             this.popBadBalanceId(f0.id);
-        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.pairExists))
+        if (subtraction1.value < 0 && (this.props.menuItem !== 'exchange' || !this.state.route.length))
             this.pushBadBalanceId(f1.id);
         else 
             this.popBadBalanceId(f1.id);

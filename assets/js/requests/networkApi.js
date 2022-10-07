@@ -71,17 +71,10 @@ class NetworkApi {
         );        
     }
 
-    tokenInfoStorageBitDev () {
-        return trafficController.simpleRequest('https://bit-dev.enecuum.com/info/token-info-storage-bit.json',
+    tokenInfoStorage (net, url = this.url) {
+        let jsonFile = `token-info-storage-${net}.json`
+        return trafficController.simpleRequest(`${url}/info/${jsonFile}`,
             {
-                method : 'GET'
-            }
-        )
-    }
-
-    tokenInfoStorageBit () {
-        return trafficController.simpleRequest('https://bit.enecuum.com/info/token-info-storage-bit.json',
-        {
                 method : 'GET'
             }
         )

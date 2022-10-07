@@ -100,6 +100,9 @@ export default function swapCardReducer(state = initialState.swapCard, action) {
         case actions.CHANGE_SWAP_CALC_DIRECTION:
             return swapCardStore(state, {swapCalculationsDirection : action.direction});
 
+        case actions.SET_ROUTE:
+            return swapCardStore(state, {route : action.value});
+
         default:
             return state;
     }

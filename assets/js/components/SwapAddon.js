@@ -35,7 +35,11 @@ class SwapAddon extends React.Component {
         return testFormulas.countPriceImpact(pair, amountIn, amountOut, this.props.tokens)
     }
 
-    showPriceImpact (pair) {
+    showPriceImpact (route) {
+        let pair = {
+            token_0 : {hash : route[1].source, volume : route[1].volume1},
+            token_1 : {hash : route[route.length-1].vertex, volume : route[route.length-1].volume2}
+        }
         let priceImpact = this.countPriceImpact(pair)
         if (priceImpact.decimals - String(priceImpact.value).length > 2 || !Object.keys(priceImpact).length)
             return  "< 0.001"
@@ -55,7 +59,8 @@ class SwapAddon extends React.Component {
     render () {
         let data = this.props.exchange
         let pair = swapUtils.searchSwap(this.props.pairs, [data.field0.token, data.field1.token])
-        if (!swapUtils.pairExists(pair))
+        
+        if (!this.props.route.length)
             return (<></>)
 
         let t = this.props.t
@@ -77,9 +82,12 @@ class SwapAddon extends React.Component {
             maximumSentUSD = swapUtils.countUSDPrice(maximumSent, this.props.exchange.field0.token)
             maximumSent = vp.usCommasBigIntDecimals(maximumSent.value, maximumSent.decimals)
         }
-        let providerFee = swapUtils.countProviderFee(pair.pool_fee, this.props.exchange.field0.value)
-
+        let providerFee
         try {
+            let fee = this.props.route[1].pool_fee
+            if (fee === undefined)
+                fee = this.props.route[0].pool_fee
+            providerFee = swapUtils.countProviderFee(fee, this.props.exchange.field0.value)
             providerFeeUSD = swapUtils.countUSDPrice(providerFee, this.props.exchange.field0.token)
             providerFee = swapUtils.removeEndZeros(vp.usCommasBigIntDecimals(providerFee.value, providerFee.decimals))
         } catch (e) {
@@ -119,17 +127,18 @@ class SwapAddon extends React.Component {
                         }
                     </div>
                 </div>
-                <div className="d-block d-md-flex align-items-center justify-content-between py-2">
+                { this.props.route.length < 3 &&
+                    <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         <span className="mr-2">{t('trade.swapAddon.priceImpact.header')}</span>
                         <Tooltip text={t('trade.swapAddon.priceImpact.tooltip')} />
                     </div>
                     <div>
                         <span className="text-color3">{ (minimumReceived && minimumReceived.search("-") === -1 || maximumSent && maximumSent.search("-") === -1) &&
-                            this.showValues(this.showPriceImpact(pair)) || 0
+                            this.showValues(this.showPriceImpact(this.props.route, pair)) || 0
                         }%</span>
                     </div>
-                </div>
+                </div> || <></>}
                 <div className="d-block d-md-flex align-items-center justify-content-between py-2">
                     <div className="mr-3 d-flex align-items-center">
                         <span className="mr-2">{t('trade.swapAddon.providerFee.header')}</span>

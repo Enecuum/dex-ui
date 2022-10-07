@@ -58,7 +58,7 @@ class SwapCardValidationRules {
                 checks: [
                     {
                         method: 'testTheRegExp',
-                        args: {str: fieldData.value.text, regExpObj: /^([0-9]+(\.|,))?[0-9]*$/},
+                        args: {str: fieldData.value.text, regExpObj: /^([0-9]*)((\.|,)[0-9]{0,10})?$/},
                         desiredResult: true,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
                     },
@@ -67,12 +67,6 @@ class SwapCardValidationRules {
                         args: {str: fieldData.value.text, regExpObj: /^0(0)+/},
                         desiredResult: false,
                         errMsg: 'INVALID_SYMBOLS_IN_DIGITAL_VALUE'
-                    },
-                    {
-                        method: 'matchToFixed',
-                        args: {value: fieldData.value.text, n: fieldData.token.decimals},
-                        desiredResult: true,
-                        errMsg: 'TOO_LONG_FRACTIONAL_PART',
                     }
                 ]
             }

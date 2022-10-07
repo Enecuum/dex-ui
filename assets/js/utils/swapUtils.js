@@ -57,52 +57,38 @@ function countProviderFee (pool_fee, field0ValueObj) {
  * @param {object} modeStruct - field from swapCard redux store like (liquidity, exchange, removeLiquidity)
  * @returns {string} - us commas
  */
-function countExchangeRate (pair, firstPerSecond, modeStruct) {
-    pair = { ...pair };
-    if (!pairExists(pair)) {
-        pair = {
-            token_0 : {
-                hash : modeStruct.field0.token.hash,
-                volume : modeStruct.field0.value.value,
-                decimals : modeStruct.field0.token.decimals
-            },
-            token_1 : {
-                hash : modeStruct.field1.token.hash,
-                volume : modeStruct.field1.value.value,
-                decimals : modeStruct.field1.token.decimals
-            },
-            pool_fee : 0,
-            lt : undefined
-        };
-    } else {
-        pair.token_0.decimals = modeStruct.field0.token.decimals;
-        pair.token_1.decimals = modeStruct.field1.token.decimals;
-    }
-    if (pair.token_0.hash !== modeStruct.field0.token.hash) {
-        if (!firstPerSecond)
-            pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
-    } else {
-        if (firstPerSecond)
-            pair.token_0 = [pair.token_1, pair.token_1 = pair.token_0][0];
-    }
-    if (pair.token_0.volume   !== undefined && 
-        pair.token_1.volume &&
-        pair.token_1.decimals !== undefined &&  
-        pair.token_0.decimals !== undefined) {
-        let res = vp.div({
-            value : pair.token_0.volume,
-            decimals : pair.token_0.decimals
+function countExchangeRate (route, firstPerSecond, tokens) {
+    let len = route.length
+    if (!len)
+        return "---"
+
+    let vol1 = route[1].volume1
+    let vol2 = route[len - 1].volume2
+    let token1 = getTokenObj(tokens, route[1].source)
+    let token2 = getTokenObj(tokens, route[len - 1].vertex)
+
+    let res 
+    if (firstPerSecond) {
+        res = vp.div({
+            value : vol2,
+            decimals : token2.decimals
         }, {
-            value : pair.token_1.volume,
-            decimals : pair.token_1.decimals
-        });
-        try {
-            return vp.usCommasBigIntDecimals(res.value, res.decimals);
-        } catch (e) {
-            return "---"
-        }
+            value : vol1,
+            decimals : token1.decimals
+        })
     } else {
-        return '---';
+        res = vp.div({
+            value : vol1,
+            decimals : token1.decimals
+        }, {
+            value : vol2,
+            decimals : token2.decimals
+        })
+    }
+    try {
+        return vp.usCommasBigIntDecimals(res.value, res.decimals);
+    } catch (e) {
+        return "---"
     }
 }
 

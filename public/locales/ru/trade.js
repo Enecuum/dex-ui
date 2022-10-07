@@ -28,7 +28,7 @@ module.exports = {
         "inputField" : {
             "balance" : "Баланс",
             "selectToken" : "Выберите токен",
-            "notEnoughLiquidity" : "недостаточно ликвидности пула"
+            "notEnoughLiquidity" : "недостаточно ликвидности в пуле"
         },
         "exchange" : {
             "header" : "Обмен",
@@ -129,6 +129,7 @@ module.exports = {
         "poolTokens" : "Токенов ликвидности",
         "description" : "Приблизительный результат. Если цена изменится более чем на 1%, ваша транзакция будет отменена.",
         "deposited" : "Внесено",
+        "swapped" : "Обменивается",
         "toBeReceived" : "Будет получено",
         "rates" : "Курс",
         "shareOfPool" : "Доля в пуле",

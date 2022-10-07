@@ -452,6 +452,10 @@ right: 0;
     margin-top: 100px;
 }
 
+.modal-body {
+    max-height: 500px;
+}
+
 .modal-body, .modal-header {
     padding: 1.5rem;
 }

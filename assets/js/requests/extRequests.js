@@ -26,17 +26,20 @@ const requestType = {
 };
 
 class ExtRequests { 
-    constructor (nth, fee) {
+    constructor (nth, fee, genesis) {
         if (!nth)
             nth = presets.network.nativeToken.hash
         if (!fee)
             fee = presets.network.nativeToken.fee
-        this.updNativeTokenData(nth, fee)
+        if (!genesis)
+            genesis = presets.network.genesisPubKey
+        this.updNativeTokenData(nth, fee, genesis)
     }
 
-    updNativeTokenData (nth, fee) {
+    updNativeTokenData (nth, fee, genesis) {
         this.nativeTokenHash = nth
         this.nativeTokenFee  = fee
+        this.genesis         = genesis
     }
 
     tenPowerDecimals (decimals) {
@@ -191,7 +194,7 @@ class ExtRequests {
     sendTx (pubKey, reqType, params) {
         let data = {
             from : pubKey,
-            to : presets.network.genesisPubKey,
+            to : this.genesis,
             value : this.nativeTokenFee,
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e10),
@@ -208,7 +211,7 @@ class ExtRequests {
     farmAction (pubKey, reqType, farmActionCost, params) {
         let data = {
             from : pubKey,
-            to : presets.network.genesisPubKey,
+            to : this.genesis,
             value : farmActionCost.toString(),
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
@@ -225,7 +228,7 @@ class ExtRequests {
     issueToken (pubKey, issueTokenCost, params) {
         let data = {
             from : pubKey,
-            to : presets.network.genesisPubKey,
+            to : this.genesis,
             value : issueTokenCost.toString(),
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
@@ -242,7 +245,7 @@ class ExtRequests {
     dexCmdDistribute (pubKey, dexCmdDistributeCost, params) {
         let data = {
             from : pubKey,
-            to : presets.network.genesisPubKey,
+            to : this.genesis,
             value : dexCmdDistributeCost.toString(),
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),

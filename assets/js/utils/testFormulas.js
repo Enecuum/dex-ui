@@ -125,7 +125,8 @@ function bigIntSqrt(value) {
 
 function countLTValue (pair, uiPair, mode, tokens) {
     // create pool case
-    if (!utils.pairExists(pair)) {
+    let ltObj = utils.getTokenObj(tokens, pair.lt)
+    if (!utils.pairExists(pair) || !ltObj.total_supply) {
         let tmp = swapUtils.realignValueByDecimals(uiPair.field0.value, uiPair.field1.value)
         let dec = Math.max(uiPair.field0.value.decimals, uiPair.field1.value.decimals)
         let mul = tmp.f * tmp.s
@@ -153,7 +154,6 @@ function countLTValue (pair, uiPair, mode, tokens) {
             amount_2 = required_2
         }
 
-        let ltObj = utils.getTokenObj(tokens, pair.lt)
         let lt_amount_1 = vp.div(vp.mul(amount_1, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj0)
         let lt_amount_2 = vp.div(vp.mul(amount_2, {value: ltObj.total_supply, decimals: ltObj.decimals}), tObj1)
         tmp = swapUtils.realignValueByDecimals(_.cloneDeep(lt_amount_1), _.cloneDeep(lt_amount_2))

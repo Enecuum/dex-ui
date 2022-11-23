@@ -67,7 +67,7 @@ module.exports = {
             "lackOfSecondVolume" : "Insufficient funds in the pool",
             "swap" : "Swap",
             "createPair" : "Create pair",
-
+            "noLiquidityForSwap" : "Zero liquidity",
             "insufficientFunds" : "Insufficient funds",
             "invalidPool" : "Invalid pool"
         },

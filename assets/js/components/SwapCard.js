@@ -706,9 +706,12 @@ class SwapCard extends React.Component {
             buttonName = this.getSwapCardButtonName('beforeConnection')
         else {
             // ----------------- establish mode buttons -----------------
-            if (this.props.menuItem === 'exchange')
-                buttonName = this.getSwapCardButtonName('swap')
-            else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove)
+            if (this.props.menuItem === 'exchange') {
+                if (modeStruct.field0.value.value == 0 || modeStruct.field1.value.value == 0)
+                    buttonName = this.getSwapCardButtonName('noLiquidityForSwap')
+                else
+                    buttonName = this.getSwapCardButtonName('swap')
+            } else if (this.props.menuItem === 'liquidity' && !this.props.liquidityRemove)
                 buttonName = this.getSwapCardButtonName('addLiquidity')
             else if (this.props.menuItem === 'liquidity')
                 buttonName = this.getSwapCardButtonName('removeLiquidity')
@@ -1187,6 +1190,10 @@ class SwapCard extends React.Component {
             if (mode === "removeLiquidity") {
                 this.countRemoveLiquidity(mode, aField, fieldObj.value)
             } else {
+                if (this.activePair.token_0.volume == 0 || this.activePair.token_1.volume == 0) {
+                    //console.log("Ok")
+                    return
+                }
                 let oppositeFieldPrice = this.countAddLiquidityPrice(fieldObj, oppositeField, this.activePair)
                 if (oppositeFieldPrice)
                     this.props.assignCoinValue(mode, cField, {

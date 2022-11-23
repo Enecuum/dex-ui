@@ -66,6 +66,7 @@ module.exports = {
             "lackOfSecondVolume" : "Недостаточное количество средств в пуле",
             "swap" : "Обменять",
             "createPair" : "Создать пару",
+            "noLiquidityForSwap" : "Нулевая ликвидность",
             "insufficientFunds" : "Недостаточно средств",
             "invalidPool" : "Такой пул не существует"
         },

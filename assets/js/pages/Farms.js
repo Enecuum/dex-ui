@@ -513,8 +513,8 @@ class Farms extends React.Component {
     }
 
     checkLPtoENX (farm) {
-        if (farm.reward_token_hash !== this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
-            return false
+        //if (farm.reward_token_hash !== this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
+        //    return false
         return swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash)
     }
 

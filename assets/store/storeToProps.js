@@ -281,6 +281,7 @@ function mapStoreToProps(component) {
                 return {
                     ...state.root,
                     ...state.farms,
+                    pairs             : state.root.pairs,
                     tokens            : state.root.tokens,
                     farmsList         : state.farms.farmsList,
                     mainTokenAmount   : state.farms.mainTokenAmount,
@@ -308,6 +309,7 @@ function mapStoreToProps(component) {
                     ...state.root,
                     ...state.drops,
                     farmsList         : state.drops.farmsList,
+                    pairs             : state.root.pairs,
                     mainTokenAmount   : state.drops.mainTokenAmount,
                     mainTokenDecimals : state.drops.mainTokenDecimals,
                     mainTokenFee      : state.drops.mainTokenFee,

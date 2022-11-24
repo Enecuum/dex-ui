@@ -179,7 +179,8 @@ class Drops extends React.Component {
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
-                    this.farms = resultFarmsList.filter(farm => farm.stake_token_hash === this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
+                    // this.farms = resultFarmsList.filter(farm => farm.stake_token_hash === this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
+                    this.farms = resultFarmsList.filter(farm => swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash) === undefined)
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });

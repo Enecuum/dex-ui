@@ -1,6 +1,6 @@
 module.exports = {
-    "subscriptDrops" : "Размещайте ENX, чтобы получать токены новых и горячих проектов",
-    "subscriptHarvestFarms" : "Размещайте LP, чтобы получать ENX",
+    "subscriptDrops" : "Размещайте non-LP токены",
+    "subscriptHarvestFarms" : "Размещайте LP и получайте в награду токены",
     "stakeNamedToken"              : "Стейк {{tokenName}}",
     "unstakeNamedToken"            : "Отозвать {{tokenName}}",
     "stakeLPTokens"                : "Стейк LP токенов",

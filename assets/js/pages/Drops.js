@@ -114,7 +114,7 @@ class Drops extends React.Component {
             if (actionType === txTypes.farm_decrease_stake || actionType === txTypes.farm_increase_stake) {
                 interpolateParams = {
                     value0  : this.props.stakeData.stakeValue.numberValue,
-                    ticker0 : this.props.managedFarmData.reward_token_name
+                    ticker0 : this.props.managedFarmData.stake_token_name
                 }
             } else if (actionType === txTypes.farm_create) {
                 interpolateParams = {

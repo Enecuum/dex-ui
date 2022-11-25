@@ -45,14 +45,14 @@ class SwapApi {
         );
     };
     getFullBalance (pubkey) {
-        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/balance_all?id=${pubkey}`,
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/balance_all_unfiltered?id=${pubkey}`,
             {
                 method : 'GET'
             }
         );
     };
     getTokens () {
-        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/get_tickers_all`,
+        return trafficController.simpleRequest(`${this.url}api/${config.api_version}/get_tickers_all_unfiltered`,
             {
                 method : 'GET'
             }

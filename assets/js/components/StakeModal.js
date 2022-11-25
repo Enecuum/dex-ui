@@ -146,7 +146,7 @@ class StakeModal extends React.Component {
 
             let interpolateParams = {
                 value0  : commonDataSet.stakeValue.numberValue,
-                ticker0 : this.props.managedFarmData.reward_token_name
+                ticker0 : this.props.managedFarmData.stake_token_name
             }
             lsdp.write(result.hash, 0, this.props.currentAction, interpolateParams)
             this.closeModal();

@@ -93,6 +93,7 @@ class ConfirmIssueToken extends React.Component {
 
             <>
                 <Modal
+                    id="confirm-issue-token"
                     show={this.props.possibleToIssueToken}
                     aria-labelledby="example-custom-modal-styling-title"
                     onHide={this.closeCard.bind(this)}
@@ -106,7 +107,7 @@ class ConfirmIssueToken extends React.Component {
                             </div>
                         </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body >
                         <h5>{t('etm.ticker')}</h5>
                         <p>{this.props.tokenData.ticker}</p>
 

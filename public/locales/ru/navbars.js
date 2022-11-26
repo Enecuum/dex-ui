@@ -11,7 +11,8 @@ module.exports = {
         "topPairs" : "Торговые пары",
         "docs" : "Документация",
         "drops" : "Space Drops",
-        "spaceStation" : "Station"
+        "spaceStation" : "Station",
+        "spaceBridge" : "Space Bridge"
     },
     "top" : {
         "header" : "Enecuum",

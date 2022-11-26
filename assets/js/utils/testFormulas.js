@@ -215,38 +215,40 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
             if (adj) {
 
             } else {
-                let v1 = {
-                    value : edge.volume1,
-                    decimals : getDecimals(tokens, edge.from)
-                }, v2 = {
-                    value : edge.volume2,
-                    decimals : getDecimals(tokens, edge.to)
-                }, amountIn = {
-                    value : current.outcome.value,
-                    decimals : current.outcome.decimals
-                }
-
-                let new_vertex = {
-                    vertex: edge.to,
-                    volume1 : _.cloneDeep(edge.volume1),
-                    volume2 : _.cloneDeep(edge.volume2),
-                    pool_fee : _.cloneDeep(edge.pool_fee),
-                    processed: false,
-                    outcome: sellExact({
+                if (edge.volume1 > 0 && edge.volume2 > 0) {
+                    let v1 = {
                         value : edge.volume1,
                         decimals : getDecimals(tokens, edge.from)
-                    }, {
+                    }, v2 = {
                         value : edge.volume2,
                         decimals : getDecimals(tokens, edge.to)
-                    }, amountIn, {
-                        value : edge.pool_fee,
-                        decimals : 2
-                    }),
-                    source: edge.from
-                }
+                    }, amountIn = {
+                        value : current.outcome.value,
+                        decimals : current.outcome.decimals
+                    }
 
-                vertices.push(new_vertex);
-                // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
+                    let new_vertex = {
+                        vertex: edge.to,
+                        volume1 : _.cloneDeep(edge.volume1),
+                        volume2 : _.cloneDeep(edge.volume2),
+                        pool_fee : _.cloneDeep(edge.pool_fee),
+                        processed: false,
+                        outcome: sellExact({
+                            value : edge.volume1,
+                            decimals : getDecimals(tokens, edge.from)
+                        }, {
+                            value : edge.volume2,
+                            decimals : getDecimals(tokens, edge.to)
+                        }, amountIn, {
+                            value : edge.pool_fee,
+                            decimals : 2
+                        }),
+                        source: edge.from
+                    }
+
+                    vertices.push(new_vertex);
+                    // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
+                }
             }
         });
 
@@ -371,38 +373,40 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
             if (adj) {
 
             } else {
-                let vol0 = {
-                    value : edge.volume2,
-                    decimals : getDecimals(tokens, edge.to)
-                }
-                let vol1 = {
-                    value : edge.volume1,
-                    decimals : getDecimals(tokens, edge.from)
-                }
-                let amOut = {
-                    value : current.outcome.value,
-                    decimals : current.outcome.decimals
-                }
-                if (vp.sub(vol1, amOut).value === 0n)
-                    return
+                if (edge.volume1 > 0 && edge.volume2 > 0) {
+                    let vol0 = {
+                        value : edge.volume2,
+                        decimals : getDecimals(tokens, edge.to)
+                    }
+                    let vol1 = {
+                        value : edge.volume1,
+                        decimals : getDecimals(tokens, edge.from)
+                    }
+                    let amOut = {
+                        value : current.outcome.value,
+                        decimals : current.outcome.decimals
+                    }
+                    if (vp.sub(vol1, amOut).value === 0n)
+                        return
 
-                let outcome = buyExact(vol0, vol1, amOut, {
-                    value : edge.pool_fee,
-                    decimals : 2
-                })
-                let new_vertex = {
-                    vertex: edge.to,
-                    processed: false,
-                    volume1 : _.cloneDeep(edge.volume1),
-                    volume2 : _.cloneDeep(edge.volume2),
-                    pool_fee : _.cloneDeep(edge.pool_fee),
-                    outcome: outcome,
-                    source: edge.from,
-                    notEnoughLiquidity : outcome.value < 0n
-                }
+                    let outcome = buyExact(vol0, vol1, amOut, {
+                        value : edge.pool_fee,
+                        decimals : 2
+                    })
+                    let new_vertex = {
+                        vertex: edge.to,
+                        processed: false,
+                        volume1 : _.cloneDeep(edge.volume1),
+                        volume2 : _.cloneDeep(edge.volume2),
+                        pool_fee : _.cloneDeep(edge.pool_fee),
+                        outcome: outcome,
+                        source: edge.from,
+                        notEnoughLiquidity : outcome.value < 0n
+                    }
 
-                vertices.push(new_vertex)
-                // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
+                    vertices.push(new_vertex)
+                    // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
+                }
             }
         });
 

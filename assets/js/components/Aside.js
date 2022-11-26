@@ -21,7 +21,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops',/*'info', */'spaceStation'];
+        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops',/*'info', */'spaceStation', 'spaceBridge'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
@@ -78,6 +78,11 @@ class Aside extends React.Component {
                 iconClasses: 'icon-Icon24',
                 action: this.changeMenuItem.bind(this, 'spaceStation'),
                 actionAlias: 'space-station' 
+            },
+            spaceBridge : {
+                iconClasses: 'icon-Icon21',
+                action : this.changeMenuItem.bind(this, 'spaceBridge'),
+                actionAlias: 'space-station'
             }
         };
         this.exchRateUpdRate = 5 * sec;
@@ -164,7 +169,7 @@ class Aside extends React.Component {
                             <span className='aside-menu-text'>{t(`navbars.left.${item}`)}</span>
                         </div>
                     ))}
-                    <a className='menu-item d-flex align-items-center justify-content-start mb-4' href="https://enex.gitbook.io/enex-space/" target="_blank">
+                    <a className='menu-item d-flex align-items-center justify-content-start mb-4' href="https://trinitylab.gitbook.io/enex.space/" target="_blank">
                         <span className='icon-Icon19 icon-wrapper'/>
                         <span className='aside-menu-text'>{t('navbars.left.docs')}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
                     </a>

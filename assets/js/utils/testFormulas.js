@@ -212,37 +212,46 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
 
         edges.forEach((edge) => {
             let adj = vertices.find((x) => x.vertex === edge.to);
+            let v1 = {
+                value : edge.volume1,
+                decimals : getDecimals(tokens, edge.from)
+            }, v2 = {
+                value : edge.volume2,
+                decimals : getDecimals(tokens, edge.to)
+            }, amountIn = {
+                value : current.outcome.value,
+                decimals : current.outcome.decimals
+            }
+            let outcome = sellExact(v1, v2, amountIn, {
+                value : edge.pool_fee,
+                decimals : 2
+            })
             if (adj) {
+                try {
+                    let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(adj.outcome), _.cloneDeep(outcome))
+                    if (tmp.f < tmp.s) {
+                        let new_vertex = {
+                            vertex: edge.to,
+                            volume1 : _.cloneDeep(edge.volume1),
+                            volume2 : _.cloneDeep(edge.volume2),
+                            pool_fee : _.cloneDeep(edge.pool_fee),
+                            processed: true,
+                            outcome: outcome,
+                            source: edge.from
+                        }
 
+                        vertices.push(new_vertex);
+                    }
+                } catch (e) { }
             } else {
                 if (edge.volume1 > 0 && edge.volume2 > 0) {
-                    let v1 = {
-                        value : edge.volume1,
-                        decimals : getDecimals(tokens, edge.from)
-                    }, v2 = {
-                        value : edge.volume2,
-                        decimals : getDecimals(tokens, edge.to)
-                    }, amountIn = {
-                        value : current.outcome.value,
-                        decimals : current.outcome.decimals
-                    }
-
                     let new_vertex = {
                         vertex: edge.to,
                         volume1 : _.cloneDeep(edge.volume1),
                         volume2 : _.cloneDeep(edge.volume2),
                         pool_fee : _.cloneDeep(edge.pool_fee),
                         processed: false,
-                        outcome: sellExact({
-                            value : edge.volume1,
-                            decimals : getDecimals(tokens, edge.from)
-                        }, {
-                            value : edge.volume2,
-                            decimals : getDecimals(tokens, edge.to)
-                        }, amountIn, {
-                            value : edge.pool_fee,
-                            decimals : 2
-                        }),
+                        outcome: outcome,
                         source: edge.from
                     }
 
@@ -254,17 +263,20 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
 
         current.processed = true;
         vertices.sort((a,b)=> {
-            let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
-            if (tmp.f > tmp.s) {
-                return -1;
-            }
-            else {
-                if (tmp.f === tmp.s)
-                    return 0;
-                else return 1;
+            try {
+                let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
+                if (tmp.f > tmp.s) {
+                    return -1
+                }
+                else {
+                    if (tmp.f === tmp.s)
+                        return 0
+                    else return 1
+                }
+            } catch (e) {
+                return 0
             }
         });
-        // console.log('vertices:', vertices);
 
         current = vertices.find(x => x.processed === false);
     }
@@ -275,7 +287,6 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
     current = vertices.find(x => x.vertex === to)
     if (!current)
         return route
-
     while (true) {
         // check boundary
         if (!_limit) {
@@ -367,44 +378,51 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         // console.log('edges:', edges);
 
         edges.forEach((edge) => {
-            edge.volume1 = BigInt(edge.volume1)
-            edge.volume2 = BigInt(edge.volume2)
             let adj = vertices.find((x) => x.vertex === edge.to);
+            let v1 = {
+                value : edge.volume1,
+                decimals : getDecimals(tokens, edge.from)
+            }, v2 = {
+                value : edge.volume2,
+                decimals : getDecimals(tokens, edge.to)
+            }, amountIn = {
+                value : current.outcome.value,
+                decimals : current.outcome.decimals
+            }
+            let outcome = sellExact(v1, v2, amountIn, {
+                value : edge.pool_fee,
+                decimals : 2
+            })
             if (adj) {
+                try {
+                    let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(adj.outcome), _.cloneDeep(outcome))
+                    if (tmp.f < tmp.s) {
+                        let new_vertex = {
+                            vertex: edge.to,
+                            volume1 : _.cloneDeep(edge.volume1),
+                            volume2 : _.cloneDeep(edge.volume2),
+                            pool_fee : _.cloneDeep(edge.pool_fee),
+                            processed: true,
+                            outcome: outcome,
+                            source: edge.from
+                        }
 
+                        vertices.push(new_vertex);
+                    }
+                } catch (e) { }
             } else {
                 if (edge.volume1 > 0 && edge.volume2 > 0) {
-                    let vol0 = {
-                        value : edge.volume2,
-                        decimals : getDecimals(tokens, edge.to)
-                    }
-                    let vol1 = {
-                        value : edge.volume1,
-                        decimals : getDecimals(tokens, edge.from)
-                    }
-                    let amOut = {
-                        value : current.outcome.value,
-                        decimals : current.outcome.decimals
-                    }
-                    if (vp.sub(vol1, amOut).value === 0n)
-                        return
-
-                    let outcome = buyExact(vol0, vol1, amOut, {
-                        value : edge.pool_fee,
-                        decimals : 2
-                    })
                     let new_vertex = {
                         vertex: edge.to,
-                        processed: false,
                         volume1 : _.cloneDeep(edge.volume1),
                         volume2 : _.cloneDeep(edge.volume2),
                         pool_fee : _.cloneDeep(edge.pool_fee),
+                        processed: false,
                         outcome: outcome,
-                        source: edge.from,
-                        notEnoughLiquidity : outcome.value < 0n
+                        source: edge.from
                     }
 
-                    vertices.push(new_vertex)
+                    vertices.push(new_vertex);
                     // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
                 }
             }
@@ -415,17 +433,17 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
             try {
                 let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
                 if (tmp.f > tmp.s) {
-                    return -1;
-                } else {
+                    return -1
+                }
+                else {
                     if (tmp.f === tmp.s)
-                        return 0;
-                    else return 1;
+                        return 0
+                    else return 1
                 }
             } catch (e) {
                 return 0
             }
         });
-        // console.log('vertices:', vertices);
 
         current = vertices.find(x => x.processed === false);
     }

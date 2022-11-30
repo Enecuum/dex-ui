@@ -44,6 +44,51 @@ let trustedTokens = [
             }
         }
     },
+    {
+        "chainId": 0,
+        "address": "74c994dcf17ff31ad840299cf2cfb69eb3a1035334a929bd955a8f193b19d510",
+        "name": "FB",
+        "symbol": "FB",
+        "decimals": 10,
+        "logoURI": "",
+        "extensions": {
+            "bridgeInfo": {
+                "1": {
+                    "tokenAddress": "",
+                }
+            }
+        }
+    },
+    {
+        "chainId": 0,
+        "address": "dcc4c5b656f476930cb00de7ceaa6f3b7f819f9e0f84d63b5eeb1d8940de3ebb",
+        "name": "BGF",
+        "symbol": "BGF",
+        "decimals": 10,
+        "logoURI": "https://pulse.enecuum.com/info/token/logo/enq/BGF.jpg",
+        "extensions": {
+            "bridgeInfo": {
+                "1": {
+                    "tokenAddress": "",
+                }
+            }
+        }
+    },
+    {
+        "chainId": 0,
+        "address": "5e2e20ac96fd2ec76bf31dd16f40a7c24016ed3d1b0ff9eb0685498f810778ec",
+        "name": "BANT",
+        "symbol": "BANT",
+        "decimals": 10,
+        "logoURI": "",
+        "extensions": {
+            "bridgeInfo": {
+                "1": {
+                    "tokenAddress": "",
+                }
+            }
+        }
+    },
 ]
 
 module.exports = trustedTokens

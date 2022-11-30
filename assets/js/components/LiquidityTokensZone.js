@@ -288,7 +288,7 @@ class LiquidityTokensZone extends React.Component {
                                         {utils.removeEndZeros(utils.countPoolShare(el, {
                                             value0 : this.pooled[index].t0,
                                             value1 : this.pooled[index].t1
-                                        }, this.props.balances))}%
+                                        }, this.props.tokens))}%
                                     </div>
                                 </div>
 

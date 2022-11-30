@@ -100,7 +100,7 @@ function countExchangeRate (route, firstPerSecond, tokens) {
  * @param {object} balances - balance object from redux state
  * @returns {string} - percents
  */
-function countPoolShare (pair, values, balances, addition, pooled) {
+function countPoolShare (pair, values, tokens, addition, pooled) {
     if (!pairExists(pair))
         return '100';
 
@@ -119,11 +119,11 @@ function countPoolShare (pair, values, balances, addition, pooled) {
 
     let volumeObj0 = {
         value : volume0,
-        decimals : getBalanceObj(balances, pair.token_0.hash).decimals
+        decimals : getTokenObj(tokens, pair.token_0.hash).decimals
     };
     let volumeObj1 = {
         value : volume1,
-        decimals : getBalanceObj(balances, pair.token_1.hash).decimals
+        decimals : getTokenObj(tokens, pair.token_1.hash).decimals
     };
     if (addition) {
         volumeObj0 = vp.add(volumeObj0, value0);
@@ -300,7 +300,7 @@ function poolShareWithStaked (tokens, balances, farms, activePair, mode) {
     return countPoolShare(activePair, {
         value0 : mode.field0.value,
         value1 : mode.field1.value
-    }, balances, true, pooled)
+    }, tokens, true, pooled)
 }
 
 function showUSDPrice (price, prefix="") {

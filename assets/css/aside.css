@@ -186,3 +186,8 @@ main.aside-closed #aside .menu-item {
     font-weight: bold;
 }
 /*ENQ exchange rate end*/
+
+.inactive-aside-item {
+    pointer-events: none;
+    color : var(--color2-t) !important;
+}

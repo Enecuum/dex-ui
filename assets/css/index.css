@@ -17,6 +17,7 @@
 :root {
     --color1 : #ffffff;
     --color2 : #61758b; /*синий текст в меню rgb(97, 117, 139);*/
+    --color2-t : #61758b80;
     --color3 : #b4c941; /*хаки*/
     --color3-t : #b4c94180; /*полупрозрачный хаки для onhover режима кнопок*/
     --color4 : #61c2d0; /*активный пункт меню в асайде    rgb(97, 194, 208)*/
@@ -453,7 +454,6 @@ right: 0;
 }
 
 .modal-body {
-    max-height: 500px;
 }
 
 .modal-body, .modal-header {

@@ -65,6 +65,7 @@ class Root extends React.Component {
         if (this.props.net.url !== prevProps.net.url) {
             this.supersonicUpdDexData()
             this.updNetworkInfo()
+            this.updNativeTokenData()
             this.mustChangeLogos = true
         }
     }

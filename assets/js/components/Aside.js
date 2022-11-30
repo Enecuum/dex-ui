@@ -77,12 +77,14 @@ class Aside extends React.Component {
             spaceStation : {
                 iconClasses: 'icon-Icon24',
                 action: this.changeMenuItem.bind(this, 'spaceStation'),
-                actionAlias: 'space-station' 
+                actionAlias: 'space-station',
+                inactive: true
             },
             spaceBridge : {
                 iconClasses: 'icon-Icon21',
                 action : this.changeMenuItem.bind(this, 'spaceBridge'),
-                actionAlias: 'space-station'
+                actionAlias: 'space-bridge',
+                inactive: true
             }
         };
         this.exchRateUpdRate = 5 * sec;
@@ -164,7 +166,7 @@ class Aside extends React.Component {
                         <span className='aside-menu-text'>{t('navbars.left.home')}<span className='icon-Icon11 icon-wrapper ml-2'/></span>                        
                     </a>
                     {this.itemsOrder.map((item, index) => (
-                        <div className='menu-item d-flex align-items-center mb-4' key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
+                        <div className={`menu-item d-flex align-items-center mb-4 ${this.menuItems[item].inactive ? "inactive-aside-item" : ""}`} key={index} onClick={this.menuItems[item].action} style={ (this.props.menuItem === item) ? this.activeItemStyle : undefined }>
                             <span className={this.menuItems[item].iconClasses + ' icon-wrapper'}/>
                             <span className='aside-menu-text'>{t(`navbars.left.${item}`)}</span>
                         </div>

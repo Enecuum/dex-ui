@@ -75,7 +75,8 @@ const presets =  {
         etm          : 'etm',
         farms        : 'space-harvest-farms',
         drops        : 'space-drops',
-        spaceStation : 'space-station'
+        spaceStation : 'space-station',
+        spaceBridge  : 'space-bridge'
     },
 
     etm : {

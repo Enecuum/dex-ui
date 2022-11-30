@@ -71,6 +71,3 @@ a.wiew-in-explorer:hover {
 	border-color: var(--color3);
 }
 
-#confirm-issue-token .modal-content {
-    height : 850px;
-}

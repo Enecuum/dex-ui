@@ -69,7 +69,9 @@ class RequestsDivisor extends T_Service {
         })
 
         // for fl-service
-        this.CRH_app.get("/*", cors(), (req, res) => {
+        this.CRH_app.get("/*", cors({
+            origin: 'http://localhost'
+        }), (req, res) => {
             let fileLoaders = this.peersByType.fl
             this._execRequestToSpecialService(fileLoaders, req, res)
         })

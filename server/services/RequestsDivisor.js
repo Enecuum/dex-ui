@@ -1,6 +1,7 @@
 const express = require("express")
 const fs = require("fs")
 const path = require("path")
+const cors = require("cors")
 
 const T_Service = require("../templates/T_Service")
 
@@ -68,7 +69,7 @@ class RequestsDivisor extends T_Service {
         })
 
         // for fl-service
-        this.CRH_app.get("/*", (req, res) => {
+        this.CRH_app.get("/*", cors(), (req, res) => {
             let fileLoaders = this.peersByType.fl
             this._execRequestToSpecialService(fileLoaders, req, res)
         })

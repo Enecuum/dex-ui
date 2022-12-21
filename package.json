@@ -22,7 +22,11 @@
   },
   "homepage": "https://github.com/enecuum-dev-team/enq-swap#readme",
   "dependencies": {
+    "@metamask/detect-provider": "^2.0.0",
+    "@walletconnect/client": "^1.8.0",
+    "@walletconnect/qrcode-modal": "^1.8.0",
     "axios": "^0.21.1",
+    "buffer": "^6.0.3",
     "chokidar": "^3.5.2",
     "enq-web3": "^0.4.2",
     "express": "^4.17.1",

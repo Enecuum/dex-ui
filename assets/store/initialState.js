@@ -36,6 +36,14 @@ const initialState = {
         recentTxs   : [],
         nativeToken : {}
     },
+    
+    nonNativeConnection : {
+        chain      : undefined,
+        isWalletConnect  : false,
+        walletConnectWallet : undefined,
+        isWeb3ExtensionConnect : false,
+        accountId : undefined
+    },
 
     swapCard : {
         exchange: {

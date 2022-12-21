@@ -9,6 +9,7 @@ import etmCreator from './actionCreators/etm'
 import farmsCreator from './actionCreators/farms'
 import dropsCreator from './actionCreators/drops'
 import spaceStationCreator from './actionCreators/spaceStation'
+import nonNativeConnectionCreator from './actionCreators/nonNativeConnection'
 
 const components = {
     ROOT                             : 0x0,
@@ -44,11 +45,12 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
-                    liquidityRemove : state.swapCard.liquidityRemove,
-                    exchange        : state.swapCard.exchange,
-                    liquidity       : state.swapCard.liquidity,
-                    removeLiquidity : state.swapCard.removeLiquidity,
-                    topPairs        : state.topPairs
+                    liquidityRemove     : state.swapCard.liquidityRemove,
+                    exchange            : state.swapCard.exchange,
+                    liquidity           : state.swapCard.liquidity,
+                    removeLiquidity     : state.swapCard.removeLiquidity,
+                    topPairs            : state.topPairs,
+                    nonNativeConnection : state.nonNativeConnection
                 }
             }
         case components.SWAP_CARD:
@@ -381,7 +383,8 @@ function mapStoreToProps(component) {
         case components.SPACE_BRIDGE:
             return function (state) {
                 return {
-                    connectionStatus : state.root.connectionStatus
+                    nativeConnectionStatus : state.root.connectionStatus,
+                    nonNativeConnection : state.nonNativeConnection
                 }
             }    
         default:
@@ -395,11 +398,16 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...rootCreator,
-                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
-                    changeMenuItem  : rootCreator.changeMenuItem,
-                    assignTokenValue: swapCardCreator.assignTokenValue,
-                    assignCoinValue : swapCardCreator.assignCoinValue,
-                    updateFarmsList : farmsCreator.updateFarmsList
+                    assignBalanceObj             : bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
+                    changeMenuItem               : rootCreator.changeMenuItem,
+                    assignTokenValue             : swapCardCreator.assignTokenValue,
+                    assignCoinValue              : swapCardCreator.assignCoinValue,
+                    updateFarmsList              : farmsCreator.updateFarmsList,
+                    updateChain                  : nonNativeConnectionCreator.updateChain,
+                    updateIsWalletConnect        : nonNativeConnectionCreator.updateIsWalletConnect,
+                    updateWalletConnectWallet    : nonNativeConnectionCreator.updateWalletConnectWallet,
+                    updateIsWeb3ExtensionConnect : nonNativeConnectionCreator.updateIsWeb3ExtensionConnect,
+                    updateAccountId              : nonNativeConnectionCreator.updateAccountId
                 }, dispatch)
             }
         case components.SWAP_CARD:
@@ -588,7 +596,17 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch) 
-            }            
+            }
+        case components.SPACE_BRIDGE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    // updateChain                  : nonNativeConnectionCreator.updateChain,
+                    // updateIsWalletConnect        : nonNativeConnectionCreator.updateIsWalletConnect,
+                    // updateWalletConnectWallet    : nonNativeConnectionCreator.updateWalletConnectWallet,
+                    // updateIsWeb3ExtensionConnect : nonNativeConnectionCreator.updateIsWeb3ExtensionConnect,
+                    // updateAccountId              : nonNativeConnectionCreator.updateAccountId,
+                }, dispatch) 
+            }                
         default:
             return undefined
     }

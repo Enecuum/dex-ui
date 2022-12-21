@@ -384,6 +384,7 @@ class Root extends React.Component {
     }
 
     updBalanceForms () {
+        this.props.updateChain(new Date().getTime())
         if (this.props.menuItem === 'exchange') {
             this.updBalanceObj('exchange', 'field0')
             this.updBalanceObj('exchange', 'field1')

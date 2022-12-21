@@ -66,7 +66,7 @@ class BridgeForm extends React.Component {
                 <Button className="w-100 btn btn-secondary alt-submit w-100 pt-2">
                     0xd16f....568b
                 </Button>
-                <div id="exch" class="d-flex justify-content-center align-items-center mx-auto my-3"><span class="icon-Icon13 exch-button hover-pointer"></span></div>
+                <div id="exch" className="d-flex justify-content-center align-items-center mx-auto my-3"><span className="icon-Icon13 exch-button hover-pointer"></span></div>
                 <div>
                     <Row className="mb-3">
                         <Col xs lg="4">
@@ -96,7 +96,7 @@ class BridgeForm extends React.Component {
                     </div>
                     <div className="text-center mb-3">
                         <Button className="rounded-button">
-                            <span className="mr-2"><i class="fas fa-info-circle"></i></span>
+                            <span className="mr-2"><i className="fas fa-info-circle"></i></span>
                             <span>Use as destination address</span>
                         </Button>
                     </div>

@@ -35,6 +35,7 @@ import Etm from './pages/Etm'
 import Farms from './pages/Farms'
 import Drops from './pages/Drops'
 import SpaceStation from './pages/SpaceStation'
+import SpaceBridge from './pages/SpaceBridge'
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'
@@ -361,7 +362,7 @@ class Root extends React.Component {
 
     /* -------------- Upd balances in swapCard --------------- */
 
-    circleBalanceUpd () {
+    circleBalanceUpd () {        
         this.updBalanceForms()
         return setInterval(() => {
             this.updBalanceForms()
@@ -450,6 +451,12 @@ class Root extends React.Component {
                         <Drops useSuspense={false}/>
                     </div>                    
                 );
+            case 'spaceBridge':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceBridge useSuspense={false}/>
+                    </div>                    
+                );                
            // case 'spaceStation' :
            //     return (
            //         <div className="regular-page p-2 p-md-5 px-lg-0" >

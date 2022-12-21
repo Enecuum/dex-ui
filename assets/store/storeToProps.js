@@ -34,7 +34,8 @@ const components = {
     DROPS                            : 0x14,
     SWAP_ADDON                       : 0x15,
     SPACE_STATION                    : 0x16,
-    ROUTING                          : 0x17
+    ROUTING                          : 0x17,
+    SPACE_BRIDGE                     : 0x18
 }
 
 function mapStoreToProps(component) {
@@ -377,6 +378,12 @@ function mapStoreToProps(component) {
                     net : state.root.net
                 }
             }
+        case components.SPACE_BRIDGE:
+            return function (state) {
+                return {
+                    connectionStatus : state.root.connectionStatus
+                }
+            }    
         default:
             return undefined
     }

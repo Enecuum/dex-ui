@@ -1,0 +1,65 @@
+#bridgeWrapper input[type="text"] {
+	background-color: var(--color2);
+	border-color: var(--color9);
+	border-radius: var(--border-radius2);
+	color: var(--color4);
+}
+
+#bridgeWrapper input[type="text"]::placeholder {
+	color: var(--color4);
+}
+
+#bridgeWrapper .rounded-button {
+	background: var(--color10);
+	padding: 11px 16px;
+	border-radius: 45px;
+	border-color: var(--color10);
+}
+
+#bridgeWrapper .rounded-button:hover {
+	background: #5a6268;
+	padding: 11px 16px;
+	border-radius: 45px;
+	border-color: #545b62;
+}
+
+#bridgeWrapper #understandCheckbox {
+	background-color: var(--color4);
+}
+
+#bridgeWrapper .dropdown-toggle {
+	display: flex;
+	justify-content: space-between!important;
+	align-items: center!important;
+	background-color: var(--color2);
+    border-color: var(--color9);
+    color: var(--color4);
+}
+
+#bridgeWrapper .dropdown-toggle:focus {
+	border: none;
+	box-shadow: none;
+}
+
+#bridgeWrapper .dropdown-menu {
+	min-width: 5rem;
+    width: 100%;
+    border-radius: var(--border-radius2);
+    background: var(--bg-color-1);
+}
+
+#bridgeWrapper .dropdown-menu .dropdown-item {
+	background: transparent;
+	color: var(--color4);
+}
+
+
+#bridgeWrapper .dropdown-menu .dropdown-item.active, #bridgeWrapper .dropdown-menu .dropdown-item:active {
+    color: #fff;
+    text-decoration: none;
+    background-color: var(--color5);
+}
+
+#bridgeWrapper .dropdown-menu .dropdown-item:hover {
+	color: var(--color1);
+}

@@ -84,7 +84,7 @@ class Aside extends React.Component {
                 iconClasses: 'icon-Icon21',
                 action : this.changeMenuItem.bind(this, 'spaceBridge'),
                 actionAlias: 'space-bridge',
-                inactive: true
+                inactive: false
             }
         };
         this.exchRateUpdRate = 5 * sec;

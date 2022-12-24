@@ -46,6 +46,7 @@ import networkApi from './requests/networkApi'
 
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
+import NonNativeConnectionManager from './nonNativeConnectionManager/NonNativeConnectionManager'
 
 class Root extends React.Component {
     constructor (props) {
@@ -58,8 +59,24 @@ class Root extends React.Component {
         this.setPath()
         window.addEventListener('hashchange', () => {
             this.setPath()
-        })
+        })        
         this.updNetworkInfo()
+
+        let storeMethodsForNNCM = {
+            updateWalletConnectAccountId   : this.props.updateWalletConnectAccountId,
+            updateWalletConnect            : this.props.updateWalletConnect,
+            updateWalletConnectChain       : this.props.updateWalletConnectChain,
+            updateWalletConnectIsConnected : this.props.updateWalletConnectIsConnected,
+            updateWalletConnectWalletTitle : this.props.updateWalletConnectWalletTitle,
+            updateWeb3ExtensionAccountId   : this.props.updateWeb3ExtensionAccountId,
+            updateWeb3Extension            : this.props.updateWeb3Extension,
+            updateWeb3ExtensionChain       : this.props.updateWeb3ExtensionChain,
+            updateWeb3ExtensionIsConnected : this.props.updateWeb3ExtensionIsConnected,
+            updateWeb3ExtensionWalletTitle : this.props.updateWeb3ExtensionWalletTitle     
+        }
+
+        this.nncm = new NonNativeConnectionManager(storeMethodsForNNCM);
+        this.nncm.initializeProviders()  
     }
 
     componentDidUpdate(prevProps) {
@@ -383,8 +400,7 @@ class Root extends React.Component {
         this.props.assignBalanceObj(menuItem, field, balanceObj)
     }
 
-    updBalanceForms () {
-        this.props.updateChain(new Date().getTime())
+    updBalanceForms () {        
         if (this.props.menuItem === 'exchange') {
             this.updBalanceObj('exchange', 'field0')
             this.updBalanceObj('exchange', 'field1')

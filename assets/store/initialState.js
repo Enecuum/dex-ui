@@ -38,11 +38,17 @@ const initialState = {
     },
     
     nonNativeConnection : {
-        chain      : undefined,
-        isWalletConnect  : false,
-        walletConnectWallet : undefined,
-        isWeb3ExtensionConnect : false,
-        accountId : undefined
+        walletConnectIsConnected  : false,
+        walletConnect             : undefined,
+        walletConnectChain        : undefined,        
+        walletConnectWalletTitle  : undefined,
+        walletConnectAccountId    : undefined,
+       
+        web3ExtensionIsConnected  : false,
+        web3Extension             : undefined,
+        web3ExtensionChain        : undefined,
+        web3ExtensionWalletTitle  : undefined,
+        web3ExtensionAccountId    : undefined
     },
 
     swapCard : {

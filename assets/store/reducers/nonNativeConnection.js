@@ -5,31 +5,56 @@ const actions = actionPack.nonNativeConnection
 
 export default function nonNativeConnectionReducer (state = initialState.nonNativeConnection, action) {
     switch (action.type) {
-        case actions.UPDATE_CHAIN:
+        case actions.UPDATE_WALLET_CONNECT_IS_CONNECTED:
             return {
                 ...state,
-                chain : action.value
+                walletConnectIsConnected : action.value
             }
-        case actions.UPDATE_IS_WALLET_CONNECT:
+        case actions.UPDATE_WALLET_CONNECT:
             return {
                 ...state,
-                isWalletConnect: action.value
+                walletConnect: action.value
             }
-        case actions.UPDATE_WALLET_CONNECT_WALLET:
+        case actions.UPDATE_WALLET_CONNECT_CHAIN:
             return {
                 ...state,
-                walletConnectWallet: action.value
+                walletConnectChain: action.value
             }
-        case actions.UPDATE_IS_WEB3_EXTENSION_CONNECT:
+        case actions.UPDATE_WALLET_CONNECT_WALLET_TITLE:
             return {
                 ...state,
-                isWeb3ExtensionConnect: action.value
+                walletConnectWalletTitle: action.value
             }
-        case actions.UPDATE_ACCOUNT_ID:
+        case actions.UPDATE_WALLET_CONNECT_ACCOUNT_ID:
             return {
                 ...state,
-                accountId: action.value
+                walletConnectAccountId: action.value
             }
+        case actions.UPDATE_WEB3_EXTENSION_IS_CONNECTED:
+            return {
+                ...state,
+                web3ExtensionIsConnected : action.value
+            }
+        case actions.UPDATE_WEB3_EXTENSION:
+            return {
+                ...state,
+                web3Extension: action.value
+            }
+        case actions.UPDATE_WEB3_EXTENSION_CHAIN:
+            return {
+                ...state,
+                web3ExtensionChain: action.value
+            }
+        case actions.UPDATE_WEB3_EXTENSION_WALLET_TITLE:
+            return {
+                ...state,
+                web3ExtensionWalletTitle: action.value
+            }
+        case actions.UPDATE_WEB3_EXTENSION_ACCOUNT_ID:
+            return {
+                ...state,
+                web3ExtensionAccountId: action.value
+            }            
         default: 
             return state
     }

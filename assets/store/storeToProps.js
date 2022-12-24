@@ -383,7 +383,6 @@ function mapStoreToProps(component) {
         case components.SPACE_BRIDGE:
             return function (state) {
                 return {
-                    nativeConnectionStatus : state.root.connectionStatus,
                     nonNativeConnection : state.nonNativeConnection
                 }
             }    
@@ -398,16 +397,23 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...rootCreator,
-                    assignBalanceObj             : bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
-                    changeMenuItem               : rootCreator.changeMenuItem,
-                    assignTokenValue             : swapCardCreator.assignTokenValue,
-                    assignCoinValue              : swapCardCreator.assignCoinValue,
-                    updateFarmsList              : farmsCreator.updateFarmsList,
-                    updateChain                  : nonNativeConnectionCreator.updateChain,
-                    updateIsWalletConnect        : nonNativeConnectionCreator.updateIsWalletConnect,
-                    updateWalletConnectWallet    : nonNativeConnectionCreator.updateWalletConnectWallet,
-                    updateIsWeb3ExtensionConnect : nonNativeConnectionCreator.updateIsWeb3ExtensionConnect,
-                    updateAccountId              : nonNativeConnectionCreator.updateAccountId
+                    assignBalanceObj               : bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
+                    changeMenuItem                 : rootCreator.changeMenuItem,
+                    assignTokenValue               : swapCardCreator.assignTokenValue,
+                    assignCoinValue                : swapCardCreator.assignCoinValue,
+                    updateFarmsList                : farmsCreator.updateFarmsList,
+
+                    updateWalletConnectIsConnected : nonNativeConnectionCreator.updateWalletConnectIsConnected,
+                    updateWalletConnect            : nonNativeConnectionCreator.updateWalletConnect,
+                    updateWalletConnectChain       : nonNativeConnectionCreator.updateWalletConnectChain,
+                    updateWalletConnectWalletTitle : nonNativeConnectionCreator.updateWalletConnectWalletTitle,
+                    updateWalletConnectAccountId   : nonNativeConnectionCreator.updateWalletConnectAccountId,
+
+                    updateWeb3ExtensionIsConnected : nonNativeConnectionCreator.updateWeb3ExtensionIsConnected,
+                    updateWeb3Extension            : nonNativeConnectionCreator.updateWeb3Extension,
+                    updateWeb3ExtensionChain       : nonNativeConnectionCreator.updateWeb3ExtensionChain,
+                    updateWeb3ExtensionWalletTitle : nonNativeConnectionCreator.updateWeb3ExtensionWalletTitle,
+                    updateWeb3ExtensionAccountId   : nonNativeConnectionCreator.updateWeb3ExtensionAccountId,
                 }, dispatch)
             }
         case components.SWAP_CARD:

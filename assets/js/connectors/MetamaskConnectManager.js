@@ -1,5 +1,5 @@
 import detectEthereumProvider from '@metamask/detect-provider';
-import {poolsArr, smartContracts, netProps, defaultParams} from './../../config';
+                            //import {poolsArr, smartContracts, netProps, defaultParams} from './../../config';
 
 async function detectProvider() {
 	return detectEthereumProvider().then(async provider => {

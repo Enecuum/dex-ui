@@ -15,9 +15,21 @@ class SpaceBridge extends React.Component {
         super(props);
     }
 
+    connectWC() {
+    	if (this.props.nonNativeConnection.walletConnect !== undefined)
+    		this.props.nonNativeConnection.walletConnect.walletConnectInit();
+    }
+
+    disconnectWC() {
+    	if (this.props.nonNativeConnection.walletConnect !== undefined)
+    		this.props.nonNativeConnection.walletConnect.connector.killSession({message : 'killSession by user'});
+    } 
+
     render () {
         return (
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
+            	<button onClick={this.connectWC.bind(this)}>CONNECT WALLET CONNECT</button>
+            	<button onClick={this.disconnectWC.bind(this)}>DISCONNECT WALLET CONNECT</button>
 	            <div className="row w-100 mb-5">
 	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
 						<Card className="swap-card">

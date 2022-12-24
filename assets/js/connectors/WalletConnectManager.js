@@ -3,7 +3,7 @@ import QRCodeModal from "@walletconnect/qrcode-modal";
 import {Buffer} from 'buffer';
 Buffer.from('anything','base64');
 window.Buffer = window.Buffer || require("buffer").Buffer;
-import {poolsArr, smartContracts, netProps, defaultParams} from './../../config';
+                                            //import {poolsArr, smartContracts, netProps, defaultParams} from './../../config';
 const bridge = "https://bridge.walletconnect.org";
 
 class WalletConnectManager {
@@ -14,10 +14,8 @@ class WalletConnectManager {
 
     async walletConnectInit() {
         if (!this.connector.connected) {           
-            await this.connector.connect().catch(() => { this.connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal }) });                     
+            await this.connector.connect().catch(() => { this.connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal }) });                   
         }
-
-        //this.subscribeToEvents();
     };
 
     subscribeToEvents() {
@@ -32,8 +30,7 @@ class WalletConnectManager {
 
         if (this.connector.connected) {
             console.log('connector.connected');
-            const { chainId, accounts } = this.connector;
-            console.log(chainId, accounts)
+            const { chainId, accounts} = this.connector;
             this.setWcSessionParams(chainId, accounts);            
         }        
     };
@@ -46,8 +43,9 @@ class WalletConnectManager {
             throw error;
         }
 
-        const { chainId, accounts } = payload.params[0];
-        this.setWcSessionParams(chainId, accounts);        
+        const { chainId, accounts} = payload.params[0];
+        this.setWcSessionParams(chainId, accounts);
+        this.appStoreMethods.updateWalletConnectIsConnected(true)        
     }
     async connectHandler(error, payload) {
         console.log(`connector.on("connect")`, payload);
@@ -55,7 +53,7 @@ class WalletConnectManager {
         if (error) {
             throw error;
         }
-        const { chainId, accounts } = payload.params[0];
+        const { chainId, accounts} = payload.params[0];
         this.setWcSessionParams(chainId, accounts);       
     }
     async disconnectHandler(error, payload) {
@@ -68,43 +66,39 @@ class WalletConnectManager {
         this.onDisconnect();     
     }
 
-    // onConnect(chainId, accounts) {        
-    //     this.setSessionParams(chainId, accounts);
-    //     console.log('connect!!!', chainId, accounts);
-    // }
-
-    // onSessionUpdate(chainId, accounts) {       
-    //     this.setSessionParams(chainId, accounts);
-    //     console.log('SessionUpdate!!! ', chainId, accounts);
-    // }
-
     async onDisconnect() {
-        this.setAppStoreToDefault();
-        this.appStoreMethods.updConnectionType(undefined);
-        this.appStoreMethods.updShowAccountModal(false);
+        this.setAppStoreToDefault();  
         if (this.connector.connected) {
             this.connector.killSession({message : 'killSession by onDisconnect'});
-        }       
+        }
+     
         console.log('disconnect!!!');
     }
 
-    setWcSessionParams(chainId, accounts) {
-        // console.log(chainId, accounts)
-        this.appStoreMethods.updConnectData({fieldName : 'chain', value : `0x${chainId}`});
-        this.appStoreMethods.updAccountId({fieldName : 'id', value : accounts[0]});
-        if (netProps.hasOwnProperty(`0x${chainId}`)) {
-            this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[`0x${chainId}`].infuraURL});                        
-        } else {            
-            this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});            
+    setWcSessionParams(chainId, accounts, walletTitle = undefined) {
+        if (accounts[0] !== undefined && chainId !== undefined) {
+            this.appStoreMethods.updateWalletConnectIsConnected(true);
+            this.appStoreMethods.updateWalletConnectChain(`0x${chainId}`);
+            this.appStoreMethods.updateWalletConnectAccountId(accounts[0]);
+            this.appStoreMethods.updateWalletConnectWalletTitle(walletTitle);
+        } else {
+            this.setAppStoreToDefault();
+
+                                        // if (netProps.hasOwnProperty(`0x${chainId}`)) {
+                                        //     this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[`0x${chainId}`].infuraURL});                        
+                                        // } else {            
+                                        //     this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});            
+                                        // }        
         }
         
-        this.appStoreMethods.updConnectionType('connectViaWalletConnect');        
     }
 
     setAppStoreToDefault() {
-        this.appStoreMethods.updAccountId({fieldName : 'id', value : ''});
-        this.appStoreMethods.updConnectData({fieldName : 'chain', value : defaultParams.chain});
-        this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});                
+        this.appStoreMethods.updateWalletConnectIsConnected(false)          
+        this.appStoreMethods.updateWalletConnectChain(undefined)       
+        this.appStoreMethods.updateWalletConnectWalletTitle(undefined) 
+        this.appStoreMethods.updateWalletConnectAccountId(undefined) 
+                        //this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});                
     }
 }
 

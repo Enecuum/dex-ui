@@ -76,7 +76,8 @@ class Root extends React.Component {
         }
 
         this.nncm = new NonNativeConnectionManager(storeMethodsForNNCM);
-        this.nncm.initializeProviders()  
+        this.nncm.initializeProviders();
+        localStorage.setItem('try_metamask_connect', false);
     }
 
     componentDidUpdate(prevProps) {

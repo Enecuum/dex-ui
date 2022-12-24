@@ -39,7 +39,7 @@ class MetamaskConnectManager {
         return sessionState;
     }
 
-    appConnected(account_id) {
+    appIsConnected(account_id) {
         if (this.provider) {            
             let user_id = localStorage.getItem('user_id');
             return (user_id !== undefined && user_id !== '' && account_id !== undefined && account_id === user_id) ? true : false;
@@ -79,12 +79,13 @@ class MetamaskConnectManager {
 
     chainChangedHandler(chainID) {
         console.log('Metamask connected to chain ', chainID);
+        this.appStoreMethods.updateWeb3ExtensionChain(chainID);
     }
 
     accountsChangedHandler(accounts) {
         console.log('Account was changed ', accounts[0]);
         if (accounts[0] != undefined) {            
-            this.appStoreMethods.updAccountId({fieldName : 'id', value : accounts[0]});
+            this.appStoreMethods.updateWeb3ExtensionAccountId(accounts[0]);
         } else if (accounts[0] == undefined) {
             this.unsubscribeEvents();
             this.resetSessionState();
@@ -93,11 +94,15 @@ class MetamaskConnectManager {
 
     resetSessionState() {
         console.log('Reset to defaults')
-        this.appStoreMethods.updAccountId({fieldName : 'id', value : ''});
-        this.appStoreMethods.updConnectData({fieldName : 'chain', value : defaultParams.chain});
-        this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});
-        this.appStoreMethods.updConnectionType(undefined);
+        this.appStoreMethods.updateWeb3ExtensionIsConnected(false);
+        this.appStoreMethods.updateWeb3ExtensionChain(undefined);
+        this.appStoreMethods.updateWeb3ExtensionAccountId(undefined);
+        this.appStoreMethods.updateWeb3ExtensionWalletTitle(undefined);
         localStorage.setItem('user_id', '');
+
+                                                    //this.appStoreMethods.updConnectData({fieldName : 'chain', value : defaultParams.chain});
+                                                    //this.appStoreMethods.updProvider({fieldName : 'infura', value : netProps[defaultParams.chain].infuraURL});
+                                                    //this.appStoreMethods.updConnectionType(undefined);
     }
 
     messageHandler(message) {
@@ -115,7 +120,7 @@ class MetamaskConnectManager {
                 return undefined;
             });
         } else {
-            console.log('There is not metamask provider. Auth is impossible.');
+            console.log('There is not Metamask provider. Auth in Metamask is impossible.');
             return undefined;
         }
     }

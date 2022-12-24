@@ -30,12 +30,16 @@ class NonNativeConnectionManager {
 
         walletConnectManager.connector.on("disconnect", (error, payload) => {
             (async () => {
-                //this.launchMetamask(rootStoreMethodsWeb3Ext);
+                this.launchMetamask(rootStoreMethodsWeb3Ext);
             })();            
         });
 
         walletConnectManager.connector.on("session_update", (error, payload) => {
             (async () => {
+
+                                            // const walletConnectManager = new WalletConnectManager(rootStoreMethodsWC);
+                                            // walletConnectManager.subscribeToEvents();
+                                            // rootStoreMethodsWC.updateWalletConnect(walletConnectManager);
                 //this.launchMetamask(rootStoreMethodsWeb3Ext);
             })();            
         });
@@ -46,12 +50,26 @@ class NonNativeConnectionManager {
             rootStoreMethodsWC.updateWalletConnect(walletConnectManager);///
             //this.launchWalletConnect(walletConnectManager);
         } else {
-            //this.launchMetamask(rootStoreMethodsWeb3Ext);
+            this.launchMetamask(rootStoreMethodsWeb3Ext);
         }                       
     }
 
     launchWalletConnect(walletConnectManager) {
         walletConnectManager.subscribeToEvents();
+    }
+
+    async launchMetamask(rootStoreMethodsWeb3Ext) {
+        let web3ExtensionConnectManager = await new MetamaskConnectManager(rootStoreMethodsWeb3Ext);            
+        let sessionState = await web3ExtensionConnectManager.getSessionState();            
+        let appIsConnected = web3ExtensionConnectManager.appIsConnected(sessionState.account_id);
+        rootStoreMethodsWeb3Ext.updateWeb3Extension(web3ExtensionConnectManager);
+        console.log('App connected to metamask ', appIsConnected);
+        if (appIsConnected) {
+            this.rootStoreMethods.updateWeb3ExtensionAccountId(sessionState.account_id);
+            this.rootStoreMethods.updateWeb3ExtensionChain(sessionState.chain_id);
+            this.rootStoreMethods.updateWeb3ExtensionIsConnected(true);
+            await web3ExtensionConnectManager.subscribeToEvents();
+        }
     }
 };
 

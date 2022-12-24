@@ -23,6 +23,36 @@ class SpaceBridge extends React.Component {
     disconnectWC() {
     	if (this.props.nonNativeConnection.walletConnect !== undefined)
     		this.props.nonNativeConnection.walletConnect.connector.killSession({message : 'killSession by user'});
+    }
+
+    connectWeb3Ext() {
+		localStorage.setItem('try_metamask_connect', true);
+        this.connectMetamask();
+    }
+
+    async connectMetamask() {
+        let that = this;
+        let account_id = await this.props.nonNativeConnection.web3Extension.requestAuth();
+        if (account_id != undefined) {
+            let sessionState = await this.props.nonNativeConnection.web3Extension.getSessionState();
+            localStorage.setItem('user_id', sessionState.account_id);            
+            this.props.updateWeb3ExtensionAccountId(sessionState.account_id);
+            this.props.updateWeb3ExtensionChain(sessionState.chain_id);
+            this.props.updateWeb3ExtensionIsConnected(true);
+            									//this.props.nonNativeConnection.updConnectionType('connectViaMetamask');
+            this.props.nonNativeConnection.web3Extension.subscribeToEvents();
+            localStorage.setItem('try_metamask_connect', true)
+        } else {
+            this.props.nonNativeConnection.web3Extension.disconnectApp();
+            localStorage.setItem('user_id', '');
+            localStorage.setItem('try_metamask_connect', false);
+        }
+    }    
+
+    disconnectWeb3Ext() {
+		this.props.nonNativeConnection.web3Extension.disconnectApp();
+        localStorage.setItem('user_id', '');
+        localStorage.setItem('try_metamask_connect', false);
     } 
 
     render () {
@@ -30,6 +60,8 @@ class SpaceBridge extends React.Component {
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
             	<button onClick={this.connectWC.bind(this)}>CONNECT WALLET CONNECT</button>
             	<button onClick={this.disconnectWC.bind(this)}>DISCONNECT WALLET CONNECT</button>
+            	<button onClick={this.connectWeb3Ext.bind(this)}>CONNECT WEB3 EXTENSION</button>
+            	<button onClick={this.disconnectWeb3Ext.bind(this)}>DISCONNECT WEB3 EXTENSION</button>
 	            <div className="row w-100 mb-5">
 	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
 						<Card className="swap-card">

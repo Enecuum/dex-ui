@@ -606,11 +606,17 @@ function mapDispatchToProps(component) {
         case components.SPACE_BRIDGE:
             return function (dispatch) {
                 return bindActionCreators({
-                    // updateChain                  : nonNativeConnectionCreator.updateChain,
-                    // updateIsWalletConnect        : nonNativeConnectionCreator.updateIsWalletConnect,
-                    // updateWalletConnectWallet    : nonNativeConnectionCreator.updateWalletConnectWallet,
-                    // updateIsWeb3ExtensionConnect : nonNativeConnectionCreator.updateIsWeb3ExtensionConnect,
-                    // updateAccountId              : nonNativeConnectionCreator.updateAccountId,
+                    updateWalletConnectIsConnected : nonNativeConnectionCreator.updateWalletConnectIsConnected,
+                    updateWalletConnect            : nonNativeConnectionCreator.updateWalletConnect,
+                    updateWalletConnectChain       : nonNativeConnectionCreator.updateWalletConnectChain,
+                    updateWalletConnectWalletTitle : nonNativeConnectionCreator.updateWalletConnectWalletTitle,
+                    updateWalletConnectAccountId   : nonNativeConnectionCreator.updateWalletConnectAccountId,
+
+                    updateWeb3ExtensionIsConnected : nonNativeConnectionCreator.updateWeb3ExtensionIsConnected,
+                    updateWeb3Extension            : nonNativeConnectionCreator.updateWeb3Extension,
+                    updateWeb3ExtensionChain       : nonNativeConnectionCreator.updateWeb3ExtensionChain,
+                    updateWeb3ExtensionWalletTitle : nonNativeConnectionCreator.updateWeb3ExtensionWalletTitle,
+                    updateWeb3ExtensionAccountId   : nonNativeConnectionCreator.updateWeb3ExtensionAccountId,
                 }, dispatch) 
             }                
         default:

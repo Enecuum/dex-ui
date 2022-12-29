@@ -1,3 +1,6 @@
+import erc20TokenABI from './../ABI/abi_erc20';
+import spaceBridgeABI from './../ABI/abi_spaceBridge.json';
+import wethABI from './../ABI/abi_weth.json';
 
 export const defaultParams = {
     chain : '0x1'
@@ -18,7 +21,21 @@ export const netProps = {
         explorer          : 'https://goerli.etherscan.io',
         nativeTokenTicker : 'görETH',
         infuraURL         : 'https://goerli.infura.io/v3/97db9b69e4594bc196f95bc02dfbd076',
-        //wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1'
+        wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1',
+        usdcAddr          : '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
     },
     'unknown' : undefined
+}
+
+export const smartContracts = {
+    erc20token : {
+        ABI :  erc20TokenABI
+    },
+    weth : {        
+        ABI  : wethABI
+    },
+    spaceBridge : {
+        address : '0xD780E08ca4F8b20108494068d25A1422677B5B5A',
+        ABI : spaceBridgeABI
+    }
 }

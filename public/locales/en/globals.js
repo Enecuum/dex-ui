@@ -62,7 +62,9 @@ module.exports = {
             "pool_sell_exact_routed" : "Swapping",
             "pool_buy_exact_routed" : "Swapping",
             "pool_add_liquidity" : "Adding",
-            "pool_remove_liquidity" : "Removing"
+            "pool_remove_liquidity" : "Removing",
+            "claim_init" : "Claim init",
+            "claim_confirm" : "Claim confirm"
         },
         "history" : {
             "pool_create" : "Create",
@@ -78,7 +80,9 @@ module.exports = {
             "farm_close_stake" : "Close",
             "farm_decrease_stake" : "Unstake",
             "dex_cmd_distribute" : "Add",
-            "token_issue" : "Issue token"
+            "token_issue" : "Issue token",
+            "claim_init" : "Claim init",
+            "claim_confirm" : "Claim confirm"
         }
     },
     "txActionPhrases" : {
@@ -115,6 +119,12 @@ module.exports = {
         },
         "token_issue" : {
             "completePhrase" : "{{action}} {{ticker}}"
+        },
+        "claim_init" : {
+            "completePhrase" : "Bridge to Enecuum"
+        },
+        "claim_confirm" : {
+            "completePhrase" : "Claim confirm"
         }
     },
     "blockWindow" : {

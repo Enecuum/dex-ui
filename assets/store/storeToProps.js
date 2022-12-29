@@ -10,6 +10,7 @@ import farmsCreator from './actionCreators/farms'
 import dropsCreator from './actionCreators/drops'
 import spaceStationCreator from './actionCreators/spaceStation'
 import nonNativeConnectionCreator from './actionCreators/nonNativeConnection'
+import spaceBridgeCreator from './actionCreators/spaceBridge'
 
 const components = {
     ROOT                             : 0x0,
@@ -383,7 +384,9 @@ function mapStoreToProps(component) {
         case components.SPACE_BRIDGE:
             return function (state) {
                 return {
-                    nonNativeConnection : state.nonNativeConnection
+                    ...state.spaceBridge,
+                    nonNativeConnection : state.nonNativeConnection,
+                    pubkey              : state.root.pubkey,
                 }
             }    
         default:
@@ -617,6 +620,16 @@ function mapDispatchToProps(component) {
                     updateWeb3ExtensionChain       : nonNativeConnectionCreator.updateWeb3ExtensionChain,
                     updateWeb3ExtensionWalletTitle : nonNativeConnectionCreator.updateWeb3ExtensionWalletTitle,
                     updateWeb3ExtensionAccountId   : nonNativeConnectionCreator.updateWeb3ExtensionAccountId,
+ 
+                    updCurrentTxHash               : rootCreator.updCurrentTxHash,
+                    updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,
+                    updateSrcTokenAllowance        : spaceBridgeCreator.update_src_token_allowance,
+                    updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                    updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
+                    updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
+                    updateSrcTokenAmountToSend     : spaceBridgeCreator.update_src_token_amount_to_send,
+                    updateCurrentBridgeTx          : spaceBridgeCreator.update_current_bridge_tx
+    
                 }, dispatch) 
             }                
         default:

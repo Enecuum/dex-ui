@@ -10,11 +10,10 @@ function editInterpolateParams (params) {
     return params
 }
 
-function generateTxText (translate, textPlace, actionType, interpolateParams) {
+function generateTxText (translate, textPlace, actionType, interpolateParams = {}) {    
     let pathToActionWords = 'txActionWords'
     pathToActionWords += (textPlace === 'waitingConfirmation') ? '.meanwhileSending' : '.history'
-    interpolateParams.action = translate(pathToActionWords + '.' + actionType)
-
+    interpolateParams.action = translate(pathToActionWords + '.' + actionType)   
     let descriptionPhrase = `txActionPhrases.${actionType}.completePhrase`
     interpolateParams = editInterpolateParams(interpolateParams)
 

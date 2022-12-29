@@ -22,7 +22,9 @@ const requestType = {
     ADD                : presets.pending.allowedTxTypes.pool_add_liquidity,
     REMOVE             : presets.pending.allowedTxTypes.pool_remove_liquidity,
     ISSUE_TOKEN        : 'create_token',
-    DEX_CMD_DISTRIBUTE : presets.pending.allowedTxTypes.dex_cmd_distribute
+    DEX_CMD_DISTRIBUTE : presets.pending.allowedTxTypes.dex_cmd_distribute,
+    CLAIM_INIT         : presets.pending.allowedTxTypes.claim_init,
+    CLAIM_CONFIRM      : presets.pending.allowedTxTypes.claim_confirm
 };
 
 class ExtRequests { 
@@ -257,7 +259,72 @@ class ExtRequests {
         // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
+    };
+
+    claimInit (pubKey, claimInitCost, params) {
+        let data = {
+            from : pubKey,
+            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
+            value : claimInitCost.toString(),//////
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : ENQweb3lib.serialize({
+                type : requestType.CLAIM_INIT,
+                parameters : params
+            })
+        };
+        // console.log(data);
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+    };
+
+    claimInitTest (pubKey, data_packed) {
+       let data = {
+            from : pubKey,
+            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
+            value : 1e8,//////
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : data_packed
+        };
+        // console.log(data);
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+
+    };
+
+    claimConfirm (pubKey, claimConfirmCost, params) {
+        let data = {
+            from : pubKey,
+            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
+            value : claimConfirmCost.toString(),//////
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : ENQweb3lib.serialize({
+                type : requestType.CLAIM_CONFIRM,
+                parameters : params
+            })
+        };
+        // console.log(data);
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+    };
+
+    claimConfirmTest (pubKey, data_packed) {
+       let data = {
+            from : pubKey,
+            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
+            value : 1e8,//////
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : data_packed
+        };
+        // console.log(data);
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+
     };    
+
 }
 
 const extRequests = new ExtRequests();

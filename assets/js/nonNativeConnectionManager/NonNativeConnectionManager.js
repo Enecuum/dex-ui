@@ -1,6 +1,5 @@
 import WalletConnectManager from './../connectors/WalletConnectManager';
 import MetamaskConnectManager from './../connectors/MetamaskConnectManager';
-import chainsConfig from './chainsConfig';
 
 class NonNativeConnectionManager {
     constructor (rootStoreMethods) {

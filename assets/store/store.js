@@ -10,6 +10,7 @@ import farmsReducer from './reducers/farms';
 import dropsReducer from './reducers/drops';
 import spaceStationReducer from './reducers/spaceStation';
 import nonNativeConnectionReducer from './reducers/nonNativeConnection';
+import spaceBridgeReducer from './reducers/spaceBridge';
 
 const totalReducer = combineReducers({
     root                : rootReducer,
@@ -21,7 +22,8 @@ const totalReducer = combineReducers({
     farms               : farmsReducer,
     drops               : dropsReducer,
     spaceStation        : spaceStationReducer,
-    nonNativeConnection : nonNativeConnectionReducer
+    nonNativeConnection : nonNativeConnectionReducer,
+    spaceBridge         : spaceBridgeReducer
 });
 
 const enhancer = MODE === "development" ? window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() : undefined

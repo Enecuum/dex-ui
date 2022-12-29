@@ -215,6 +215,21 @@ const initialState = {
             msgData            : {},
             stakeTokenAmount   : undefined
         }
+    },
+    spaceBridge : {
+        direction : 'ETH-ENQ', //'ETH->ENQ' or 'ENQ->ETH'
+        showHistory : false,
+        showLock : false,
+        showClaimInit : false,
+        showClaimConfirm : false,
+        srcNet : undefined,
+        srcTokenHash : undefined,
+        srcTokenAllowance : undefined,
+        srcTokenBalance : undefined,
+        srcTokenDecimals : undefined,
+        srcTokenTicker : undefined,
+        srcTokenAmountToSend : 0,
+        currentBridgeTx : undefined
     }
 
 }

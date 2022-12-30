@@ -51,6 +51,20 @@ const actionCreators = {
             value : payload 
         };
     },
+
+
+    update_show_token_list (payload) {
+        return {
+            type : actions.UPDATE_SHOW_TOKEN_LIST,
+            value : payload 
+        };
+    },
+    update_src_token_obj (payload) {
+        return {
+            type : actions.UPDATE_SRC_TOKEN_OBJ,
+            value : payload 
+        };
+    },
         
 };
 

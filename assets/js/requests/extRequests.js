@@ -24,7 +24,8 @@ const requestType = {
     ISSUE_TOKEN        : 'create_token',
     DEX_CMD_DISTRIBUTE : presets.pending.allowedTxTypes.dex_cmd_distribute,
     CLAIM_INIT         : presets.pending.allowedTxTypes.claim_init,
-    CLAIM_CONFIRM      : presets.pending.allowedTxTypes.claim_confirm
+    CLAIM_CONFIRM      : presets.pending.allowedTxTypes.claim_confirm,
+    ENQ_LOCK           : presets.pending.allowedTxTypes.enq_lock
 };
 
 class ExtRequests { 
@@ -311,6 +312,21 @@ class ExtRequests {
     };
 
     claimConfirmTest (pubKey, data_packed) {
+       let data = {
+            from : pubKey,
+            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
+            value : 1e8,//////
+            tokenHash : this.nativeTokenHash,
+            nonce : Math.floor(Math.random() * 1e15),
+            data : data_packed
+        };
+        // console.log(data);
+        // console.log(params);
+        return trafficController.sendTransaction(data);
+
+    };
+
+    enqLock (pubKey, data_packed) {
        let data = {
             from : pubKey,
             to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////

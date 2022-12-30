@@ -37,7 +37,8 @@ const components = {
     SWAP_ADDON                       : 0x15,
     SPACE_STATION                    : 0x16,
     ROUTING                          : 0x17,
-    SPACE_BRIDGE                     : 0x18
+    SPACE_BRIDGE                     : 0x18,
+    TOKEN_CARD_BRIDGE                : 0x19,
 }
 
 function mapStoreToProps(component) {
@@ -96,6 +97,20 @@ function mapStoreToProps(component) {
                     networkInfo : state.root.networkInfo
                 }
             }
+        case components.TOKEN_CARD_BRIDGE:
+            return function (state) {
+                return {
+                    ...state.swapCard,
+                    ...state.tokenCard,
+                    activeField : state.swapCard.activeField,
+                    menuItem    : state.root.menuItem,
+                    tokens      : state.root.tokens,
+                    balances    : state.root.balances,
+                    pairs       : state.root.pairs,
+                    net         : state.root.net,
+                    networkInfo : state.root.networkInfo
+                }
+            }    
         case components.ASIDE:
             return function (state) {
                 return {
@@ -384,6 +399,7 @@ function mapStoreToProps(component) {
         case components.SPACE_BRIDGE:
             return function (state) {
                 return {
+                    ...state.root,
                     ...state.spaceBridge,
                     nonNativeConnection : state.nonNativeConnection,
                     pubkey              : state.root.pubkey,
@@ -629,10 +645,21 @@ function mapDispatchToProps(component) {
                     updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
                     updateSrcTokenAmountToSend     : spaceBridgeCreator.update_src_token_amount_to_send,
                     updateCurrentBridgeTx          : spaceBridgeCreator.update_current_bridge_tx,
-                    updateBridgeDirection          : spaceBridgeCreator.update_bridge_direction
+                    updateBridgeDirection          : spaceBridgeCreator.update_bridge_direction,
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
+                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj
     
                 }, dispatch) 
-            }                
+            }
+        case components.TOKEN_CARD_BRIDGE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    ...tokenCardCreator,
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
+                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
+                    updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                }, dispatch)
+            }                    
         default:
             return undefined
     }

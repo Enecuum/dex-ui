@@ -64,7 +64,8 @@ module.exports = {
             "pool_add_liquidity" : "Adding",
             "pool_remove_liquidity" : "Removing",
             "claim_init" : "Claim init",
-            "claim_confirm" : "Claim confirm"
+            "claim_confirm" : "Claim confirm",
+            "enq_lock" : "Lock"
         },
         "history" : {
             "pool_create" : "Create",
@@ -82,7 +83,8 @@ module.exports = {
             "dex_cmd_distribute" : "Add",
             "token_issue" : "Issue token",
             "claim_init" : "Claim init",
-            "claim_confirm" : "Claim confirm"
+            "claim_confirm" : "Claim confirm",
+            "enq_lock" : "Lock"
         }
     },
     "txActionPhrases" : {
@@ -125,6 +127,9 @@ module.exports = {
         },
         "claim_confirm" : {
             "completePhrase" : "Claim confirm"
+        },
+        "enq_lock" : {
+            "completePhrase" : "Lock"
         }
     },
     "blockWindow" : {

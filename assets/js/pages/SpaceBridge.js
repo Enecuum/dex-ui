@@ -26,6 +26,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form';
 import networkApi from "../requests/networkApi";
 
+
+import TokenCardBridge from './../components/TokenCardBridge';
+
 class SpaceBridge extends React.Component {
 	constructor(props) {
         super(props);
@@ -33,7 +36,8 @@ class SpaceBridge extends React.Component {
         this.valueProcessor = new ValueProcessor;
         this.state = {
             initData : undefined,
-            confirmData : undefined
+            confirmData : undefined,
+            enqBalances : []
         }
         setInterval(() => {
             this.updateUserHistory()
@@ -47,8 +51,24 @@ class SpaceBridge extends React.Component {
             prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId ||
             prevProps.bridgeDirection !== this.props.bridgeDirection) {
             this.resetStore();
+
         }
     }
+
+    renderTokenCard() {
+        if (this.props.showTokenList)
+            return (
+                <>
+                    <TokenCardBridge
+                        // changeBalance={this.changeBalance.bind(this)}
+                        // getMode={this.getMode.bind(this)}
+                        // recalculateSwapForNewToken={this.recalculateSwapForNewToken.bind(this)}
+                        // swapPair={this.swapPair.bind(this)}
+                        useSuspense={false} />
+                </>
+           );
+    };
+
 
     resetStore() {
         this.props.updCurrentTxHash(undefined);          
@@ -378,7 +398,6 @@ class SpaceBridge extends React.Component {
     handleInputENQTokenHashChange(item) {
         //console.log(item.target.value)
         let that = this;
-        console.log(that)
         if (!this.props.pubkey) {
             console.log('No Enecuum user id!')
             alert('Please, connect to your Enecuum wallet')
@@ -387,10 +406,16 @@ class SpaceBridge extends React.Component {
             let account_id = this.props.pubkey;
             //let accountBalancesAll = networkApi.getAccountBalancesAll();
 
-            networkApi.getAccountBalancesAll(account_id)
-                .then(res => {
-                    console.log(res)
-                })
+            let accountBalancesAll = networkApi.getAccountBalancesAll(this.props.pubkey);
+
+            accountBalancesAll.then(result => {           
+                result.json().then(balancesAll => {                    
+                    console.log(balancesAll) 
+                    this.setState({balancesAll: res.init});                                   
+                });                
+            }, () => {
+                console.log('getAccountBalancesAll error')
+            })
 
             // assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
             //     console.log(assetInfo)
@@ -531,18 +556,20 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    async encodeLock() {
+    async encodeDataAndLock() {
         let URL =  'http://95.216.207.173:8080/api/v1/encode_lock'
 
         let src_network = '5';
 
+
+        let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenObj.decimals)).value;
         let data = {
-            "src_network":1,
+            "src_network":11,
             "dst_address":"2301",
             "dst_network":23,
-            "amount":"304",
-            "src_hash":"1b5f5dc5662fabda34be7a24c0f74094a68a057b3427db21eb5f5823962cf9d2",
-            "src_address":"02b227742759f854f012077216e205dc49b046ba65f5f4722d6a5d782ce5746d9c"
+            "amount": amount,
+            "src_hash": this.props.srcTokenObj.hash,
+            "src_address": this.props.pubkey
         }
            
         return fetch(URL, {
@@ -552,8 +579,51 @@ class SpaceBridge extends React.Component {
         }).then(function(response) {  
             return response.json()
         }).then(res => {
-            console.log(res);            
+            console.log(res.encoded_data);
+            this.enqLock(res.encoded_data)            
             return res
+        });
+    }
+
+    enqLock(packedDataFromEncodeLock) {
+        let that = this;
+        let pubkey = this.props.pubkey;
+        let dst_address = this.props.nonNativeConnection.web3ExtensionAccountId;
+        let packedData = packedDataFromEncodeLock;
+        if (!(pubkey && packedData))
+            return
+        extRequests.enqLock(pubkey, packedData).then(result => {
+            console.log('Success', result.hash);
+            let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+            let actionType = presets.pending.allowedTxTypes.enq_lock;
+            lsdp.write(result.hash, 0, actionType);
+            this.props.updCurrentTxHash(result.hash);
+
+            let accountInteractToBridgeItem = {
+                initiator : `${pubkey}_${dst_address}`,
+                lock       : {
+                                transactionHash : result.hash
+                            }                    
+            };
+
+            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            if (bridgeHistoryArray.length > 0) {
+                let itemIsExist = bridgeHistoryArray.find(function(elem) {
+                    if (elem.initiator === pubkey && elem.lock?.transactionHash === result.hash)
+                        return true
+                });
+
+                if (itemIsExist !== undefined)
+                    return
+                else
+                    that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+            } else {
+                that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+            }
+        },
+        error => {
+            console.log('Error')
+            //this.props.changeWaitingStateType('rejected');
         });
     }
 
@@ -566,6 +636,15 @@ class SpaceBridge extends React.Component {
             console.log('toggleBridgeDirection: something went wrong!')
     }
 
+    toggleShowTokensList() {
+        this.props.updateShowTokenList(!this.props.showTokenList)
+    }
+
+
+    makeENQLock() {
+
+    }
+
     render () {
 
   //   	let enqExtUserId = this.props.pubkey;
@@ -576,7 +655,7 @@ class SpaceBridge extends React.Component {
 
         return (
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
-            	<div className="mb-3 d-none">
+            	<div className="mb-3">
             		<div className="mb-5">
 		            	<button onClick={this.connectWC.bind(this)}className="mr-1">CONNECT WALLET CONNECT</button>
 		            	<button onClick={this.disconnectWC.bind(this)} className="mr-3">DISCONNECT WALLET CONNECT</button>
@@ -598,12 +677,17 @@ class SpaceBridge extends React.Component {
 	            	</div>
 
                     <div className="mb-5">
-                        <button onClick={this.encodeLock.bind(this)} className="mr-3">encode_lock</button>
+                        {/*<button onClick={this.encodeLock.bind(this)} className="mr-3">encode_lock</button>*/}
                         {/*<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>*/}
                     </div>
                     <div className="mb-5">
-                        <button onClick={this.handleInputENQTokenHashChange.bind(this)} className="mr-3">get ENQ Balance</button>
+                        <button onClick={this.toggleShowTokensList.bind(this)} className="mr-3">get ENQ Balance</button>
+                        { this.renderTokenCard()  }
                     </div>
+
+
+
+
             	</div>
             	
 
@@ -632,7 +716,7 @@ class SpaceBridge extends React.Component {
             	}*/}
 
 
-
+                {this.props.bridgeDirection === 'ETH-ENQ' &&
 	            <div className="row w-100 mb-5">
 	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
 						<Card className="swap-card">
@@ -762,10 +846,166 @@ class SpaceBridge extends React.Component {
 						</Card>    			
 	    			</div>
 	    		</div>
+                }
 
+                {this.props.bridgeDirection === 'ENQ-ETH' &&
+                <div className="row w-100 mb-5">
+                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
+                        <Card className="swap-card">
+                          <Card.Body className="p-0">
+                            <div className="p-4 bottom-line-1">
+                                <div className="d-flex align-items-center justify-content-between nowrap">
+                                    <div>
+                                        <div className="h4 text-nowrap">Space Bridge</div>
+                                        <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
+                                    </div>
+                                    {!this.props.nonNativeConnection.web3ExtensionAccountId &&
+                                        <div>                                        
+                                            <button
+                                                className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
+                                                onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
+                                        </div>
+                                    }                                    
+                                </div>
+                            </div>
+                            <Card.Text as="div" className="p-4">
+                                <div>
+                                    <div className="h5">Source</div>
+                                    <div className="h6 d-flex">
+                                        <div>
+                                            <span className="text-nowrap">
+                                                Source Network: {this.props.net.name}
+                                            </span>
+{/*                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension.provider.chainId !== '0x5' &&
+                                                <button
+                                                    className="d-block btn btn-info mt-2 p-1 w-100"
+                                                    style={{'lineHeight': '18px'}}
+                                                    onClick={this.setGoerli.bind(this)}>Set Network</button>
+                                            }   */} 
+                                        </div>
+{/*                                        {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
+                                            <span className="font-weight-bold ml-3" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
+                                                <div>Goerli required!</div>
+                                                <div>Check settings of your Ethereum wallet!</div>
+                                            </span>
+                                        }
+                                        {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId == '0x5' &&
+                                            <div className="ml-2" style={{'color' : '#ecd07b'}}>Goerli</div>
+                                        } */}   
+                                        
+                                    </div>
+                                    <div className="mt-3">
+                                        <div className="mb-2 d-flex align-items-center justify-content-start text-color4">
+                                            <div className="mr-3">Source token</div>
+                                            <button
+                                                    className="d-block btn btn-info p-1"
+                                                    onClick={this.toggleShowTokensList.bind(this)}
+                                                    disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined}>Choose token</button>
+                                        </div>
+                                        {/*<Form.Group className="mb-0" controlId="inputSrcTokenHash">        
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Address"
+                                                autoComplete="off"
+                                                value={this.props.srcTokenHash}
+                                                onChange={this.handleInputTokenHashChange.bind(this)}
+                                                disabled={this.props.nonNativeConnection.web3ExtensionAccountId === undefined}/>       
+                                        </Form.Group>*/}
+                                        <div className="mt-3">
+                                            <span>Ticker: {(this.props.srcTokenObj?.ticker !== undefined) ? this.props.srcTokenObj.ticker : '---'}</span>
+                                        </div>
+                                        <div className="mt-1">
+                                            <span>Balance: {(this.props.srcTokenBalance !== undefined) && (this.props.srcTokenObj?.decimals !== undefined) ? this.props.srcTokenBalance / Math.pow(10, this.props.srcTokenObj.decimals) : '---'}</span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-3">
+                                        <div className="mb-2 d-flex justify-content-start text-color4">Amount to send</div>
+                                        <Form.Group className="mb-0" controlId="inputSrcTokenHash">
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Amount"
+                                                autoComplete="off"
+                                                value={this.props.srcTokenAmountToSend}
+                                                onChange={this.handleInputTokenAmountChange.bind(this)} 
+                                                disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined}/>        
+                                            {/*<Form.Control type="text" placeholder="0"  value="0"/>     */}  
+                                        </Form.Group>
+                                    </div>
 
+                                </div>
 
+                                <div
+                                    id="exch"
+                                    className="d-flex justify-content-center align-items-center mx-auto mt-3"
+                                    onClick={this.toggleBridgeDirection.bind(this)}>
+                                    <span className="icon-Icon13 exch-button hover-pointer"></span>
+                                </div>
 
+                                <div>
+                                    <div className="h5">Destination</div>
+                                    <div className="d-flex align-items-center mb-2">
+                                        <div>
+                                            <div className="h6 mb-0">Destination Network:</div>                                            
+                                                {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension.provider.chainId !== '0x5' &&                                            
+                                                    <div className="mt-2">
+                                                        <button
+                                                            className="d-block btn btn-info p-1 w-100"
+                                                            style={{'lineHeight': '18px'}}
+                                                            onClick={this.setGoerli.bind(this)}>Set Network</button>
+                                                    </div>    
+                                                }                                            
+                                        </div>
+                                        <div className="">
+                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
+                                                <span className="font-weight-bold pl-3" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
+                                                    <div>Goerli required!</div>
+                                                    <div>Check settings of your Ethereum wallet!</div>
+                                                </span>
+                                            }
+                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId == '0x5' &&
+                                                <div style={{'color' : '#ecd07b'}} className="pl-2">Goerli</div>
+                                            }
+                                            {this.props.nonNativeConnection.web3ExtensionAccountId == undefined &&
+                                                <div style={{'color' : '#ecd07b'}} className="pl-2">---</div>
+                                            } 
+                                        </div>
+                                        
+                                    </div>
+                                    <div className="h6 d-flex align-items-center">
+                                        <div className="mr-2">Destination Address:</div>
+                                        <div style={{'color' : '#ecd07b'}}>{utils.packAddressString(this.props.nonNativeConnection.web3ExtensionAccountId)}</div> 
+                                    </div>
+                                </div>
+                                <button
+                                    className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
+                                    onClick={this.encodeDataAndLock.bind(this)}
+                                    disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
+                                    Send Lock</button>
+                                {(this.props.currentBridgeTx !== undefined) &&    
+                                    <div className="mt-4">Current bridge Tx: {this.props.currentBridgeTx}</div>
+                                }
+                                {/*{(this.state.initData !== undefined) &&
+                                    <>    
+                                        <div className="mt-4">Claim Init Data: <span className="text-color4">{this.state.initData}</span></div>
+                                        <button
+                                            className="d-block btn btn-info mb-2 p-2 mt-2"
+                                            onClick={this.claimInitEnecuumByParameters.bind(this)}>Claim Init</button>
+                                    </>
+                                }
+                                {(this.state.confirmData !== undefined) &&
+                                    <>    
+                                        <div className="mt-4">Claim Confirm Data: <span className="text-color4">{this.state.confirmData}</span></div>
+                                        <button
+                                            className="d-block btn btn-info mb-2 p-2 mt-2"
+                                            onClick={this.claimConfirmEnecuumByParameters.bind(this)}>Claim Confirm</button>
+                                    </>
+                                }*/}
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>                
+                    </div>
+                </div>
+                }
 
 
 

@@ -17,7 +17,8 @@ const presets =  {
             dex_cmd_distribute : 'dex_cmd_distribute',
             token_issue : 'token_issue',
             claim_init : 'claim_init',
-            claim_confirm : 'claim_confirm'
+            claim_confirm : 'claim_confirm',
+            enq_lock : 'enq_lock'
         }
     },
 

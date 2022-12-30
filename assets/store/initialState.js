@@ -217,7 +217,7 @@ const initialState = {
         }
     },
     spaceBridge : {
-        bridgeDirection : 'ETH-ENQ', //'ETH->ENQ' or 'ENQ->ETH'
+        bridgeDirection : 'ENQ-ETH', //'ETH-ENQ' or 'ENQ-ETH'
         showHistory : false,
         showLock : false,
         showClaimInit : false,
@@ -229,7 +229,9 @@ const initialState = {
         srcTokenDecimals : undefined,
         srcTokenTicker : undefined,
         srcTokenAmountToSend : undefined,
-        currentBridgeTx : undefined
+        currentBridgeTx : undefined,
+        showTokenList : false,
+        srcTokenObj : undefined
     }
 
 }

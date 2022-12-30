@@ -24,6 +24,7 @@ import utils from '../utils/swapUtils';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form';
+import networkApi from "../requests/networkApi";
 
 class SpaceBridge extends React.Component {
 	constructor(props) {
@@ -42,16 +43,22 @@ class SpaceBridge extends React.Component {
 
 
     componentDidUpdate(prevProps) {
-        if (prevProps.pubkey !== this.props.pubkey || prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId) {
-            this.props.updCurrentTxHash(undefined);          
-            this.props.updateSrcTokenHash('');      
-            this.props.updateSrcTokenAllowance(undefined);   
-            this.props.updateSrcTokenBalance(undefined);     
-            this.props.updateSrcTokenDecimals(undefined);    
-            this.props.updateSrcTokenTicker(undefined);      
-            this.props.updateSrcTokenAmountToSend(0);
-            this.props.updateCurrentBridgeTx(undefined);     
+        if (prevProps.pubkey !== this.props.pubkey ||
+            prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId ||
+            prevProps.bridgeDirection !== this.props.bridgeDirection) {
+            this.resetStore();
         }
+    }
+
+    resetStore() {
+        this.props.updCurrentTxHash(undefined);          
+        this.props.updateSrcTokenHash('');      
+        this.props.updateSrcTokenAllowance(undefined);   
+        this.props.updateSrcTokenBalance(undefined);     
+        this.props.updateSrcTokenDecimals(undefined);    
+        this.props.updateSrcTokenTicker(undefined);      
+        this.props.updateSrcTokenAmountToSend(0);
+        this.props.updateCurrentBridgeTx(undefined);     
     }
 
     async updateUserHistory() {
@@ -365,7 +372,46 @@ class SpaceBridge extends React.Component {
 				alert('Error');					
 			});    		
     	}
-    } 
+    }
+
+
+    handleInputENQTokenHashChange(item) {
+        //console.log(item.target.value)
+        let that = this;
+        console.log(that)
+        if (!this.props.pubkey) {
+            console.log('No Enecuum user id!')
+            alert('Please, connect to your Enecuum wallet')
+        } else {            
+            let token_hash = '0000000000000000000000000000000000000000000000000000000000000000'//item.target.value;
+            let account_id = this.props.pubkey;
+            //let accountBalancesAll = networkApi.getAccountBalancesAll();
+
+            networkApi.getAccountBalancesAll(account_id)
+                .then(res => {
+                    console.log(res)
+                })
+
+            // assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
+            //     console.log(assetInfo)
+            //     that.props.updateSrcTokenHash(assetInfo.token);                
+            //     that.props.updateSrcTokenBalance(assetInfo.amount);
+            //     that.props.updateSrcTokenDecimals(assetInfo.decimals);
+            //     that.props.updateSrcTokenTicker(assetInfo.ticker);
+            // }, function(assetInfo) {
+            //     alert('Error');
+            // });
+
+            // assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
+            //     console.log(allowance);
+            //     that.props.updateSrcTokenAllowance(allowance);
+            // },function(err) {
+            //     console.log(`Can\'t get allowance for asset ${token_hash}`);
+            //     alert('Error');                    
+            // });            
+        }
+    }
+
 
     handleInputTokenAmountChange(item) {
 		console.log(item.target.value);
@@ -511,6 +557,15 @@ class SpaceBridge extends React.Component {
         });
     }
 
+    toggleBridgeDirection() {
+        if (this.props.bridgeDirection === 'ENQ-ETH')
+            this.props.updateBridgeDirection('ETH-ENQ');
+        else if (this.props.bridgeDirection === 'ETH-ENQ')
+            this.props.updateBridgeDirection('ENQ-ETH');
+        else
+            console.log('toggleBridgeDirection: something went wrong!')
+    }
+
     render () {
 
   //   	let enqExtUserId = this.props.pubkey;
@@ -545,6 +600,9 @@ class SpaceBridge extends React.Component {
                     <div className="mb-5">
                         <button onClick={this.encodeLock.bind(this)} className="mr-3">encode_lock</button>
                         {/*<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>*/}
+                    </div>
+                    <div className="mb-5">
+                        <button onClick={this.handleInputENQTokenHashChange.bind(this)} className="mr-3">get ENQ Balance</button>
                     </div>
             	</div>
             	
@@ -663,7 +721,12 @@ class SpaceBridge extends React.Component {
 
 						    	</div>
 
-								<div id="exch" className="d-flex justify-content-center align-items-center mx-auto mt-3"><span className="icon-Icon13 exch-button hover-pointer"></span></div>
+								<div
+                                    id="exch"
+                                    className="d-flex justify-content-center align-items-center mx-auto mt-3"
+                                    onClick={this.toggleBridgeDirection.bind(this)}>
+                                    <span className="icon-Icon13 exch-button hover-pointer"></span>
+                                </div>
 
 						    	<div>
 						    		<div className="h5">Destination</div>

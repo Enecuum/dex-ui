@@ -1,9 +1,9 @@
 import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
-
+import Web3 from "web3"
 
 class SpaceBridgeProvider {
 	constructor(provider, abi, contractAddress) {
-		this.web3 = new window.Web3(provider);
+		this.web3 = new Web3(provider);
 		this.spaceBridgeContract = new this.web3.eth.Contract(abi, contractAddress);
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
 	}

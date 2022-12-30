@@ -217,7 +217,7 @@ const initialState = {
         }
     },
     spaceBridge : {
-        direction : 'ETH-ENQ', //'ETH->ENQ' or 'ENQ->ETH'
+        bridgeDirection : 'ETH-ENQ', //'ETH->ENQ' or 'ENQ->ETH'
         showHistory : false,
         showLock : false,
         showClaimInit : false,

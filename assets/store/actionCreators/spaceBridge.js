@@ -45,6 +45,12 @@ const actionCreators = {
             value : payload 
         };
     },
+    update_bridge_direction (payload) {
+        return {
+            type : actions.UPDATE_BRIDGE_DIRECTION,
+            value : payload 
+        };
+    },
         
 };
 

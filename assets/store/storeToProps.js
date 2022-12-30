@@ -628,7 +628,8 @@ function mapDispatchToProps(component) {
                     updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
                     updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
                     updateSrcTokenAmountToSend     : spaceBridgeCreator.update_src_token_amount_to_send,
-                    updateCurrentBridgeTx          : spaceBridgeCreator.update_current_bridge_tx
+                    updateCurrentBridgeTx          : spaceBridgeCreator.update_current_bridge_tx,
+                    updateBridgeDirection          : spaceBridgeCreator.update_bridge_direction
     
                 }, dispatch) 
             }                

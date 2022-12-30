@@ -23,6 +23,7 @@ export const netProps = {
         infuraURL         : 'https://goerli.infura.io/v3/97db9b69e4594bc196f95bc02dfbd076',
         wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1',
         usdcAddr          : '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
+        //0xFb2878B9967BA13e467cEDb722E2496112F78722
     },
     'unknown' : undefined
 }

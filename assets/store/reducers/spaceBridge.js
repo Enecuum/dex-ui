@@ -40,6 +40,11 @@ export default function spaceBridgeReducer (state = initialState.spaceBridge, ac
                 ...state,
                 currentBridgeTx: action.value
             }
+        case actions.UPDATE_BRIDGE_DIRECTION:
+            return {
+                ...state,
+                bridgeDirection: action.value
+            }    
         default: 
             return state
     }

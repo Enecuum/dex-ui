@@ -40,6 +40,20 @@ class SpaceBridge extends React.Component {
         }, 5000)       
     }
 
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.pubkey !== this.props.pubkey || prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId) {
+            this.props.updCurrentTxHash(undefined);          
+            this.props.updateSrcTokenHash('');      
+            this.props.updateSrcTokenAllowance(undefined);   
+            this.props.updateSrcTokenBalance(undefined);     
+            this.props.updateSrcTokenDecimals(undefined);    
+            this.props.updateSrcTokenTicker(undefined);      
+            this.props.updateSrcTokenAmountToSend(0);
+            this.props.updateCurrentBridgeTx(undefined);     
+        }
+    }
+
     async updateUserHistory() {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
@@ -471,7 +485,34 @@ class SpaceBridge extends React.Component {
         }
     }
 
+    async encodeLock() {
+        let URL =  'http://95.216.207.173:8080/api/v1/encode_lock'
+
+        let src_network = '5';
+
+        let data = {
+            "src_network":1,
+            "dst_address":"2301",
+            "dst_network":23,
+            "amount":"304",
+            "src_hash":"1b5f5dc5662fabda34be7a24c0f74094a68a057b3427db21eb5f5823962cf9d2",
+            "src_address":"02b227742759f854f012077216e205dc49b046ba65f5f4722d6a5d782ce5746d9c"
+        }
+           
+        return fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {'Content-Type': 'application/json','Accept': 'application/json'}
+        }).then(function(response) {  
+            return response.json()
+        }).then(res => {
+            console.log(res);            
+            return res
+        });
+    }
+
     render () {
+
   //   	let enqExtUserId = this.props.pubkey;
   //   	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
 
@@ -500,6 +541,11 @@ class SpaceBridge extends React.Component {
 		            	<button onClick={this.claimInitEnecuumTest.bind(this)} className="mr-3">Claim init Enecuum</button>
 	            		<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>
 	            	</div>
+
+                    <div className="mb-5">
+                        <button onClick={this.encodeLock.bind(this)} className="mr-3">encode_lock</button>
+                        {/*<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>*/}
+                    </div>
             	</div>
             	
 

@@ -228,7 +228,7 @@ const initialState = {
         srcTokenBalance : undefined,
         srcTokenDecimals : undefined,
         srcTokenTicker : undefined,
-        srcTokenAmountToSend : 0,
+        srcTokenAmountToSend : undefined,
         currentBridgeTx : undefined
     }
 

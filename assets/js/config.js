@@ -36,7 +36,7 @@ export const smartContracts = {
         ABI  : wethABI
     },
     spaceBridge : {
-        address : '0xD780E08ca4F8b20108494068d25A1422677B5B5A',
+        address : '0x349fA064F757C8084a066107B1F8cEA935e47476',
         ABI : spaceBridgeABI
     }
 }

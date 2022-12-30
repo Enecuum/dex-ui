@@ -219,8 +219,8 @@ class SpaceBridge extends React.Component {
     	let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
     	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let dst_address = window.Buffer.from('03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8')
-		bridgeProvider.lock(src_address, dst_address, '1', '2', token_hash).then(function(lockTx) {
-			console.log('aaa', lockTx)
+		bridgeProvider.lock(src_address, dst_address, '11', '2', token_hash).then(function(lockTx) {
+			console.log('lock responce: ', lockTx)
 			// let rawHistory = localStorage.getItem('bridge_history');
 			// let neItem = {};
 			// if (rawHistory !== undefined) {    		
@@ -244,7 +244,7 @@ class SpaceBridge extends React.Component {
     	
     	return fetch(URL, {
 	        method: 'POST',
-	        body: JSON.stringify({networkId : src_network, txHash : '0x52a043813a56f2670df134ded28bff552d6cfb02407cd824597f4ca74f08eacf'}),
+	        body: JSON.stringify({networkId : src_network, txHash : txHash}),
 	        headers: {'Content-Type': 'application/json','Accept': 'application/json'}
 	    }).then(function(response) {  
 	        return response.json()
@@ -435,7 +435,7 @@ class SpaceBridge extends React.Component {
 	    	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
 	    	let dst_address = window.Buffer.from(that.props.pubkey);
 	    	let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenDecimals)).value;
-			bridgeProvider.lock(src_address, dst_address, '1', amount, token_hash, that.props.updateCurrentBridgeTx).then(function(lockTx) {
+			bridgeProvider.lock(src_address, dst_address, '11', amount, token_hash, that.props.updateCurrentBridgeTx).then(function(lockTx) {
 				console.log('lock result', lockTx);
 				// let rawHistory = localStorage.getItem('bridge_history');
 				// let neItem = {};

@@ -37,6 +37,8 @@ class SpaceBridge extends React.Component {
         this.state = {
             initData : undefined,
             confirmData : undefined,
+            ticket : undefined,
+            transfer_id : undefined,
             enqBalances : []
         }
         setInterval(() => {
@@ -51,6 +53,10 @@ class SpaceBridge extends React.Component {
             prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId ||
             prevProps.bridgeDirection !== this.props.bridgeDirection) {
             this.resetStore();
+            this.setState({initData: undefined});
+            this.setState({confirmData: undefined});
+            this.setState({ticket: undefined});
+            this.setState({transfer_id: undefined});
 
         }
     }
@@ -78,7 +84,8 @@ class SpaceBridge extends React.Component {
         this.props.updateSrcTokenDecimals(undefined);    
         this.props.updateSrcTokenTicker(undefined);      
         this.props.updateSrcTokenAmountToSend(0);
-        this.props.updateCurrentBridgeTx(undefined);     
+        this.props.updateCurrentBridgeTx(undefined);
+        this.props.updateSrcTokenObj(undefined);
     }
 
     async updateUserHistory() {
@@ -194,20 +201,20 @@ class SpaceBridge extends React.Component {
 		});
     }
 
-	approve1Token() {
-		let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    	let ABI = smartContracts.erc20token.ABI;
-    	//let token_hash = netProps['0x5'].wethAddr;
-    	let token_hash = netProps['0x5'].usdcAddr;
-    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
+	// approve1Token() {
+	// 	let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
+ //    	let ABI = smartContracts.erc20token.ABI;
+ //    	//let token_hash = netProps['0x5'].wethAddr;
+ //    	let token_hash = netProps['0x5'].usdcAddr;
+ //    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
 
-		let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-		let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
+	// 	let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
+	// 	let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
 
-		assetProvider.approveBalance(spaceBridgeContractAddress, '1000000000000000000', account_id).then(function(approveTx) {
-			console.log(approveTx)
-		});
-	}
+	// 	assetProvider.approveBalance(spaceBridgeContractAddress, '1000000000000000000', account_id).then(function(approveTx) {
+	// 		console.log(approveTx)
+	// 	});
+	// }
 
 
 	approveSrcTokenBalance() {
@@ -228,37 +235,42 @@ class SpaceBridge extends React.Component {
 
 	}
 
-    lock001Token() {
-    	let that = this;
-		let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    	let ABI = smartContracts.spaceBridge.ABI;
-    	let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
-    	//let token_hash = netProps['0x5'].wethAddr;
-    	let token_hash = netProps['0x5'].usdcAddr;
-    	console.log(spaceBridgeProvider, ABI, spaceBridgeContractAddress)
-    	let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
-    	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
-    	let dst_address = window.Buffer.from('03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8')
-		bridgeProvider.lock(src_address, dst_address, '11', '2', token_hash).then(function(lockTx) {
-			console.log('lock responce: ', lockTx)
-			// let rawHistory = localStorage.getItem('bridge_history');
-			// let neItem = {};
-			// if (rawHistory !== undefined) {    		
-			// 	let tmp = JSON.parse(rawHistory);
-			// 	tmp['03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8'].push({lock : lockTx})				
-			// 	localStorage.setItem('bridge_history', JSON.stringify(lockTx));
-			// } else {
+  //   lock001Token() {
+  //   	let that = this;
+		// let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
+  //   	let ABI = smartContracts.spaceBridge.ABI;
+  //   	let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
+  //   	//let token_hash = netProps['0x5'].wethAddr;
+  //   	let token_hash = netProps['0x5'].usdcAddr;
+  //   	console.log(spaceBridgeProvider, ABI, spaceBridgeContractAddress)
+  //   	let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
+  //   	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
+  //   	let dst_address = window.Buffer.from('03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8')
+		// bridgeProvider.lock(src_address, dst_address, '11', '2', token_hash).then(function(lockTx) {
+		// 	console.log('lock responce: ', lockTx)
+		// 	// let rawHistory = localStorage.getItem('bridge_history');
+		// 	// let neItem = {};
+		// 	// if (rawHistory !== undefined) {    		
+		// 	// 	let tmp = JSON.parse(rawHistory);
+		// 	// 	tmp['03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8'].push({lock : lockTx})				
+		// 	// 	localStorage.setItem('bridge_history', JSON.stringify(lockTx));
+		// 	// } else {
 
-			// }
-			//localStorage.setItem('lockTx_1', JSON.stringify(lockTx));
-		});
-    }
+		// 	// }
+		// 	//localStorage.setItem('lockTx_1', JSON.stringify(lockTx));
+		// });
+  //   }
 
     async postToValidator(txHash) {
-    	//let txHash = '0x2610c9fc3ff2a83b027a3caab63e28f18881466011fe7f271eddfd48c4444be2'; //1
-    	//let txHash = '0x42d6a7ab9cbdfb072dc7c0e362ba829e87440610878d291e13397e9e828bf645'; //2
-    	//0xf78097523b34087b777725b670be5000881e6bd869507f7b063e01c72d421cd7 //3
-    	let src_network = '5';
+    	let src_network = undefined;
+
+        if (this.props.bridgeDirection == 'ETH-ENQ')
+            src_network = 5
+        else if (this.props.bridgeDirection == 'ENQ-ETH')
+            src_network = 11
+        else
+            return
+
 
     	let URL = 'http://95.216.207.173:8080/api/v1/notify';
     	
@@ -269,92 +281,91 @@ class SpaceBridge extends React.Component {
 	    }).then(function(response) {  
 	        return response.json()
 	    }).then(res => {
-	    	console.log(res);
-	    	localStorage.setItem('validator_notify_1', JSON.stringify(res));
+	    	console.log(txHash, res);
 	    	return res
 	    });
     }
 
-    claimInitEnecuum() {
-    	let parameters = {
-    		dst_address    : "03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",
-            dst_network    : "1",
-            amount         : "1000000000000000",
-            src_hash       : "d050e000eEF099179D224cCD3964cc4B683383F1",
-            src_address    : "1E4d77e8cCd3964ad9b10Bdba00aE593DF1112A1",
-            src_network    : "5",
-            origin_hash    : "d050e000eEF099179D224cCD3964cc4B683383F1",
-            origin_network : "5",
-            nonce          : "1",
-            transfer_id    : "fd7fda80663a9d28810a1d2c312e3d2c1a9a8377d312c66e3d7c3c1dd4b9e4c6",
-            ticker         : "BWETH"
-    	}
+  //   claimInitEnecuum() {
+  //   	let parameters = {
+  //   		dst_address    : "03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",
+  //           dst_network    : "1",
+  //           amount         : "1000000000000000",
+  //           src_hash       : "d050e000eEF099179D224cCD3964cc4B683383F1",
+  //           src_address    : "1E4d77e8cCd3964ad9b10Bdba00aE593DF1112A1",
+  //           src_network    : "5",
+  //           origin_hash    : "d050e000eEF099179D224cCD3964cc4B683383F1",
+  //           origin_network : "5",
+  //           nonce          : "1",
+  //           transfer_id    : "fd7fda80663a9d28810a1d2c312e3d2c1a9a8377d312c66e3d7c3c1dd4b9e4c6",
+  //           ticker         : "BWETH"
+  //   	}
 
-		extRequests.claimInit("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
-        .then(result => {
-            console.log('Success', result.hash)
-            let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-            let actionType = presets.pending.allowedTxTypes.claim_init;
-            interpolateParams = {                    
-                    ticker : '???'
-                }
-            lsdp.write(result.hash, 0, actionType, interpolateParams);
-            this.props.updCurrentTxHash(result.hash);
-        },
-        error => {
-            console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
-        });
-    }
+		// extRequests.claimInit("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
+  //       .then(result => {
+  //           console.log('Success', result.hash)
+  //           let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+  //           let actionType = presets.pending.allowedTxTypes.claim_init;
+  //           interpolateParams = {                    
+  //                   ticker : '???'
+  //               }
+  //           lsdp.write(result.hash, 0, actionType, interpolateParams);
+  //           this.props.updCurrentTxHash(result.hash);
+  //       },
+  //       error => {
+  //           console.log('Error')
+  //           //this.props.changeWaitingStateType('rejected');
+  //       });
+  //   }
 
-    claimInitEnecuumTest() {
-    	extRequests.claimInitTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01772400016f0f0000170d00compressed_data01500700G6oBQJwHdiyYBpt56QppqZO2t22JyqM7sgH5U7jqv0CC7C6WvhSJmTp3dKAHyO92eEsKMAyoBbEF2Ly1tsBtSHR1dTcMTTNyVaBC/P0/iJMF4NkxW+tWxXSKuJOv9MGj1RiZkX2Ece2KAxKmAy3nBUtckrxBRQG0vfj7nU9urhbOVnevm8JOV73MYFltW+t6yV7pqscuxxH9KHe9tGd4SdSabR7B3cSjD4Q9hgP4pZ3PGxFpwzUBlRbSiPlbPj7h7NtsVdwjvn96Sq9qDvJTzOe0pZgVwh2hDh66cqAt60RBWmOGRgurAO6YPWEau6hgqx2uowQ=').then(result => {
-            console.log('Success', result.hash);
-            let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-            let actionType = presets.pending.allowedTxTypes.claim_init;
-            lsdp.write(result.hash, 0, actionType);
-            this.props.updCurrentTxHash(result.hash);
-        },
-        error => {
-            console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
-        });
-    }
+    // claimInitEnecuumTest() {
+    // 	extRequests.claimInitTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01772400016f0f0000170d00compressed_data01500700G6oBQJwHdiyYBpt56QppqZO2t22JyqM7sgH5U7jqv0CC7C6WvhSJmTp3dKAHyO92eEsKMAyoBbEF2Ly1tsBtSHR1dTcMTTNyVaBC/P0/iJMF4NkxW+tWxXSKuJOv9MGj1RiZkX2Ece2KAxKmAy3nBUtckrxBRQG0vfj7nU9urhbOVnevm8JOV73MYFltW+t6yV7pqscuxxH9KHe9tGd4SdSabR7B3cSjD4Q9hgP4pZ3PGxFpwzUBlRbSiPlbPj7h7NtsVdwjvn96Sq9qDvJTzOe0pZgVwh2hDh66cqAt60RBWmOGRgurAO6YPWEau6hgqx2uowQ=').then(result => {
+    //         console.log('Success', result.hash);
+    //         let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+    //         let actionType = presets.pending.allowedTxTypes.claim_init;
+    //         lsdp.write(result.hash, 0, actionType);
+    //         this.props.updCurrentTxHash(result.hash);
+    //     },
+    //     error => {
+    //         console.log('Error')
+    //         //this.props.changeWaitingStateType('rejected');
+    //     });
+    // }
 
-    claimConfirmEnecuum() {
-    	let parameters = {
-    		"validator_id"   : "",
-            "validator_sign" : "",
-            "transfer_id"    : ""
-    	}
+  //   claimConfirmEnecuum() {
+  //   	let parameters = {
+  //   		"validator_id"   : "",
+  //           "validator_sign" : "",
+  //           "transfer_id"    : ""
+  //   	}
 
-		extRequests.claimConfirm("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
-        .then(result => {
-            console.log('Success', result.hash)
-            let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-            let actionType = presets.pending.allowedTxTypes.claim_confirm;
-            interpolateParams = {                    
-                    ticker : '???'
-                }
-            lsdp.write(result.hash, 0, actionType, interpolateParams);
-            this.props.updCurrentTxHash(result.hash);
-        },
-        error => {
-            console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
-        });
-    }    
+		// extRequests.claimConfirm("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
+  //       .then(result => {
+  //           console.log('Success', result.hash)
+  //           let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+  //           let actionType = presets.pending.allowedTxTypes.claim_confirm;
+  //           interpolateParams = {                    
+  //                   ticker : '???'
+  //               }
+  //           lsdp.write(result.hash, 0, actionType, interpolateParams);
+  //           this.props.updCurrentTxHash(result.hash);
+  //       },
+  //       error => {
+  //           console.log('Error')
+  //           //this.props.changeWaitingStateType('rejected');
+  //       });
+  //   }    
 
 
-    claimConfirmTest() {
-		extRequests.claimConfirmTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01472500013f0f0000170d00compressed_data01200700G0kB4B2JcayEGyfYKXXS9laXifgB5DEZejketFKLpc8pB8y1gIIEOJCufPCQRandmCx/T4dX//5/zecDYteKbOnxckG4voS2hyITtCXRwJs22cz6jI2cAdxxzSn5Y8SI0A6DGBAhwCu7LWL0K8jAN7qaLN7PBBuWzDE1RlmOmdB9EXbrJokMvXCwmNhHTM0R7LDRCiTjUnKi2K9zg1DGnkpdglsuPrZ4jZ9vGXUtr53iOkwVgj9+evvQzpJoSH16dGLMAapwc6GNS1QwPAHwFw==').then(result => {
-            console.log('Success', result.hash);
-        },
-        error => {
-            console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
-        });    	
-    }
+  //   claimConfirmTest() {
+		// extRequests.claimConfirmTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01472500013f0f0000170d00compressed_data01200700G0kB4B2JcayEGyfYKXXS9laXifgB5DEZejketFKLpc8pB8y1gIIEOJCufPCQRandmCx/T4dX//5/zecDYteKbOnxckG4voS2hyITtCXRwJs22cz6jI2cAdxxzSn5Y8SI0A6DGBAhwCu7LWL0K8jAN7qaLN7PBBuWzDE1RlmOmdB9EXbrJokMvXCwmNhHTM0R7LDRCiTjUnKi2K9zg1DGnkpdglsuPrZ4jZ9vGXUtr53iOkwVgj9+evvQzpJoSH16dGLMAapwc6GNS1QwPAHwFw==').then(result => {
+  //           console.log('Success', result.hash);
+  //       },
+  //       error => {
+  //           console.log('Error')
+  //           //this.props.changeWaitingStateType('rejected');
+  //       });    	
+  //   }
 
     handleInputTokenHashChange(item) {
     	console.log(item.target.value)
@@ -372,8 +383,7 @@ class SpaceBridge extends React.Component {
 
 			let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
 			let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
-				
-			//console.log(dataProvider, ABI, token_hash, assetProvider, account_id, spaceBridgeContractAddress)
+
 			assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
 				console.log(assetInfo)
 				that.props.updateSrcTokenHash(assetInfo.token);				
@@ -395,47 +405,45 @@ class SpaceBridge extends React.Component {
     }
 
 
-    handleInputENQTokenHashChange(item) {
-        //console.log(item.target.value)
-        let that = this;
-        if (!this.props.pubkey) {
-            console.log('No Enecuum user id!')
-            alert('Please, connect to your Enecuum wallet')
-        } else {            
-            let token_hash = '0000000000000000000000000000000000000000000000000000000000000000'//item.target.value;
-            let account_id = this.props.pubkey;
-            //let accountBalancesAll = networkApi.getAccountBalancesAll();
+    // handleInputENQTokenHashChange(item) {
+    //     let that = this;
+    //     if (!this.props.pubkey) {
+    //         console.log('No Enecuum user id!')
+    //         alert('Please, connect to your Enecuum wallet')
+    //     } else {            
+    //         let token_hash = '0000000000000000000000000000000000000000000000000000000000000000'//item.target.value;
+    //         let account_id = this.props.pubkey;
 
-            let accountBalancesAll = networkApi.getAccountBalancesAll(this.props.pubkey);
+    //         let accountBalancesAll = networkApi.getAccountBalancesAll(this.props.pubkey);
 
-            accountBalancesAll.then(result => {           
-                result.json().then(balancesAll => {                    
-                    console.log(balancesAll) 
-                    this.setState({balancesAll: res.init});                                   
-                });                
-            }, () => {
-                console.log('getAccountBalancesAll error')
-            })
+    //         accountBalancesAll.then(result => {           
+    //             result.json().then(balancesAll => {                    
+    //                 console.log(balancesAll) 
+    //                 this.setState({balancesAll: res.init});                                   
+    //             });                
+    //         }, () => {
+    //             console.log('getAccountBalancesAll error')
+    //         })
 
-            // assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
-            //     console.log(assetInfo)
-            //     that.props.updateSrcTokenHash(assetInfo.token);                
-            //     that.props.updateSrcTokenBalance(assetInfo.amount);
-            //     that.props.updateSrcTokenDecimals(assetInfo.decimals);
-            //     that.props.updateSrcTokenTicker(assetInfo.ticker);
-            // }, function(assetInfo) {
-            //     alert('Error');
-            // });
+    //         // assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
+    //         //     console.log(assetInfo)
+    //         //     that.props.updateSrcTokenHash(assetInfo.token);                
+    //         //     that.props.updateSrcTokenBalance(assetInfo.amount);
+    //         //     that.props.updateSrcTokenDecimals(assetInfo.decimals);
+    //         //     that.props.updateSrcTokenTicker(assetInfo.ticker);
+    //         // }, function(assetInfo) {
+    //         //     alert('Error');
+    //         // });
 
-            // assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
-            //     console.log(allowance);
-            //     that.props.updateSrcTokenAllowance(allowance);
-            // },function(err) {
-            //     console.log(`Can\'t get allowance for asset ${token_hash}`);
-            //     alert('Error');                    
-            // });            
-        }
-    }
+    //         // assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
+    //         //     console.log(allowance);
+    //         //     that.props.updateSrcTokenAllowance(allowance);
+    //         // },function(err) {
+    //         //     console.log(`Can\'t get allowance for asset ${token_hash}`);
+    //         //     alert('Error');                    
+    //         // });            
+    //     }
+    // }
 
 
     handleInputTokenAmountChange(item) {
@@ -462,44 +470,53 @@ class SpaceBridge extends React.Component {
 	    	let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenDecimals)).value;
 			bridgeProvider.lock(src_address, dst_address, '11', amount, token_hash, that.props.updateCurrentBridgeTx).then(function(lockTx) {
 				console.log('lock result', lockTx);
-				// let rawHistory = localStorage.getItem('bridge_history');
-				// let neItem = {};
-				// if (rawHistory !== undefined) {    		
-				// 	let tmp = JSON.parse(rawHistory);
-				// 	tmp['03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8'].push({lock : lockTx})				
-				// 	localStorage.setItem('bridge_history', JSON.stringify(lockTx));
-				// } else {
-
-				// }
-				//localStorage.setItem('lockTx_1', JSON.stringify(lockTx));
 			});
     	} else {
     		alert('Wrong input data')
     	}
     }
 
-
     getValidatorRes () {
         let that = this;
         let userHistory = this.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
-        let res = {
-            init : undefined,
-            confirm : undefined
+        if (this.props.bridgeDirection === 'ETH-ENQ') {
+            let res = {
+                init : undefined,
+                confirm : undefined
+            }
+            if (this.props.currentBridgeTx !== undefined) {
+                let item = userHistory.find(function(elem) {
+                    return (elem.lock.transactionHash === that.props.currentBridgeTx)
+                });
+                if (item !== undefined && item.validatorRes !== undefined && item.validatorRes.encoded_data?.enq.hasOwnProperty('confirm') && item.validatorRes.encoded_data?.enq.hasOwnProperty('init')) {
+                    res =  {
+                        init : item.validatorRes.encoded_data.enq.init,
+                        confirm : item.validatorRes.encoded_data.enq.confirm
+                    }
+                } 
+            }        
+            this.setState({initData: res.init});
+            this.setState({confirmData: res.confirm});
+        } else if (this.props.bridgeDirection === 'ENQ-ETH') {
+            let res = {
+                ticket : undefined,
+                transfer_id : undefined
+            }
+            if (this.props.currentBridgeTx !== undefined) {
+                let item = userHistory.find(function(elem) {
+                    return (elem.lock.transactionHash === that.props.currentBridgeTx)
+                });
+                if (item !== undefined && item.validatorRes !== undefined && item.validatorRes.ticket !== undefined && item.validatorRes.transfer_id !== undefined) {
+                    res =  {
+                        ticket : item.validatorRes.ticket,
+                        transfer_id : item.validatorRes.transfer_id
+                    }
+                } 
+            }        
+            this.setState({ticket: res.ticket});
+            this.setState({transfer_id: res.transfer_id});
+
         }
-        if (this.props.currentBridgeTx !== undefined) {
-            let item = userHistory.find(function(elem) {
-                return (elem.lock.transactionHash === that.props.currentBridgeTx)
-            });
-            console.log(item)
-            if (item !== undefined && item.validatorRes !== undefined && item.validatorRes.encoded_data?.enq.hasOwnProperty('confirm') && item.validatorRes.encoded_data?.enq.hasOwnProperty('init')) {
-                res =  {
-                    init : item.validatorRes.encoded_data.enq.init,
-                    confirm : item.validatorRes.encoded_data.enq.confirm
-                }
-            } 
-        }        
-        this.setState({initData: res.init});
-        this.setState({confirmData: res.confirm});
     }
 
 
@@ -517,7 +534,6 @@ class SpaceBridge extends React.Component {
         },
         error => {
             console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
         });
     }
 
@@ -536,9 +552,35 @@ class SpaceBridge extends React.Component {
         },
         error => {
             console.log('Error')
-            //this.props.changeWaitingStateType('rejected');
         });
     }
+
+    claimETHByparameters() {
+        console.log('claimETHByparameters');
+        if (this.props.pubkey !== undefined && this.props.srcTokenObj.hash !== undefined && (Number(this.props.srcTokenAmountToSend) > 0) && this.props.srcTokenObj.decimals !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+            let that = this;
+            let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
+            let ABI = smartContracts.spaceBridge.ABI;
+            let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
+            let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
+            let userHistory = this.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
+            let currentTxObj = userHistory.find(function(elem) {
+                if (elem.lock.transactionHash = that.props.currentBridgeTx)
+                    return true
+            });
+            
+            if (currentTxObj !== undefined && currentTxObj.hasOwnProperty('validatorRes') && currentTxObj.validatorRes?.ticket !== undefined) {
+                bridgeProvider.send_claim_init(currentTxObj.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId).then(function(claimTx) {
+                    console.log('claim result', claimTx);
+                });
+            }
+        } else {
+            alert('Wrong input data')
+        }
+
+
+
+    } 
 
     async setGoerli() {
         let requestData = {
@@ -560,13 +602,11 @@ class SpaceBridge extends React.Component {
         let URL =  'http://95.216.207.173:8080/api/v1/encode_lock'
 
         let src_network = '5';
-
-
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenObj.decimals)).value;
         let data = {
-            "src_network":11,
-            "dst_address":"2301",
-            "dst_network":23,
+            "src_network": 11,
+            "dst_address": this.props.nonNativeConnection.web3ExtensionAccountId,
+            "dst_network": 5,
             "amount": amount,
             "src_hash": this.props.srcTokenObj.hash,
             "src_address": this.props.pubkey
@@ -594,22 +634,24 @@ class SpaceBridge extends React.Component {
             return
         extRequests.enqLock(pubkey, packedData).then(result => {
             console.log('Success', result.hash);
+            that.props.updCurrentTxHash(result.hash);
+            that.props.updateCurrentBridgeTx(result.hash);
             let interpolateParams, txTypes = presets.pending.allowedTxTypes;
             let actionType = presets.pending.allowedTxTypes.enq_lock;
             lsdp.write(result.hash, 0, actionType);
-            this.props.updCurrentTxHash(result.hash);
+
 
             let accountInteractToBridgeItem = {
-                initiator : `${pubkey}_${dst_address}`,
-                lock       : {
-                                transactionHash : result.hash
-                            }                    
-            };
+                    initiator : `${pubkey}_${dst_address}`,
+                    lock       : {
+                                    transactionHash : result.hash
+                                }                    
+                };
 
             let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
             if (bridgeHistoryArray.length > 0) {
                 let itemIsExist = bridgeHistoryArray.find(function(elem) {
-                    if (elem.initiator === pubkey && elem.lock?.transactionHash === result.hash)
+                    if (elem.initiator === `${pubkey}_${dst_address}` && elem.lock?.transactionHash === result.hash)
                         return true
                 });
 
@@ -620,6 +662,9 @@ class SpaceBridge extends React.Component {
             } else {
                 that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
             }
+
+
+
         },
         error => {
             console.log('Error')
@@ -655,7 +700,8 @@ class SpaceBridge extends React.Component {
 
         return (
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
-            	<div className="mb-3">
+            { this.renderTokenCard()  }
+{/*            	<div className="mb-3 d-none">
             		<div className="mb-5">
 		            	<button onClick={this.connectWC.bind(this)}className="mr-1">CONNECT WALLET CONNECT</button>
 		            	<button onClick={this.disconnectWC.bind(this)} className="mr-3">DISCONNECT WALLET CONNECT</button>
@@ -676,10 +722,7 @@ class SpaceBridge extends React.Component {
 	            		<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>
 	            	</div>
 
-                    <div className="mb-5">
-                        {/*<button onClick={this.encodeLock.bind(this)} className="mr-3">encode_lock</button>*/}
-                        {/*<button onClick={this.claimConfirmTest.bind(this)}>Claim confirm Enecuum</button>*/}
-                    </div>
+
                     <div className="mb-5">
                         <button onClick={this.toggleShowTokensList.bind(this)} className="mr-3">get ENQ Balance</button>
                         { this.renderTokenCard()  }
@@ -688,7 +731,7 @@ class SpaceBridge extends React.Component {
 
 
 
-            	</div>
+            	</div>*/}
             	
 
 {/*            	{(this.props.pubkey === '') &&
@@ -984,15 +1027,15 @@ class SpaceBridge extends React.Component {
                                 {(this.props.currentBridgeTx !== undefined) &&    
                                     <div className="mt-4">Current bridge Tx: {this.props.currentBridgeTx}</div>
                                 }
-                                {/*{(this.state.initData !== undefined) &&
+                                {(this.state.transfer_id !== undefined) &&
                                     <>    
-                                        <div className="mt-4">Claim Init Data: <span className="text-color4">{this.state.initData}</span></div>
+                                        <div className="mt-4">Transfer ID: <span className="text-color4">{this.state.transfer_id}</span></div>
                                         <button
                                             className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimInitEnecuumByParameters.bind(this)}>Claim Init</button>
+                                            onClick={this.claimETHByparameters.bind(this)}>Claim</button>
                                     </>
                                 }
-                                {(this.state.confirmData !== undefined) &&
+{/*                                {(this.state.confirmData !== undefined) &&
                                     <>    
                                         <div className="mt-4">Claim Confirm Data: <span className="text-color4">{this.state.confirmData}</span></div>
                                         <button

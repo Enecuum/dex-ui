@@ -45,7 +45,7 @@ class SpaceBridgeProvider {
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				if (bridgeHistoryArray.length > 0) {
 					let itemIsExist = bridgeHistoryArray.find(function(elem) {
-						if (elem.initiator === src_address && elem.lock?.transactionHash === res)
+						if (elem.initiator === `${src_address}_${dst_address}` && elem.lock?.transactionHash === res)
 							return true
 					});
 
@@ -62,6 +62,36 @@ class SpaceBridgeProvider {
 			if (callback !== undefined) {
 				callback(res)
 			}
+		})
+	}
+
+	async send_claim_init(params, signatures, src_address) {
+		console.log('query SpaceBridgeProvider send_claim_init');
+		let that = this;
+
+		let ticket = [
+				params.ticket.dst_address,
+				params.ticket.dst_network,
+				params.ticket.amount,
+				window.Buffer.from(params.ticket.src_hash, 'hex'),
+				window.Buffer.from(params.ticket.src_address, 'hex'),
+				params.ticket.src_network,
+				window.Buffer.from(params.ticket.origin_hash, 'hex'),
+				params.ticket.origin_network,
+				params.ticket.nonce,
+				"wrapped",
+				params.ticket.ticker
+			];
+
+
+		return this.spaceBridgeContract.methods.claim(ticket, signatures).send(
+			{ from: src_address },
+			function (err, res) {
+			if (err) {
+				console.log("An error occured", err)
+				return
+			}
+			console.log("send: " + res)			
 		})
 	}
 

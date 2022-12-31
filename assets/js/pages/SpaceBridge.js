@@ -565,7 +565,7 @@ class SpaceBridge extends React.Component {
             let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
             let userHistory = this.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
             let currentTxObj = userHistory.find(function(elem) {
-                if (elem.lock.transactionHash = that.props.currentBridgeTx)
+                if (elem.lock.transactionHash === that.props.currentBridgeTx)
                     return true
             });
             

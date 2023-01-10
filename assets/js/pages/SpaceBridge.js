@@ -199,7 +199,7 @@ class SpaceBridge extends React.Component {
             return
 
 
-    	let URL = 'http://95.216.207.173:8080/api/v1/notify';
+    	let URL = 'https://bridge.enex.space/api/v1/notify';
     	
     	return fetch(URL, {
 	        method: 'POST',
@@ -399,7 +399,7 @@ class SpaceBridge extends React.Component {
     }
 
     async encodeDataAndLock() {
-        let URL =  'http://95.216.207.173:8080/api/v1/encode_lock';
+        let URL =  'https://bridge.enex.space/api/v1/encode_lock';
         let token_decimals = Number(this.props.srcTokenObj.decimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
@@ -892,7 +892,7 @@ class SpaceBridge extends React.Component {
                 }
 
 
-
+{/*HISTORY!!!*/}
 {/*                <div className="row w-100 mb-5">
                     <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
                         <Card className="swap-card">

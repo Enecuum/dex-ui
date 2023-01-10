@@ -13,7 +13,7 @@ import '../../css/bridge.css';
 import ValueProcessor from '../utils/ValueProcessor';
 import tokenERC20ContractProvider from './../contracts-providers/tokenERC20ContractProvider';
 import spaceBridgeProvider from './../contracts-providers/spaceBridgeProvider';
-import {netProps, smartContracts} from'./../config';
+import {bridgeNets, netProps, smartContracts} from'./../config';
 import presets from '../../store/pageDataPresets';
 import extRequests from '../requests/extRequests';
 import lsdp from "../utils/localStorageDataProcessor";
@@ -39,14 +39,14 @@ class SpaceBridge extends React.Component {
             confirmData : undefined,
             ticket : undefined,
             transfer_id : undefined,
-            enqBalances : []
+            history : []
+            // enqBalances : []
         }
         setInterval(() => {
-            this.updateUserHistory()
-            this.getValidatorRes()
+            this.updateUserHistory();
+            this.getValidatorRes();
         }, 5000)       
     }
-
 
     componentDidUpdate(prevProps) {
         if (prevProps.pubkey !== this.props.pubkey ||
@@ -57,7 +57,7 @@ class SpaceBridge extends React.Component {
             this.setState({confirmData: undefined});
             this.setState({ticket: undefined});
             this.setState({transfer_id: undefined});
-
+            this.setState({history: []});
         }
     }
 
@@ -75,7 +75,6 @@ class SpaceBridge extends React.Component {
            );
     };
 
-
     resetStore() {
         this.props.updCurrentTxHash(undefined);          
         this.props.updateSrcTokenHash('');      
@@ -91,9 +90,10 @@ class SpaceBridge extends React.Component {
     async updateUserHistory() {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
-    	let userHistory = this.getUserHistory(enqExtUserId, web3ExtUserId);
+    	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
     	let that = this;
     	if (userHistory.length > 0) {
+            this.setState({history: userHistory});
     		userHistory.forEach(function(elem, index, array) {
     			if (!elem.hasOwnProperty('validatorRes')) {
     				that.postToValidator(elem.lock.transactionHash).then(function(validatorRes) {
@@ -101,43 +101,12 @@ class SpaceBridge extends React.Component {
     						return
     					elem.validatorRes = validatorRes;
     					localStorage.setItem('bridge_history', JSON.stringify(array));
+                        that.setState({history: array});
     				});   				
     			}
     		});
     	}
     }
-
-    getUserHistory(enqExtUserId, web3ExtUserId) {
-    	let userHistory = [];
-    	if(enqExtUserId !== undefined && enqExtUserId !== '' &&
-    		web3ExtUserId !== undefined && web3ExtUserId !== '') {
-    		let rawHistory = this.bridgeHistoryProcessor.getBridgeHistoryArray();
-    		if (rawHistory.length > 0) {
-    			userHistory = rawHistory.filter(function(elem) {
-    				return elem.initiator.includes(enqExtUserId) && elem.initiator.includes(web3ExtUserId) ? true : false;
-    			});
-    		}    		
-    	}
-    	return userHistory;
-    }
-
-    // getHistory(userId = '03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8') {
-    // 	let userHistory = [];
-
-    // 	let rawHistory = localStorage.getItem('bridge_history');
-    // 	if (rawHistory !== undefined) {
-    // 		let tmp = JSON.parse(rawHistory);
-    // 		if ((typeof tmp === "object") &&
-    // 			tmp !== null &&
-    // 			tmp.hasOwnProperty(userId) &&
-    // 			Array.isArray(tmp[userId]) &&
-    // 			tmp[userId].length > 0) {
-    // 			userHistory = tmp[userId]
-    // 		}
-    // 	}
-    // 	console.log(userHistory)
-    // 	//let userBridgeInteractionHistory = return JSON.parse(localStorage.getItem(concatenatedKey))
-    // }
 
     connectWC() {
     	if (this.props.nonNativeConnection.walletConnect !== undefined)
@@ -201,22 +170,6 @@ class SpaceBridge extends React.Component {
 		});
     }
 
-	// approve1Token() {
-	// 	let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
- //    	let ABI = smartContracts.erc20token.ABI;
- //    	//let token_hash = netProps['0x5'].wethAddr;
- //    	let token_hash = netProps['0x5'].usdcAddr;
- //    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
-
-	// 	let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-	// 	let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
-
-	// 	assetProvider.approveBalance(spaceBridgeContractAddress, '1000000000000000000', account_id).then(function(approveTx) {
-	// 		console.log(approveTx)
-	// 	});
-	// }
-
-
 	approveSrcTokenBalance() {
 		if (this.props.srcTokenHash && this.props.nonNativeConnection.web3ExtensionAccountId) {
 			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
@@ -235,39 +188,13 @@ class SpaceBridge extends React.Component {
 
 	}
 
-  //   lock001Token() {
-  //   	let that = this;
-		// let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-  //   	let ABI = smartContracts.spaceBridge.ABI;
-  //   	let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
-  //   	//let token_hash = netProps['0x5'].wethAddr;
-  //   	let token_hash = netProps['0x5'].usdcAddr;
-  //   	console.log(spaceBridgeProvider, ABI, spaceBridgeContractAddress)
-  //   	let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
-  //   	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
-  //   	let dst_address = window.Buffer.from('03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8')
-		// bridgeProvider.lock(src_address, dst_address, '11', '2', token_hash).then(function(lockTx) {
-		// 	console.log('lock responce: ', lockTx)
-		// 	// let rawHistory = localStorage.getItem('bridge_history');
-		// 	// let neItem = {};
-		// 	// if (rawHistory !== undefined) {    		
-		// 	// 	let tmp = JSON.parse(rawHistory);
-		// 	// 	tmp['03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8'].push({lock : lockTx})				
-		// 	// 	localStorage.setItem('bridge_history', JSON.stringify(lockTx));
-		// 	// } else {
-
-		// 	// }
-		// 	//localStorage.setItem('lockTx_1', JSON.stringify(lockTx));
-		// });
-  //   }
-
     async postToValidator(txHash) {
     	let src_network = undefined;
 
         if (this.props.bridgeDirection == 'ETH-ENQ')
             src_network = 5
         else if (this.props.bridgeDirection == 'ENQ-ETH')
-            src_network = 11
+            src_network = 1 //11
         else
             return
 
@@ -285,87 +212,6 @@ class SpaceBridge extends React.Component {
 	    	return res
 	    });
     }
-
-  //   claimInitEnecuum() {
-  //   	let parameters = {
-  //   		dst_address    : "03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",
-  //           dst_network    : "1",
-  //           amount         : "1000000000000000",
-  //           src_hash       : "d050e000eEF099179D224cCD3964cc4B683383F1",
-  //           src_address    : "1E4d77e8cCd3964ad9b10Bdba00aE593DF1112A1",
-  //           src_network    : "5",
-  //           origin_hash    : "d050e000eEF099179D224cCD3964cc4B683383F1",
-  //           origin_network : "5",
-  //           nonce          : "1",
-  //           transfer_id    : "fd7fda80663a9d28810a1d2c312e3d2c1a9a8377d312c66e3d7c3c1dd4b9e4c6",
-  //           ticker         : "BWETH"
-  //   	}
-
-		// extRequests.claimInit("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
-  //       .then(result => {
-  //           console.log('Success', result.hash)
-  //           let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-  //           let actionType = presets.pending.allowedTxTypes.claim_init;
-  //           interpolateParams = {                    
-  //                   ticker : '???'
-  //               }
-  //           lsdp.write(result.hash, 0, actionType, interpolateParams);
-  //           this.props.updCurrentTxHash(result.hash);
-  //       },
-  //       error => {
-  //           console.log('Error')
-  //           //this.props.changeWaitingStateType('rejected');
-  //       });
-  //   }
-
-    // claimInitEnecuumTest() {
-    // 	extRequests.claimInitTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01772400016f0f0000170d00compressed_data01500700G6oBQJwHdiyYBpt56QppqZO2t22JyqM7sgH5U7jqv0CC7C6WvhSJmTp3dKAHyO92eEsKMAyoBbEF2Ly1tsBtSHR1dTcMTTNyVaBC/P0/iJMF4NkxW+tWxXSKuJOv9MGj1RiZkX2Ece2KAxKmAy3nBUtckrxBRQG0vfj7nU9urhbOVnevm8JOV73MYFltW+t6yV7pqscuxxH9KHe9tGd4SdSabR7B3cSjD4Q9hgP4pZ3PGxFpwzUBlRbSiPlbPj7h7NtsVdwjvn96Sq9qDvJTzOe0pZgVwh2hDh66cqAt60RBWmOGRgurAO6YPWEau6hgqx2uowQ=').then(result => {
-    //         console.log('Success', result.hash);
-    //         let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-    //         let actionType = presets.pending.allowedTxTypes.claim_init;
-    //         lsdp.write(result.hash, 0, actionType);
-    //         this.props.updCurrentTxHash(result.hash);
-    //     },
-    //     error => {
-    //         console.log('Error')
-    //         //this.props.changeWaitingStateType('rejected');
-    //     });
-    // }
-
-  //   claimConfirmEnecuum() {
-  //   	let parameters = {
-  //   		"validator_id"   : "",
-  //           "validator_sign" : "",
-  //           "transfer_id"    : ""
-  //   	}
-
-		// extRequests.claimConfirm("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8", 0, parameters)
-  //       .then(result => {
-  //           console.log('Success', result.hash)
-  //           let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-  //           let actionType = presets.pending.allowedTxTypes.claim_confirm;
-  //           interpolateParams = {                    
-  //                   ticker : '???'
-  //               }
-  //           lsdp.write(result.hash, 0, actionType, interpolateParams);
-  //           this.props.updCurrentTxHash(result.hash);
-  //       },
-  //       error => {
-  //           console.log('Error')
-  //           //this.props.changeWaitingStateType('rejected');
-  //       });
-  //   }    
-
-
-  //   claimConfirmTest() {
-		// extRequests.claimConfirmTest("03c91e88967465c44aa2afeab3b87dbeede9bd63dbe4a0121ea02fa3f0f4a4e2a8",'01472500013f0f0000170d00compressed_data01200700G0kB4B2JcayEGyfYKXXS9laXifgB5DEZejketFKLpc8pB8y1gIIEOJCufPCQRandmCx/T4dX//5/zecDYteKbOnxckG4voS2hyITtCXRwJs22cz6jI2cAdxxzSn5Y8SI0A6DGBAhwCu7LWL0K8jAN7qaLN7PBBuWzDE1RlmOmdB9EXbrJokMvXCwmNhHTM0R7LDRCiTjUnKi2K9zg1DGnkpdglsuPrZ4jZ9vGXUtr53iOkwVgj9+evvQzpJoSH16dGLMAapwc6GNS1QwPAHwFw==').then(result => {
-  //           console.log('Success', result.hash);
-  //       },
-  //       error => {
-  //           console.log('Error')
-  //           //this.props.changeWaitingStateType('rejected');
-  //       });    	
-  //   }
 
     handleInputTokenHashChange(item) {
     	console.log(item.target.value)
@@ -404,48 +250,6 @@ class SpaceBridge extends React.Component {
     	}
     }
 
-
-    // handleInputENQTokenHashChange(item) {
-    //     let that = this;
-    //     if (!this.props.pubkey) {
-    //         console.log('No Enecuum user id!')
-    //         alert('Please, connect to your Enecuum wallet')
-    //     } else {            
-    //         let token_hash = '0000000000000000000000000000000000000000000000000000000000000000'//item.target.value;
-    //         let account_id = this.props.pubkey;
-
-    //         let accountBalancesAll = networkApi.getAccountBalancesAll(this.props.pubkey);
-
-    //         accountBalancesAll.then(result => {           
-    //             result.json().then(balancesAll => {                    
-    //                 console.log(balancesAll) 
-    //                 this.setState({balancesAll: res.init});                                   
-    //             });                
-    //         }, () => {
-    //             console.log('getAccountBalancesAll error')
-    //         })
-
-    //         // assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
-    //         //     console.log(assetInfo)
-    //         //     that.props.updateSrcTokenHash(assetInfo.token);                
-    //         //     that.props.updateSrcTokenBalance(assetInfo.amount);
-    //         //     that.props.updateSrcTokenDecimals(assetInfo.decimals);
-    //         //     that.props.updateSrcTokenTicker(assetInfo.ticker);
-    //         // }, function(assetInfo) {
-    //         //     alert('Error');
-    //         // });
-
-    //         // assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
-    //         //     console.log(allowance);
-    //         //     that.props.updateSrcTokenAllowance(allowance);
-    //         // },function(err) {
-    //         //     console.log(`Can\'t get allowance for asset ${token_hash}`);
-    //         //     alert('Error');                    
-    //         // });            
-    //     }
-    // }
-
-
     handleInputTokenAmountChange(item) {
 		console.log(item.target.value);
 		if (!isNaN(item.target.value))
@@ -468,7 +272,9 @@ class SpaceBridge extends React.Component {
 	    	let src_address = this.props.nonNativeConnection.web3ExtensionAccountId;
 	    	let dst_address = window.Buffer.from(that.props.pubkey);
 	    	let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenDecimals)).value;
-			bridgeProvider.lock(src_address, dst_address, '11', amount, token_hash, that.props.updateCurrentBridgeTx).then(function(lockTx) {
+            let token_decimals = this.props.srcTokenDecimals;
+            let ticker = this.props.srcTokenTicker;
+			bridgeProvider.lock(src_address, '5', dst_address, '1' /*11*/, amount, token_hash, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
 				console.log('lock result', lockTx);
 			});
     	} else {
@@ -478,7 +284,7 @@ class SpaceBridge extends React.Component {
 
     getValidatorRes () {
         let that = this;
-        let userHistory = this.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
+        let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
         if (this.props.bridgeDirection === 'ETH-ENQ') {
             let res = {
                 init : undefined,
@@ -515,10 +321,8 @@ class SpaceBridge extends React.Component {
             }        
             this.setState({ticket: res.ticket});
             this.setState({transfer_id: res.transfer_id});
-
         }
     }
-
 
     claimInitEnecuumByParameters() {
         let pubkey = this.props.pubkey;
@@ -537,7 +341,6 @@ class SpaceBridge extends React.Component {
         });
     }
 
-
     claimConfirmEnecuumByParameters() {
         let pubkey = this.props.pubkey;
         let claimConfirmData = this.state.confirmData;
@@ -555,15 +358,15 @@ class SpaceBridge extends React.Component {
         });
     }
 
-    claimETHByparameters() {
-        console.log('claimETHByparameters');
+    claimETHByParameters() {
+        console.log('claimETHByParameters');
         if (this.props.pubkey !== undefined && this.props.srcTokenObj.hash !== undefined && (Number(this.props.srcTokenAmountToSend) > 0) && this.props.srcTokenObj.decimals !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
             let that = this;
             let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
             let ABI = smartContracts.spaceBridge.ABI;
             let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
             let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
-            let userHistory = this.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
+            let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
             let currentTxObj = userHistory.find(function(elem) {
                 if (elem.lock.transactionHash === that.props.currentBridgeTx)
                     return true
@@ -577,9 +380,6 @@ class SpaceBridge extends React.Component {
         } else {
             alert('Wrong input data')
         }
-
-
-
     } 
 
     async setGoerli() {
@@ -599,18 +399,19 @@ class SpaceBridge extends React.Component {
     }
 
     async encodeDataAndLock() {
-        let URL =  'http://95.216.207.173:8080/api/v1/encode_lock'
-
-        let src_network = '5';
-        let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenObj.decimals)).value;
+        let URL =  'http://95.216.207.173:8080/api/v1/encode_lock';
+        let token_decimals = Number(this.props.srcTokenObj.decimals);
+        let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
-            "src_network": 11,
+            "src_network": 1, //11
             "dst_address": this.props.nonNativeConnection.web3ExtensionAccountId,
             "dst_network": 5,
             "amount": amount,
             "src_hash": this.props.srcTokenObj.hash,
             "src_address": this.props.pubkey
         }
+
+        let lockInfo = {...data, ...{token_decimals : token_decimals, ticker : this.props.srcTokenTicker}};
            
         return fetch(URL, {
             method: 'POST',
@@ -620,15 +421,15 @@ class SpaceBridge extends React.Component {
             return response.json()
         }).then(res => {
             console.log(res.encoded_data);
-            this.enqLock(res.encoded_data)            
+            this.enqLock(res.encoded_data, lockInfo)            
             return res
         });
     }
 
-    enqLock(packedDataFromEncodeLock) {
+    enqLock(packedDataFromEncodeLock, lockInfo) {
         let that = this;
-        let pubkey = this.props.pubkey;
-        let dst_address = this.props.nonNativeConnection.web3ExtensionAccountId;
+        let pubkey = lockInfo.src_address;
+        let dst_address = lockInfo.dst_address;
         let packedData = packedDataFromEncodeLock;
         if (!(pubkey && packedData))
             return
@@ -644,7 +445,15 @@ class SpaceBridge extends React.Component {
             let accountInteractToBridgeItem = {
                     initiator : `${pubkey}_${dst_address}`,
                     lock       : {
-                                    transactionHash : result.hash
+                                    transactionHash : result.hash,
+                                    src_address : pubkey,
+                                    src_network : lockInfo.src_network,
+                                    dst_address, 
+                                    dst_network : lockInfo.dst_network,
+                                    token_amount : lockInfo.amount,
+                                    token_hash : lockInfo.src_hash,
+                                    token_decimals : lockInfo.token_decimals,
+                                    ticker : lockInfo.ticker
                                 }                    
                 };
 
@@ -685,18 +494,50 @@ class SpaceBridge extends React.Component {
         this.props.updateShowTokenList(!this.props.showTokenList)
     }
 
+    getBridgeTxAmountStr(bridgeTxInfo) {
+        let res = '---';
+        if (bridgeTxInfo.lock?.token_amount !== undefined &&
+            bridgeTxInfo.lock?.token_decimals !== undefined) {
+            res = valueProcessor.usCommasBigIntDecimals(bridgeTxInfo.lock.token_amount, Number(bridgeTxInfo.lock.token_decimals), Number(bridgeTxInfo.lock.token_decimals));
+            if (bridgeTxInfo.lock?.ticker !== undefined) {
+                res = `${res} (${bridgeTxInfo.lock.ticker})`
+            }
+        }
 
-    makeENQLock() {
-
+        return res       
     }
 
-    render () {
+    getBridgeTxDirectionStr(bridgeTxInfo) {
+        let res = '';
+        let srcNetwork = '???';
+        let dstNetwork = '???';
 
+        if (bridgeTxInfo.lock?.src_network !== undefined) {
+            let srcId = Number(bridgeTxInfo.lock.src_network);
+            let srcNetworkObj = bridgeNets.find(elem => elem.id === srcId);
+            if (srcNetworkObj !== undefined && srcNetworkObj.name !== undefined)
+                srcNetwork = srcNetworkObj.name;
+        }
+
+        if (bridgeTxInfo.lock?.dst_network !== undefined) {
+            let dstId = Number(bridgeTxInfo.lock.dst_network);
+            let dstNetworkObj = bridgeNets.find(elem => elem.id === dstId);
+            if (dstNetworkObj !== undefined && dstNetworkObj.name !== undefined)
+                dstNetwork = dstNetworkObj.name;
+        }
+
+        res = `From ${srcNetwork} to ${dstNetwork}`;
+        
+        return res
+    }
+
+        
+    render () {
+        let that = this;
   //   	let enqExtUserId = this.props.pubkey;
   //   	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
 
-		// console.log(this.getUserHistory(enqExtUserId, web3ExtUserId));
-
+		// console.log(this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId));
 
         return (
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
@@ -1032,7 +873,7 @@ class SpaceBridge extends React.Component {
                                         <div className="mt-4">Transfer ID: <span className="text-color4">{this.state.transfer_id}</span></div>
                                         <button
                                             className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimETHByparameters.bind(this)}>Claim</button>
+                                            onClick={this.claimETHByParameters.bind(this)}>Claim</button>
                                     </>
                                 }
 {/*                                {(this.state.confirmData !== undefined) &&
@@ -1052,7 +893,55 @@ class SpaceBridge extends React.Component {
 
 
 
+{/*                <div className="row w-100 mb-5">
+                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
+                        <Card className="swap-card">
+                          <Card.Body className="p-0">
+                            <div className="p-4 bottom-line-1">
+                                <div className="d-flex align-items-center justify-content-between nowrap">
+                                    <div>
+                                        <div className="h4 text-nowrap">Space Bridge</div>
+                                        <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
+                                    </div>
+                                    {!this.props.nonNativeConnection.web3ExtensionAccountId &&
+                                        <div>                                        
+                                            <button
+                                                className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
+                                                onClick={this.connectWeb3Ext.bind(this)}>Bridge</button>
+                                        </div>
+                                    }                                    
+                                </div>
+                            </div>
+                            <Card.Text as="div" className="p-4">
+                                <div>
+                                    <div className="h5">History</div>
+                                </div>
 
+                                {this.state.history.map((item, index) => (
+                                    <div className="d-flex justify-content-between">
+                                        <div className="mr-3">
+                                            <div>{item.lock?.transactionHash}</div>
+                                            <div>
+                                                {that.getBridgeTxDirectionStr(that, item)}
+                                            </div>
+                                            <div className="text-color4">
+                                                <span className="mr-3">Amount:</span>
+                                                <span>{that.getBridgeTxAmountStr(that, item)}</span>                                                
+                                            </div>
+                                            
+                                        </div>
+                                        <div>
+                                            <button></button>
+                                        </div>                                        
+                                    </div>
+                                ))}
+
+
+                            </Card.Text>
+                          </Card.Body>
+                        </Card>                
+                    </div>
+                </div>*/}
 
 
 

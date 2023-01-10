@@ -6,6 +6,21 @@ export const defaultParams = {
     chain : '0x1'
 }
 
+export const bridgeNets = [
+    {
+        id : 11,
+        name : 'f3-dev'
+    },
+    {
+        id : 1,
+        name : 'BIT'
+    },
+    {
+        id : 5,
+        name : 'Goerly'
+    }
+]
+
 export const netProps = {
     '0x1' : {
         name              : 'Ethereum mainnet',

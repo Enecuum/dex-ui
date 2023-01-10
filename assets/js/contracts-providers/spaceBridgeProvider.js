@@ -25,7 +25,7 @@ class SpaceBridgeProvider {
 	// 	})
 	// }
 
-	async lock(src_address, dst_address, dst_network, token_amount, token_hash, callback = undefined) {
+	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
 		return this.spaceBridgeContract.methods.lock(dst_address, dst_network, token_amount, token_hash).send(
@@ -38,7 +38,15 @@ class SpaceBridgeProvider {
 				let accountInteractToBridgeItem = {
 					initiator : `${src_address}_${dst_address}`,
 					lock 	  : {
-									transactionHash : res
+									transactionHash : res,
+									src_address,
+									src_network,
+									dst_address,
+									dst_network,
+									token_amount,
+									token_hash,
+									token_decimals,
+									ticker
 								}					
 				};
 

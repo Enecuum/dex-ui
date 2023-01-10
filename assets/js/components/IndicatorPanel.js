@@ -231,6 +231,8 @@ class IndicatorPanel extends React.Component {
 
     updMainTokenData (net) {
         let netInfo = this.props.networkInfo
+        if (!netInfo.native_token)
+            return
         let actualNativeToken = netInfo.native_token.hash
         if (extRequests.nativeTokenHash !== actualNativeToken) {
             let fee = netInfo.native_token.fee_value
@@ -249,7 +251,7 @@ class IndicatorPanel extends React.Component {
                 this.updMainTokenData(res.net)
                 networkApi.updUrl(res.net + '/')
                 lsdp.updNet(res.net)
-                this.changeNet(ENQWeb.Enq.currentProvider.replace(/https?:\/\//, '').replace(/.enecuum\.com/, ''), res.net + '/');                
+                this.changeNet(ENQWeb.Enq.currentProvider.replace(/https?:\/\//, '').replace(/.enecuum\.com/, ''), res.net + '/');
             }
         },
         err => this.setState({blockTheWindow : true}))

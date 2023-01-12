@@ -80,6 +80,14 @@ class NetworkApi {
         )
     }
 
+    getTx (url = this.url, txHash) {        
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/tx?hash=${txHash}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+
     // ---------------------------------------------------------------------
 }
 

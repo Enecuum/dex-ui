@@ -291,7 +291,6 @@ class ExtRequests {
         // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
-
     };
 
     claimConfirm (pubKey, claimConfirmCost, params) {
@@ -323,7 +322,6 @@ class ExtRequests {
         // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
-
     };
 
     enqLock (pubKey, data_packed) {
@@ -338,7 +336,6 @@ class ExtRequests {
         // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
-
     };    
 
 }

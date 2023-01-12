@@ -73,7 +73,7 @@ class SpaceBridgeProvider {
 		})
 	}
 
-	async send_claim_init(params, signatures, src_address) {
+	async send_claim_init(params, signatures, from_address, elemLockTransactionHash = undefined) {
 		console.log('query SpaceBridgeProvider send_claim_init');
 		let that = this;
 
@@ -93,18 +93,26 @@ class SpaceBridgeProvider {
 
 
 		return this.spaceBridgeContract.methods.claim(ticket, signatures).send(
-			{ from: src_address },
+			{ from: from_address },
 			function (err, res) {
+				console.log('SpaceBridgeProvider send_claim_init res', res)
 			if (err) {
 				console.log("An error occured", err)
 				return
+			} else {
+				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+				let updatedHistory = bridgeHistoryArray.map(elem => {
+					if (elem.initiator.includes(params.ticket.dst_address) && elem.initiator.includes(params.ticket.src_address) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+						elem.claimTxHash = res;
+					}
+					return elem
+				});
+
+				localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 			}
 			console.log("send: " + res)			
 		})
 	}
-
-
-
 }
 
 export default SpaceBridgeProvider

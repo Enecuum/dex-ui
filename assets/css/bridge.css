@@ -63,3 +63,14 @@
 #bridgeWrapper .dropdown-menu .dropdown-item:hover {
 	color: var(--color1);
 }
+
+
+.bridge-history-resume-wrapper {
+	min-width: 180px;
+	flex-basis: 180px;
+	width: 180px;
+}
+
+.bridge-history-resume-wrapper * {
+	text-align: center;
+}

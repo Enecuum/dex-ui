@@ -13,6 +13,7 @@ import '../../css/bridge.css';
 import ValueProcessor from '../utils/ValueProcessor';
 import tokenERC20ContractProvider from './../contracts-providers/tokenERC20ContractProvider';
 import spaceBridgeProvider from './../contracts-providers/spaceBridgeProvider';
+import web3LibProvider from './../web3-provider/Web3LibProvider';
 import {bridgeNets, netProps, smartContracts} from'./../config';
 import presets from '../../store/pageDataPresets';
 import extRequests from '../requests/extRequests';
@@ -95,6 +96,51 @@ class SpaceBridge extends React.Component {
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
     		userHistory.forEach(function(elem, index, array) {
+                if (!elem.lock.hasOwnProperty('status')) {
+                    if (elem.lock?.src_network === '5'  && that.props.nonNativeConnection.web3Extension?.provider) {
+                        let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
+                        let web3Provider = new web3LibProvider(dataProvider);
+                        web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
+                            if (res.status !== undefined) {
+                                elem.lock.status = res.status;
+                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                that.setState({history: array});
+                            }
+                        });
+                    }
+                    if (elem.lock?.src_network === 1) {
+                        let net = bridgeNets.find(net => net.id === elem.lock.src_network);
+                        let url = net !== undefined ? net.url : undefined;
+                        if (url !== undefined) {
+                            networkApi.getTx(url, elem.lock.transactionHash).then(function(res) {
+                                if (!res.lock) {
+                                    res.json().then(tx => {
+                                        if (tx.status !== undefined) {
+                                            elem.lock.status = tx.status === 3 ? true : false;
+                                            localStorage.setItem('bridge_history', JSON.stringify(array));
+                                            that.setState({history: array});
+                                        }
+                                    });
+                                }
+                            });                        
+                        }
+                    }
+                } else if (elem.lock.status === true) {
+                    if (elem.lock?.src_network === 1) {
+                        if (elem.claimTxHash !== undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
+                            let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
+                            let web3Provider = new web3LibProvider(dataProvider);
+                            web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
+                                if (res.status !== undefined) {
+                                    elem.claimTxStatus = res.status;
+                                    localStorage.setItem('bridge_history', JSON.stringify(array));
+                                    that.setState({history: array});
+                                }
+                            });
+                        }
+                    }
+                }
+                
     			if (!elem.hasOwnProperty('validatorRes')) {
     				that.postToValidator(elem.lock.transactionHash).then(function(validatorRes) {
     					if (validatorRes.hasOwnProperty('err'))
@@ -373,12 +419,28 @@ class SpaceBridge extends React.Component {
             });
             
             if (currentTxObj !== undefined && currentTxObj.hasOwnProperty('validatorRes') && currentTxObj.validatorRes?.ticket !== undefined) {
-                bridgeProvider.send_claim_init(currentTxObj.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId).then(function(claimTx) {
+                bridgeProvider.send_claim_init(currentTxObj.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId, currentTxObj.lock.transactionHash).then(function(claimTx) {
                     console.log('claim result', claimTx);
                 });
             }
         } else {
             alert('Wrong input data')
+        }
+    }
+
+    claimEnqEthBridge(bridgeItem) {
+        if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+            let that = this;
+            let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
+            let ABI = smartContracts.spaceBridge.ABI;
+            let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
+            let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
+            
+            if (bridgeItem !== undefined && bridgeItem.hasOwnProperty('validatorRes') && bridgeItem.validatorRes?.ticket !== undefined) {
+                bridgeProvider.send_claim_init(bridgeItem.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId, bridgeItem.lock.transactionHash).then(function(claimTx) {
+                    console.log('claim result', claimTx);
+                });
+            }
         }
     } 
 
@@ -411,7 +473,7 @@ class SpaceBridge extends React.Component {
             "src_address": this.props.pubkey
         }
 
-        let lockInfo = {...data, ...{token_decimals : token_decimals, ticker : this.props.srcTokenTicker}};
+        let lockInfo = {...data, ...{token_decimals : token_decimals, ticker : this.props.srcTokenObj.ticker}};
            
         return fetch(URL, {
             method: 'POST',
@@ -498,7 +560,7 @@ class SpaceBridge extends React.Component {
         let res = '---';
         if (bridgeTxInfo.lock?.token_amount !== undefined &&
             bridgeTxInfo.lock?.token_decimals !== undefined) {
-            res = valueProcessor.usCommasBigIntDecimals(bridgeTxInfo.lock.token_amount, Number(bridgeTxInfo.lock.token_decimals), Number(bridgeTxInfo.lock.token_decimals));
+            res = this.valueProcessor.usCommasBigIntDecimals(bridgeTxInfo.lock.token_amount, Number(bridgeTxInfo.lock.token_decimals), Number(bridgeTxInfo.lock.token_decimals));
             if (bridgeTxInfo.lock?.ticker !== undefined) {
                 res = `${res} (${bridgeTxInfo.lock.ticker})`
             }
@@ -511,7 +573,6 @@ class SpaceBridge extends React.Component {
         let res = '';
         let srcNetwork = '???';
         let dstNetwork = '???';
-
         if (bridgeTxInfo.lock?.src_network !== undefined) {
             let srcId = Number(bridgeTxInfo.lock.src_network);
             let srcNetworkObj = bridgeNets.find(elem => elem.id === srcId);
@@ -531,6 +592,56 @@ class SpaceBridge extends React.Component {
         return res
     }
 
+    getControl(item) {
+        let res = 'Waiting...'
+        if (item.lock.status !== undefined && item.lock.status === true) {
+            res = 'Locked successfully. Waiting for validation...';
+            if (item.lock.src_network === '5') {
+                if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
+                    res = this.getClaimButton(item);
+            } else if (item.lock.src_network === 1) {
+                if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
+                    res = this.getClaimButton(item);
+                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
+                    res = 'Waiting for claim confirmation...';
+                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
+                    res = this.getButtonLinkToEtherscan(item);
+            }
+        } else if (item.lock.status !== undefined && item.lock.status !== true) 
+            res = 'Failed on lock stage';
+        return res    
+    }
+
+    getClaimButton(item) {
+        return (
+                <>
+                    <div className="mb-2">Validated successfully</div>
+                    <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimEnqEthBridge.bind(this, item)}>
+                        Claim</Button>
+                </>
+           );        
+    }
+
+    getButtonLinkToEtherscan(item) {
+        let resume = 'Claim';
+        if (item.claimTxStatus === true)
+            resume = 'Done';
+        else if (item.claimTxStatus === false)
+            resume = 'Failed';
+
+        return (
+                <>
+                    <div className="mb-2">{resume}</div>
+                    <a
+                        href={`https://goerli.etherscan.io/tx/${item.claimTxHash}`} 
+                        className="d-block w-100 btn btn-info px-4"
+                        target="_blank">
+                        Info</a>
+                </>
+           );        
+    }
         
     render () {
         let that = this;
@@ -705,7 +816,7 @@ class SpaceBridge extends React.Component {
 						    		className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
 						    		onClick={this.lockSrcToken.bind(this)}
                                     disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                                    Send Lock</button>
+                                    Confirm</button>
                                 {(this.props.currentBridgeTx !== undefined) &&    
                                     <div className="mt-4">Current bridge Tx: {this.props.currentBridgeTx}</div>
                                 }
@@ -714,7 +825,7 @@ class SpaceBridge extends React.Component {
                                         <div className="mt-4">Claim Init Data: <span className="text-color4">{this.state.initData}</span></div>
                                         <button
                                             className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimInitEnecuumByParameters.bind(this)}>Claim Init</button>
+                                            onClick={this.claimInitEnecuumByParameters.bind(this)}>Send</button>
                                     </>
                                 }
                                 {(this.state.confirmData !== undefined) &&
@@ -722,7 +833,7 @@ class SpaceBridge extends React.Component {
                                         <div className="mt-4">Claim Confirm Data: <span className="text-color4">{this.state.confirmData}</span></div>
                                         <button
                                             className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimConfirmEnecuumByParameters.bind(this)}>Claim Confirm</button>
+                                            onClick={this.claimConfirmEnecuumByParameters.bind(this)}>Claim</button>
                                     </>
                                 }
 						    </Card.Text>
@@ -893,7 +1004,7 @@ class SpaceBridge extends React.Component {
 
 
 {/*HISTORY!!!*/}
-{/*                <div className="row w-100 mb-5">
+{                <div className="row w-100 mb-5">
                     <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
                         <Card className="swap-card">
                           <Card.Body className="p-0">
@@ -912,36 +1023,34 @@ class SpaceBridge extends React.Component {
                                     }                                    
                                 </div>
                             </div>
-                            <Card.Text as="div" className="p-4">
-                                <div>
+                            <Card.Text as="div" className="p-y">
+                                <div className="mb-3 px-4 pt-2">
                                     <div className="h5">History</div>
                                 </div>
 
                                 {this.state.history.map((item, index) => (
-                                    <div className="d-flex justify-content-between">
+                                    <div className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4">
                                         <div className="mr-3">
-                                            <div>{item.lock?.transactionHash}</div>
+                                           {/* <div>{item.lock?.transactionHash}</div>*/}
                                             <div>
-                                                {that.getBridgeTxDirectionStr(that, item)}
+                                                {that.getBridgeTxDirectionStr(item)}
                                             </div>
                                             <div className="text-color4">
-                                                <span className="mr-3">Amount:</span>
-                                                <span>{that.getBridgeTxAmountStr(that, item)}</span>                                                
-                                            </div>
-                                            
+                                                <span className="mr-2">Amount:</span>
+                                                <span>{that.getBridgeTxAmountStr(item)}</span>                                                
+                                            </div>                                            
                                         </div>
-                                        <div>
-                                            <button></button>
+                                        <div className="bridge-history-resume-wrapper">
+                                            {that.getControl(item)}
                                         </div>                                        
                                     </div>
                                 ))}
-
 
                             </Card.Text>
                           </Card.Body>
                         </Card>                
                     </div>
-                </div>*/}
+                </div>}
 
 
 

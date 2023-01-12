@@ -13,13 +13,18 @@ export const bridgeNets = [
     },
     {
         id : 1,
-        name : 'BIT'
+        name : 'BIT',
+        url : 'https://bit.enecuum.com/'
     },
     {
         id : 5,
         name : 'Goerly'
     }
 ]
+
+// export const bridgeTxStatuses = [
+//     {}
+// ]
 
 export const netProps = {
     '0x1' : {

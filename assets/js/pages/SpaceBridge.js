@@ -101,12 +101,12 @@ class SpaceBridge extends React.Component {
                         let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
-                            if (res.status !== undefined) {
+                            if (res !== null && res.status !== undefined) {
                                 elem.lock.status = res.status;
                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                 that.setState({history: array});
                             }
-                        });
+                        });                        
                     }
                     if (elem.lock?.src_network === 1) {
                         let net = bridgeNets.find(net => net.id === elem.lock.src_network);
@@ -139,10 +139,50 @@ class SpaceBridge extends React.Component {
                             });
                         }
                     }
+                    if (elem.claimInitTxHash !== undefined && elem.claimInitTxStatus === undefined) {
+                        if (elem.lock?.dst_network === '1') {
+                            let net = bridgeNets.find(net => net.id === Number(elem.lock.dst_network));
+                            let url = net !== undefined ? net.url : undefined;
+                            if (url !== undefined) {
+                                networkApi.getTx(url, elem.claimInitTxHash).then(function(res) {
+                                    if (!res.lock) {
+                                        console.log(res)
+                                        res.json().then(tx => {
+                                            if (tx.status !== undefined) {
+                                                elem.claimInitTxStatus = tx.status === 3 ? true : false;
+                                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                                that.setState({history: array});
+                                            }
+                                        });
+                                    }
+                                });                        
+                            }
+                        }
+                    }
+                    if (elem.claimConfirmTxHash !== undefined && elem.claimConfirmTxStatus === undefined) {
+                        if (elem.lock?.dst_network === '1') {
+                            let net = bridgeNets.find(net => net.id === Number(elem.lock.dst_network));
+                            let url = net !== undefined ? net.url : undefined;
+                            if (url !== undefined) {
+                                networkApi.getTx(url, elem.claimConfirmTxHash).then(function(res) {
+                                    if (!res.lock) {
+                                        console.log(res)
+                                        res.json().then(tx => {
+                                            if (tx.status !== undefined) {
+                                                elem.claimConfirmTxStatus = tx.status === 3 ? true : false;
+                                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                                that.setState({history: array});
+                                            }
+                                        });
+                                    }
+                                });                        
+                            }
+                        }
+                    }
                 }
                 
-    			if (!elem.hasOwnProperty('validatorRes')) {
-    				that.postToValidator(elem.lock.transactionHash).then(function(validatorRes) {
+    			if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
+    				that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
     					if (validatorRes.hasOwnProperty('err'))
     						return
     					elem.validatorRes = validatorRes;
@@ -234,15 +274,18 @@ class SpaceBridge extends React.Component {
 
 	}
 
-    async postToValidator(txHash) {
+    async postToValidator(txHash, srcNetwork = undefined) {
     	let src_network = undefined;
 
-        if (this.props.bridgeDirection == 'ETH-ENQ')
-            src_network = 5
-        else if (this.props.bridgeDirection == 'ENQ-ETH')
-            src_network = 1 //11
-        else
-            return
+        if (srcNetwork !== undefined) {
+            if (this.props.bridgeDirection == 'ETH-ENQ')
+                src_network = 5;
+            else if (this.props.bridgeDirection == 'ENQ-ETH')
+                src_network = 1; //11
+            else
+                return
+        } else
+            src_network = Number(srcNetwork);
 
 
     	let URL = 'https://bridge.enex.space/api/v1/notify';
@@ -250,7 +293,8 @@ class SpaceBridge extends React.Component {
     	return fetch(URL, {
 	        method: 'POST',
 	        body: JSON.stringify({networkId : src_network, txHash : txHash}),
-	        headers: {'Content-Type': 'application/json','Accept': 'application/json'}
+	        headers: {'Content-Type': 'application/json','Accept': 'application/json'},
+            mode: 'cors'
 	    }).then(function(response) {  
 	        return response.json()
 	    }).then(res => {
@@ -372,11 +416,24 @@ class SpaceBridge extends React.Component {
 
     claimInitEnecuumByParameters() {
         let pubkey = this.props.pubkey;
+        let that = this;
         let claimInitData = this.state.initData;
         if (!(pubkey && claimInitData))
             return
         extRequests.claimInitTest(pubkey,claimInitData).then(result => {
             console.log('Success', result.hash);
+
+            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            let updatedHistory = bridgeHistoryArray.map(elem => {
+                if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === that.props.currentBridgeTx) {
+                    elem.claimInitTxHash = result.hash;
+                }
+                return elem
+            });
+
+            localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+
+
             let interpolateParams, txTypes = presets.pending.allowedTxTypes;
             let actionType = presets.pending.allowedTxTypes.claim_init;
             lsdp.write(result.hash, 0, actionType);
@@ -389,11 +446,23 @@ class SpaceBridge extends React.Component {
 
     claimConfirmEnecuumByParameters() {
         let pubkey = this.props.pubkey;
+        let that = this;
         let claimConfirmData = this.state.confirmData;
         if (!(pubkey && claimConfirmData))
             return
         extRequests.claimConfirmTest(pubkey, claimConfirmData).then(result => {
             console.log('Success', result.hash);
+
+            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            let updatedHistory = bridgeHistoryArray.map(elem => {
+                if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === that.props.currentBridgeTx) {
+                    elem.claimConfirmTxHash = result.hash;
+                }
+                return elem
+            });
+
+            localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+
             let interpolateParams, txTypes = presets.pending.allowedTxTypes;
             let actionType = presets.pending.allowedTxTypes.claim_confirm;
             lsdp.write(result.hash, 0, actionType);
@@ -442,7 +511,71 @@ class SpaceBridge extends React.Component {
                 });
             }
         }
+    }
+
+    claimInitEthEnqBridge(bridgeItem, stateId) {
+        if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+            let that = this;
+            console.log('Call claimEthEnqBridge with state', stateId);
+            let pubkey = this.props.pubkey;
+            let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
+            if (!(pubkey && claimInitData))
+                return
+            extRequests.claimInitTest(pubkey,claimInitData).then(result => {
+                console.log('Success', result.hash);
+
+                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                let updatedHistory = bridgeHistoryArray.map(elem => {
+                    if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                        elem.claimInitTxHash = result.hash;
+                    }
+                    return elem
+                });
+
+                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+
+                let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+                let actionType = presets.pending.allowedTxTypes.claim_init;
+                lsdp.write(result.hash, 0, actionType);
+                this.props.updCurrentTxHash(result.hash);
+            },
+            error => {
+                console.log('Error')
+            });
+        } 
     } 
+
+    claimConfirmEthEnqBridge(bridgeItem, stateId) {
+        if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+            let that = this;
+            console.log('Call claimEthEnqBridge with state', stateId)
+            let pubkey = this.props.pubkey;
+            let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
+            if (!(pubkey && claimConfirmData))
+                return
+            extRequests.claimConfirmTest(pubkey, claimConfirmData).then(result => {
+                console.log('Success', result.hash);
+
+                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                let updatedHistory = bridgeHistoryArray.map(elem => {
+                    if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                        elem.claimConfirmTxHash = result.hash;
+                    }
+                    return elem
+                });
+
+                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+
+                let interpolateParams, txTypes = presets.pending.allowedTxTypes;
+                let actionType = presets.pending.allowedTxTypes.claim_confirm;
+                lsdp.write(result.hash, 0, actionType);
+                this.props.updCurrentTxHash(result.hash);
+            },
+            error => {
+                console.log('Error')
+            });
+        } 
+    }
 
     async setGoerli() {
         let requestData = {
@@ -598,10 +731,10 @@ class SpaceBridge extends React.Component {
             res = 'Locked successfully. Waiting for validation...';
             if (item.lock.src_network === '5') {
                 if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
-                    res = this.getClaimButton(item);
+                    res = this.getClaimEthEnqButton(item);
             } else if (item.lock.src_network === 1) {
                 if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
-                    res = this.getClaimButton(item);
+                    res = this.getClaimEnqEthBridgeButton(item);
                 else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
                     res = 'Waiting for claim confirmation...';
                 else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
@@ -612,7 +745,58 @@ class SpaceBridge extends React.Component {
         return res    
     }
 
-    getClaimButton(item) {
+    getClaimEthEnqButton(item) {
+        let resume = 'Validated successfully';
+        let stateId = 0;
+
+        if (item.claimConfirmTxStatus === true) {
+            resume = 'Done';
+            stateId = 1;
+        } else if (item.claimConfirmTxStatus === false) {
+            resume = 'Claim confirmation failed';
+            stateId = 2;         
+        } else if (item.claimConfirmTxHash !== undefined) {
+            resume = 'Claim confirmation initialized';
+            stateId = 3;
+        } else if (item.claimInitTxStatus === true) {
+            resume = 'Claim is ready';
+            stateId = 4; 
+        } else if (item.claimInitTxStatus === false) {
+            resume = 'Claim inititalization failed';
+            stateId = 5;
+        } else if (item.claimInitTxHash !== undefined) {
+            resume = 'Claim initialized';
+            stateId = 6;
+        }
+
+        return (
+                <>
+                    <div className="mb-2">{resume}</div>
+                    {stateId === 0 &&
+                    <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimInitEthEnqBridge.bind(this, item, stateId)}>
+                        Claim</Button>
+                    }    
+                    {stateId === 4 &&
+                        <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimConfirmEthEnqBridge.bind(this, item, stateId)}>
+                        Confirm</Button>
+                    }
+                    {stateId === 1 &&
+                    <a
+                        href={`https://bit.enecuum.com/#!/tx/${item.claimConfirmTxHash}`} 
+                        className="d-block w-100 btn btn-info px-4"
+                        target="_blank">
+                        Info</a>
+                    }        
+                </>
+           );  
+    }
+
+
+    getClaimEnqEthBridgeButton(item) {
         return (
                 <>
                     <div className="mb-2">Validated successfully</div>

@@ -631,6 +631,7 @@ class SpaceBridge extends React.Component {
         let pubkey = lockInfo.src_address;
         let dst_address = lockInfo.dst_address;
         let packedData = packedDataFromEncodeLock;
+        console.log('11111111111111111111111', dst_address)
         if (!(pubkey && packedData))
             return
         extRequests.enqLock(pubkey, packedData).then(result => {
@@ -641,14 +642,13 @@ class SpaceBridge extends React.Component {
             let actionType = presets.pending.allowedTxTypes.enq_lock;
             lsdp.write(result.hash, 0, actionType);
 
-
             let accountInteractToBridgeItem = {
                     initiator : `${pubkey}_${dst_address}`,
-                    lock       : {
+                    lock      : {
                                     transactionHash : result.hash,
                                     src_address : pubkey,
                                     src_network : lockInfo.src_network,
-                                    dst_address, 
+                                    dst_address : dst_address, 
                                     dst_network : lockInfo.dst_network,
                                     token_amount : lockInfo.amount,
                                     token_hash : lockInfo.src_hash,
@@ -671,9 +671,6 @@ class SpaceBridge extends React.Component {
             } else {
                 that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
             }
-
-
-
         },
         error => {
             console.log('Error')
@@ -1155,12 +1152,18 @@ class SpaceBridge extends React.Component {
                                         <div style={{'color' : '#ecd07b'}}>{utils.packAddressString(this.props.nonNativeConnection.web3ExtensionAccountId)}</div> 
                                     </div>
                                 </div>
-                                <button
-                                    className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-                                    onClick={this.encodeDataAndLock.bind(this)}
-                                    disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                                    Send Lock</button>
-                                {(this.props.currentBridgeTx !== undefined) &&    
+                                {currentBridgeTxItem == undefined &&
+                                    <button
+                                        className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
+                                        onClick={this.encodeDataAndLock.bind(this)}
+                                        disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
+                                        Confirm</button>
+                                }    
+
+                                {currentBridgeTxItem !== undefined &&
+                                    <div>{this.getControl(currentBridgeTxItem)}</div>
+                                }    
+{/*                                {(this.props.currentBridgeTx !== undefined) &&    
                                     <div className="mt-4">Current bridge Tx: {this.props.currentBridgeTx}</div>
                                 }
                                 {(this.state.transfer_id !== undefined) &&
@@ -1170,7 +1173,7 @@ class SpaceBridge extends React.Component {
                                             className="d-block btn btn-info mb-2 p-2 mt-2"
                                             onClick={this.claimETHByParameters.bind(this)}>Claim</button>
                                     </>
-                                }
+                                }*/}
 {/*                                {(this.state.confirmData !== undefined) &&
                                     <>    
                                         <div className="mt-4">Claim Confirm Data: <span className="text-color4">{this.state.confirmData}</span></div>

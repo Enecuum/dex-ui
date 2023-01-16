@@ -92,6 +92,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
+        console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -113,13 +114,17 @@ class SpaceBridge extends React.Component {
                         let url = net !== undefined ? net.url : undefined;
                         if (url !== undefined) {
                             networkApi.getTx(url, elem.lock.transactionHash).then(function(res) {
-                                if (!res.lock) {
-                                    res.json().then(tx => {
+                                console.log(res)
+                                if (res !== null && !res.lock) {
+                                    res.json().then(function(tx) {
+                                        console.log(tx)
                                         if (tx.status !== undefined) {
                                             elem.lock.status = tx.status === 3 ? true : false;
                                             localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
                                         }
+                                    }, function(err) {
+                                        console.log('Can\'t get status for transaction', elem.lock.transactionHash);
                                     });
                                 }
                             });                        
@@ -145,7 +150,7 @@ class SpaceBridge extends React.Component {
                             let url = net !== undefined ? net.url : undefined;
                             if (url !== undefined) {
                                 networkApi.getTx(url, elem.claimInitTxHash).then(function(res) {
-                                    if (!res.lock) {
+                                    if (res !== null && !res.lock) {
                                         console.log(res)
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
@@ -165,7 +170,7 @@ class SpaceBridge extends React.Component {
                             let url = net !== undefined ? net.url : undefined;
                             if (url !== undefined) {
                                 networkApi.getTx(url, elem.claimConfirmTxHash).then(function(res) {
-                                    if (!res.lock) {
+                                    if (res !== null && !res.lock) {
                                         console.log(res)
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
@@ -829,6 +834,15 @@ class SpaceBridge extends React.Component {
         
     render () {
         let that = this;
+        let enqExtUserId = this.props.pubkey;
+        let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
+        let history = this.state.history;
+        let currentBridgeTxItem = undefined;
+        if (this.props.currentBridgeTx !== undefined) {
+            currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
+        }
+        
+
   //   	let enqExtUserId = this.props.pubkey;
   //   	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
 
@@ -996,30 +1010,16 @@ class SpaceBridge extends React.Component {
 						    		<div className="h6">Destination Network: <span className="text-bolder" style={{'color' : '#ecd07b'}}>Enecuum</span></div>
 						    		<div className="h6">Destination Address: <span className="text-bolder" style={{'color' : '#ecd07b'}}>{utils.packAddressString(this.props.pubkey)}</span></div>
 						    	</div>
-						    	<button
-						    		className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-						    		onClick={this.lockSrcToken.bind(this)}
-                                    disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                                    Confirm</button>
-                                {(this.props.currentBridgeTx !== undefined) &&    
-                                    <div className="mt-4">Current bridge Tx: {this.props.currentBridgeTx}</div>
-                                }
-                                {(this.state.initData !== undefined) &&
-                                    <>    
-                                        <div className="mt-4">Claim Init Data: <span className="text-color4">{this.state.initData}</span></div>
-                                        <button
-                                            className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimInitEnecuumByParameters.bind(this)}>Send</button>
-                                    </>
-                                }
-                                {(this.state.confirmData !== undefined) &&
-                                    <>    
-                                        <div className="mt-4">Claim Confirm Data: <span className="text-color4">{this.state.confirmData}</span></div>
-                                        <button
-                                            className="d-block btn btn-info mb-2 p-2 mt-2"
-                                            onClick={this.claimConfirmEnecuumByParameters.bind(this)}>Claim</button>
-                                    </>
-                                }
+                                {currentBridgeTxItem === undefined &&
+    						    	<button
+    						    		className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
+    						    		onClick={this.lockSrcToken.bind(this)}
+                                        disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
+                                        Confirm</button>
+                                }    
+                                {currentBridgeTxItem !== undefined &&
+                                    <div>{this.getControl(currentBridgeTxItem)}</div>
+                                }                                    
 						    </Card.Text>
 						  </Card.Body>
 						</Card>    			

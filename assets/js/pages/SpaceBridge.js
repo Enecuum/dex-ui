@@ -1015,7 +1015,7 @@ class SpaceBridge extends React.Component {
                                         Confirm</button>
                                 }    
                                 {currentBridgeTxItem !== undefined &&
-                                    <div>{this.getControl(currentBridgeTxItem)}</div>
+                                    <div className="text-center">{this.getControl(currentBridgeTxItem)}</div>
                                 }                                    
 						    </Card.Text>
 						  </Card.Body>

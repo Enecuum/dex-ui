@@ -69,6 +69,7 @@
 	min-width: 180px;
 	flex-basis: 180px;
 	width: 180px;
+	text-align: center;
 }
 
 .bridge-history-resume-wrapper * {

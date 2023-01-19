@@ -52,7 +52,6 @@ const actionCreators = {
         };
     },
 
-
     update_show_token_list (payload) {
         return {
             type : actions.UPDATE_SHOW_TOKEN_LIST,
@@ -65,7 +64,12 @@ const actionCreators = {
             value : payload 
         };
     },
-        
+    update_show_history (payload) {
+        return {
+            type : actions.UPDATE_SHOW_HISTORY,
+            value : payload 
+        };
+    }        
 };
 
 export default actionCreators;

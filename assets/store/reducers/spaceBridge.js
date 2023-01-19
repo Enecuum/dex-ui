@@ -54,7 +54,12 @@ export default function spaceBridgeReducer (state = initialState.spaceBridge, ac
             return {
                 ...state,
                 srcTokenObj: action.value
-            }    
+            }
+        case actions.UPDATE_SHOW_HISTORY:
+            return {
+                ...state,
+                showHistory: action.value
+            }        
         default: 
             return state
     }

@@ -894,7 +894,7 @@ class SpaceBridge extends React.Component {
                                             }    
                                         </div>
                                         {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
-                                            <span className="font-weight-bold ml-3" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
+                                            <span className="font-weight-bold pl-2" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
                                                 <div>Goerli required!</div>
                                                 <div>Check settings of your Ethereum wallet!</div>
                                             </span>
@@ -1092,18 +1092,18 @@ class SpaceBridge extends React.Component {
                                                     </div>    
                                                 }                                            
                                         </div>
-                                        <div className="">
+                                        <div className="pl-2">
                                             {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
-                                                <span className="font-weight-bold pl-3" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
+                                                <span className="font-weight-bold" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
                                                     <div>Goerli required!</div>
                                                     <div>Check settings of your Ethereum wallet!</div>
                                                 </span>
                                             }
                                             {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId == '0x5' &&
-                                                <div style={{'color' : '#ecd07b'}} className="pl-2">Goerli</div>
+                                                <div style={{'color' : '#ecd07b'}} >Goerli</div>
                                             }
                                             {this.props.nonNativeConnection.web3ExtensionAccountId == undefined &&
-                                                <div style={{'color' : '#ecd07b'}} className="pl-2">Ethereum</div>
+                                                <div style={{'color' : '#ecd07b'}} >Ethereum</div>
                                             } 
                                         </div>
                                         

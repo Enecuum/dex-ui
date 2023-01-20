@@ -133,7 +133,7 @@ class SpaceBridge extends React.Component {
                             let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                             let web3Provider = new web3LibProvider(dataProvider);
                             web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
-                                if (res.status !== undefined) {
+                                if (res !== null && res.status !== undefined) {
                                     elem.claimTxStatus = res.status;
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});

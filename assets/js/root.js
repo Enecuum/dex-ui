@@ -163,6 +163,10 @@ class Root extends React.Component {
         let networkInfo = networkApi.networkInfo();
         networkInfo.then(result => {
             if (!result.lock) {
+                if (result.status !== 200) {
+                    this.props.updateNetworkInfo({})
+                    return
+                }
                 result.json().then(info => {
                     this.props.updateNetworkInfo(info);
                 })
@@ -190,9 +194,14 @@ class Root extends React.Component {
     updNativeTokenData () {
         swapApi.getNativeTokenData()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.updNativeToken({})
+                    return
+                }
                 res.json()
                 .then(res => this.props.updNativeToken(res.native_token))
+            }
         })
     }
 
@@ -200,34 +209,49 @@ class Root extends React.Component {
         if(pubkey != '')
             swapApi.getFullBalance(pubkey)
             .then(res => {
-                if (!res.lock)
+                if (!res.lock) {
+                    if (res.status !== 200) {
+                        this.props.updBalances([])
+                        return
+                    }
                     res.json()
                     .then(res => {
                         res = res.filter(el => el.amount !== 0) // TMP solution
                         this.props.updBalances(res)
                     })
+                }
             })
     }
 
     updFarmsData () {
         networkApi.getDexFarms(this.props.pubkey)
             .then(res => {
-                if (!res.lock)
+                if (!res.lock) {
+                    if (res.status !== 200) {
+                        this.props.updateFarmsList({value : []})
+                        return
+                    }
                     res.json().then(farms => {
                         this.farms = farms.filter(farm => farm.stake)
                         this.props.updateFarmsList({
                             value : this.farms
                         })
                     })
+                }
             })
     }
 
     updPools () {
         swapApi.getPairs()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.updPairs([])
+                    return
+                }
                 res.json()
                 .then(res => this.props.updPairs(this.convertPools(res)))
+            }
         })
     }
 
@@ -247,7 +271,11 @@ class Root extends React.Component {
 
         swapApi.getTokens()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.assignAllTokens([])
+                    return
+                }
                 res.json()
                 .then(tokens => {
                     let tokenHashArr = []
@@ -271,6 +299,7 @@ class Root extends React.Component {
                     })
                     this.addOptionalTokenInfo(tokens, tokenHashArr)
                 })
+            }
         })
     }
 

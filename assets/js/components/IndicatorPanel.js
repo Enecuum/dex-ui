@@ -102,6 +102,8 @@ class IndicatorPanel extends React.Component {
         if (this.props.networkInfo.dex) {
             let enxCoin = utils.getBalanceObj(this.props.balances, this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
             this.enx = vp.usCommasBigIntDecimals(enxCoin.amount, enxCoin.decimals)
+        } else {
+            this.enx = "---"
         }
     }
 

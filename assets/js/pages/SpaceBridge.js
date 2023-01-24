@@ -66,8 +66,32 @@ class SpaceBridge extends React.Component {
             this.setState({transfer_id: undefined});
             this.setState({history: []});
             this.props.updateShowHistory(false);
-            // this.props.updateFromBlockchain(undefined);
-            // this.props.updateToBlockchain(undefined);
+
+            if (prevProps.nonNativeConnection.web3ExtensionChain !== this.props.nonNativeConnection.web3ExtensionChain &&
+                this.props.nonNativeConnection.web3ExtensionChain !== undefined) {
+                let chainId = this.props.nonNativeConnection.web3ExtensionChain;
+                let availableItemInConfig = availableNetworks.find(elem => elem.web3ExtensionChainId == chainId);
+                if (availableItemInConfig == undefined) {
+                    if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
+                        this.props.updateFromBlockchain(undefined);                        
+                    }
+                } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
+                    this.props.updateFromBlockchain(availableItemInConfig)
+                }
+            }
+
+            if (prevProps.net.url !== this.props.net.url &&
+                this.props.net.url !== undefined) {
+                let chainId = this.props.net.url;
+                let availableItemInConfig = availableNetworks.find(elem => elem.enqExtensionChainId == chainId);
+                if (availableItemInConfig == undefined) {
+                    if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
+                        this.props.updateFromBlockchain(undefined);                        
+                    }
+                } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
+                    this.props.updateFromBlockchain(availableItemInConfig)
+                }
+            }
         }
     }
 
@@ -276,9 +300,17 @@ class SpaceBridge extends React.Component {
 
 			let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
 			let spaceBridgeContractAddress = smartContracts.spaceBridge.address;
-
+            let that = this;
 			assetProvider.approveBalance(spaceBridgeContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
-				//console.log(approveTx)
+                if (approveTx.status === true &&
+                    approveTx.events?.Approval?.returnValues?.owner !== undefined && 
+                    approveTx.events?.Approval?.returnValues?.owner.toLowerCase() == that.props.nonNativeConnection.web3ExtensionAccountId.toLowerCase() &&
+                    approveTx.events?.Approval?.returnValues?.spender !== undefined && 
+                    approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.bridgeContractAddress.toLowerCase() &&
+                    approveTx.events?.Approval?.address !== undefined && 
+                    approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
+                        that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
+                }
 			});			
 		}
 	}
@@ -864,7 +896,7 @@ class SpaceBridge extends React.Component {
                     <div className="col col-xl-8">
                         <div className="d-flex align-items-center justify-content-start">
                             <div className="mr-2">
-                                Balance
+                                Balance                                
                             </div>
                             <div>
                                 {this.getSelectedTokenBalance()}
@@ -877,6 +909,29 @@ class SpaceBridge extends React.Component {
                     <div className="col col-xl-4">{this.getTokenInput()}</div>
                     <div className="col col-xl-4">{this.getTokenAmountInput()}</div>
                 </div>
+                {this.props.fromBlockchain?.type == 'eth' && this.props.srcTokenHash !== undefined &&
+                    <div className="row mt-3">
+                        <div className="col col-xl-8 offset-xl-4">
+                            { this.props.srcTokenHash !== undefined &&
+                              this.props.srcTokenTicker !== undefined &&
+                              this.props.srcTokenBalance !== undefined &&
+                              this.props.srcTokenDecimals !== undefined &&
+                              this.props.srcTokenAllowance !== undefined &&
+                              this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
+                              this.props.pubkey !== undefined &&
+                                <>  
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
+                                        <button
+                                            className="d-block btn btn-info mb-2 p-1"
+                                            onClick={this.approveSrcTokenBalance.bind(this)}>Set new allowance</button>
+                                            
+                                    </div>
+                                </>
+                            }    
+                        </div>                    
+                    </div>
+                }
             </div>
         )
     }
@@ -901,9 +956,10 @@ class SpaceBridge extends React.Component {
     getSelectedTokenBalance() {
         let balance = '---';
         if (this.props.srcTokenBalance !== undefined &&
-            this.props.srcTokenDecimals !== undefined) {
+            this.props.srcTokenDecimals !== undefined &&
+            this.props.srcTokenTicker !== undefined) {
             let decimals = Number(this.props.srcTokenDecimals);
-            balance = this.valueProcessor.usCommasBigIntDecimals(BigInt(this.props.srcTokenBalance), decimals, decimals);            
+            balance = this.valueProcessor.usCommasBigIntDecimals(BigInt(this.props.srcTokenBalance), decimals, decimals) + ' ' + this.props.srcTokenTicker;                        
         }
         return balance
     }
@@ -918,15 +974,18 @@ class SpaceBridge extends React.Component {
     }
 
     getTokenInput() {
-        let chain = this.props.fromBlockchain;       
+        let chain = this.props.fromBlockchain;
+        let title = 'Choose token';       
         if (chain !== undefined) {
             let chainType = chain.type;
             if (chainType === 'enq') {
+                if (this.props.srcTokenTicker !== undefined)
+                    title = this.props.srcTokenTicker;
                 return (
                     <button
                         className="d-block btn btn-info p-1"
                         onClick={this.toggleShowTokensList.bind(this)}
-                        disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined}>Choose token</button>
+                        disabled={this.props.pubkey === undefined}>{title}</button>
                 )
             } else if (chainType === 'eth') {
                 return (

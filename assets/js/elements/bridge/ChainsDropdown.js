@@ -8,6 +8,7 @@ import { mapStoreToProps, mapDispatchToProps, components } from '../../../store/
 import {availableNetworks} from'./../../config';
 
 import CommonModal from "./../../elements/CommonModal";
+import metamaskLogo from './../../../img/metamask-logo.webp';
 
 class ChainsDropdown extends React.Component {
     constructor (props) {
@@ -81,6 +82,8 @@ class ChainsDropdown extends React.Component {
             await ethereum.request(requestData).then(function(res) {
                 that.setChainInStore(selectedChain);
                 that.closeAction();
+            }, function(res) {                
+                that.closeAction();
             });
         } catch (error) {
           console.log(error)
@@ -89,12 +92,31 @@ class ChainsDropdown extends React.Component {
     }
 
     renderModalBody(selectedChain) {
-        return (
-            <div className="text-center">
-                <button 
-                    onClick={this.requestSwitchEthChain.bind(this, selectedChain)}>Set {selectedChain.name}</button>
-            </div>
-        )
+        let web3ExtensionIsInstalled = this.props.nonNativeConnection.web3Extension?.provider !== undefined ? true : false;
+        if (selectedChain.type === 'eth')
+            return (
+                <div className="text-center">
+                    {web3ExtensionIsInstalled &&
+                        <button 
+                            onClick={this.requestSwitchEthChain.bind(this, selectedChain)}>Set {selectedChain.name}</button>
+                    }
+                    {!web3ExtensionIsInstalled && selectedChain.type === 'eth' &&
+                        <a className="link-primary transition-item" href="https://metamask.io/download/">
+                            <Button                        
+                                variant="outline-primary" className="d-flex align-items-center justify-content-between w-100 mb-3 py-3  btn">
+                                <div>Install Metamask</div>
+                                <img src={metamaskLogo} width="24" height="24"/>
+                            </Button>
+                      </a>
+                    }
+                </div>
+            )
+        else if (selectedChain.type === 'enq')
+            return (
+                <div className="text-center">
+                    Set {selectedChain.name} in your ENQ extension and choose {selectedChain.name} again
+                </div>
+            ) 
     }
 
     closeAction () {

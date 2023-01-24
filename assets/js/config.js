@@ -6,6 +6,55 @@ export const defaultParams = {
     chain : '0x1'
 }
 
+export const availableNetworks = [
+    {
+        id                    : 1, // Number, hex ???
+        web3ExtensionChainId  : undefined, //strig as in Metamask, undefined if not used,
+        enqExtensionChainId   : 'https://bit.enecuum.com/',
+        name                  : 'BIT', //string
+        type                  : 'enq', //'eth', 'enq'
+        testnet               : true, //true false 
+        available             : true, //true false 
+        bridgeContractAddress : undefined, //strig, undefined if not used
+        bridgeContractABI     : undefined, //JSON, undefined if not used
+        logo                  : undefined, //image, undefined if not used
+        explorerURL           : 'https://bit.enecuum.com', // url to explorer mainpage
+        txPageUrl             : 'https://bit.enecuum.com/#!/tx/'  // url to tx page without tx hash
+    },
+    {
+        id                    : 5, // Number, hex ???
+        web3ExtensionChainId  : '0x5', //strig as in Metamask, undefined if not used,
+        enqExtensionChainId   : undefined,
+        name                  : 'Goerli', //string
+        type                  : 'eth', //'eth', 'enq'
+        testnet               : true, //true false 
+        available             : true, //true false 
+        bridgeContractAddress : '0x9e400571e3D6d5aFA7e99064B30B2D826Ca4cBbb', //strig, undefined if not used
+        bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
+        logo                  : undefined, //image, undefined if not used
+        explorerURL           : 'https://goerli.etherscan.io', // url to explorer mainpage
+        txPageUrl             : 'https://goerli.etherscan.io/tx/'  // url to tx page without tx hash
+    },
+    {
+        id                    : 5, // Number, hex ???
+        web3ExtensionChainId  : '0x1', //strig as in Metamask, undefined if not used,
+        enqExtensionChainId   : undefined,
+        name                  : 'Ethereum', //string
+        type                  : 'eth', //'eth', 'enq'
+        testnet               : false, //true false 
+        available             : true, //true false 
+        bridgeContractAddress : undefined, //strig, undefined if not used
+        bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
+        logo                  : undefined, //image, undefined if not used
+        explorerURL           : 'https://etherscan.io', // url to explorer mainpage
+        txPageUrl             : 'https://etherscan.io/tx/'  // url to tx page without tx hash
+    }
+]
+
+
+
+
+
 export const bridgeNets = [
     {
         id : 11,

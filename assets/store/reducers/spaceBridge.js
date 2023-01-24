@@ -59,7 +59,17 @@ export default function spaceBridgeReducer (state = initialState.spaceBridge, ac
             return {
                 ...state,
                 showHistory: action.value
-            }        
+            }
+        case actions.UPDATE_FROM_BLOCKCHAIN:
+            return {
+                ...state,
+                fromBlockchain: action.value
+            }
+        case actions.UPDATE_TO_BLOCKCHAIN:
+            return {
+                ...state,
+                toBlockchain: action.value
+            }    
         default: 
             return state
     }

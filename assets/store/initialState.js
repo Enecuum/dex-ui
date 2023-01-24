@@ -217,7 +217,9 @@ const initialState = {
         }
     },
     spaceBridge : {
-        bridgeDirection : 'ENQ-ETH', //'ETH-ENQ' or 'ENQ-ETH'
+        bridgeDirection : 'ENQ-ETH', //'ETH-ENQ' or 'ENQ-ETH',
+        fromBlockchain : undefined, //config.js availableNetworks array's item. NOT chain_id or id!!!
+        toBlockchain : undefined, //config.js availableNetworks array's item. NOT chain_id or id!!!
         showHistory : false,
         showLock : false,
         showClaimInit : false,

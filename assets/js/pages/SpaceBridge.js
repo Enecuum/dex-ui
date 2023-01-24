@@ -1,34 +1,38 @@
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
-import Card from 'react-bootstrap/Card';
-// import img from '../img/unknownPage.png';
-// import '../../css/unknown-page.css';
-import Steps from './../elements/bridge/Steps'
-import BridgeForm from './../elements/bridge/BridgeForm'
-import ClaimControl from './../elements/bridge/ClaimControl'
-import '../../css/bridge.css';
-
-import ValueProcessor from '../utils/ValueProcessor';
-import tokenERC20ContractProvider from './../contracts-providers/tokenERC20ContractProvider';
-import spaceBridgeProvider from './../contracts-providers/spaceBridgeProvider';
-import web3LibProvider from './../web3-provider/Web3LibProvider';
-import {bridgeNets, netProps, smartContracts} from'./../config';
-import presets from '../../store/pageDataPresets';
-import extRequests from '../requests/extRequests';
-import lsdp from "../utils/localStorageDataProcessor";
-import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
-
-import utils from '../utils/swapUtils';
 
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form';
-import networkApi from "../requests/networkApi";
+import Dropdown from 'react-bootstrap/Dropdown';
+import Card from 'react-bootstrap/Card';
 
+import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
+import presets from '../../store/pageDataPresets';
+
+import Steps from './../elements/bridge/Steps';
+import BridgeForm from './../elements/bridge/BridgeForm';
+import ClaimControl from './../elements/bridge/ClaimControl';
+import ChainsDropdown from './../elements/bridge/ChainsDropdown';
 
 import TokenCardBridge from './../components/TokenCardBridge';
+
+import '../../css/bridge.css';
+
+import tokenERC20ContractProvider from './../contracts-providers/tokenERC20ContractProvider';
+import spaceBridgeProvider from './../contracts-providers/spaceBridgeProvider';
+import web3LibProvider from './../web3-provider/Web3LibProvider';
+
+import ValueProcessor from '../utils/ValueProcessor';
+import lsdp from "../utils/localStorageDataProcessor";
+import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
+import utils from '../utils/swapUtils';
+
+import extRequests from '../requests/extRequests';
+import networkApi from "../requests/networkApi";
+
+import {availableNetworks, bridgeNets, netProps, smartContracts} from'./../config';
 
 class SpaceBridge extends React.Component {
 	constructor(props) {
@@ -49,8 +53,10 @@ class SpaceBridge extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.pubkey !== this.props.pubkey ||
-            prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId ||
+        if (prevProps.pubkey !== this.props.pubkey  ||
+            prevProps.net.url !== this.props.net.url ||
+            prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId  ||
+            prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
             prevProps.bridgeDirection !== this.props.bridgeDirection) {
             this.resetStore();
             this.setState({initData: undefined});
@@ -59,6 +65,8 @@ class SpaceBridge extends React.Component {
             this.setState({transfer_id: undefined});
             this.setState({history: []});
             this.props.updateShowHistory(false);
+            // this.props.updateFromBlockchain(undefined);
+            // this.props.updateToBlockchain(undefined);
         }
     }
 
@@ -577,6 +585,7 @@ class SpaceBridge extends React.Component {
     }
 
     async setGoerli() {
+        console.log('set Goerli')
         let requestData = {
             method: 'wallet_switchEthereumChain',
             params: [
@@ -825,6 +834,109 @@ class SpaceBridge extends React.Component {
     toggleHistoryBridge() {
         this.props.updateShowHistory(!this.props.showHistory);
     }
+
+    getBridgeCardContent() {
+        let currentBridgeTx = this.props.currentBridgeTx;
+        if (currentBridgeTx === undefined) {
+            return this.getBridgeForm()
+        } else if (this.props.currentBridgeTx !== undefined) {
+            currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
+            return 'card content'
+        }        
+    }
+
+    getBridgeForm() {
+        return (
+            <>
+                <div>{this.getFromSection()}</div>
+                <div>Direction Toggler</div>
+                <div>{this.getToSection()}</div>
+            </>
+        )
+    }
+
+    getFromSection() {
+        return (
+            <div>
+                <div className="row">
+                    <div className="col col-xl-4">From</div>
+                    <div className="col col-xl-8">
+                        <div className="d-flex align-items-center justify-content-start">
+                            <div className="mr-2">
+                                Balance
+                            </div>
+                            <div>
+                                {this.getSelectedTokenBalance()}
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div className="row">
+                    <div className="col col-xl-4">{this.getChainsDropdown('from')}</div>
+                    <div className="col col-xl-4">{this.getChainsDropdown('to')}bbb</div>
+                    <div className="col col-xl-4">bbb</div>
+                </div>
+            </div>
+        )
+    }
+
+    getToSection() {
+        return (
+            <div>To section</div>
+        )
+    }
+
+    getSelectedTokenBalance() {
+        return '123,456,789.123456789'
+    }
+
+    getChainsDropdown(directionString) {
+        let direction = (directionString === 'from' || directionString === 'to') ? directionString : undefined;
+        return (
+            <ChainsDropdown
+                direction={direction}                
+            />
+        )
+    }
+
+    renderBridgeHistoryToggleButton() {
+        let phrase = '';
+        let showButton = false;        
+
+        if (this.props.showHistory === true) {
+            phrase = 'Bridge';
+            showButton = true;
+        } else if  (this.props.showHistory === false && this.state.history.length > 0) {
+            phrase = 'History';
+            showButton = true;
+        }
+
+        if (this.props.nonNativeConnection.web3ExtensionAccountId && showButton) {                                                                                   
+            return (
+                <button
+                className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
+                onClick={this.toggleHistoryBridge.bind(this)}>{phrase}</button>
+            )
+        } else {
+            return (
+                <></>
+            )
+        }       
+    }
+
+    renderCardHeader() {
+        return (
+            <div className="p-4 bottom-line-1">                                
+                <div>
+                    <div className="d-flex align-items-center justify-content-between w-100 mb-2">
+                        <div className="h4 text-nowrap nowrap mb-0">Space Bridge</div>
+                        {this.renderBridgeHistoryToggleButton()}
+                    </div>
+                    <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
+                </div>
+            </div>
+        )
+    }
         
     render () {
         const t = this.props.t;
@@ -854,7 +966,29 @@ class SpaceBridge extends React.Component {
                 </>
             }
             {this.props.connectionStatus &&
-            <>    
+                <>
+                    <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
+                        { this.renderTokenCard()  }
+                        <div className="row w-100 mb-5">
+                            <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
+                                <Card className="swap-card">
+                                  <Card.Body className="p-0">
+                                    {this.renderCardHeader()}
+                                    <Card.Text as="div" className="p-4">
+                                        {this.getBridgeCardContent()}
+                                    </Card.Text>
+                                  </Card.Body>
+                                </Card>                
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
             <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
             { this.renderTokenCard()  }
             {this.props.bridgeDirection === 'ETH-ENQ' && this.props.showHistory === false &&
@@ -1179,7 +1313,10 @@ class SpaceBridge extends React.Component {
                                 {this.props.nonNativeConnection.web3ExtensionAccountId &&
                                     <>
                                         {this.state.history.map((item, index) => (
-                                            <div className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4">
+                                            <div
+                                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4"
+                                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
+                                                key={`${index}-lock-${item.lock.transactionHash}`}>
                                                 <div className="mr-3">
                                                    {/* <div>{item.lock?.transactionHash}</div>*/}
                                                     <div>

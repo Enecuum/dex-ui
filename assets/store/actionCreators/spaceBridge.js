@@ -69,7 +69,19 @@ const actionCreators = {
             type : actions.UPDATE_SHOW_HISTORY,
             value : payload 
         };
-    }        
+    },
+    update_from_blockchain (payload) {
+        return {
+            type : actions.UPDATE_FROM_BLOCKCHAIN,
+            value : payload 
+        };
+    },
+    update_to_blockchain (payload) {
+        return {
+            type : actions.UPDATE_TO_BLOCKCHAIN,
+            value : payload 
+        };
+    }
 };
 
 export default actionCreators;

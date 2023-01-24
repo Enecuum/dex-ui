@@ -57,7 +57,8 @@ class SpaceBridge extends React.Component {
             prevProps.net.url !== this.props.net.url ||
             prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId  ||
             prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
-            prevProps.bridgeDirection !== this.props.bridgeDirection) {
+            prevProps.bridgeDirection !== this.props.bridgeDirection ||
+            prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
             this.resetStore();
             this.setState({initData: undefined});
             this.setState({confirmData: undefined});
@@ -849,7 +850,7 @@ class SpaceBridge extends React.Component {
         return (
             <>
                 <div>{this.getFromSection()}</div>
-                <div>Direction Toggler</div>
+                <div  className="my-4">{this.getFromToToggler()}</div>
                 <div>{this.getToSection()}</div>
             </>
         )
@@ -873,8 +874,8 @@ class SpaceBridge extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col col-xl-4">{this.getChainsDropdown('from')}</div>
-                    <div className="col col-xl-4">{this.getChainsDropdown('to')}bbb</div>
-                    <div className="col col-xl-4">bbb</div>
+                    <div className="col col-xl-4">{this.getTokenInput()}</div>
+                    <div className="col col-xl-4">{this.getTokenAmountInput()}</div>
                 </div>
             </div>
         )
@@ -882,12 +883,29 @@ class SpaceBridge extends React.Component {
 
     getToSection() {
         return (
-            <div>To section</div>
+            <div>
+                <div className="row">
+                    <div className="col col-xl-4">
+                        <div>To</div>
+                        <div>{this.getChainsDropdown('to')}</div>
+                    </div>
+                    <div className="col col-xl-8">
+                        <div>Destination Address</div>
+                        <div>{this.showDestinationAddress()}</div>
+                    </div>            
+                </div>
+            </div>
         )
     }
 
     getSelectedTokenBalance() {
-        return '123,456,789.123456789'
+        let balance = '---';
+        if (this.props.srcTokenBalance !== undefined &&
+            this.props.srcTokenDecimals !== undefined) {
+            let decimals = Number(this.props.srcTokenDecimals);
+            balance = this.valueProcessor.usCommasBigIntDecimals(BigInt(this.props.srcTokenBalance), decimals, decimals);            
+        }
+        return balance
     }
 
     getChainsDropdown(directionString) {
@@ -898,6 +916,97 @@ class SpaceBridge extends React.Component {
             />
         )
     }
+
+    getTokenInput() {
+        let chain = this.props.fromBlockchain;       
+        if (chain !== undefined) {
+            let chainType = chain.type;
+            if (chainType === 'enq') {
+                return (
+                    <button
+                        className="d-block btn btn-info p-1"
+                        onClick={this.toggleShowTokensList.bind(this)}
+                        disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined}>Choose token</button>
+                )
+            } else if (chainType === 'eth') {
+                return (
+                    <Form.Group className="mb-0" controlId="inputSrcTokenHash">        
+                        <Form.Control
+                            type="text"
+                            placeholder="Token address"
+                            autoComplete="off"
+                            value={this.props.srcTokenHash}
+                            onChange={this.handleInputTokenHashChange.bind(this)}
+                            disabled={this.props.nonNativeConnection.web3ExtensionAccountId === undefined}/>       
+                    </Form.Group>                    
+                )
+            }
+        } else {
+            return (
+                <button
+                    className="d-block btn btn-info p-1"
+                    onClick={this.showSelectChainWarning.bind(this)}
+                    >Choose token</button>                
+            )
+        }
+    }
+
+    getTokenAmountInput() {
+        let chain = this.props.fromBlockchain;
+        return (
+            <Form.Group className="mb-0" controlId="inputSrcTokenHash">
+                <Form.Control
+                    type="text"
+                    placeholder="Amount"
+                    autoComplete="off"
+                    value={this.props.srcTokenAmountToSend || undefined}
+                    onChange={this.handleInputTokenAmountChange.bind(this)} 
+                    disabled={chain === undefined}/> 
+            </Form.Group>            
+        )
+    }
+
+    showSelectChainWarning() {
+        alert('Select a network first');
+    }
+
+    showDestinationAddress() {
+        let chain = this.props.toBlockchain;
+        let address = '---';
+        if (chain !== undefined) {
+            if (chain.type === 'enq')
+                address = this.props.pubkey || address;
+            else if (chain.type === 'eth')
+                address = this.props.nonNativeConnection.web3ExtensionAccountId || address;
+        }
+        return (
+            <Form.Group className="mb-0" controlId="inputSrcTokenHash">
+                <Form.Control
+                    type="text"
+                    placeholder="---"
+                    autoComplete="off"
+                    value={address}                 
+                    disabled={true}/> 
+            </Form.Group>
+        )        
+    }
+
+    getFromToToggler() {
+        return (
+            <div
+                id="exch"
+                className="d-flex justify-content-center align-items-center mx-auto mt-3 c-border-radius2"
+                onClick={this.toggleFromTo.bind(this)}>                
+                <i className="fas fa-exchange-alt text-color3"></i>
+            </div>
+        )
+    }
+
+    toggleFromTo() {
+        let fromBlockchain = this.props.fromBlockchain;        
+        this.props.updateFromBlockchain(this.props.toBlockchain);
+        this.props.updateToBlockchain(fromBlockchain);
+    }    
 
     renderBridgeHistoryToggleButton() {
         let phrase = '';

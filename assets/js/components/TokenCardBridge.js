@@ -76,17 +76,24 @@ class TokenCardBridge extends React.Component  {
     }
 
     assignToken(token) {
-        console.log(token)
+        console.log(token)//////
         this.props.updateSrcTokenObj(token);
+
+        this.props.updateSrcTokenDecimals(token.decimals);
+        this.props.updateSrcTokenTicker(token.ticker);
+        this.props.updateSrcTokenHash(token.hash);
+
         this.props.updateShowTokenList(false);
-        console.log(this.props.balances)
+        console.log(this.props.balances)//////
         if (this.props.balances.length > 0) {
             let balance = this.props.balances.find(function(elem) {
                 return elem.token === token.hash
             });
 
-            if (balance !== undefined)
+            if (balance !== undefined) {
                 this.props.updateSrcTokenBalance(balance.amount);
+                this.props.updateSrcTokenAllowance(balance.amount);
+            }
         }
         // let mode = this.props.getMode()
         // let modeAlias = presets.paths[mode]

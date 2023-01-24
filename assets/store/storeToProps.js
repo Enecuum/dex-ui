@@ -676,8 +676,12 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     ...tokenCardCreator,
                     updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
-                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
+                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,///////////////
+                    updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
+                    updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
+                    updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,
                     updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                    updateSrcTokenAllowance        : spaceBridgeCreator.update_src_token_allowance
                 }, dispatch)
             }                    
         default:

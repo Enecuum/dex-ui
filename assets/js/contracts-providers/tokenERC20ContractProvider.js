@@ -4,7 +4,12 @@ class tokenERC20ContractProvider {
 	constructor(provider, abi, tokenHash) {
 		this.web3 = new Web3(provider);
 		this.tokenHash = tokenHash || '';
-		this.tokenContract = new this.web3.eth.Contract(abi, tokenHash);
+
+		try {
+			this.tokenContract = new this.web3.eth.Contract(abi, tokenHash);
+		} catch (err) {			
+			this.tokenContract = undefined;
+		}		
 	}
 
 	async getBalanceOf(accountId) {

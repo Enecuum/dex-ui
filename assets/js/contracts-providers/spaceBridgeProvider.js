@@ -80,7 +80,7 @@ class SpaceBridgeProvider {
 		let ticket = [
 				params.ticket.dst_address,
 				params.ticket.dst_network,
-				params.ticket.amount,
+				BigInt(params.ticket.amount),
 				window.Buffer.from(params.ticket.src_hash, 'hex'),
 				window.Buffer.from(params.ticket.src_address, 'hex'),
 				params.ticket.src_network,

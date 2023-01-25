@@ -64,13 +64,17 @@
 }
 
 
-.bridge-history-resume-wrapper {
+.bridge-history-resume-wrapper, .bridge-resume-wrapper {
 	min-width: 180px;
 	flex-basis: 180px;
 	width: 180px;
 	text-align: center;
 }
 
-.bridge-history-resume-wrapper * {
+.bridge-history-resume-wrapper *, .bridge-resume-wrapper * {
 	text-align: center;
+}
+
+.bridge-history-resume-wrapper .bridge-reset-button {
+	display: none;
 }

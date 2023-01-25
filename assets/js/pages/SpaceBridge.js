@@ -768,7 +768,7 @@ class SpaceBridge extends React.Component {
     getResetBridgeButton() {
         return(
             <Button
-                className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                className="bridge-reset-button w-100 btn btn-secondary px-4 button-bg-3"
                 onClick={this.resetBridge.bind(this)}>
                 Finish</Button>
         )
@@ -847,7 +847,7 @@ class SpaceBridge extends React.Component {
                                     <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
                                 </div>                                            
                             </div>
-                            <div className="bridge-history-resume-wrapper">
+                            <div className="bridge-resume-wrapper">
                                 {this.getControl(currentBridgeTxItem)}
                             </div>                                        
                         </div>

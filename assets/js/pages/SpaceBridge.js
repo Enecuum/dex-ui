@@ -130,8 +130,11 @@ class SpaceBridge extends React.Component {
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
     		userHistory.forEach(function(elem, index, array) {
+                let srcNetworkType = that.getChainById(elem.lock?.src_network).type;
+                let dstNetworkType = that.getChainById(elem.lock?.dst_network).type;                
+
                 if (!elem.lock.hasOwnProperty('status')) {
-                    if (elem.lock?.src_network === 5  && that.props.nonNativeConnection.web3Extension?.provider) {
+                    if (srcNetworkType === 'eth'  && that.props.nonNativeConnection.web3Extension?.provider) {
                         let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
@@ -142,7 +145,7 @@ class SpaceBridge extends React.Component {
                             }
                         });                        
                     }
-                    if (elem.lock?.src_network === 1) {
+                    if (srcNetworkType === 'enq') {
                         let net = availableNetworks.find(net => net.id === elem.lock.src_network);
                         let url = net !== undefined ? net.explorerURL : undefined;
                         if (url !== undefined) {
@@ -162,7 +165,7 @@ class SpaceBridge extends React.Component {
                         }
                     }
                 } else if (elem.lock.status === true) {
-                    if (elem.lock?.dst_network == 5) {
+                    if (dstNetworkType === 'eth') {
                         if (elem.claimTxHash !== undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
                             let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                             let web3Provider = new web3LibProvider(dataProvider);
@@ -176,7 +179,7 @@ class SpaceBridge extends React.Component {
                         }
                     }
                     if (elem.claimInitTxHash !== undefined && elem.claimInitTxStatus === undefined) {
-                        if (elem.lock?.dst_network === 1) {
+                        if (dstNetworkType === 'enq') {
                             let net = availableNetworks.find(net => net.id === Number(elem.lock.dst_network));
                             let url = net !== undefined ? net.explorerURL : undefined;
                             if (url !== undefined) {
@@ -195,7 +198,7 @@ class SpaceBridge extends React.Component {
                         }
                     }
                     if (elem.claimConfirmTxHash !== undefined && elem.claimConfirmTxStatus === undefined) {
-                        if (elem.lock?.dst_network === 1) {
+                        if (dstNetworkType === 'enq') {
                             let net = availableNetworks.find(net => net.id === Number(elem.lock.dst_network));
                             let url = net !== undefined ? net.explorerURL : undefined;
                             if (url !== undefined) {
@@ -317,19 +320,6 @@ class SpaceBridge extends React.Component {
 	}
 
     async postToValidator(txHash, srcNetwork = undefined) {
-    	// let src_network = undefined;
-
-     //    if (srcNetwork !== undefined) {
-     //        if (this.props.bridgeDirection == 'ETH-ENQ')
-     //            src_network = 5;
-     //        else if (this.props.bridgeDirection == 'ENQ-ETH')
-     //            src_network = 1; //11
-     //        else
-     //            return
-     //    } else
-     //        src_network = Number(srcNetwork);
-
-
     	let URL = 'https://bridge.enex.space/api/v1/notify';
     	
     	return fetch(URL, {
@@ -437,130 +427,47 @@ class SpaceBridge extends React.Component {
     getValidatorRes () {
         let that = this;
         let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
-        if (this.props.bridgeDirection === 'ETH-ENQ') {
-            let res = {
-                init : undefined,
-                confirm : undefined
-            }
-            if (this.props.currentBridgeTx !== undefined) {
-                let item = userHistory.find(function(elem) {
-                    return (elem.lock.transactionHash === that.props.currentBridgeTx)
-                });
-                if (item !== undefined && item.validatorRes !== undefined && item.validatorRes.encoded_data?.enq.hasOwnProperty('confirm') && item.validatorRes.encoded_data?.enq.hasOwnProperty('init')) {
-                    res =  {
-                        init : item.validatorRes.encoded_data.enq.init,
-                        confirm : item.validatorRes.encoded_data.enq.confirm
+
+        if (this.props.currentBridgeTx !== undefined) {
+            let item = userHistory.find(function(elem) {
+                return (elem.lock.transactionHash === that.props.currentBridgeTx)
+            });
+
+            let dstNetwork = this.getChainById(item.lock.dst_network);
+            if (dstNetwork !== undefined) {
+                if (dstNetwork.type === 'enq') {
+                    let res = {
+                        init : undefined,
+                        confirm : undefined
                     }
-                } 
-            }        
-            this.setState({initData: res.init});
-            this.setState({confirmData: res.confirm});
-        } else if (this.props.bridgeDirection === 'ENQ-ETH') {
-            let res = {
-                ticket : undefined,
-                transfer_id : undefined
-            }
-            if (this.props.currentBridgeTx !== undefined) {
-                let item = userHistory.find(function(elem) {
-                    return (elem.lock.transactionHash === that.props.currentBridgeTx)
-                });
-                if (item !== undefined && item.validatorRes !== undefined && item.validatorRes.ticket !== undefined && item.validatorRes.transfer_id !== undefined) {
-                    res =  {
-                        ticket : item.validatorRes.ticket,
-                        transfer_id : item.validatorRes.transfer_id
+                    if (item !== undefined && item.validatorRes !== undefined &&
+                        item.validatorRes.encoded_data?.enq.hasOwnProperty('confirm') && item.validatorRes.encoded_data?.enq.hasOwnProperty('init')) {
+                        res =  {
+                            init : item.validatorRes.encoded_data.enq.init,
+                            confirm : item.validatorRes.encoded_data.enq.confirm
+                        }
                     }
-                } 
-            }        
-            this.setState({ticket: res.ticket});
-            this.setState({transfer_id: res.transfer_id});
+                    this.setState({initData: res.init});
+                    this.setState({confirmData: res.confirm});
+                } else if (dstNetwork.type === 'eth') {
+                    let res = {
+                        ticket : undefined,
+                        transfer_id : undefined
+                    }
+
+                    if (item !== undefined && item.validatorRes !== undefined &&
+                        item.validatorRes.ticket !== undefined && item.validatorRes.transfer_id !== undefined) {
+                        res =  {
+                            ticket : item.validatorRes.ticket,
+                            transfer_id : item.validatorRes.transfer_id
+                        }
+                    }
+                    this.setState({ticket: res.ticket});
+                    this.setState({transfer_id: res.transfer_id});
+                }
+            }
         }
     }
-
-    // claimInitEnecuumByParameters() {
-    //     let pubkey = this.props.pubkey;
-    //     let that = this;
-    //     let claimInitData = this.state.initData;
-    //     if (!(pubkey && claimInitData))
-    //         return
-    //     extRequests.claimInitTest(pubkey,claimInitData).then(result => {
-    //         console.log('Success', result.hash);
-
-    //         let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-    //         let updatedHistory = bridgeHistoryArray.map(elem => {
-    //             if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === that.props.currentBridgeTx) {
-    //                 elem.claimInitTxHash = result.hash;
-    //             }
-    //             return elem
-    //         });
-
-    //         localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
-
-    //         let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-    //         let actionType = presets.pending.allowedTxTypes.claim_init;
-    //         lsdp.write(result.hash, 0, actionType);
-    //         this.props.updCurrentTxHash(result.hash);
-    //     },
-    //     error => {
-    //         console.log('Error')
-    //     });
-    // }
-
-    // claimConfirmEnecuumByParameters() {
-    //     let pubkey = this.props.pubkey;
-    //     let that = this;
-    //     let claimConfirmData = this.state.confirmData;
-    //     if (!(pubkey && claimConfirmData))
-    //         return
-    //     extRequests.claimConfirmTest(pubkey, claimConfirmData).then(result => {
-    //         console.log('Success', result.hash);
-
-    //         let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-    //         let updatedHistory = bridgeHistoryArray.map(elem => {
-    //             if (elem.initiator.includes(pubkey) && elem.initiator.includes(that.props.nonNativeConnection.web3ExtensionAccountId) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === that.props.currentBridgeTx) {
-    //                 elem.claimConfirmTxHash = result.hash;
-    //             }
-    //             return elem
-    //         });
-
-    //         localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
-
-    //         let interpolateParams, txTypes = presets.pending.allowedTxTypes;
-    //         let actionType = presets.pending.allowedTxTypes.claim_confirm;
-    //         lsdp.write(result.hash, 0, actionType);
-    //         this.props.updCurrentTxHash(result.hash);
-    //     },
-    //     error => {
-    //         console.log('Error')
-    //     });
-    // }
-
-    // claimETHByParameters() {
-    //     if (this.props.pubkey !== undefined &&
-    //         this.props.srcTokenObj.hash !== undefined &&
-    //         (Number(this.props.srcTokenAmountToSend) > 0) &&
-    //         this.props.srcTokenObj.decimals !== undefined &&
-    //         this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-    //         this.props.fromBlockchain !== undefined) {
-    //         let that = this;
-    //         let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    //         let ABI = this.props.fromBlockchain.bridgeContractABI;
-    //         let spaceBridgeContractAddress = this.props.fromBlockchain.bridgeContractAddress;
-    //         let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
-    //         let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
-    //         let currentTxObj = userHistory.find(function(elem) {
-    //             if (elem.lock.transactionHash === that.props.currentBridgeTx)
-    //                 return true
-    //         });
-            
-    //         if (currentTxObj !== undefined && currentTxObj.hasOwnProperty('validatorRes') && currentTxObj.validatorRes?.ticket !== undefined) {
-    //             bridgeProvider.send_claim_init(currentTxObj.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId, currentTxObj.lock.transactionHash).then(function(claimTx) {
-    //                 console.log('claim result', claimTx);
-    //             });
-    //         }
-    //     } else {
-    //         alert('Wrong input data')
-    //     }
-    // }
 
     getChainById(id) {
         let res = undefined;
@@ -590,7 +497,7 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    claimInitEthEnqBridge(bridgeItem, stateId) {
+    claimInitEnq(bridgeItem, stateId) {
         if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
@@ -620,7 +527,7 @@ class SpaceBridge extends React.Component {
         } 
     } 
 
-    claimConfirmEthEnqBridge(bridgeItem, stateId) {
+    claimConfirmEnq(bridgeItem, stateId) {
         if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
@@ -649,23 +556,6 @@ class SpaceBridge extends React.Component {
                 console.log(error)
             });
         } 
-    }
-
-    async setGoerli() {
-        console.log('set Goerli')
-        let requestData = {
-            method: 'wallet_switchEthereumChain',
-            params: [
-                {
-                    chainId: '0x5'
-                },
-            ],
-        }
-        try {
-                await ethereum.request(requestData);
-            } catch (error) {
-              console.log(error)
-        }
     }
 
     async encodeDataAndLock() {
@@ -756,15 +646,6 @@ class SpaceBridge extends React.Component {
         });
     }
 
-    toggleBridgeDirection() {
-        if (this.props.bridgeDirection === 'ENQ-ETH')
-            this.props.updateBridgeDirection('ETH-ENQ');
-        else if (this.props.bridgeDirection === 'ETH-ENQ')
-            this.props.updateBridgeDirection('ENQ-ETH');
-        else
-            console.log('toggleBridgeDirection: something went wrong!')
-    }
-
     toggleShowTokensList() {
         this.props.updateShowTokenList(!this.props.showTokenList)
     }
@@ -806,34 +687,32 @@ class SpaceBridge extends React.Component {
     }
 
     getControl(item) {
+        console.log(item)
         let res = 'Waiting...'
-        if (item.lock.status !== undefined && item.lock.status === true) {
+        if (item.lock?.status !== undefined && item.lock?.status === true) {
             res = 'Locked successfully. Waiting for validation...';
-            if (item.lock.dst_network == 5) {
-                if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
-                    res = this.getClaimEthButton(item);
-                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
-                    res = 'Waiting for claim confirmation...';
-                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
-                    res = this.getButtonLinkToEtherscan(item);                
-            } else if (item.lock.dst_network === 1) {
-                if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
-                    res = this.getClaimEthEnqButton(item);
-                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
-                    res = 'Waiting for claim confirmation...';
-                else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
-                    res = this.getButtonLinkToEtherscan(item);
+
+            let dstNetwork = this.getChainById(item.lock.dst_network);
+            console.log(dstNetwork)
+            if (dstNetwork !== undefined && dstNetwork.type !== undefined) {
+                if (dstNetwork.type === 'eth') {
+                    if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
+                        res = this.getClaimEthButton(item);
+                    else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
+                        res = 'Waiting for claim confirmation...';
+                    else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
+                        res = this.getButtonLinkToEtherscan(item);                
+                } else if (dstNetwork.type === 'enq') {
+                    if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
+                        res = this.getClaimEnqButton(item);
+                }                
             }
-            // if (item.lock.src_network == '5') {
-            //     if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
-            //         res = this.getClaimEthEnqButton(item);
-            
         } else if (item.lock.status !== undefined && item.lock.status !== true) 
             res = 'Failed on lock stage';
         return res    
     }
 
-    getClaimEthEnqButton(item) {
+    getClaimEnqButton(item) {
         let resume = 'Validated successfully';
         let stateId = 0;
 
@@ -863,13 +742,13 @@ class SpaceBridge extends React.Component {
                     {stateId === 0 &&
                     <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimInitEthEnqBridge.bind(this, item, stateId)}>
+                        onClick={this.claimInitEnq.bind(this, item, stateId)}>
                         Claim</Button>
                     }    
                     {stateId === 4 &&
                         <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimConfirmEthEnqBridge.bind(this, item, stateId)}>
+                        onClick={this.claimConfirmEnq.bind(this, item, stateId)}>
                         Confirm</Button>
                     }
                     {stateId === 1 &&
@@ -926,7 +805,8 @@ class SpaceBridge extends React.Component {
             return this.getBridgeForm()
         } else if (this.props.currentBridgeTx !== undefined) {
             let currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
-            return 'card content'
+            if (currentBridgeTxItem !== undefined)
+                return this.getControl(currentBridgeTxItem)
         }        
     }
 
@@ -1165,49 +1045,37 @@ class SpaceBridge extends React.Component {
         let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
         let history = this.state.history;
         let currentBridgeTxItem = undefined;
-        if (this.props.currentBridgeTx !== undefined) {
-            currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
+
+        let disabled = true;
+        let action = undefined;
+        let title = 'Confirm';
+        
+        currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
+        if (currentBridgeTxItem == undefined) {
+            if (!this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
+                disabled = false;
+                action = this.connectWeb3Ext.bind(this);
+                title = 'Connect Ethereum Wallet';
+            } else if (this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
+                disabled = this.props.pubkey === undefined ||
+                           this.props.nonNativeConnection.web3ExtensionAccountId === undefined ||
+                           this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId;
+                action = this.lockEth.bind(this);
+                title = 'lockEth';
+            } else if (this.props.fromBlockchain?.type === 'enq') {
+                disabled = this.props.pubkey === undefined;
+                action = this.encodeDataAndLock.bind(this);
+                title = 'lock ENQ';
+            }            
         }
 
         return(
             <>
-            {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                <div className="my-3 px-5 pb-4">                                        
-                    <button
-                        className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                        onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                </div>
-            }
-            {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                <>
-                    {currentBridgeTxItem === undefined &&
-                        <button
-                            className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-                            onClick={this.lockEth.bind(this)}
-                            disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId}>
-                            lockEth</button>
-                    }    
-                    {currentBridgeTxItem !== undefined &&
-                        <div className="text-center">{this.getControl(currentBridgeTxItem)}</div>
-                    }
-                </>
-            }
-
-            {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                <>
-                    {currentBridgeTxItem == undefined &&
-                        <button
-                            className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-                            onClick={this.encodeDataAndLock.bind(this)}
-                            disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                            lock ENQ</button>
-                    }    
-
-                    {currentBridgeTxItem !== undefined &&
-                        <div>{this.getControl(currentBridgeTxItem)}</div>
-                    }
-                </>
-            }
+                <button
+                    className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
+                    onClick={action}
+                    disabled={disabled}>
+                    {title}</button>
             </>
         )
     }
@@ -1225,464 +1093,102 @@ class SpaceBridge extends React.Component {
 
         return (
             <>
-            {!this.props.connectionStatus &&
-                <>
-                    <div className="row">            
-                        <div className='swap-card-wrapper px-2 pt-0 mt-0'>
-                            <Card className="swap-card c-card-1 pt-4 card">
-                                <Card.Body>
-                                    <div className="mb-3 h5">{t('noConnection')}</div>
-                                    <div className="mb-3 h6">{t('clickConnect')}</div>
-                                </Card.Body>
-                            </Card> 
-                        </div>
-                    </div>   
-                </>
-            }
-            {this.props.connectionStatus &&
-                <>
-                    <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
-                        { this.renderTokenCard()  }
-                        <div className="row w-100 mb-5">
-                            <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
-                                <Card className="swap-card">
-                                  <Card.Body className="p-0">
-                                    {this.renderCardHeader()}
-                                    <Card.Text as="div" className="p-4">
-                                        {this.getBridgeCardContent()}
-                                    </Card.Text>
-                                  </Card.Body>
-                                </Card>                
+                {!this.props.connectionStatus &&
+                    <>
+                        <div className="row">            
+                            <div className='swap-card-wrapper px-2 pt-0 mt-0'>
+                                <Card className="swap-card c-card-1 pt-4 card">
+                                    <Card.Body>
+                                        <div className="mb-3 h5">{t('noConnection')}</div>
+                                        <div className="mb-3 h6">{t('clickConnect')}</div>
+                                    </Card.Body>
+                                </Card> 
                             </div>
-                        </div>
-                    </div>
-
-
-
-
-
-
-
-            <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
-            { this.renderTokenCard()  }
-            {this.props.bridgeDirection === 'ETH-ENQ' && this.props.showHistory === false &&
-	            <div className="row w-100 mb-5">
-	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
-						<Card className="swap-card">
-						  <Card.Body className="p-0">
-                            <div className="p-4 bottom-line-1">                                
-                                <div>
-                                    <div className="d-flex align-items-center justify-content-between w-100 mb-2">
-                                        <div className="h4 text-nowrap nowrap mb-0">Space Bridge</div>
-                                        {this.props.nonNativeConnection.web3ExtensionAccountId && this.state.history.length > 0 &&                                                                                    
-                                            <button
-                                                className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
-                                                onClick={this.toggleHistoryBridge.bind(this)}>History</button>                                            
-                                        }
-                                    </div>
-                                    <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
-                                </div>
-                            </div>
-						    <Card.Text as="div" className="p-4">
-						    	<div>
-							    	<div className="h5">From</div>
-							    	<div className="h6 d-flex">
-                                        <div>
-                                            <span className="text-nowrap">
-                                                Network:
-                                                {this.props.nonNativeConnection.web3ExtensionAccountId == undefined &&
-                                                    <span className="ml-2" style={{'color' : '#ecd07b'}}>Ethereum</span>
-                                                }                                                    
-                                            </span>
-                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension.provider.chainId !== '0x5' &&
-                                                <button
-                                                    className="d-block btn btn-info mt-2 p-1 w-100"
-                                                    style={{'lineHeight': '18px'}}
-                                                    onClick={this.setGoerli.bind(this)}>Set Network</button>
-                                            }    
-                                        </div>
-                                        {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
-                                            <span className="font-weight-bold pl-2" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
-                                                <div>Goerli required!</div>
-                                                <div>Check settings of your Ethereum wallet!</div>
-                                            </span>
-                                        }
-                                        {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId == '0x5' &&
-                                            <div className="ml-2" style={{'color' : '#ecd07b'}}>Goerli</div>
-                                        }    
-                                        
-                                    </div>
-							    	<div className="mt-3">
-							    		<div className="mb-2 d-flex justify-content-start text-color4">Token</div>
-			                            <Form.Group className="mb-0" controlId="inputSrcTokenHash">        
-			                                <Form.Control
-			                                	type="text"
-			                                	placeholder="Address"
-			                                	autoComplete="off"
-												value={this.props.srcTokenHash}
-												onChange={this.handleInputTokenHashChange.bind(this)}
-                                                disabled={this.props.nonNativeConnection.web3ExtensionAccountId === undefined}/>       
-			                            </Form.Group>
-                                        { this.props.srcTokenHash !== undefined &&
-                                          this.props.srcTokenTicker !== undefined &&
-                                          this.props.srcTokenBalance !== undefined &&
-                                          this.props.srcTokenDecimals !== undefined &&
-                                          this.props.srcTokenAllowance !== undefined &&
-                                          this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-                                          this.props.pubkey !== undefined &&
-                                            <>    
-                                                <div className="mt-3">
-                                                    <span>Ticker: {this.props.srcTokenTicker}</span>
-                                                </div>
-        			                            <div className="mt-1">
-        			                            	<span>Balance: {this.props.srcTokenBalance / Math.pow(10, this.props.srcTokenDecimals)}</span>
-        			                            </div>
-        			                            <div className="mt-1 d-flex align-items-center justify-content-between">
-        			                            	<span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>        			                            	
-    				                            	<button
-    				                            		className="d-block btn btn-info mb-2 p-1"
-    				                            		onClick={this.approveSrcTokenBalance.bind(this)}>Approve</button>
-        			                            		
-        			                            </div>
-                                            </>
-                                        }
-							    	</div>
-							    	<div className="mt-3">
-							    		<div className="mb-2 d-flex justify-content-start text-color4">Amount to send</div>
-			                            <Form.Group className="mb-0" controlId="inputSrcTokenHash">
-			                            	<Form.Control
-			                                	type="text"
-			                                	placeholder="Amount"
-			                                	autoComplete="off"
-												value={this.props.srcTokenAmountToSend}
-												onChange={this.handleInputTokenAmountChange.bind(this)} 
-                                                disabled={!(this.props.srcTokenHash !== undefined &&
-                                                            this.props.srcTokenTicker !== undefined &&
-                                                            this.props.srcTokenBalance !== undefined &&
-                                                            this.props.srcTokenDecimals !== undefined &&
-                                                            this.props.srcTokenAllowance !== undefined &&
-                                                            this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-                                                            this.props.pubkey !== undefined)}/> 
-			                            </Form.Group>
-							    	</div>
-
-                                    {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                        <div className="my-3">                                        
-                                            <button
-                                                className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                                onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                                        </div>
-                                    }
-						    	</div>
-
-								<div
-                                    id="exch"
-                                    className="d-flex justify-content-center align-items-center mx-auto mt-3"
-                                    onClick={this.toggleBridgeDirection.bind(this)}>
-                                    <span className="icon-Icon13 exch-button hover-pointer"></span>
-                                </div>
-
-						    	<div>
-						    		<div className="h5">To</div>
-						    		<div className="h6">Network:<span className="text-bolder ml-2 text-uppercase" style={{'color' : '#ecd07b'}}>{this.props.net.name}</span></div>
-						    		<div className="h6">Address:<span className="text-bolder ml-2" style={{'color' : '#ecd07b'}}>{utils.packAddressString(this.props.pubkey)}</span></div>
-						    	</div>                                
-                                {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                    <>
-                                        {currentBridgeTxItem === undefined &&
-                                            <button
-                                                className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-                                                onClick={this.lockEth.bind(this)}
-                                                disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                                                Confirm</button>
-                                        }    
-                                        {currentBridgeTxItem !== undefined &&
-                                            <div className="text-center">{this.getControl(currentBridgeTxItem)}</div>
-                                        }
-                                    </>
-                                }                                    
-						    </Card.Text>
-						  </Card.Body>
-						</Card>    			
-	    			</div>
-	    		</div>
+                        </div>   
+                    </>
                 }
-
-                {this.props.bridgeDirection === 'ENQ-ETH' && this.props.showHistory === false &&
-                <div className="row w-100 mb-5">
-                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
-                        <Card className="swap-card">
-                          <Card.Body className="p-0">
-                            <div className="p-4 bottom-line-1">                                
-                                <div>
-                                    <div className="d-flex align-items-center justify-content-between w-100 mb-2">
-                                        <div className="h4 text-nowrap nowrap mb-0">Space Bridge</div>
-                                        {this.props.nonNativeConnection.web3ExtensionAccountId && this.state.history.length > 0 &&
-                                            <button
-                                                className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
-                                                onClick={this.toggleHistoryBridge.bind(this)}>History</button>                                            
-                                        }
-                                    </div>
-                                    <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
+                {this.props.connectionStatus &&
+                    <>
+                        <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
+                            { this.renderTokenCard()  }
+                            <div className="row w-100 mb-5">
+                                <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
+                                    <Card className="swap-card">
+                                      <Card.Body className="p-0">
+                                        {this.renderCardHeader()}
+                                        <Card.Text as="div" className="p-4">
+                                            {this.getBridgeCardContent()}
+                                        </Card.Text>
+                                      </Card.Body>
+                                    </Card>                
                                 </div>
                             </div>
-                            <Card.Text as="div" className="p-4">
-                                <div>
-                                    <div className="h5">From</div>
-                                    <div className="h6 d-flex">
-                                        <div>
-                                            <span className="text-nowrap">
-                                                Network:
-                                                <span className="ml-2 text-uppercase" style={{'color' : '#ecd07b'}}>{this.props.net.name}</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-3">
-                                        <div className="mb-2 d-flex align-items-center justify-content-start text-color4">
-                                            <div className="mr-3">Token</div>
-                                            <button
-                                                    className="d-block btn btn-info p-1"
-                                                    onClick={this.toggleShowTokensList.bind(this)}
-                                                    disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined}>Choose token</button>
-                                        </div>
-                                        {
-                                            this.props.srcTokenObj?.ticker !== undefined &&
-                                            this.props.srcTokenBalance !== undefined &&
-                                            this.props.srcTokenObj?.decimals !== undefined &&
-                                            this.props.pubkey !== undefined &&
-                                            this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-                                            <>
-                                                <div className="mt-3">
-                                                    <span>Ticker: {this.props.srcTokenObj.ticker}</span>
-                                                </div>
-                                                <div className="mt-1">
-                                                    <span>Balance: {this.props.srcTokenBalance / Math.pow(10, this.props.srcTokenObj.decimals)}</span>
-                                                </div>
-                                            </>
-                                        }    
-                                    </div>
-                                    <div className="mt-3">
-                                        <div className="mb-2 d-flex justify-content-start text-color4">Amount to send</div>
-                                        <Form.Group className="mb-0" controlId="inputSrcTokenHash">
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Amount"
-                                                autoComplete="off"
-                                                value={this.props.srcTokenAmountToSend}
-                                                onChange={this.handleInputTokenAmountChange.bind(this)} 
-                                                disabled={!(this.props.srcTokenObj?.ticker !== undefined &&
-                                                            this.props.srcTokenBalance !== undefined &&
-                                                            this.props.srcTokenObj?.decimals !== undefined &&
-                                                            this.props.pubkey !== undefined &&
-                                                            this.props.nonNativeConnection.web3ExtensionAccountId !== undefined)}/>
-                                        </Form.Group>
-                                    </div>
-                                </div>
+                        </div>
 
-                                <div
-                                    id="exch"
-                                    className="d-flex justify-content-center align-items-center mx-auto mt-3"
-                                    onClick={this.toggleBridgeDirection.bind(this)}>
-                                    <span className="icon-Icon13 exch-button hover-pointer"></span>
-                                </div>
+                        <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
 
-                                <div>
-                                    <div className="h5">To</div>
-                                    <div className="d-flex align-items-center mb-2">
-                                        <div>
-                                            <div className="h6 mb-0">Network:</div>                                            
-                                                {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension.provider.chainId !== '0x5' &&                                            
-                                                    <div className="mt-2">
-                                                        <button
-                                                            className="d-block btn btn-info p-1 w-100"
-                                                            style={{'lineHeight': '18px'}}
-                                                            onClick={this.setGoerli.bind(this)}>Set Network</button>
-                                                    </div>    
-                                                }                                            
-                                        </div>
-                                        <div className="pl-2">
-                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5' &&
-                                                <span className="font-weight-bold" style={{'color' : '#ecd07b', 'fontSize' : '18px'}}>
-                                                    <div>Goerli required!</div>
-                                                    <div>Check settings of your Ethereum wallet!</div>
-                                                </span>
-                                            }
-                                            {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined && this.props.nonNativeConnection.web3Extension?.provider?.chainId == '0x5' &&
-                                                <div style={{'color' : '#ecd07b'}} >Goerli</div>
-                                            }
-                                            {this.props.nonNativeConnection.web3ExtensionAccountId == undefined &&
-                                                <div style={{'color' : '#ecd07b'}} >Ethereum</div>
-                                            } 
-                                        </div>
-                                        
-                                    </div>
-                                    {this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-                                        <div className="h6 d-flex align-items-center">
-                                            <div className="mr-2">Address:</div>
-                                            <div style={{'color' : '#ecd07b'}}>{utils.packAddressString(this.props.nonNativeConnection.web3ExtensionAccountId)}</div> 
-                                        </div>
-                                    }
-                                </div>
-                                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                    <div className="my-3">                                        
-                                        <button
-                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                                    </div>
-                                }
-                                {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                    <>
-                                        {currentBridgeTxItem == undefined &&
-                                            <button
-                                                className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
-                                                onClick={this.encodeDataAndLock.bind(this)}
-                                                disabled={this.props.pubkey === undefined || this.props.nonNativeConnection.web3ExtensionAccountId === undefined || this.props.nonNativeConnection.web3Extension?.provider?.chainId !== '0x5'}>
-                                                Confirm</button>
-                                        }    
-
-                                        {currentBridgeTxItem !== undefined &&
-                                            <div>{this.getControl(currentBridgeTxItem)}</div>
-                                        }
-                                    </>
-                                }                                    
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>                
-                    </div>
-                </div>
-                }
-
-
-{/*HISTORY!!!*/}
-
-            {this.props.showHistory === true &&                
-                <div className="row w-100 mb-5">
-                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
-                        <Card className="swap-card">
-                          <Card.Body className="p-0">
-                            <div className="p-4 bottom-line-1">
-                                <div className="d-flex align-items-center justify-content-between nowrap">
-                                    <div>
-                                        <div className="h4 text-nowrap">Space Bridge</div>
-                                        <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
-                                    </div>                                    
-                                    <div className="ml-4">                                        
-                                        <button
-                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                            onClick={this.toggleHistoryBridge.bind(this)}>Bridge</button>
-                                    </div>                                                                       
-                                </div>
-                            </div>
-                            <Card.Text as="div" className="p-y">
-                                <div className="mb-3 px-4 pt-2">
-                                    <div className="h5 mt-3">History</div>
-                                </div>
-                                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                    <div className="my-3 px-5 pb-4">                                        
-                                        <button
-                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                                    </div>
-                                }
-                                {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                    <>
-                                        {this.state.history.map((item, index) => (
-                                            <div
-                                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4"
-                                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
-                                                key={`${index}-lock-${item.lock.transactionHash}`}>
-                                                <div className="mr-3">
-                                                   {/* <div>{item.lock?.transactionHash}</div>*/}
+                            {this.props.showHistory === true &&                
+                                <div className="row w-100 mb-5">
+                                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
+                                        <Card className="swap-card">
+                                          <Card.Body className="p-0">
+                                            <div className="p-4 bottom-line-1">
+                                                <div className="d-flex align-items-center justify-content-between nowrap">
                                                     <div>
-                                                        {that.getBridgeTxDirectionStr(item)}
-                                                    </div>
-                                                    <div className="text-color4">
-                                                        <span className="mr-2">Amount:</span>
-                                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
-                                                    </div>                                            
+                                                        <div className="h4 text-nowrap">Space Bridge</div>
+                                                        <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
+                                                    </div>                                    
+                                                    <div className="ml-4">                                        
+                                                        <button
+                                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
+                                                            onClick={this.toggleHistoryBridge.bind(this)}>Bridge</button>
+                                                    </div>                                                                       
                                                 </div>
-                                                <div className="bridge-history-resume-wrapper">
-                                                    {that.getControl(item)}
-                                                </div>                                        
                                             </div>
-                                        ))}
-                                    </>
-                                }
-                            </Card.Text>
-                          </Card.Body>
-                        </Card>                
-                    </div>
-                </div>
-            }
-
-
-
-
-{/*	            <div className="row w-100 mb-5 d-none">
-	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
-						<Card className="swap-card">
-						  <Card.Body className="p-0">
-						    <div className="p-4 bottom-line-1">
-						    	<div className="d-flex align-items-center justify-content-between nowrap">
-						    		<div>
-						    			<div className="h4 text-nowrap">Space Bridge - demo_1</div>
-						    			<div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
-						    		</div>
-						    		<div>
-							    		<button className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3">History</button>
-							    		<button className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3">0xd16f....568b</button>
-						    		</div>						    		
-						    	</div>
-						    </div>
-						    <Card.Text as="div" className="p-4">
-						    	<div>
-									<Steps useSuspense={false}/>
-							    </div>
-
-							    <div>
-							    	<BridgeForm useSuspense={false}/>
-							    </div>
-						    </Card.Text>
-						  </Card.Body>
-						</Card>    			
-	    			</div>
-	    		</div>*/}
-	    		
-
-
-{/*	    		<div className="row w-100 d-none">
-	    			<div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>    			
-						<Card className="swap-card">
-						  <Card.Body className="p-0">
-						    <div className="p-4 bottom-line-1">
-						    	<div className="d-flex align-items-center justify-content-between nowrap">
-						    		<div>
-						    			<div className="h4 text-nowrap">Space Bridge - demo_2</div>
-						    			<div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
-						    		</div>
-						    		<div>
-							    		<button className="d-block w-100 btn btn-secondary mb-2 px-4 button-bg-3">History</button>
-							    		<button className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3">0xd16f....568b</button>
-						    		</div>						    		
-						    	</div>
-						    </div>
-						    <Card.Text as="div" className="py-4 px-0">						    	
-						    	<div className="px-4">
-									<Steps useSuspense={false}/>
-							    </div>
-
-							    <div>
-							    	<ClaimControl useSuspense={false}/>
-							    </div>
-						    </Card.Text>
-						  </Card.Body>
-						</Card>    			
-	    			</div>
-	    		</div>*/}
-            </div>
-            </>
-            }
-        </>    
+                                            <Card.Text as="div" className="p-y">
+                                                <div className="mb-3 px-4 pt-2">
+                                                    <div className="h5 mt-3">History</div>
+                                                </div>
+                                                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
+                                                    <div className="my-3 px-5 pb-4">                                        
+                                                        <button
+                                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
+                                                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
+                                                    </div>
+                                                }
+                                                {this.props.nonNativeConnection.web3ExtensionAccountId &&
+                                                    <>
+                                                        {this.state.history.map((item, index) => (
+                                                            <div
+                                                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4"
+                                                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
+                                                                key={`${index}-lock-${item.lock.transactionHash}`}>
+                                                                <div className="mr-3">                                                                   
+                                                                    <div>
+                                                                        {that.getBridgeTxDirectionStr(item)}
+                                                                    </div>
+                                                                    <div className="text-color4">
+                                                                        <span className="mr-2">Amount:</span>
+                                                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
+                                                                    </div>                                            
+                                                                </div>
+                                                                <div className="bridge-history-resume-wrapper">
+                                                                    {that.getControl(item)}
+                                                                </div>                                        
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                }
+                                            </Card.Text>
+                                          </Card.Body>
+                                        </Card>                
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </>
+                }
+            </>    
         );
     };
 };

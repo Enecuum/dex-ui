@@ -688,13 +688,11 @@ class SpaceBridge extends React.Component {
     }
 
     getControl(item) {
-        console.log(item)
         let res = 'Waiting...'
         if (item.lock?.status !== undefined && item.lock?.status === true) {
             res = 'Locked successfully. Waiting for validation...';
 
             let dstNetwork = this.getChainById(item.lock.dst_network);
-            console.log(dstNetwork)
             if (dstNetwork !== undefined && dstNetwork.type !== undefined) {
                 if (dstNetwork.type === 'eth') {
                     if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
@@ -752,17 +750,29 @@ class SpaceBridge extends React.Component {
                         onClick={this.claimConfirmEnq.bind(this, item, stateId)}>
                         Confirm</Button>
                     }
-                    {stateId === 1 &&
-                    <a
-                        href={`https://bit.enecuum.com/#!/tx/${item.claimConfirmTxHash}`} 
-                        className="d-block w-100 btn btn-info px-4"
-                        target="_blank">
-                        Info</a>
+                    {stateId === 1 && <>
+                        <div className="mb-2">
+                            {this.getResetBridgeButton()}
+                        </div>
+                        <a
+                            href={`https://bit.enecuum.com/#!/tx/${item.claimConfirmTxHash}`} 
+                            className="d-block w-100 btn btn-info px-4"
+                            target="_blank">
+                            Info</a>
+                    </>    
                     }        
                 </>
            );  
     }
 
+    getResetBridgeButton() {
+        return(
+            <Button
+                className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                onClick={this.resetBridge.bind(this)}>
+                Finish</Button>
+        )
+    }
 
     getClaimEthButton(item) {
         return (
@@ -776,7 +786,14 @@ class SpaceBridge extends React.Component {
            );        
     }
 
-    getButtonLinkToEtherscan(item) {
+    resetBridge() {
+        this.resetStore();
+        this.props.updateFromBlockchain(undefined);
+        this.props.updateToBlockchain(undefined);
+        this.props.updateCurrentBridgeTx(undefined);
+    }
+
+    getButtonLinkToEtherscan(item) {        
         let resume = 'Claim';
         if (item.claimTxStatus === true)
             resume = 'Done';
@@ -793,6 +810,9 @@ class SpaceBridge extends React.Component {
         return (
                 <>
                     <div className="mb-2">{resume}</div>
+                    <div className="mb-2">
+                        {this.getResetBridgeButton()}
+                    </div>
                     <a
                         href={txPageUrl} 
                         className="d-block w-100 btn btn-info px-4"
@@ -1089,11 +1109,9 @@ class SpaceBridge extends React.Component {
                            this.props.nonNativeConnection.web3ExtensionAccountId === undefined ||
                            this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId;
                 action = this.lockEth.bind(this);
-                title = 'lockEth';
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.pubkey === undefined;
                 action = this.encodeDataAndLock.bind(this);
-                title = 'lock ENQ';
             }            
         }
 

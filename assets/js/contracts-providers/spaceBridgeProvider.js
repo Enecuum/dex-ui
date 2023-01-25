@@ -8,23 +8,6 @@ class SpaceBridgeProvider {
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
 	}
 
-	// async lock(dst_address, dst_network, token_amount, token_hash) {
-	// 	console.log('query SpaceBridgeProvider lock');
-	// 	return this.spaceBridgeContract.methods.lock().send({
-	// 			dst_address  : dst_address,
-	// 			dst_network  : dst_network,
-	// 			amount		 : token_amount,
-	// 			hash         : token_hash
-	// 		},
-	// 		function (err, res) {
-	// 		if (err) {
-	// 			console.log("An error occured", err)
-	// 			return
-	// 		}
-	// 		console.log("send: " + res)
-	// 	})
-	// }
-
 	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
@@ -53,7 +36,7 @@ class SpaceBridgeProvider {
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				if (bridgeHistoryArray.length > 0) {
 					let itemIsExist = bridgeHistoryArray.find(function(elem) {
-						if (elem.initiator === `${src_address}_${dst_address}` && elem.lock?.transactionHash === res)
+						if ((elem.initiator.includes(src_address) || elem.initiator.includes(dst_address)) && elem.lock?.transactionHash === res)
 							return true
 					});
 
@@ -102,7 +85,7 @@ class SpaceBridgeProvider {
 			} else {
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				let updatedHistory = bridgeHistoryArray.map(elem => {
-					if (elem.initiator.includes(params.ticket.dst_address) && elem.initiator.includes(params.ticket.src_address) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+					if ((elem.initiator.includes(params.ticket.dst_address) || elem.initiator.includes(params.ticket.src_address)) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
 						elem.claimTxHash = res;
 					}
 					return elem

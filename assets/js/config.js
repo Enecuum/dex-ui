@@ -18,7 +18,7 @@ export const availableNetworks = [
         bridgeContractAddress : undefined, //strig, undefined if not used
         bridgeContractABI     : undefined, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
-        explorerURL           : 'https://bit.enecuum.com', // url to explorer mainpage
+        explorerURL           : 'https://bit.enecuum.com/', // url to explorer mainpage
         txPageUrl             : 'https://bit.enecuum.com/#!/tx/'  // url to tx page without tx hash
     },
     {
@@ -48,6 +48,34 @@ export const availableNetworks = [
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://etherscan.io', // url to explorer mainpage
         txPageUrl             : 'https://etherscan.io/tx/'  // url to tx page without tx hash
+    },
+    {
+        id                    : 97, // Number, hex ???
+        web3ExtensionChainId  : '0x61', //strig as in Metamask, undefined if not used,
+        enqExtensionChainId   : undefined,
+        name                  : 'BNB Smart Chain Testnet', //string
+        type                  : 'eth', //'eth', 'enq'
+        testnet               : true, //true false 
+        available             : true, //true false 
+        bridgeContractAddress : '0x018d22ddA35D82093ce23FE1da992A8b281629eA', //strig, undefined if not used
+        bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
+        logo                  : undefined, //image, undefined if not used
+        explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage
+        txPageUrl             : 'https://testnet.bscscan.com/tx/'  // url to tx page without tx hash
+    },
+    {
+        id                    : 80001, // Number, hex ???
+        web3ExtensionChainId  : '0x13881', //strig as in Metamask, undefined if not used,
+        enqExtensionChainId   : undefined,
+        name                  : 'Mumbai', //string
+        type                  : 'eth', //'eth', 'enq'
+        testnet               : true, //true false 
+        available             : true, //true false 
+        bridgeContractAddress : '0xC431CEe35227934fD84732234Af9239C110283Ff', //strig, undefined if not used
+        bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
+        logo                  : undefined, //image, undefined if not used
+        explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage
+        txPageUrl             : 'https://testnet.bscscan.com/tx/'  // url to tx page without tx hash
     }
 ]
 
@@ -55,57 +83,57 @@ export const availableNetworks = [
 
 
 
-export const bridgeNets = [
-    {
-        id : 11,
-        name : 'f3-dev'
-    },
-    {
-        id : 1,
-        name : 'BIT',
-        url : 'https://bit.enecuum.com/'
-    },
-    {
-        id : 5,
-        name : 'Goerly'
-    }
-]
+// export const bridgeNets = [
+//     {
+//         id : 11,
+//         name : 'f3-dev'
+//     },
+//     {
+//         id : 1,
+//         name : 'BIT',
+//         url : 'https://bit.enecuum.com/'
+//     },
+//     {
+//         id : 5,
+//         name : 'Goerly'
+//     }
+// ]
 
 // export const bridgeTxStatuses = [
 //     {}
 // ]
 
-export const netProps = {
-    '0x1' : {
-        name              : 'Ethereum mainnet',
-        alias             : 'Ethereum',
-        explorer          : 'https://etherscan.io',
-        nativeTokenTicker : 'ETH',
-        infuraURL         : 'https://mainnet.infura.io/v3/17879373fe7149679706d5d2cd1e55da',
-        //wethAddr          : '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-    },
-    '0x5' : {
-        name              : 'Goerli test network',
-        alias             : 'Görli',
-        explorer          : 'https://goerli.etherscan.io',
-        nativeTokenTicker : 'görETH',
-        infuraURL         : 'https://goerli.infura.io/v3/97db9b69e4594bc196f95bc02dfbd076',
-        wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1',
-        usdcAddr          : '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
-        //0xFb2878B9967BA13e467cEDb722E2496112F78722
-    },
-    'unknown' : undefined
-}
+// export const netProps = {
+//     '0x1' : {
+//         name              : 'Ethereum mainnet',
+//         alias             : 'Ethereum',
+//         explorer          : 'https://etherscan.io',
+//         nativeTokenTicker : 'ETH',
+//         infuraURL         : 'https://mainnet.infura.io/v3/17879373fe7149679706d5d2cd1e55da',
+//         //wethAddr          : '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+//     },
+//     '0x5' : {
+//         name              : 'Goerli test network',
+//         alias             : 'Görli',
+//         explorer          : 'https://goerli.etherscan.io',
+//         nativeTokenTicker : 'görETH',
+//         infuraURL         : 'https://goerli.infura.io/v3/97db9b69e4594bc196f95bc02dfbd076',
+//         wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1',
+//         usdcAddr          : '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
+//         //0xFb2878B9967BA13e467cEDb722E2496112F78722
+//     },
+//     'unknown' : undefined
+// }
 
 export const smartContracts = {
     erc20token : {
         ABI :  erc20TokenABI
     },
-    weth : {        
-        ABI  : wethABI
-    },
-    spaceBridge : {
-        address : '0x9e400571e3D6d5aFA7e99064B30B2D826Ca4cBbb',
-        ABI : spaceBridgeABI
-    }
+    // weth : {        
+    //     ABI  : wethABI
+    // },
+    // spaceBridge : {
+    //     address : '0x9e400571e3D6d5aFA7e99064B30B2D826Ca4cBbb',
+    //     ABI : spaceBridgeABI
+    // }
 }

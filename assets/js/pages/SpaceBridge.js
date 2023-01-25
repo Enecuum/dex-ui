@@ -50,6 +50,7 @@ class SpaceBridge extends React.Component {
             this.updateUserHistory();
             this.getValidatorRes();
         }, 5000)       
+        //localStorage.removeItem('bridge_history');
     }
 
     componentDidUpdate(prevProps) {
@@ -125,7 +126,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        console.log(userHistory)
+        //console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -805,8 +806,28 @@ class SpaceBridge extends React.Component {
             return this.getBridgeForm()
         } else if (this.props.currentBridgeTx !== undefined) {
             let currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
-            if (currentBridgeTxItem !== undefined)
-                return this.getControl(currentBridgeTxItem)
+            if (currentBridgeTxItem !== undefined) {
+                return (
+                    <>
+                        <div
+                            className="d-flex justify-content-between pb-3 mb-3 px-4">
+                            <div className="mr-3">                                                                   
+                                <div>
+                                    {this.getBridgeTxDirectionStr(currentBridgeTxItem)}
+                                </div>
+                                <div className="text-color4">
+                                    <span className="mr-2">Amount:</span>
+                                    <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
+                                </div>                                            
+                            </div>
+                            <div className="bridge-history-resume-wrapper">
+                                {this.getControl(currentBridgeTxItem)}
+                            </div>                                        
+                        </div>
+                        
+                    </>
+                )
+            }
         }        
     }
 

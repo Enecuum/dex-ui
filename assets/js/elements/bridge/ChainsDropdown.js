@@ -134,7 +134,7 @@ class ChainsDropdown extends React.Component {
                         renderBody={this.renderModalBody.bind(this, this.state.selectedChain)}
                         closeAction={this.closeAction.bind(this)}/>
                 }            
-                <Dropdown as={ButtonGroup}>
+                <Dropdown as={ButtonGroup} className="w-100">
                     <Dropdown.Toggle>{this.getChainButtonTitle()}</Dropdown.Toggle>
                         <Dropdown.Menu>
                             {availableNetworks.map((item, index) => (

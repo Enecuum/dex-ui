@@ -126,7 +126,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        //console.log(userHistory)
+       //console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -783,11 +783,18 @@ class SpaceBridge extends React.Component {
         else if (item.claimTxStatus === false)
             resume = 'Failed';
 
+        let txPageUrl = '';
+        let chain = this.getChainById(item.lock.dst_network);
+
+        if (chain !== undefined && chain.txPageUrl !== undefined)
+            txPageUrl = `${chain.txPageUrl}${item.claimTxHash}`
+
+
         return (
                 <>
                     <div className="mb-2">{resume}</div>
                     <a
-                        href={`https://goerli.etherscan.io/tx/${item.claimTxHash}`} 
+                        href={txPageUrl} 
                         className="d-block w-100 btn btn-info px-4"
                         target="_blank">
                         Info</a>
@@ -835,7 +842,7 @@ class SpaceBridge extends React.Component {
         return (
             <>
                 <div>{this.getFromSection()}</div>
-                <div  className="my-4">{this.getFromToToggler()}</div>
+                <div className="my-4">{this.getFromToToggler()}</div>
                 <div>{this.getToSection()}</div>
                 <div className="mt-4">{this.getButtonByCurrentState()}</div>
             </>
@@ -846,8 +853,8 @@ class SpaceBridge extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col col-xl-4">From</div>
-                    <div className="col col-xl-8">
+                    <div className="col col-xl-3">From</div>
+                    <div className="col col-xl-9">
                         <div className="d-flex align-items-center justify-content-start">
                             <div className="mr-2">
                                 Balance                                
@@ -859,13 +866,13 @@ class SpaceBridge extends React.Component {
                     </div>                    
                 </div>
                 <div className="row">
-                    <div className="col col-xl-4">{this.getChainsDropdown('from')}</div>
-                    <div className="col col-xl-4">{this.getTokenInput()}</div>
-                    <div className="col col-xl-4">{this.getTokenAmountInput()}</div>
+                    <div className="col col-xl-3">{this.getChainsDropdown('from')}</div>
+                    <div className="col col-xl-3">{this.getTokenInput()}</div>
+                    <div className="col col-xl-6">{this.getTokenAmountInput()}</div>
                 </div>
                 {this.props.fromBlockchain?.type == 'eth' && this.props.srcTokenHash !== undefined &&
                     <div className="row mt-3">
-                        <div className="col col-xl-8 offset-xl-4">
+                        <div className="col col-xl-9 offset-xl-3">
                             { this.props.srcTokenHash !== undefined &&
                               this.props.srcTokenTicker !== undefined &&
                               this.props.srcTokenBalance !== undefined &&
@@ -894,11 +901,11 @@ class SpaceBridge extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col col-xl-4">
+                    <div className="col col-xl-3">
                         <div>To</div>
                         <div>{this.getChainsDropdown('to')}</div>
                     </div>
-                    <div className="col col-xl-8">
+                    <div className="col col-xl-9">
                         <div>Destination Address</div>
                         <div>{this.showDestinationAddress()}</div>
                     </div>            
@@ -937,13 +944,13 @@ class SpaceBridge extends React.Component {
                     title = this.props.srcTokenTicker;
                 return (
                     <button
-                        className="d-block btn btn-info p-1"
+                        className="d-block btn btn-info p-1 w-100 h-100"
                         onClick={this.toggleShowTokensList.bind(this)}
                         disabled={this.props.pubkey === undefined}>{title}</button>
                 )
             } else if (chainType === 'eth') {
                 return (
-                    <Form.Group className="mb-0" controlId="inputSrcTokenHash">        
+                    <Form.Group className="mb-0 w-100" controlId="inputSrcTokenHash">        
                         <Form.Control
                             type="text"
                             placeholder="Token address"
@@ -957,7 +964,7 @@ class SpaceBridge extends React.Component {
         } else {
             return (
                 <button
-                    className="d-block btn btn-info p-1"
+                    className="d-block btn btn-info w-100 h-100"                   
                     onClick={this.showSelectChainWarning.bind(this)}
                     >Choose token</button>                
             )

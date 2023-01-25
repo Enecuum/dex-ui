@@ -61,7 +61,7 @@ export const availableNetworks = [
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage
-        txPageUrl             : 'https://testnet.bscscan.com/tx/'  // url to tx page without tx hash
+        txPageUrl             : 'https://mumbai.polygonscan.com/tx/'  // url to tx page without tx hash
     }
 ]
 
@@ -72,7 +72,10 @@ export const availableNetworks = [
 //     '0x5' : {
 //         wethAddr          : '0xd050e000eEF099179D224cCD3964cc4B683383F1',
 //         usdcAddr          : '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C'
-//     }
+//     },
+    //'0x13881' {
+    //     ablAddr           : '0x6d8aC9d2471BC5bbbFa35fbf1E17478B741B274C'
+    // }
 // }
 
 export const smartContracts = {

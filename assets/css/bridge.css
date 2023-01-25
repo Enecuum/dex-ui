@@ -37,13 +37,12 @@
 }
 
 #bridgeWrapper .dropdown-toggle:focus {
-	border: none;
+	/*border: none;*/
 	box-shadow: none;
 }
 
 #bridgeWrapper .dropdown-menu {
-	min-width: 5rem;
-    width: 100%;
+	min-width: 5rem;    
     border-radius: var(--border-radius2);
     background: var(--bg-color-1);
 }

@@ -28,6 +28,7 @@ import ValueProcessor from '../utils/ValueProcessor';
 import lsdp from "../utils/localStorageDataProcessor";
 import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
 import utils from '../utils/swapUtils';
+import AvailableNetworksUtils from '../utils/AvailableNetworksUtils';
 
 import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
@@ -39,6 +40,7 @@ class SpaceBridge extends React.Component {
         super(props);
         this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
         this.valueProcessor = new ValueProcessor;
+        this.availableNetworksUtils = new AvailableNetworksUtils();
         this.state = {
             initData : undefined,
             confirmData : undefined,
@@ -49,8 +51,7 @@ class SpaceBridge extends React.Component {
         setInterval(() => {
             this.updateUserHistory();
             this.getValidatorRes();
-        }, 5000)       
-        //localStorage.removeItem('bridge_history');
+        }, 5000)
     }
 
     componentDidUpdate(prevProps) {
@@ -60,39 +61,42 @@ class SpaceBridge extends React.Component {
             prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
             prevProps.bridgeDirection !== this.props.bridgeDirection ||
             prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
-            this.resetStore();
-            this.setState({initData: undefined});
-            this.setState({confirmData: undefined});
-            this.setState({ticket: undefined});
-            this.setState({transfer_id: undefined});
-            this.setState({history: []});
-            this.props.updateShowHistory(false);
 
-            if (prevProps.nonNativeConnection.web3ExtensionChain !== this.props.nonNativeConnection.web3ExtensionChain &&
-                this.props.nonNativeConnection.web3ExtensionChain !== undefined) {
-                let chainId = this.props.nonNativeConnection.web3ExtensionChain;
-                let availableItemInConfig = availableNetworks.find(elem => elem.web3ExtensionChainId == chainId);
-                if (availableItemInConfig == undefined) {
-                    if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
-                        this.props.updateFromBlockchain(undefined);                        
-                    }
-                } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
-                    this.props.updateFromBlockchain(availableItemInConfig)
-                }
-            }
+            if (this.props.currentBridgeTx === undefined) {
+                this.resetStore();
+                this.setState({initData: undefined});
+                this.setState({confirmData: undefined});
+                this.setState({ticket: undefined});
+                this.setState({transfer_id: undefined});
+                this.setState({history: []});
+                this.props.updateShowHistory(false);
 
-            if (prevProps.net.url !== this.props.net.url &&
-                this.props.net.url !== undefined) {
-                let chainId = this.props.net.url;
-                let availableItemInConfig = availableNetworks.find(elem => elem.enqExtensionChainId == chainId);
-                if (availableItemInConfig == undefined) {
-                    if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
-                        this.props.updateFromBlockchain(undefined);                        
+                if (prevProps.nonNativeConnection.web3ExtensionChain !== this.props.nonNativeConnection.web3ExtensionChain &&
+                    this.props.nonNativeConnection.web3ExtensionChain !== undefined) {
+                    let chainId = this.props.nonNativeConnection.web3ExtensionChain;
+                    let availableItemInConfig = availableNetworks.find(elem => elem.web3ExtensionChainId == chainId);
+                    if (availableItemInConfig == undefined) {
+                        if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
+                            this.props.updateFromBlockchain(undefined);                      
+                        }
+                    } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'eth') {
+                        this.props.updateFromBlockchain(availableItemInConfig)
                     }
-                } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
-                    this.props.updateFromBlockchain(availableItemInConfig)
                 }
-            }
+
+                if (prevProps.net.url !== this.props.net.url &&
+                    this.props.net.url !== undefined) {
+                    let chainId = this.props.net.url;
+                    let availableItemInConfig = availableNetworks.find(elem => elem.enqExtensionChainId == chainId);
+                    if (availableItemInConfig == undefined) {
+                        if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
+                            this.props.updateFromBlockchain(undefined);                      
+                        }
+                    } else if (availableItemInConfig !== undefined && this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type == 'enq') {
+                        this.props.updateFromBlockchain(availableItemInConfig)
+                    }
+                }
+            }            
         }
     }
 
@@ -131,8 +135,8 @@ class SpaceBridge extends React.Component {
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
     		userHistory.forEach(function(elem, index, array) {
-                let srcNetworkType = that.getChainById(elem.lock?.src_network).type;
-                let dstNetworkType = that.getChainById(elem.lock?.dst_network).type;                
+                let srcNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.src_network).type;
+                let dstNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.dst_network).type;                
 
                 if (!elem.lock.hasOwnProperty('status')) {
                     if (srcNetworkType === 'eth'  && that.props.nonNativeConnection.web3Extension?.provider) {
@@ -147,7 +151,7 @@ class SpaceBridge extends React.Component {
                         });                        
                     }
                     if (srcNetworkType === 'enq') {
-                        let net = availableNetworks.find(net => net.id === elem.lock.src_network);
+                        let net = that.availableNetworksUtils.getChainById(elem.lock.src_network);                        
                         let url = net !== undefined ? net.explorerURL : undefined;
                         if (url !== undefined) {
                             networkApi.getTx(url, elem.lock.transactionHash).then(function(res) {                                
@@ -181,7 +185,7 @@ class SpaceBridge extends React.Component {
                     }
                     if (elem.claimInitTxHash !== undefined && elem.claimInitTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
-                            let net = availableNetworks.find(net => net.id === Number(elem.lock.dst_network));
+                            let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
                             if (url !== undefined) {
                                 networkApi.getTx(url, elem.claimInitTxHash).then(function(res) {
@@ -200,7 +204,7 @@ class SpaceBridge extends React.Component {
                     }
                     if (elem.claimConfirmTxHash !== undefined && elem.claimConfirmTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
-                            let net = availableNetworks.find(net => net.id === Number(elem.lock.dst_network));
+                            let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
                             if (url !== undefined) {
                                 networkApi.getTx(url, elem.claimConfirmTxHash).then(function(res) {
@@ -233,6 +237,14 @@ class SpaceBridge extends React.Component {
     		});
     	}
     }
+
+    clearHistory() {
+        localStorage.removeItem('bridge_history');
+        this.setState({history: []});
+        this.toggleHistoryBridge();
+    }
+
+    
 
     connectWC() {
     	if (this.props.nonNativeConnection.walletConnect !== undefined)
@@ -401,7 +413,7 @@ class SpaceBridge extends React.Component {
                 let address = undefined;
                 if (chain !== undefined) {
                     if (chain.type === 'enq')
-                        address = window.Buffer.from(this.props.pubkey);
+                        address = this.props.pubkey;
                     else if (chain.type === 'eth')
                         address = this.props.nonNativeConnection.web3ExtensionAccountId;
                 }
@@ -434,7 +446,7 @@ class SpaceBridge extends React.Component {
                 return (elem.lock.transactionHash === that.props.currentBridgeTx)
             });
 
-            let dstNetwork = this.getChainById(item.lock.dst_network);
+            let dstNetwork = this.availableNetworksUtils.getChainById(item.lock.dst_network);
             if (dstNetwork !== undefined) {
                 if (dstNetwork.type === 'enq') {
                     let res = {
@@ -470,16 +482,8 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    getChainById(id) {
-        let res = undefined;
-        let chain = availableNetworks.find(elem => elem.id === id);
-        if (chain !== undefined)
-            res = chain;
-        return res;     
-    }
-
     claimEth(bridgeItem) {
-        let dstChain = this.getChainById(bridgeItem.lock.dst_network);
+        let dstChain = this.availableNetworksUtils.getChainById(bridgeItem.lock.dst_network);
 
         if (this.props.pubkey !== undefined &&
             this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
@@ -669,15 +673,15 @@ class SpaceBridge extends React.Component {
         let srcNetwork = '???';
         let dstNetwork = '???';
         if (bridgeTxInfo.lock?.src_network !== undefined) {
-            let srcId = Number(bridgeTxInfo.lock.src_network);
-            let srcNetworkObj = availableNetworks.find(elem => elem.id === srcId);
+            let srcId = Number(bridgeTxInfo.lock.src_network);            
+            let srcNetworkObj = this.availableNetworksUtils.getChainById(srcId);
             if (srcNetworkObj !== undefined && srcNetworkObj.name !== undefined)
                 srcNetwork = srcNetworkObj.name;
         }
 
         if (bridgeTxInfo.lock?.dst_network !== undefined) {
-            let dstId = Number(bridgeTxInfo.lock.dst_network);
-            let dstNetworkObj = availableNetworks.find(elem => elem.id === dstId);
+            let dstId = Number(bridgeTxInfo.lock.dst_network);            
+            let dstNetworkObj = this.availableNetworksUtils.getChainById(dstId);
             if (dstNetworkObj !== undefined && dstNetworkObj.name !== undefined)
                 dstNetwork = dstNetworkObj.name;
         }
@@ -692,7 +696,7 @@ class SpaceBridge extends React.Component {
         if (item.lock?.status !== undefined && item.lock?.status === true) {
             res = 'Locked successfully. Waiting for validation...';
 
-            let dstNetwork = this.getChainById(item.lock.dst_network);
+            let dstNetwork = this.availableNetworksUtils.getChainById(item.lock.dst_network);
             if (dstNetwork !== undefined && dstNetwork.type !== undefined) {
                 if (dstNetwork.type === 'eth') {
                     if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash === undefined)
@@ -775,15 +779,49 @@ class SpaceBridge extends React.Component {
     }
 
     getClaimEthButton(item) {
+        let dstNetworkHexId = `0x${Number(item.lock.dst_network).toString(16)}`;
+        let chain = this.availableNetworksUtils.getChainById(Number(item.lock.dst_network));
+        let chainId = undefined;
+        if (chain !== undefined)
+            chainId = chain.id
         return (
                 <>
                     <div className="mb-2">Validated successfully</div>
-                    <Button
-                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimEth.bind(this, item)}>
-                        Claim</Button>
+                    {dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain &&
+                        <Button
+                            className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                            onClick={this.claimEth.bind(this, item)}>
+                            Claim</Button>
+                    }
+                    {dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined &&
+                        <Button
+                            className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                            onClick={this.requestSwitchEthChain.bind(this, dstNetworkHexId)}>
+                            Set chain</Button>
+                    }
                 </>
            );        
+    }
+
+    async requestSwitchEthChain(zeroXhexId) {
+        let that = this;
+        let requestData = {
+            method: 'wallet_switchEthereumChain',
+            params: [
+                {
+                    chainId: zeroXhexId
+                }
+            ]
+        };
+
+        try {
+            await ethereum.request(requestData).then(function(res) {
+            }, function(res) {                
+                that.closeAction();
+            });
+        } catch (error) {
+          console.log(error)          
+        }
     }
 
     resetBridge() {
@@ -801,7 +839,7 @@ class SpaceBridge extends React.Component {
             resume = 'Failed';
 
         let txPageUrl = '';
-        let chain = this.getChainById(item.lock.dst_network);
+        let chain = this.availableNetworksUtils.getChainById(item.lock.dst_network);
 
         if (chain !== undefined && chain.txPageUrl !== undefined)
             txPageUrl = `${chain.txPageUrl}${item.claimTxHash}`
@@ -829,9 +867,9 @@ class SpaceBridge extends React.Component {
     getBridgeCardContent() {
         let history = this.state.history;
         let currentBridgeTx = this.props.currentBridgeTx;
-        if (currentBridgeTx === undefined) {
+        if (currentBridgeTx === undefined && this.props.showHistory === false) {
             return this.getBridgeForm()
-        } else if (this.props.currentBridgeTx !== undefined) {
+        } else if (this.props.currentBridgeTx !== undefined && this.props.showHistory === false) {
             let currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
             if (currentBridgeTxItem !== undefined) {
                 return (
@@ -855,7 +893,9 @@ class SpaceBridge extends React.Component {
                     </>
                 )
             }
-        }        
+        } else if (this.props.showHistory === true) {
+            return this.getBridgeHistory()
+        }
     }
 
     getBridgeForm() {
@@ -1049,20 +1089,21 @@ class SpaceBridge extends React.Component {
     }    
 
     renderBridgeHistoryToggleButton() {
-        let phrase = '';
-        let showButton = false;        
+        let phrase = 'History';
+        let disabled = true;        
 
         if (this.props.showHistory === true) {
             phrase = 'Bridge';
-            showButton = true;
+            disabled = false;
         } else if  (this.props.showHistory === false && this.state.history.length > 0) {
             phrase = 'History';
-            showButton = true;
+            disabled = false;
         }
 
-        if (this.props.nonNativeConnection.web3ExtensionAccountId && showButton) {                                                                                   
+        if (this.props.nonNativeConnection.web3ExtensionAccountId) {                                                                                   
             return (
                 <button
+                disabled={disabled}
                 className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
                 onClick={this.toggleHistoryBridge.bind(this)}>{phrase}</button>
             )
@@ -1125,6 +1166,53 @@ class SpaceBridge extends React.Component {
             </>
         )
     }
+
+    getBridgeHistory() {
+        let that = this;        
+        return (
+            <>
+                <div className="mb-3 pt-2">
+                    <div className="h5">History</div>
+                </div>
+                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
+                    <div className="my-3 px-5 pb-4">                                        
+                        <button
+                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
+                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
+                    </div>
+                }
+                {this.props.nonNativeConnection.web3ExtensionAccountId &&
+                    <>
+                        {this.state.history.map((item, index) => (
+                            <div
+                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3"
+                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
+                                key={`${index}-lock-${item.lock.transactionHash}`}>
+                                <div className="mr-3">                                                                   
+                                    <div>
+                                        {that.getBridgeTxDirectionStr(item)}
+                                    </div>
+                                    <div className="text-color4">
+                                        <span className="mr-2">Amount:</span>
+                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
+                                    </div>                                            
+                                </div>
+                                <div className="bridge-history-resume-wrapper">
+                                    {that.getControl(item)}
+                                </div>                                        
+                            </div>
+                        ))}
+                        <div>
+                            <button
+                                disabled={this.props.currentBridgeTx !== undefined}
+                                className="d-block btn btn-secondary mt-2 mb-4 px-4 button-bg-3 mx-auto"
+                                onClick={this.clearHistory.bind(this)}>Clear history</button>                                                            
+                        </div>
+                    </>
+                }
+            </>       
+        )
+    }
         
     render () {
         const t = this.props.t;
@@ -1169,68 +1257,6 @@ class SpaceBridge extends React.Component {
                                     </Card>                
                                 </div>
                             </div>
-                        </div>
-
-                        <div id="bridgeWrapper" className='d-flex flex-column justify-content-center align-items-center'>
-
-                            {this.props.showHistory === true &&                
-                                <div className="row w-100 mb-5">
-                                    <div className='col-12 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>                
-                                        <Card className="swap-card">
-                                          <Card.Body className="p-0">
-                                            <div className="p-4 bottom-line-1">
-                                                <div className="d-flex align-items-center justify-content-between nowrap">
-                                                    <div>
-                                                        <div className="h4 text-nowrap">Space Bridge</div>
-                                                        <div className="text-color4">Transfer your liquidity via secured interchain space bridge</div>
-                                                    </div>                                    
-                                                    <div className="ml-4">                                        
-                                                        <button
-                                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                                            onClick={this.toggleHistoryBridge.bind(this)}>Bridge</button>
-                                                    </div>                                                                       
-                                                </div>
-                                            </div>
-                                            <Card.Text as="div" className="p-y">
-                                                <div className="mb-3 px-4 pt-2">
-                                                    <div className="h5 mt-3">History</div>
-                                                </div>
-                                                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                                    <div className="my-3 px-5 pb-4">                                        
-                                                        <button
-                                                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                                                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                                                    </div>
-                                                }
-                                                {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                                                    <>
-                                                        {this.state.history.map((item, index) => (
-                                                            <div
-                                                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3 px-4"
-                                                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
-                                                                key={`${index}-lock-${item.lock.transactionHash}`}>
-                                                                <div className="mr-3">                                                                   
-                                                                    <div>
-                                                                        {that.getBridgeTxDirectionStr(item)}
-                                                                    </div>
-                                                                    <div className="text-color4">
-                                                                        <span className="mr-2">Amount:</span>
-                                                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
-                                                                    </div>                                            
-                                                                </div>
-                                                                <div className="bridge-history-resume-wrapper">
-                                                                    {that.getControl(item)}
-                                                                </div>                                        
-                                                            </div>
-                                                        ))}
-                                                    </>
-                                                }
-                                            </Card.Text>
-                                          </Card.Body>
-                                        </Card>                
-                                    </div>
-                                </div>
-                            }
                         </div>
                     </>
                 }

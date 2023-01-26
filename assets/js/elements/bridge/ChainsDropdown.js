@@ -29,13 +29,16 @@ class ChainsDropdown extends React.Component {
         return title
     }
 
-    tryToSelectChain(indexInArrayOfAvailableNetworks) {
+    tryToSelectChain(indexInArrayOfAvailableNetworks) {        
         let selectedChain = availableNetworks[indexInArrayOfAvailableNetworks];
         let enqChainMismatchToExtension = selectedChain.type === 'enq' && selectedChain.enqExtensionChainId !== this.props.net.url;
         let ethChainMismatchToExtension = selectedChain.type === 'eth' && selectedChain.web3ExtensionChainId !== this.props.nonNativeConnection.web3ExtensionChain;
 
-        if (enqChainMismatchToExtension || ethChainMismatchToExtension) {                
+        if ((enqChainMismatchToExtension || ethChainMismatchToExtension) && this.direction === 'from') {                
             this.showChangeChainModal(selectedChain);
+            return
+        } if ((enqChainMismatchToExtension || ethChainMismatchToExtension) && this.direction === 'to' && this.props.fromBlockchain?.id !== selectedChain.id) {                
+            this.setChainInStore(availableNetworks[indexInArrayOfAvailableNetworks]);
         } else            
             this.setChainInStore(availableNetworks[indexInArrayOfAvailableNetworks]);
     }
@@ -135,15 +138,17 @@ class ChainsDropdown extends React.Component {
                         closeAction={this.closeAction.bind(this)}/>
                 }            
                 <Dropdown as={ButtonGroup} className="w-100">
-                    <Dropdown.Toggle>{this.getChainButtonTitle()}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            {availableNetworks.map((item, index) => (
-                                <Dropdown.Item
-                                    key={`${item.id}-${item.name}`}
-                                    onClick={this.tryToSelectChain.bind(this, index)}
-                                    >{item.name}</Dropdown.Item>                                
-                            ))}
-                        </Dropdown.Menu>
+                    <Dropdown.Toggle className="w-100">
+                        <div className="select-chain-title">{this.getChainButtonTitle()}</div>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {availableNetworks.map((item, index) => (
+                            <Dropdown.Item
+                                key={`${item.id}-${item.name}`}
+                                onClick={this.tryToSelectChain.bind(this, index)}
+                                >{item.name}</Dropdown.Item>                                
+                        ))}
+                    </Dropdown.Menu>
                 </Dropdown>
             </>            
         )

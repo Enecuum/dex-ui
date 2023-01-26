@@ -11,7 +11,8 @@ class SpaceBridgeProvider {
 	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
-		return this.spaceBridgeContract.methods.lock(dst_address, dst_network, token_amount, token_hash).send(
+
+		return this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash).send(
 			{ from: src_address },
 			function (err, res) {
 			if (err) {
@@ -48,8 +49,7 @@ class SpaceBridgeProvider {
 					that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
 				}
 			}
-			console.log("send: " + res)
-			console.log(callback)
+			console.log("send: " + res);
 			if (callback !== undefined) {
 				callback(res)
 			}

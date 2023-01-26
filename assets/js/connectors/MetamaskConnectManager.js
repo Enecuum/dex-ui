@@ -74,7 +74,7 @@ class MetamaskConnectManager {
 
     disconnectHandler(info) {
         console.log('Metamask is disconnected ', info);
-        this.unsubscribeEvents();
+        //this.unsubscribeEvents();
     }
 
     chainChangedHandler(chainID) {

@@ -1141,7 +1141,8 @@ class SpaceBridge extends React.Component {
         
         currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
         if (currentBridgeTxItem == undefined) {
-            if (!this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
+            if (!this.props.nonNativeConnection.web3ExtensionAccountId &&
+               (this.props.fromBlockchain?.type === 'eth' || this.props.toBlockchain?.type === 'eth')) {
                 disabled = false;
                 action = this.connectWeb3Ext.bind(this);
                 title = 'Connect Ethereum Wallet';

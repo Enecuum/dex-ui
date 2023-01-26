@@ -574,7 +574,7 @@ class SpaceBridge extends React.Component {
         }
 
         let URL =  'https://bridge.enex.space/api/v1/encode_lock';
-        let token_decimals = Number(this.props.srcTokenObj.decimals);
+        let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
             "src_network": this.props.fromBlockchain.id, //11

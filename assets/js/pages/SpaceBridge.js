@@ -247,15 +247,17 @@ class SpaceBridge extends React.Component {
                 }
                 
     			if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
-    				that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
-    					if (validatorRes === null || validatorRes.hasOwnProperty('err'))
+                    that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
+    					if (validatorRes === null || validatorRes.hasOwnProperty('err')) {
+                            console.log('Validator_notify response is null for lock transaction', elem.lock.transactionHash)
     						return
+                        }
     					elem.validatorRes = validatorRes;
     					localStorage.setItem('bridge_history', JSON.stringify(array));
                         that.setState({history: array});
     				}, function(err) {
                         console.log('Can\'t get notify response ', err);
-                    });   				
+                    });                    				
     			}
     		});
     	}
@@ -356,8 +358,7 @@ class SpaceBridge extends React.Component {
 	}
 
     async postToValidator(txHash, srcNetwork = undefined) {
-    	let URL = 'https://bridge.enex.space/api/v1/notify';
-    	
+    	let URL = 'https://bridge.enex.space/api/v1/notify';    	
     	return fetch(URL, {
 	        method: 'POST',
 	        body: JSON.stringify({networkId : srcNetwork, txHash : txHash}),
@@ -368,13 +369,13 @@ class SpaceBridge extends React.Component {
                 console.log(txHash, res);
                 return res
             }, err => {
-                console.log(err)
+                console.log('Parse notify response failed');
                 return null
             })
 	    }, function(err) {
-            console.log(err)
+            console.log('Get notify response failed');
             return null            
-        })
+        })    
     }
 
     handleInputTokenHashChange(item) {
@@ -1168,7 +1169,7 @@ class SpaceBridge extends React.Component {
         
         currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
         if (currentBridgeTxItem == undefined) {
-            if (this.props.nonNativeConnection.web3Extension === undefined && this.props.nonNativeConnection.web3Extension.provider === undefined) {
+            if (this.props.nonNativeConnection.web3Extension === undefined && this.props.nonNativeConnection.web3Extension?.provider === undefined) {
                 return (
                     <a className="link-primary transition-item" href="https://metamask.io/download/">
                         <Button                        

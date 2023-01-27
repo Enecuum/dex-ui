@@ -30,7 +30,7 @@ class BridgeHistoryProcessor {
             let rawHistory = this.getBridgeHistoryArray();
             if (rawHistory.length > 0) {
                 userHistory = rawHistory.filter(function(elem) {
-                    return elem.initiator.includes(enqExtUserId) || elem.initiator.includes(web3ExtUserId) ? true : false;
+                    return (elem.initiator.includes(enqExtUserId) || elem.initiator.includes(web3ExtUserId)) ? true : false;
                 });
             }            
         }

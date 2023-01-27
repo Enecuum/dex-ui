@@ -35,6 +35,8 @@ import networkApi from "../requests/networkApi";
 
 import {availableNetworks, smartContracts} from'./../config';
 
+import metamaskLogo from './../../img/metamask-logo.webp';
+
 class SpaceBridge extends React.Component {
 	constructor(props) {
         super(props);
@@ -130,7 +132,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-       //console.log(userHistory)
+        //console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -148,24 +150,31 @@ class SpaceBridge extends React.Component {
                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                 that.setState({history: array});
                             }
+                        }, function(err) {
+                            console.log('Can\'t get receipt for lock transaction', elem.lock.transactionHash, err);
                         });                        
                     }
                     if (srcNetworkType === 'enq') {
                         let net = that.availableNetworksUtils.getChainById(elem.lock.src_network);                        
                         let url = net !== undefined ? net.explorerURL : undefined;
                         if (url !== undefined) {
-                            networkApi.getTx(url, elem.lock.transactionHash).then(function(res) {                                
+                            networkApi.getTx(url, elem.lock.transactionHash).then(function(res) {                              
                                 if (res !== null && !res.lock) {
+                                    console.log(res)
                                     res.json().then(function(tx) {                                        
                                         if (tx.status !== undefined) {
                                             elem.lock.status = tx.status === 3 ? true : false;
                                             localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
+                                        } else {
+                                            console.log('Undefuned lock transaction status', elem.lock.transactionHash);
                                         }
                                     }, function(err) {
-                                        console.log('Can\'t get status for transaction', elem.lock.transactionHash);
+                                        console.log('Can\'t get status for lock transaction', elem.lock.transactionHash, err);
                                     });
                                 }
+                            }, function(err) {
+                                console.log('Can\'t get data for lock transaction', elem.lock.transactionHash, err);
                             });                        
                         }
                     }
@@ -179,7 +188,11 @@ class SpaceBridge extends React.Component {
                                     elem.claimTxStatus = res.status;
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
+                                } else {
+                                    console.log('Undefuned claim transaction status', elem.lock.transactionHash);
                                 }
+                            }, function(err) {
+                                console.log('Can\'t get receipt for claim transaction', elem.claimTxHash, err);
                             });
                         }
                     }
@@ -196,8 +209,12 @@ class SpaceBridge extends React.Component {
                                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
                                             }
+                                        }, function(err) {
+                                            console.log('Can\'t get status for Claim Init transaction', elem.claimInitTxHash, err);
                                         });
                                     }
+                                }, function(err) {
+                                    console.log('Can\'t get data for Claim init transaction', elem.claimInitTxHash, err);
                                 });                        
                             }
                         }
@@ -214,9 +231,15 @@ class SpaceBridge extends React.Component {
                                                 elem.claimConfirmTxStatus = tx.status === 3 ? true : false;
                                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
+                                            } else {
+                                                console.log('Undefuned claim confirm transaction status', elem.lock.transactionHash);
                                             }
+                                        }, function(err) {
+                                            console.log('Can\'t get status for claim confirm transaction', elem.claimConfirmTxHash);
                                         });
                                     }
+                                }, function(err) {
+                                    console.log('Can\'t get data for Claim Confirm transaction', elem.claimConfirmTxHash);
                                 });                        
                             }
                         }
@@ -225,13 +248,13 @@ class SpaceBridge extends React.Component {
                 
     			if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
     				that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
-    					if (validatorRes.hasOwnProperty('err'))
+    					if (validatorRes.hasOwnProperty('err') || validatorRes === null)
     						return
     					elem.validatorRes = validatorRes;
     					localStorage.setItem('bridge_history', JSON.stringify(array));
                         that.setState({history: array});
     				}, function(err) {
-                        console.log(err);
+                        console.log('Can\'t get notify response ', err);
                     });   				
     			}
     		});
@@ -346,11 +369,11 @@ class SpaceBridge extends React.Component {
                 return res
             }, err => {
                 console.log(err)
-                return {}
+                return null
             })
 	    }, function(err) {
-            return {}
-            console.log(errr)
+            console.log(err)
+            return null            
         })
     }
 
@@ -564,6 +587,7 @@ class SpaceBridge extends React.Component {
     }
 
     async encodeDataAndLock() {
+        let that = this;
         let chain = this.props.toBlockchain;
         let address = undefined;
         if (chain !== undefined) {
@@ -591,13 +615,16 @@ class SpaceBridge extends React.Component {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json','Accept': 'application/json'}
-        }).then(function(response) {  
-            return response.json()
-        }).then(res => {
-            console.log(res.encoded_data);
-            this.enqLock(res.encoded_data, lockInfo)            
-            return res
-        });
+        }).then(function(response) {            
+            response.json().then(res => {
+                if (res.hasOwnProperty('encoded_data'))
+                    that.enqLock(res.encoded_data, lockInfo);
+            }, err => {
+                console.log(err)                
+            })
+        }, function(err) {
+            console.log(err)                        
+        })
     }
 
     enqLock(packedDataFromEncodeLock, lockInfo) {
@@ -1141,6 +1168,18 @@ class SpaceBridge extends React.Component {
         
         currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
         if (currentBridgeTxItem == undefined) {
+            if (this.props.nonNativeConnection.web3Extension === undefined && this.props.nonNativeConnection.web3Extension.provider === undefined) {
+                return (
+                    <a className="link-primary transition-item" href="https://metamask.io/download/">
+                        <Button                        
+                            className="d-flex align-items-center justify-content-center w-100 btn btn-secondary mb-2 px-4 button-bg-3 mt-4">
+                            <div className="mr-2">Install Metamask</div>
+                            <img src={metamaskLogo} width="24" height="24"/>
+                        </Button>
+                  </a>                    
+                )
+            }
+
             if (!this.props.nonNativeConnection.web3ExtensionAccountId &&
                (this.props.fromBlockchain?.type === 'eth' || this.props.toBlockchain?.type === 'eth')) {
                 disabled = false;
@@ -1174,43 +1213,34 @@ class SpaceBridge extends React.Component {
             <>
                 <div className="mb-3 pt-2">
                     <div className="h5">History</div>
-                </div>
-                {!this.props.nonNativeConnection.web3ExtensionAccountId &&
-                    <div className="my-3 px-5 pb-4">                                        
-                        <button
-                            className="d-block w-100 btn btn-secondary mt-2 px-4 button-bg-3"
-                            onClick={this.connectWeb3Ext.bind(this)}>Connect Ethereum Wallet</button>
-                    </div>
-                }
-                {this.props.nonNativeConnection.web3ExtensionAccountId &&
-                    <>
-                        {this.state.history.map((item, index) => (
-                            <div
-                                className="d-flex justify-content-between bottom-line-1 pb-3 mb-3"
-                                data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
-                                key={`${index}-lock-${item.lock.transactionHash}`}>
-                                <div className="mr-3">                                                                   
-                                    <div>
-                                        {that.getBridgeTxDirectionStr(item)}
-                                    </div>
-                                    <div className="text-color4">
-                                        <span className="mr-2">Amount:</span>
-                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
-                                    </div>                                            
+                </div>                
+                <>
+                    {this.state.history.map((item, index) => (
+                        <div
+                            className="d-flex justify-content-between bottom-line-1 pb-3 mb-3"
+                            data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
+                            key={`${index}-lock-${item.lock.transactionHash}`}>
+                            <div className="mr-3">                                                                   
+                                <div>
+                                    {that.getBridgeTxDirectionStr(item)}
                                 </div>
-                                <div className="bridge-history-resume-wrapper">
-                                    {that.getControl(item)}
-                                </div>                                        
+                                <div className="text-color4">
+                                    <span className="mr-2">Amount:</span>
+                                    <span>{that.getBridgeTxAmountStr(item)}</span>                                                
+                                </div>                                            
                             </div>
-                        ))}
-                        <div>
-                            <button
-                                disabled={this.props.currentBridgeTx !== undefined}
-                                className="d-block btn btn-secondary mt-2 mb-4 px-4 button-bg-3 mx-auto"
-                                onClick={this.clearHistory.bind(this)}>Clear history</button>                                                            
+                            <div className="bridge-history-resume-wrapper">
+                                {that.getControl(item)}
+                            </div>                                        
                         </div>
-                    </>
-                }
+                    ))}
+                    <div>
+                        <button
+                            disabled={this.props.currentBridgeTx !== undefined}
+                            className="d-block btn btn-secondary mt-2 mb-4 px-4 button-bg-3 mx-auto"
+                            onClick={this.clearHistory.bind(this)}>Clear history</button>                                                            
+                    </div>
+                </>                
             </>       
         )
     }

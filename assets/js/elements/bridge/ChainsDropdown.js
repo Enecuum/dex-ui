@@ -10,6 +10,8 @@ import {availableNetworks} from'./../../config';
 import CommonModal from "./../../elements/CommonModal";
 import metamaskLogo from './../../../img/metamask-logo.webp';
 
+import '../../../css/bridge.css';
+
 class ChainsDropdown extends React.Component {
     constructor (props) {
         super(props)
@@ -100,13 +102,14 @@ class ChainsDropdown extends React.Component {
             return (
                 <div className="text-center">
                     {web3ExtensionIsInstalled &&
-                        <button 
-                            onClick={this.requestSwitchEthChain.bind(this, selectedChain)}>Set {selectedChain.name}</button>
+                        <Button
+                            className="btn btn-secondary mb-2 px-4 button-bg-3 mt-4"
+                            onClick={this.requestSwitchEthChain.bind(this, selectedChain)}>Set {selectedChain.name}</Button>
                     }
                     {!web3ExtensionIsInstalled && selectedChain.type === 'eth' &&
                         <a className="link-primary transition-item" href="https://metamask.io/download/">
                             <Button                        
-                                variant="outline-primary" className="d-flex align-items-center justify-content-between w-100 mb-3 py-3  btn">
+                                className="btn btn-secondary mb-2 px-4 button-bg-3 mt-4">
                                 <div>Install Metamask</div>
                                 <img src={metamaskLogo} width="24" height="24"/>
                             </Button>

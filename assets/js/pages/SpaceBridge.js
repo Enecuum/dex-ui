@@ -248,7 +248,7 @@ class SpaceBridge extends React.Component {
                 
     			if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
     				that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
-    					if (validatorRes.hasOwnProperty('err') || validatorRes === null)
+    					if (validatorRes === null || validatorRes.hasOwnProperty('err'))
     						return
     					elem.validatorRes = validatorRes;
     					localStorage.setItem('bridge_history', JSON.stringify(array));
@@ -1237,7 +1237,7 @@ class SpaceBridge extends React.Component {
                     <div>
                         <button
                             disabled={this.props.currentBridgeTx !== undefined}
-                            className="d-block btn btn-secondary mt-2 mb-4 px-4 button-bg-3 mx-auto"
+                            className="d-block btn btn-danger mt-2 mb-4 px-4 mx-auto"
                             onClick={this.clearHistory.bind(this)}>Clear history</button>                                                            
                     </div>
                 </>                

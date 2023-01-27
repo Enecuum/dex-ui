@@ -521,6 +521,8 @@ class SpaceBridge extends React.Component {
             if (bridgeItem !== undefined && bridgeItem.hasOwnProperty('validatorRes') && bridgeItem.validatorRes?.ticket !== undefined) {
                 bridgeProvider.send_claim_init(bridgeItem.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId, bridgeItem.lock.transactionHash).then(function(claimTx) {
                     console.log('claim result', claimTx);
+                }, function(err) {
+                    console.log('Claim intit method\'s response error:', err)
                 });
             }
         }

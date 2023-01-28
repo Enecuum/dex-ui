@@ -48,7 +48,10 @@ class SpaceBridge extends React.Component {
             confirmData : undefined,
             ticket : undefined,
             transfer_id : undefined,
-            history : []
+            history : [],
+            showFormInputWarning : false,
+            formInputWarningCause : undefined,
+            formInputWarningMsg : ''
         }
         setInterval(() => {
             this.updateUserHistory();
@@ -59,10 +62,15 @@ class SpaceBridge extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.pubkey !== this.props.pubkey  ||
             prevProps.net.url !== this.props.net.url ||
+            prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask ||
             prevProps.nonNativeConnection.web3ExtensionAccountId !== this.props.nonNativeConnection.web3ExtensionAccountId  ||
             prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
             prevProps.bridgeDirection !== this.props.bridgeDirection ||
             prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
+
+            if(prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask) {
+                console.log('isMetamask status changed')
+            }
 
             if (this.props.currentBridgeTx === undefined) {
                 this.resetStore();
@@ -381,8 +389,8 @@ class SpaceBridge extends React.Component {
     handleInputTokenHashChange(item) {
     	let that = this;
     	if (!this.props.nonNativeConnection.web3ExtensionAccountId) {
-    		console.log('No metamask user id!')
-    		alert('Please, connect to your Ethereum wallet and check the current network is Available')
+    		console.log('No metamask user id!');
+            showSelectChainWarning('no-metamask-user-id');    		
     	} else {
             if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type === 'eth') {
     			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
@@ -418,9 +426,6 @@ class SpaceBridge extends React.Component {
     handleInputTokenAmountChange(item) {
 		if (!isNaN(item.target.value))
 			this.props.updateSrcTokenAmountToSend(item.target.value);
-		else {
-			alert('Wrong Amount format')
-		}
     }
 
     lockEth() {    	
@@ -960,6 +965,9 @@ class SpaceBridge extends React.Component {
                     <div className="col col-xl-3">{this.getTokenInput()}</div>
                     <div className="col col-xl-6">{this.getTokenAmountInput()}</div>
                 </div>
+                <>
+                    {this.getWarningElem()}
+                </>
                 {this.props.fromBlockchain?.type == 'eth' && this.props.srcTokenHash !== undefined &&
                     <div className="row mt-3">
                         <div className="col col-xl-9 offset-xl-3">
@@ -1055,7 +1063,7 @@ class SpaceBridge extends React.Component {
             return (
                 <button
                     className="d-block btn btn-info w-100 h-100"                   
-                    onClick={this.showSelectChainWarning.bind(this)}
+                    onClick={this.showSelectChainWarning.bind(this, 'undefined-from-chain')}
                     >Choose token</button>                
             )
         }
@@ -1069,15 +1077,42 @@ class SpaceBridge extends React.Component {
                     type="text"
                     placeholder="Amount"
                     autoComplete="off"
-                    value={this.props.srcTokenAmountToSend || undefined}
+                    value={this.props.srcTokenAmountToSend}
                     onChange={this.handleInputTokenAmountChange.bind(this)} 
                     disabled={chain === undefined}/> 
             </Form.Group>            
         )
     }
 
-    showSelectChainWarning() {
-        alert('Select a network first');
+    showSelectChainWarning(cause) {
+        if (cause == 'undefined-from-chain') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Select a network first'});            
+        } else if (cause == 'no-metamask-user-id') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Please, connect to your Ethereum wallet and check the current network is Available'});            
+        }
+    }
+
+    getWarningElem() {
+        let cause = this.state.formInputWarningCause;
+        if (cause == 'undefined-from-chain' &&
+            this.props.fromBlockchain !== undefined) 
+                return
+        if (cause == 'no-metamask-user-id' &&
+            this.props.this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
+            this.props.fromBlockchain?.web3ExtensionChainId !== undefined &&
+            this.props.fromBlockchain?.web3ExtensionChainId === this.props.this.props.nonNativeConnection.web3ExtensionChain) 
+                return
+        else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
+            return(
+                <div className="err-msg d-block form-text">
+                    {this.state.formInputWarningMsg}
+                </div>
+            )
+        }    
     }
 
     showDestinationAddress() {
@@ -1191,10 +1226,23 @@ class SpaceBridge extends React.Component {
             } else if (this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
                 disabled = this.props.pubkey === undefined ||
                            this.props.nonNativeConnection.web3ExtensionAccountId === undefined ||
-                           this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId;
+                           this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId ||
+                           this.props.srcTokenAllowance == undefined ||
+                           this.props.srcTokenBalance == undefined ||
+                           this.props.srcTokenDecimals == undefined ||
+                           this.props.srcTokenAmountToSend == undefined ||
+                           (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
+                           this.props.toBlockchain == undefined;
                 action = this.lockEth.bind(this);
             } else if (this.props.fromBlockchain?.type === 'enq') {
-                disabled = this.props.pubkey === undefined;
+                disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
+                           this.props.pubkey === undefined ||
+                           this.props.srcTokenHash == undefined ||
+                           this.props.srcTokenBalance == undefined ||
+                           this.props.srcTokenDecimals == undefined ||
+                           this.props.srcTokenAmountToSend == undefined ||
+                           (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
+                           this.props.toBlockchain == undefined;
                 action = this.encodeDataAndLock.bind(this);
             }            
         }

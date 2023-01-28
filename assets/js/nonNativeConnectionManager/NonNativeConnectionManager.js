@@ -58,17 +58,27 @@ class NonNativeConnectionManager {
     }
 
     async launchMetamask(rootStoreMethodsWeb3Ext) {
+        console.log('Execute launchMetamask');
+        let that = this;
+        let timer = undefined;
         let web3ExtensionConnectManager = await new MetamaskConnectManager(rootStoreMethodsWeb3Ext);            
         let sessionState = await web3ExtensionConnectManager.getSessionState();            
-        let appIsConnected = web3ExtensionConnectManager.appIsConnected(sessionState.account_id);
+        let appIsConnected = sessionState !== null ? web3ExtensionConnectManager.appIsConnected(sessionState.account_id) : false;
         rootStoreMethodsWeb3Ext.updateWeb3Extension(web3ExtensionConnectManager);
         console.log('App connected to metamask ', appIsConnected);
         if (appIsConnected) {
+            if (timer != undefined)
+                clearTimeout(timer);
             this.rootStoreMethods.updateWeb3ExtensionAccountId(sessionState.account_id);
             this.rootStoreMethods.updateWeb3ExtensionChain(sessionState.chain_id);
             this.rootStoreMethods.updateWeb3ExtensionIsConnected(true);
             await web3ExtensionConnectManager.subscribeToEvents();
-        }
+        } else if (sessionState == null) {
+            console.log('-----------------------------------------');
+            console.log('Attemt to execute launchMetamask again...');
+            console.log('-----------------------------------------');
+            timer = setTimeout(() => that.launchMetamask(rootStoreMethodsWeb3Ext), 3000);
+        }        
     }
 };
 

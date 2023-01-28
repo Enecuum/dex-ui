@@ -69,7 +69,7 @@ class SpaceBridge extends React.Component {
             prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
 
             if(prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask) {
-                console.log('isMetamask status changed')
+                console.log('isMetamask status changed', this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask);
             }
 
             if (this.props.currentBridgeTx === undefined) {
@@ -978,6 +978,7 @@ class SpaceBridge extends React.Component {
                               this.props.srcTokenAllowance !== undefined &&
                               this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
                               this.props.pubkey !== undefined &&
+                              this.props.srcTokenBalance < this.props.srcTokenAllowance &&
                                 <>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
@@ -1206,7 +1207,7 @@ class SpaceBridge extends React.Component {
         
         currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
         if (currentBridgeTxItem == undefined) {
-            if (this.props.nonNativeConnection.web3Extension === undefined && this.props.nonNativeConnection.web3Extension?.provider === undefined) {
+            if (this.props.nonNativeConnection.web3Extension === undefined || this.props.nonNativeConnection.web3Extension?.provider === undefined) {
                 return (
                     <a className="link-primary transition-item" href="https://metamask.io/download/">
                         <Button                        
@@ -1216,14 +1217,13 @@ class SpaceBridge extends React.Component {
                         </Button>
                   </a>                    
                 )
-            }
-
-            if (!this.props.nonNativeConnection.web3ExtensionAccountId &&
+            } else if (!this.props.nonNativeConnection.web3ExtensionAccountId &&
                (this.props.fromBlockchain?.type === 'eth' || this.props.toBlockchain?.type === 'eth')) {
                 disabled = false;
                 action = this.connectWeb3Ext.bind(this);
                 title = 'Connect Ethereum Wallet';
-            } else if (this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
+            } else if (
+                this.props.nonNativeConnection.web3ExtensionAccountId && this.props.fromBlockchain?.type === 'eth') {
                 disabled = this.props.pubkey === undefined ||
                            this.props.nonNativeConnection.web3ExtensionAccountId === undefined ||
                            this.props.nonNativeConnection.web3Extension?.provider?.chainId !== this.props.fromBlockchain?.web3ExtensionChainId ||

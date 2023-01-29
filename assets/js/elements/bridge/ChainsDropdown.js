@@ -130,7 +130,21 @@ class ChainsDropdown extends React.Component {
         this.setState({selectedChain : undefined});
     }
 
+
+    getChainListItem(item, index) {
+        if ((this.direction === 'from' && this.props.toBlockchain?.id !== item.id) ||
+            (this.direction === 'to' && this.props.fromBlockchain?.id !== item.id)) {
+                return(
+                    <Dropdown.Item
+                        key={`${item.id}-${item.name}`}
+                        onClick={this.tryToSelectChain.bind(this, index)}
+                        >{item.name}</Dropdown.Item>
+                )
+        }
+    }
+
     render() {
+        let that = this;
         return (            
             <>
                 {this.state.showChangeChainModal && 
@@ -146,10 +160,7 @@ class ChainsDropdown extends React.Component {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {availableNetworks.map((item, index) => (
-                            <Dropdown.Item
-                                key={`${item.id}-${item.name}`}
-                                onClick={this.tryToSelectChain.bind(this, index)}
-                                >{item.name}</Dropdown.Item>                                
+                            that.getChainListItem(item, index)
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>

@@ -1,6 +1,5 @@
 import erc20TokenABI from './../ABI/abi_erc20';
 import spaceBridgeABI from './../ABI/abi_spaceBridge.json';
-import spaceBridgeABI_BNB from './../ABI/abi_spaceBridge_BNB.json';
 import wethABI from './../ABI/abi_weth.json';
 
 export const defaultParams = {
@@ -30,7 +29,7 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x9e400571e3D6d5aFA7e99064B30B2D826Ca4cBbb', //strig, undefined if not used
+        bridgeContractAddress : '0x15Bb8A4c458e4C72cfBfE1C51b8B5f4356C3e851', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://goerli.etherscan.io', // url to explorer mainpage
@@ -45,7 +44,7 @@ export const availableNetworks = [
         testnet               : true, //true false 
         available             : true, //true false 
         bridgeContractAddress : '0x6286d28B5a5A85f282B95b48C76322Abd11391E1', //strig, undefined if not used
-        bridgeContractABI     : spaceBridgeABI_BNB, //JSON, undefined if not used
+        bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage
         txPageUrl             : 'https://testnet.bscscan.com/tx/'  // url to tx page without tx hash
@@ -58,7 +57,7 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0xC431CEe35227934fD84732234Af9239C110283Ff', //strig, undefined if not used
+        bridgeContractAddress : '0x6b7231cFf879A10f1A1ECaC2d4ED58b2deBbc0E5', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage

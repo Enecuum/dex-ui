@@ -140,7 +140,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        //console.log(userHistory)
+        console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -521,10 +521,10 @@ class SpaceBridge extends React.Component {
             let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
             let ABI = dstChain.bridgeContractABI;
             let spaceBridgeContractAddress = dstChain.bridgeContractAddress;
-            let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);
+            let bridgeProvider = new spaceBridgeProvider(dataProvider, ABI, spaceBridgeContractAddress);            
             
             if (bridgeItem !== undefined && bridgeItem.hasOwnProperty('validatorRes') && bridgeItem.validatorRes?.ticket !== undefined) {
-                bridgeProvider.send_claim_init(bridgeItem.validatorRes, [], this.props.nonNativeConnection.web3ExtensionAccountId, bridgeItem.lock.transactionHash).then(function(claimTx) {
+                bridgeProvider.send_claim_init(bridgeItem.validatorRes, this.props.nonNativeConnection.web3ExtensionAccountId, bridgeItem.lock.transactionHash).then(function(claimTx) {
                     console.log('claim result', claimTx);
                 }, function(err) {
                     console.log('Claim intit method\'s response error:', err)
@@ -534,7 +534,7 @@ class SpaceBridge extends React.Component {
     }
 
     claimInitEnq(bridgeItem, stateId) {
-        if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+        if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
@@ -564,7 +564,7 @@ class SpaceBridge extends React.Component {
     } 
 
     claimConfirmEnq(bridgeItem, stateId) {
-        if (this.props.pubkey !== undefined && this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {
+        if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
@@ -603,6 +603,9 @@ class SpaceBridge extends React.Component {
                 address = this.props.pubkey;
             else if (chain.type === 'eth')
                 address = this.props.nonNativeConnection.web3ExtensionAccountId;
+        } else {
+            console.log('Errof: try to lock in undefined chain');
+            return
         }
 
         let URL =  'https://bridge.enex.space/api/v1/encode_lock';
@@ -745,21 +748,65 @@ class SpaceBridge extends React.Component {
                         res = this.getClaimEnqButton(item);
                 }                
             }
-        } else if (item.lock.status !== undefined && item.lock.status !== true) 
-            res = 'Failed on lock stage';
+        } else if (item.lock.status !== undefined && item.lock.status !== true) {
+            res = this.getFailTxResult(item);
+        }
         return res    
     }
 
+    getFailTxResult(item) {
+        let dstNetworkId = Number(item.lock.src_network);
+        let chain = this.availableNetworksUtils.getChainById(Number(dstNetworkId));
+        let link = '';
+        let resume = 'Failed on lock stage';
+        if (chain !== undefined) {
+            link = `${chain.txPageUrl}${item.lock.transactionHash}`;
+            return(           
+                <>
+                    <div className="mb-2">{resume}</div>
+                    <div className="mb-2">
+                        {this.getResetBridgeButton()}
+                    </div>
+                    {item.lock?.transactionHash !== undefined && <>
+                        <a
+                            href={link} 
+                            className="d-block w-100 btn btn-info px-4"
+                            target="_blank">
+                            Info</a>
+                    </>}                                          
+                </>
+            )
+        } else
+            return (
+                <>
+                    <div className="mb-2">{resume}</div>
+                    <div className="mb-0">
+                        {this.getResetBridgeButton()}
+                    </div>
+                </>    
+            )       
+    }
+
     getClaimEnqButton(item) {
+        let dstNetworkId = Number(item.lock.dst_network);
+        let chain = this.availableNetworksUtils.getChainById(Number(dstNetworkId));
+        let chainId = undefined;
+        if (chain !== undefined)
+            chainId = chain.enqExtensionChainId;
+        let matchChains = chainId === this.props.net.url ? true : false;
+
         let resume = 'Validated successfully';
         let stateId = 0;
+        let txHash = undefined;
 
         if (item.claimConfirmTxStatus === true) {
             resume = 'Done';
             stateId = 1;
+            txHash = item.claimConfirmTxHash;
         } else if (item.claimConfirmTxStatus === false) {
             resume = 'Claim confirmation failed';
-            stateId = 2;         
+            stateId = 2;
+            txHash = item.claimConfirmTxHash;         
         } else if (item.claimConfirmTxHash !== undefined) {
             resume = 'Claim confirmation initialized';
             stateId = 3;
@@ -769,6 +816,7 @@ class SpaceBridge extends React.Component {
         } else if (item.claimInitTxStatus === false) {
             resume = 'Claim inititalization failed';
             stateId = 5;
+            txHash = item.claimInitTxHash;
         } else if (item.claimInitTxHash !== undefined) {
             resume = 'Claim initialized';
             stateId = 6;
@@ -777,24 +825,27 @@ class SpaceBridge extends React.Component {
         return (
                 <>
                     <div className="mb-2">{resume}</div>
-                    {stateId === 0 &&
+                    {stateId === 0 && matchChains &&
                     <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
                         onClick={this.claimInitEnq.bind(this, item, stateId)}>
                         Claim</Button>
                     }    
-                    {stateId === 4 &&
+                    {stateId === 4 && matchChains &&
                         <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
                         onClick={this.claimConfirmEnq.bind(this, item, stateId)}>
                         Confirm</Button>
                     }
-                    {stateId === 1 && <>
+                    {stateId !== 1 && !matchChains &&
+                        <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
+                    }
+                    {(stateId === 1 || stateId === 2 || stateId === 5) && <>
                         <div className="mb-2">
                             {this.getResetBridgeButton()}
                         </div>
                         <a
-                            href={`https://bit.enecuum.com/#!/tx/${item.claimConfirmTxHash}`} 
+                            href={`${chain.txPageUrl}${txHash}`} 
                             className="d-block w-100 btn btn-info px-4"
                             target="_blank">
                             Info</a>
@@ -978,7 +1029,7 @@ class SpaceBridge extends React.Component {
                               this.props.srcTokenAllowance !== undefined &&
                               this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
                               this.props.pubkey !== undefined &&
-                              this.props.srcTokenBalance < this.props.srcTokenAllowance &&
+                              !(this.props.srcTokenBalance < this.props.srcTokenAllowance) &&
                                 <>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
@@ -1165,19 +1216,13 @@ class SpaceBridge extends React.Component {
             phrase = 'History';
             disabled = false;
         }
-
-        if (this.props.nonNativeConnection.web3ExtensionAccountId) {                                                                                   
-            return (
-                <button
-                disabled={disabled}
-                className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
-                onClick={this.toggleHistoryBridge.bind(this)}>{phrase}</button>
-            )
-        } else {
-            return (
-                <></>
-            )
-        }       
+                                                                                           
+        return (
+            <button
+            disabled={disabled}
+            className="d-block btn btn-secondary mt-2 px-4 button-bg-3"
+            onClick={this.toggleHistoryBridge.bind(this)}>{phrase}</button>
+        )              
     }
 
     renderCardHeader() {

@@ -56,7 +56,7 @@ class SpaceBridgeProvider {
 		})
 	}
 
-	async send_claim_init(params, signatures, from_address, elemLockTransactionHash = undefined) {
+	async send_claim_init(params, from_address, elemLockTransactionHash) {
 		console.log('query SpaceBridgeProvider send_claim_init');
 		let that = this;
 
@@ -64,18 +64,17 @@ class SpaceBridgeProvider {
 				params.ticket.dst_address,
 				params.ticket.dst_network,
 				BigInt(params.ticket.amount),
-				that.web3.utils.asciiToHex(params.ticket.src_hash),
-				that.web3.utils.asciiToHex(params.ticket.src_address),
+				params.ticket.src_hash,
+				params.ticket.src_address,
 				params.ticket.src_network,
-				that.web3.utils.asciiToHex(params.ticket.origin_hash),
+				params.ticket.origin_hash,
 				params.ticket.origin_network,
 				params.ticket.nonce,
-				"wrapped",
+				params.ticket.name,
 				params.ticket.ticker
 			];
 
-
-		return this.spaceBridgeContract.methods.claim(ticket, signatures).send(
+		return this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send(
 			{ from: from_address },
 			function (err, res) {
 				console.log('SpaceBridgeProvider send_claim_init res', res)

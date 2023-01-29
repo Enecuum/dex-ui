@@ -760,7 +760,7 @@ class SpaceBridge extends React.Component {
         let link = '';
         let resume = 'Failed on lock stage';
         if (chain !== undefined) {
-            link = `${chain.txPageUrl}${item.lock.transactionHash}`;
+            link = `${chaintxPageUrl}${item.lock.transactionHash}`;
             return(           
                 <>
                     <div className="mb-2">{resume}</div>

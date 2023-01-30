@@ -51,7 +51,8 @@ class SpaceBridge extends React.Component {
             history : [],
             showFormInputWarning : false,
             formInputWarningCause : undefined,
-            formInputWarningMsg : ''
+            formInputWarningMsg : '',
+            blockConfirmByAmount : true
         }
         setInterval(() => {
             this.updateUserHistory();
@@ -67,6 +68,11 @@ class SpaceBridge extends React.Component {
             prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
             prevProps.bridgeDirection !== this.props.bridgeDirection ||
             prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
+
+            this.setState({showFormInputWarning : false});
+            this.setState({sformInputWarningCause : undefined});
+            this.setState({sformInputWarningMsg : ''});
+            this.setState({sblockConfirmByAmount : true});
 
             if(prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask) {
                 console.log('isMetamask status changed', this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask);
@@ -423,9 +429,43 @@ class SpaceBridge extends React.Component {
     	}
     }
 
+    processSrcTokenAmountToSend(amount) {
+        let satisfyCommonConditions = this.props.srcTokenHash !== undefined &&                               
+                                      this.props.srcTokenDecimals !== undefined &&
+                                      this.props.srcTokenBalance !== undefined;
+        let satisfyExtraConditions = true;
+        let ethType = this.props.fromBlockchain.type === 'eth';        
+        if (ethType)
+            extraConditions = this.props.srcTokenAllowance !== undefined;        
+        let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;                               
+
+        if (readyForProcess) {
+            this.setState({blockConfirmByAmount : false});
+            let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
+            console.log(bigIntAmount);
+            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('low-allowance');        
+                console.log('Amount less than allowance');
+            } else if (bigIntAmount.value > this.props.srcTokenBalance) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-balance');        
+                console.log('Amount more than balance');
+            }
+        } else {
+            this.setState({blockConfirmByAmount : true});
+            this.showAmountWarning('incorrect-token-info');        
+            console.log('Incorrect token Info');
+        }
+
+    }
+
     handleInputTokenAmountChange(item) {
-		if (!isNaN(item.target.value))
-			this.props.updateSrcTokenAmountToSend(item.target.value);
+		if (!isNaN(item.target.value)) {
+            let value = item.target.value;
+			this.props.updateSrcTokenAmountToSend(value);
+            this.processSrcTokenAmountToSend(value);
+        }
     }
 
     lockEth() {    	
@@ -1148,8 +1188,25 @@ class SpaceBridge extends React.Component {
         }
     }
 
+    showAmountWarning(cause) {
+        if (cause == 'incorrect-token-info') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Incorrect token info'});            
+        } else if (cause == 'low-allowance') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Amount less than appoved balance'});
+        } else if (cause == 'exeeds-balance') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Amount more than balance'});
+        }
+    }
+
     getWarningElem() {
         let cause = this.state.formInputWarningCause;
+        console.log(cause)
         if (cause == 'undefined-from-chain' &&
             this.props.fromBlockchain !== undefined) 
                 return
@@ -1158,7 +1215,25 @@ class SpaceBridge extends React.Component {
             this.props.fromBlockchain?.web3ExtensionChainId !== undefined &&
             this.props.fromBlockchain?.web3ExtensionChainId === this.props.this.props.nonNativeConnection.web3ExtensionChain) 
                 return
-        else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
+        else if (cause == 'incorrect-token-info') {
+            let satisfyCommonConditions = this.props.srcTokenHash !== undefined &&                               
+                                          this.props.srcTokenDecimals !== undefined &&
+                                          this.props.srcTokenBalance !== undefined;
+            let satisfyExtraConditions = true;
+            let ethType = this.props.fromBlockchain?.type === 'eth';        
+            if (ethType)
+                satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
+            let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;
+            if (readyForProcess)
+                return
+        } else if (cause == 'low-allowance' &&
+            this.props.fromBlockchain?.type === 'eth' &&            
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= this.props.srcTokenAllowance)) {            
+                return
+        } else if (cause == 'exeeds-balance' &&                
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= this.props.srcTokenBalance)) {
+                return
+        } else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
             return(
                 <div className="err-msg d-block form-text">
                     {this.state.formInputWarningMsg}
@@ -1277,7 +1352,8 @@ class SpaceBridge extends React.Component {
                            this.props.srcTokenDecimals == undefined ||
                            this.props.srcTokenAmountToSend == undefined ||
                            (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
-                           this.props.toBlockchain == undefined;
+                           this.props.toBlockchain == undefined ||
+                           this.state.blockConfirmByAmount;
                 action = this.lockEth.bind(this);
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
@@ -1287,7 +1363,8 @@ class SpaceBridge extends React.Component {
                            this.props.srcTokenDecimals == undefined ||
                            this.props.srcTokenAmountToSend == undefined ||
                            (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
-                           this.props.toBlockchain == undefined;
+                           this.props.toBlockchain == undefined ||
+                           this.state.blockConfirmByAmount;
                 action = this.encodeDataAndLock.bind(this);
             }            
         }

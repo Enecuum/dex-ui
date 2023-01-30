@@ -320,27 +320,6 @@ class SpaceBridge extends React.Component {
         localStorage.setItem('try_metamask_connect', false);
     }
 
-    // getAllowance() {
-    //     if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type === 'eth') {
-    //         let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-    //     	let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    //         let token_hash = this.props.srcTokenHash;
-
-    //     	let erc20ABI = smartContracts.erc20token.ABI;
-    //     	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
-
-    //         let vaultABI = smartContracts.vault.ABI;
-    //         let vaultProvider = new vaultContractProvider(dataProvider, vaultABI, token_hash);    		
-    // 		let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
-    			
-    // 		vaultProvider.getAllowance(account_id, vaultContractAddress).then(function(allowance) {
-    // 			//console.log(allowance);
-    // 		},function(err) {
-    // 			console.log(`Can\'t get allowance for asset ${token_hash}`);						
-    // 		});
-    //     }
-    // }
-
 	approveSrcTokenBalance() {
 		if (this.props.srcTokenHash && this.props.nonNativeConnection.web3ExtensionAccountId) {
 			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
@@ -349,7 +328,7 @@ class SpaceBridge extends React.Component {
 	    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
 
 			let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-			//let spaceBridgeContractAddress = this.props.fromBlockchain.bridgeContractAddress;
+
             let that = this;
             let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
 			assetProvider.approveBalance(vaultContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
@@ -365,31 +344,6 @@ class SpaceBridge extends React.Component {
 			});			
 		}
 	}
-    // approveSrcTokenBalance() {
-    //     if (this.props.srcTokenHash && this.props.nonNativeConnection.web3ExtensionAccountId) {
-    //         let that = this;
-    //         let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-    //         let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    //         let token_hash = this.props.srcTokenHash;
-
-    //         let vaultABI = smartContracts.vault.ABI;///            
-    //         let vaultProvider = new vaultContractProvider(dataProvider, vaultABI, token_hash);///
-    //         let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;            
-            
-            
-    //         vaultProvider.approveBalance(vaultContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
-    //             if (approveTx.status === true &&
-    //                 approveTx.events?.Approval?.returnValues?.owner !== undefined && 
-    //                 approveTx.events?.Approval?.returnValues?.owner.toLowerCase() == that.props.nonNativeConnection.web3ExtensionAccountId.toLowerCase() &&
-    //                 approveTx.events?.Approval?.returnValues?.spender !== undefined && 
-    //                 approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.bridgeContractAddress.toLowerCase() &&
-    //                 approveTx.events?.Approval?.address !== undefined && 
-    //                 approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
-    //                     that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
-    //             }
-    //         });            
-    //     }
-    // }
 
     async postToValidator(txHash, srcNetwork = undefined) {
     	let URL = 'https://bridge.enex.space/api/v1/notify';    	
@@ -428,8 +382,6 @@ class SpaceBridge extends React.Component {
 
     			
     			let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
-                //let vaultABI = smartContracts.vault.ABI;
-                //let vaultProvider = new vaultContractProvider(dataProvider, vaultABI, token_hash);
 
     			assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
     				that.props.updateSrcTokenBalance(assetInfo.amount);
@@ -1063,7 +1015,7 @@ class SpaceBridge extends React.Component {
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
                                         <button
                                             className="d-block btn btn-info mb-2 p-1"
-                                            onClick={this.approveSrcTokenBalance.bind(this)}>Set new allowance</button>
+                                            onClick={this.approveSrcTokenBalance.bind(this)}>Approve</button>
                                             
                                     </div>
                                 </>

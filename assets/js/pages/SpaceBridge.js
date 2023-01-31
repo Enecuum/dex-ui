@@ -346,6 +346,7 @@ class SpaceBridge extends React.Component {
                     approveTx.events?.Approval?.address !== undefined && 
                     approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
                         that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
+                        that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
                 }
 			});			
 		}
@@ -417,7 +418,7 @@ class SpaceBridge extends React.Component {
         let satisfyExtraConditions = true;
         let ethType = this.props.fromBlockchain.type === 'eth';        
         if (ethType)
-            extraConditions = this.props.srcTokenAllowance !== undefined;        
+            satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
         let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;                               
 
         if (readyForProcess) {
@@ -432,6 +433,10 @@ class SpaceBridge extends React.Component {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('exeeds-balance');        
                 console.log('Amount more than balance');
+            } else if (bigIntAmount.rawFractionalPart.length > Number(this.props.srcTokenDecimals)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-decimals');        
+                console.log('Too long fractional part');
             }
         } else {
             this.setState({blockConfirmByAmount : true});
@@ -443,7 +448,7 @@ class SpaceBridge extends React.Component {
 
     handleInputTokenAmountChange(item) {
 		if (!isNaN(item.target.value)) {
-            let value = item.target.value;
+            let value = item.target.value;            
 			this.props.updateSrcTokenAmountToSend(value);
             this.processSrcTokenAmountToSend(value);
         }
@@ -1182,7 +1187,13 @@ class SpaceBridge extends React.Component {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
             this.setState({'formInputWarningMsg' : 'Amount more than balance'});
+        } else if (cause == 'exeeds-decimals') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : `Available values ​​with a fractional part no more than ${this.props.srcTokenDecimals}`});
         }
+
+        // bigIntAmount.rawFractionalPart.length > Number(this.props.srcTokenDecimals)
     }
 
     getWarningElem() {
@@ -1213,6 +1224,9 @@ class SpaceBridge extends React.Component {
                 return
         } else if (cause == 'exeeds-balance' &&                
             (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= this.props.srcTokenBalance)) {
+                return
+        } else if (cause == 'exeeds-decimals' &&                
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).rawFractionalPart.length <= Number(this.props.srcTokenDecimals))) {
                 return
         } else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
             return(

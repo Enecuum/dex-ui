@@ -37,7 +37,7 @@ class SpaceBridgeProvider {
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				if (bridgeHistoryArray.length > 0) {
 					let itemIsExist = bridgeHistoryArray.find(function(elem) {
-						if ((elem.initiator.includes(src_address) || elem.initiator.includes(dst_address)) && elem.lock?.transactionHash === res)
+						if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === res)
 							return true
 					});
 
@@ -84,7 +84,7 @@ class SpaceBridgeProvider {
 			} else {
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				let updatedHistory = bridgeHistoryArray.map(elem => {
-					if ((elem.initiator.includes(params.ticket.dst_address) || elem.initiator.includes(params.ticket.src_address)) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+					if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
 						elem.claimTxHash = res;
 					}
 					return elem

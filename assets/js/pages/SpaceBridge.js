@@ -525,7 +525,7 @@ class SpaceBridge extends React.Component {
                 console.log('Success', result.hash);
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.includes(pubkey) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
                         elem.claimInitTxHash = result.hash;
                     }
                     return elem
@@ -556,7 +556,7 @@ class SpaceBridge extends React.Component {
 
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.includes(pubkey) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
                         elem.claimConfirmTxHash = result.hash;
                     }
                     return elem
@@ -652,7 +652,7 @@ class SpaceBridge extends React.Component {
             let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
             if (bridgeHistoryArray.length > 0) {
                 let itemIsExist = bridgeHistoryArray.find(function(elem) {
-                    if (elem.initiator.includes(pubkey) && elem.lock?.transactionHash === result.hash)
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
                         return true
                 });
 

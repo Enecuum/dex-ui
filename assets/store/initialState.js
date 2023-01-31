@@ -231,9 +231,9 @@ const initialState = {
         srcTokenDecimals : undefined,
         srcTokenTicker : undefined,
         srcTokenAmountToSend : undefined,
+        dstDecimals : undefined,
         currentBridgeTx : undefined,
-        showTokenList : false,
-        srcTokenObj : undefined
+        showTokenList : false
     }
 
 }

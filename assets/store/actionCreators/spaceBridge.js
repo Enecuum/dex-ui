@@ -58,9 +58,9 @@ const actionCreators = {
             value : payload 
         };
     },
-    update_src_token_obj (payload) {
+    update_dst_decimals (payload) {
         return {
-            type : actions.UPDATE_SRC_TOKEN_OBJ,
+            type : actions.UPDATE_DST_DECIMALS,
             value : payload 
         };
     },

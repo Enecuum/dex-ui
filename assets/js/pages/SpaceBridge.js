@@ -1009,7 +1009,8 @@ class SpaceBridge extends React.Component {
                               this.props.srcTokenDecimals !== undefined &&
                               this.props.srcTokenAllowance !== undefined &&
                               this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
-                              this.props.pubkey !== undefined &&                              
+                              this.props.pubkey !== undefined &&
+                              (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value >= BigInt(this.props.srcTokenAllowance)) &&
                                 <>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    

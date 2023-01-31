@@ -21,6 +21,7 @@ import TokenCardBridge from './../components/TokenCardBridge';
 import '../../css/bridge.css';
 
 import tokenERC20ContractProvider from './../contracts-providers/tokenERC20ContractProvider';
+import vaultContractProvider from './../contracts-providers/vaultContractProvider';
 import spaceBridgeProvider from './../contracts-providers/spaceBridgeProvider';
 import web3LibProvider from './../web3-provider/Web3LibProvider';
 
@@ -325,28 +326,6 @@ class SpaceBridge extends React.Component {
         localStorage.setItem('try_metamask_connect', false);
     }
 
-    getAllowance() {
-        if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type === 'eth') {
-        	let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-        	let ABI = smartContracts.erc20token.ABI;
-        	let token_hash = this.props.srcTokenHash;
-        	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
-
-    		let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-    		let spaceBridgeContractAddress = this.props.fromBlockchain.bridgeContractAddress;
-    			
-    		assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
-    			//console.log(assetInfo)
-    		});
-
-    		assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
-    			//console.log(allowance);
-    		},function(err) {
-    			console.log(`Can\'t get allowance for asset ${token_hash}`);						
-    		});
-        }
-    }
-
 	approveSrcTokenBalance() {
 		if (this.props.srcTokenHash && this.props.nonNativeConnection.web3ExtensionAccountId) {
 			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
@@ -355,14 +334,15 @@ class SpaceBridge extends React.Component {
 	    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
 
 			let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-			let spaceBridgeContractAddress = this.props.fromBlockchain.bridgeContractAddress;
+
             let that = this;
-			assetProvider.approveBalance(spaceBridgeContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
+            let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
+			assetProvider.approveBalance(vaultContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
                 if (approveTx.status === true &&
                     approveTx.events?.Approval?.returnValues?.owner !== undefined && 
                     approveTx.events?.Approval?.returnValues?.owner.toLowerCase() == that.props.nonNativeConnection.web3ExtensionAccountId.toLowerCase() &&
                     approveTx.events?.Approval?.returnValues?.spender !== undefined && 
-                    approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.bridgeContractAddress.toLowerCase() &&
+                    approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.vaultContractAddress.toLowerCase() &&
                     approveTx.events?.Approval?.address !== undefined && 
                     approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
                         that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
@@ -399,14 +379,15 @@ class SpaceBridge extends React.Component {
             showSelectChainWarning('no-metamask-user-id');    		
     	} else {
             if (this.props.fromBlockchain !== undefined && this.props.fromBlockchain.type === 'eth') {
+                let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
     			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
-    	    	let ABI = smartContracts.erc20token.ABI;
+    	    	let erc20ABI = smartContracts.erc20token.ABI;
     	    	let token_hash = item.target.value;
                 this.props.updateSrcTokenHash(token_hash);
-    	    	let assetProvider = new tokenERC20ContractProvider(dataProvider, ABI, token_hash);
+    	    	let assetProvider = new tokenERC20ContractProvider(dataProvider, erc20ABI, token_hash);
 
-    			let account_id = this.props.nonNativeConnection.web3ExtensionAccountId;
-    			let spaceBridgeContractAddress = this.props.fromBlockchain.bridgeContractAddress;
+    			
+    			let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
 
     			assetProvider.getAssetInfo(account_id).then(function(assetInfo) {
     				that.props.updateSrcTokenBalance(assetInfo.amount);
@@ -418,7 +399,7 @@ class SpaceBridge extends React.Component {
                     that.props.updateSrcTokenAmountToSend(0);
     			});
 
-    			assetProvider.getAllowance(account_id, spaceBridgeContractAddress).then(function(allowance) {
+    			assetProvider.getAllowance(account_id, vaultContractAddress).then(function(allowance) {
     				that.props.updateSrcTokenAllowance(allowance);
     			},function(err) {
     				console.log(`Can\'t get allowance for asset ${token_hash}`);                
@@ -584,7 +565,7 @@ class SpaceBridge extends React.Component {
                 console.log('Success', result.hash);
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.includes(pubkey) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
                         elem.claimInitTxHash = result.hash;
                     }
                     return elem
@@ -615,7 +596,7 @@ class SpaceBridge extends React.Component {
 
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.includes(pubkey) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
                         elem.claimConfirmTxHash = result.hash;
                     }
                     return elem
@@ -711,7 +692,7 @@ class SpaceBridge extends React.Component {
             let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
             if (bridgeHistoryArray.length > 0) {
                 let itemIsExist = bridgeHistoryArray.find(function(elem) {
-                    if (elem.initiator.includes(pubkey) && elem.lock?.transactionHash === result.hash)
+                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
                         return true
                 });
 
@@ -1035,7 +1016,7 @@ class SpaceBridge extends React.Component {
         )
     }
 
-    getFromSection() {
+    getFromSection() {       
         return (
             <div>
                 <div className="row">
@@ -1069,13 +1050,13 @@ class SpaceBridge extends React.Component {
                               this.props.srcTokenAllowance !== undefined &&
                               this.props.nonNativeConnection.web3ExtensionAccountId !== undefined &&
                               this.props.pubkey !== undefined &&
-                              !(this.props.srcTokenBalance < this.props.srcTokenAllowance) &&
+                              (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value >= BigInt(this.props.srcTokenAllowance)) &&
                                 <>  
                                     <div className="d-flex align-items-center justify-content-between">
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
                                         <button
                                             className="d-block btn btn-info mb-2 p-1"
-                                            onClick={this.approveSrcTokenBalance.bind(this)}>Set new allowance</button>
+                                            onClick={this.approveSrcTokenBalance.bind(this)}>Approve</button>
                                             
                                     </div>
                                 </>

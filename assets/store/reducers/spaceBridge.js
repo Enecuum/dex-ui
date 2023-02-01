@@ -50,16 +50,26 @@ export default function spaceBridgeReducer (state = initialState.spaceBridge, ac
                 ...state,
                 showTokenList: action.value
             }
-        case actions.UPDATE_SRC_TOKEN_OBJ:
+        case actions.UPDATE_DST_DECIMALS:
             return {
                 ...state,
-                srcTokenObj: action.value
+                dstDecimals: action.value
             }
         case actions.UPDATE_SHOW_HISTORY:
             return {
                 ...state,
                 showHistory: action.value
-            }        
+            }
+        case actions.UPDATE_FROM_BLOCKCHAIN:
+            return {
+                ...state,
+                fromBlockchain: action.value
+            }
+        case actions.UPDATE_TO_BLOCKCHAIN:
+            return {
+                ...state,
+                toBlockchain: action.value
+            }    
         default: 
             return state
     }

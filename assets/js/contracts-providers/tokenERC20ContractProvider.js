@@ -51,7 +51,7 @@ class tokenERC20ContractProvider {
 	}
 
 	async getAllowance(accountId, smartContractAddress) {
-		console.log('query tokenERC20ContractProvider getAllowance', this.tokenHash);
+		console.log('query tokenERC20ContractProvider getAllowance', this.tokenHash, accountId, smartContractAddress);
 		let token = this.tokenHash;
 		return this.tokenContract.methods.allowance(accountId, smartContractAddress).call(function (err, res) {
             if (err) {

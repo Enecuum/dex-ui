@@ -25,12 +25,13 @@ class BridgeHistoryProcessor {
 
     getUserHistory(enqExtUserId, web3ExtUserId) {
         let userHistory = [];
-        if(enqExtUserId !== undefined && enqExtUserId !== '' &&
-            web3ExtUserId !== undefined && web3ExtUserId !== '') {
+        if((enqExtUserId !== undefined && enqExtUserId !== '') ||
+            (web3ExtUserId !== undefined && web3ExtUserId !== '')) {
             let rawHistory = this.getBridgeHistoryArray();
             if (rawHistory.length > 0) {
+                let web3ExtUserIdFormatted = web3ExtUserId ? web3ExtUserId.toUpperCase() : web3ExtUserId;
                 userHistory = rawHistory.filter(function(elem) {
-                    return elem.initiator.includes(enqExtUserId) && elem.initiator.includes(web3ExtUserId) ? true : false;
+                    return (elem.initiator.toUpperCase().includes(enqExtUserId.toUpperCase()) || elem.initiator.toUpperCase().includes(web3ExtUserIdFormatted)) ? true : false;
                 });
             }            
         }

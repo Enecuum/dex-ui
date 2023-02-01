@@ -58,9 +58,9 @@ const actionCreators = {
             value : payload 
         };
     },
-    update_src_token_obj (payload) {
+    update_dst_decimals (payload) {
         return {
-            type : actions.UPDATE_SRC_TOKEN_OBJ,
+            type : actions.UPDATE_DST_DECIMALS,
             value : payload 
         };
     },
@@ -69,7 +69,19 @@ const actionCreators = {
             type : actions.UPDATE_SHOW_HISTORY,
             value : payload 
         };
-    }        
+    },
+    update_from_blockchain (payload) {
+        return {
+            type : actions.UPDATE_FROM_BLOCKCHAIN,
+            value : payload 
+        };
+    },
+    update_to_blockchain (payload) {
+        return {
+            type : actions.UPDATE_TO_BLOCKCHAIN,
+            value : payload 
+        };
+    }
 };
 
 export default actionCreators;

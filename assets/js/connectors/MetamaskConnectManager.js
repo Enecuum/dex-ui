@@ -5,9 +5,14 @@ async function detectProvider() {
 	return detectEthereumProvider().then(async provider => {
 		if (provider) {			
 			return provider
-		} else
+		} else {
+            console.log('Ethereum provider is not defined');
 			return undefined
-	});
+        }
+	}, (error) => {
+        console.log('Detect Ethereum provider error', error);
+        return undefined
+    });
 }
 
 class MetamaskConnectManager {
@@ -34,7 +39,8 @@ class MetamaskConnectManager {
             await this.provider.request({ method: 'eth_accounts' }).then(function(res) {
                 sessionState.account_id = res[0];
             });
-        }
+        } else
+            sessionState = null;
 
         return sessionState;
     }
@@ -74,7 +80,7 @@ class MetamaskConnectManager {
 
     disconnectHandler(info) {
         console.log('Metamask is disconnected ', info);
-        this.unsubscribeEvents();
+        //this.unsubscribeEvents();
     }
 
     chainChangedHandler(chainID) {

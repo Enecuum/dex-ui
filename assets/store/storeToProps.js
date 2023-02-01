@@ -39,6 +39,7 @@ const components = {
     ROUTING                          : 0x17,
     SPACE_BRIDGE                     : 0x18,
     TOKEN_CARD_BRIDGE                : 0x19,
+    BIRDGE_CHAINS_DROPDOWN           : 0x1A
 }
 
 function mapStoreToProps(component) {
@@ -404,7 +405,16 @@ function mapStoreToProps(component) {
                     nonNativeConnection : state.nonNativeConnection,
                     pubkey              : state.root.pubkey,
                 }
-            }    
+            }
+        case components.BIRDGE_CHAINS_DROPDOWN:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.spaceBridge,
+                    nonNativeConnection : state.nonNativeConnection,
+                    pubkey              : state.root.pubkey,
+                }
+            }        
         default:
             return undefined
     }
@@ -648,17 +658,30 @@ function mapDispatchToProps(component) {
                     updateBridgeDirection          : spaceBridgeCreator.update_bridge_direction,
                     updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
                     updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
-                    updateShowHistory              : spaceBridgeCreator.update_show_history
+                    updateShowHistory              : spaceBridgeCreator.update_show_history,
+                    updateFromBlockchain           : spaceBridgeCreator.update_from_blockchain,
+                    updateToBlockchain             : spaceBridgeCreator.update_to_blockchain,
+                    updateDstDecimals              : spaceBridgeCreator.update_dst_decimals,
     
                 }, dispatch) 
             }
+        case components.BIRDGE_CHAINS_DROPDOWN:
+        return function (dispatch) {
+                return bindActionCreators({                    
+                    updateFromBlockchain  : spaceBridgeCreator.update_from_blockchain,
+                    updateToBlockchain    : spaceBridgeCreator.update_to_blockchain    
+                }, dispatch) 
+            }   
         case components.TOKEN_CARD_BRIDGE:
             return function (dispatch) {
                 return bindActionCreators({
                     ...tokenCardCreator,
-                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
-                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,                    
+                    updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
+                    updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
+                    updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,
                     updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                    updateSrcTokenAllowance        : spaceBridgeCreator.update_src_token_allowance
                 }, dispatch)
             }                    
         default:

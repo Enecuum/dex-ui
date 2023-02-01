@@ -504,12 +504,12 @@ class Root extends React.Component {
                         <SpaceBridge useSuspense={false}/>
                     </div>                    
                 );                
-           // case 'spaceStation' :
-           //     return (
-           //         <div className="regular-page p-2 p-md-5 px-lg-0" >
-           //             <SpaceStation useSuspense={false}/>
-           //         </div>                    
-           //     );                                                     
+            case 'spaceStation' :
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceStation useSuspense={false}/>
+                    </div>                    
+                );                                                     
             default:
                 return (
                     <BlankPage text="Coming soon"/>

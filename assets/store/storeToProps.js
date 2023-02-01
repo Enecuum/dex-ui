@@ -660,7 +660,8 @@ function mapDispatchToProps(component) {
                     updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
                     updateShowHistory              : spaceBridgeCreator.update_show_history,
                     updateFromBlockchain           : spaceBridgeCreator.update_from_blockchain,
-                    updateToBlockchain             : spaceBridgeCreator.update_to_blockchain
+                    updateToBlockchain             : spaceBridgeCreator.update_to_blockchain,
+                    updateDstDecimals              : spaceBridgeCreator.update_dst_decimals,
     
                 }, dispatch) 
             }
@@ -675,8 +676,7 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...tokenCardCreator,
-                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
-                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,///////////////
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,                    
                     updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
                     updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
                     updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,

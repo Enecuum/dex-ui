@@ -52,7 +52,8 @@ class SpaceBridge extends React.Component {
             history : [],
             showFormInputWarning : false,
             formInputWarningCause : undefined,
-            formInputWarningMsg : ''
+            formInputWarningMsg : '',
+            blockConfirmByAmount : true
         }
         setInterval(() => {
             this.updateUserHistory();
@@ -61,6 +62,7 @@ class SpaceBridge extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        let that = this;
         if (prevProps.pubkey !== this.props.pubkey  ||
             prevProps.net.url !== this.props.net.url ||
             prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask ||
@@ -68,6 +70,11 @@ class SpaceBridge extends React.Component {
             prevProps.nonNativeConnection.web3ExtensionChain  !== this.props.nonNativeConnection.web3ExtensionChain ||
             prevProps.bridgeDirection !== this.props.bridgeDirection ||
             prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) {
+
+            this.setState({showFormInputWarning : false});
+            this.setState({sformInputWarningCause : undefined});
+            this.setState({sformInputWarningMsg : ''});
+            this.setState({sblockConfirmByAmount : true});
 
             if(prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask) {
                 console.log('isMetamask status changed', this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask);
@@ -109,6 +116,34 @@ class SpaceBridge extends React.Component {
                 }
             }            
         }
+        if ((prevProps.fromBlockchain?.id !== this.props.fromBlockchain?.id) ||
+            (prevProps.toBlockchain?.id !== this.props.toBlockchain?.id) ||
+            (prevProps.srcTokenHash !== this.props.srcTokenHash)) {
+            
+            if (this.props.fromBlockchain?.id !== undefined  && this.props.toBlockchain?.id !== undefined && this.props.srcTokenHash !== undefined) {
+                this.getDstDecimalsFromValidator(this.props.fromBlockchain.id, this.props.toBlockchain.id, this.props.srcTokenHash)
+                .then(function(validatorRes) {
+                    console.log('111111111111111111111111111111111111', validatorRes)
+                    if ((validatorRes.hasOwnProperty('err') && validatorRes.err == 0) && !isNaN(validatorRes.result.dst_decimals)) {
+                        console.log('call get_dst_decimals')
+                        that.props.updateDstDecimals(Number(validatorRes.result.dst_decimals));
+                        that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});                       
+                    } else {
+                        that.props.updateDstDecimals(undefined);
+                        that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
+                        console.log('Validator get_dst_decimals response error')
+                    }                       
+                }, function(err) {
+                    that.props.updateDstDecimals(undefined);
+                    that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
+                    console.log('Can\'t get get_dst_decimals response ', err);
+                });                                    
+                
+            } else {
+                that.props.updateDstDecimals(undefined);
+                that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
+            }
+        }
     }
 
     renderTokenCard() {
@@ -127,7 +162,6 @@ class SpaceBridge extends React.Component {
         this.resetTokenInfo(this);      
         this.props.updateSrcTokenAmountToSend(0);
         this.props.updateCurrentBridgeTx(undefined);
-        this.props.updateSrcTokenObj(undefined);
     }
 
     resetTokenInfo(context) {
@@ -340,6 +374,7 @@ class SpaceBridge extends React.Component {
                     approveTx.events?.Approval?.address !== undefined && 
                     approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
                         that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
+                        that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
                 }
 			});			
 		}
@@ -362,6 +397,23 @@ class SpaceBridge extends React.Component {
             })
 	    }, function(err) {
             console.log('Get notify response failed');
+            return null            
+        })    
+    }
+
+    async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
+        let URL = `https://bridge.enex.space/api/v1/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
+        return fetch(URL, {
+            method: 'GET'
+        }).then(function(response) {            
+            return response.json().then(res => {
+                return res
+            }, err => {
+                console.log('Parse get_dst_decimals response failed');
+                return null
+            })
+        }, function(err) {
+            console.log('Get get_dst_decimals response failed');
             return null            
         })    
     }
@@ -404,9 +456,51 @@ class SpaceBridge extends React.Component {
     	}
     }
 
+    processSrcTokenAmountToSend(amount) {
+        let satisfyCommonConditions = this.props.srcTokenHash !== undefined &&                               
+                                      this.props.srcTokenDecimals !== undefined &&
+                                      this.props.srcTokenBalance !== undefined &&
+                                      this.props.dstDecimals !== undefined;
+        let satisfyExtraConditions = true;
+        let ethType = this.props.fromBlockchain?.type === 'eth';        
+        if (ethType)
+            satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
+        let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;                               
+
+        if (readyForProcess) {
+            this.setState({blockConfirmByAmount : false});
+            let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
+            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('low-allowance');        
+                console.log('Amount less than allowance');
+            } else if (bigIntAmount.value > this.props.srcTokenBalance) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-balance');        
+                console.log('Amount more than balance');
+            } else if (bigIntAmount.rawFractionalPart.length > Number(this.props.srcTokenDecimals)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-decimals');        
+                console.log('Too long fractional part');
+            } else if (bigIntAmount.rawFractionalPart.length > Number(this.props.dstDecimals)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-dst-decimals');        
+                console.log('Fractional part is longer than dst_decimals');
+            }
+        } else {
+            this.setState({blockConfirmByAmount : true});
+            this.showAmountWarning('incorrect-token-info');        
+            console.log('Incorrect token Info');
+        }
+
+    }
+
     handleInputTokenAmountChange(item) {
-		if (!isNaN(item.target.value))
-			this.props.updateSrcTokenAmountToSend(item.target.value);
+		if (!isNaN(item.target.value)) {
+            let value = item.target.value;            
+			this.props.updateSrcTokenAmountToSend(value);
+            this.processSrcTokenAmountToSend(value);
+        }
     }
 
     lockEth() {    	
@@ -1129,6 +1223,30 @@ class SpaceBridge extends React.Component {
         }
     }
 
+    showAmountWarning(cause) {
+        if (cause == 'incorrect-token-info') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Incorrect token info'});            
+        } else if (cause == 'low-allowance') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Amount less than appoved balance'});
+        } else if (cause == 'exeeds-balance') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : 'Amount more than balance'});
+        } else if (cause == 'exeeds-decimals') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : `This token has decimals ${this.props.srcTokenDecimals}`});
+        } else if (cause == 'exeeds-dst-decimals') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : `Decimals in destination network for this token can\`t exeeds ${this.props.dstDecimals}`});
+        }
+    }
+
     getWarningElem() {
         let cause = this.state.formInputWarningCause;
         if (cause == 'undefined-from-chain' &&
@@ -1139,7 +1257,31 @@ class SpaceBridge extends React.Component {
             this.props.fromBlockchain?.web3ExtensionChainId !== undefined &&
             this.props.fromBlockchain?.web3ExtensionChainId === this.props.this.props.nonNativeConnection.web3ExtensionChain) 
                 return
-        else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
+        else if (cause == 'incorrect-token-info') {
+            let satisfyCommonConditions = this.props.srcTokenHash !== undefined &&                               
+                                          this.props.srcTokenDecimals !== undefined &&
+                                          this.props.srcTokenBalance !== undefined;
+            let satisfyExtraConditions = true;
+            let ethType = this.props.fromBlockchain?.type === 'eth';        
+            if (ethType)
+                satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
+            let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;
+            if (readyForProcess)
+                return
+        } else if (cause == 'low-allowance' &&
+            this.props.fromBlockchain?.type === 'eth' &&            
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= this.props.srcTokenAllowance)) {            
+                return
+        } else if (cause == 'exeeds-balance' &&                
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= this.props.srcTokenBalance)) {
+                return
+        } else if (cause == 'exeeds-decimals' &&                
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).rawFractionalPart.length <= Number(this.props.srcTokenDecimals))) {
+                return
+        } else if (cause == 'exeeds-dst-decimals' &&                
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).rawFractionalPart.length <= Number(this.props.dstDecimals))) {
+                return
+        } else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
             return(
                 <div className="err-msg d-block form-text">
                     {this.state.formInputWarningMsg}
@@ -1258,7 +1400,9 @@ class SpaceBridge extends React.Component {
                            this.props.srcTokenDecimals == undefined ||
                            this.props.srcTokenAmountToSend == undefined ||
                            (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
-                           this.props.toBlockchain == undefined;
+                           this.props.toBlockchain == undefined ||
+                           this.state.blockConfirmByAmount ||
+                           this.props.dstDecimals === undefined;
                 action = this.lockEth.bind(this);
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
@@ -1268,7 +1412,9 @@ class SpaceBridge extends React.Component {
                            this.props.srcTokenDecimals == undefined ||
                            this.props.srcTokenAmountToSend == undefined ||
                            (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
-                           this.props.toBlockchain == undefined;
+                           this.props.toBlockchain == undefined ||
+                           this.state.blockConfirmByAmount ||
+                           this.props.dstDecimals === undefined;
                 action = this.encodeDataAndLock.bind(this);
             }            
         }

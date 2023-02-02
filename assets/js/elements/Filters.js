@@ -11,10 +11,13 @@ class Filter extends React.Component {
 
         let preset = this.props.getItems(this.props.t)
         let itemName = lsdp.simple.get(this.props.filterName)
+        if (itemName === null)
+            itemName = Object.keys(preset)[0]
+        this.changeActiveFilter(itemName)
 
         this.state = {
             items : preset,
-            activeItem : itemName ? itemName : Object.keys(preset)[0]
+            activeItem : itemName
         }
     }
 
@@ -54,7 +57,7 @@ class Filter extends React.Component {
                 key={this.props.key+""}
             >
                 {items}
-            </ DropdownButton>
+            </DropdownButton>
         )
     }
 

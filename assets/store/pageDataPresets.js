@@ -15,7 +15,10 @@ const presets =  {
             farm_close_stake : 'farm_close_stake',
             farm_decrease_stake : 'farm_decrease_stake',
             dex_cmd_distribute : 'dex_cmd_distribute',
-            token_issue : 'token_issue'
+            token_issue : 'token_issue',
+            claim_init : 'claim_init',
+            claim_confirm : 'claim_confirm',
+            enq_lock : 'enq_lock'
         }
     },
 
@@ -23,13 +26,13 @@ const presets =  {
         genesisPubKey : '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
         nativeToken   : {
             ticker : 'BIT',
-            hash   : '0000000000000000000000000000000000000000000000000000000000000001',
+            hash   : '0000000000000000000000000000000000000000000000000000000000000000',//////////////// lastsymbol 1
             fee    : 1000000000
         },
         defaultNet : {
             name : 'BIT',
             //url  : 'http://bit-dev.enecuum.com/',
-            url  : 'https://bit.enecuum.com/'
+            url  : 'https://f3-dev.enecuum.com/'//////////////bit
         }
     },
 
@@ -98,7 +101,8 @@ const presets =  {
                 'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
             ]
         }
-    }
+    },
+    
 
 }
 

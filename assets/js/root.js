@@ -35,6 +35,7 @@ import Etm from './pages/Etm'
 import Farms from './pages/Farms'
 import Drops from './pages/Drops'
 import SpaceStation from './pages/SpaceStation'
+import SpaceBridge from './pages/SpaceBridge'
 
 /* -------------------- Dex-ui pages --------------------- */
 import BlankPage from './pages/blankPage'
@@ -45,6 +46,7 @@ import networkApi from './requests/networkApi'
 
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
+import NonNativeConnectionManager from './nonNativeConnectionManager/NonNativeConnectionManager'
 
 class Root extends React.Component {
     constructor (props) {
@@ -57,8 +59,25 @@ class Root extends React.Component {
         this.setPath()
         window.addEventListener('hashchange', () => {
             this.setPath()
-        })
+        })        
         this.updNetworkInfo()
+
+        let storeMethodsForNNCM = {
+            updateWalletConnectAccountId   : this.props.updateWalletConnectAccountId,
+            updateWalletConnect            : this.props.updateWalletConnect,
+            updateWalletConnectChain       : this.props.updateWalletConnectChain,
+            updateWalletConnectIsConnected : this.props.updateWalletConnectIsConnected,
+            updateWalletConnectWalletTitle : this.props.updateWalletConnectWalletTitle,
+            updateWeb3ExtensionAccountId   : this.props.updateWeb3ExtensionAccountId,
+            updateWeb3Extension            : this.props.updateWeb3Extension,
+            updateWeb3ExtensionChain       : this.props.updateWeb3ExtensionChain,
+            updateWeb3ExtensionIsConnected : this.props.updateWeb3ExtensionIsConnected,
+            updateWeb3ExtensionWalletTitle : this.props.updateWeb3ExtensionWalletTitle     
+        }
+
+        this.nncm = new NonNativeConnectionManager(storeMethodsForNNCM);
+        this.nncm.initializeProviders();
+        localStorage.setItem('try_metamask_connect', false);
     }
 
     componentDidUpdate(prevProps) {
@@ -144,6 +163,10 @@ class Root extends React.Component {
         let networkInfo = networkApi.networkInfo();
         networkInfo.then(result => {
             if (!result.lock) {
+                if (result.status !== 200) {
+                    this.props.updateNetworkInfo({})
+                    return
+                }
                 result.json().then(info => {
                     this.props.updateNetworkInfo(info);
                 })
@@ -171,9 +194,14 @@ class Root extends React.Component {
     updNativeTokenData () {
         swapApi.getNativeTokenData()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.updNativeToken({})
+                    return
+                }
                 res.json()
                 .then(res => this.props.updNativeToken(res.native_token))
+            }
         })
     }
 
@@ -181,34 +209,49 @@ class Root extends React.Component {
         if(pubkey != '')
             swapApi.getFullBalance(pubkey)
             .then(res => {
-                if (!res.lock)
+                if (!res.lock) {
+                    if (res.status !== 200) {
+                        this.props.updBalances([])
+                        return
+                    }
                     res.json()
                     .then(res => {
                         res = res.filter(el => el.amount !== 0) // TMP solution
                         this.props.updBalances(res)
                     })
+                }
             })
     }
 
     updFarmsData () {
         networkApi.getDexFarms(this.props.pubkey)
             .then(res => {
-                if (!res.lock)
+                if (!res.lock) {
+                    if (res.status !== 200) {
+                        this.props.updateFarmsList({value : []})
+                        return
+                    }
                     res.json().then(farms => {
                         this.farms = farms.filter(farm => farm.stake)
                         this.props.updateFarmsList({
                             value : this.farms
                         })
                     })
+                }
             })
     }
 
     updPools () {
         swapApi.getPairs()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.updPairs([])
+                    return
+                }
                 res.json()
                 .then(res => this.props.updPairs(this.convertPools(res)))
+            }
         })
     }
 
@@ -228,7 +271,11 @@ class Root extends React.Component {
 
         swapApi.getTokens()
         .then(res => {
-            if (!res.lock)
+            if (!res.lock) {
+                if (res.status !== 200) {
+                    this.props.assignAllTokens([])
+                    return
+                }
                 res.json()
                 .then(tokens => {
                     let tokenHashArr = []
@@ -252,6 +299,7 @@ class Root extends React.Component {
                     })
                     this.addOptionalTokenInfo(tokens, tokenHashArr)
                 })
+            }
         })
     }
 
@@ -361,7 +409,7 @@ class Root extends React.Component {
 
     /* -------------- Upd balances in swapCard --------------- */
 
-    circleBalanceUpd () {
+    circleBalanceUpd () {        
         this.updBalanceForms()
         return setInterval(() => {
             this.updBalanceForms()
@@ -382,7 +430,7 @@ class Root extends React.Component {
         this.props.assignBalanceObj(menuItem, field, balanceObj)
     }
 
-    updBalanceForms () {
+    updBalanceForms () {        
         if (this.props.menuItem === 'exchange') {
             this.updBalanceObj('exchange', 'field0')
             this.updBalanceObj('exchange', 'field1')
@@ -450,12 +498,18 @@ class Root extends React.Component {
                         <Drops useSuspense={false}/>
                     </div>                    
                 );
-           // case 'spaceStation' :
-           //     return (
-           //         <div className="regular-page p-2 p-md-5 px-lg-0" >
-           //             <SpaceStation useSuspense={false}/>
-           //         </div>                    
-           //     );                                                     
+            case 'spaceBridge':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceBridge useSuspense={false}/>
+                    </div>                    
+                );                
+            case 'spaceStation' :
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <SpaceStation useSuspense={false}/>
+                    </div>                    
+                );                                                     
             default:
                 return (
                     <BlankPage text="Coming soon"/>

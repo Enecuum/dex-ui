@@ -9,6 +9,8 @@ import etmCreator from './actionCreators/etm'
 import farmsCreator from './actionCreators/farms'
 import dropsCreator from './actionCreators/drops'
 import spaceStationCreator from './actionCreators/spaceStation'
+import nonNativeConnectionCreator from './actionCreators/nonNativeConnection'
+import spaceBridgeCreator from './actionCreators/spaceBridge'
 
 const components = {
     ROOT                             : 0x0,
@@ -34,7 +36,10 @@ const components = {
     DROPS                            : 0x14,
     SWAP_ADDON                       : 0x15,
     SPACE_STATION                    : 0x16,
-    ROUTING                          : 0x17
+    ROUTING                          : 0x17,
+    SPACE_BRIDGE                     : 0x18,
+    TOKEN_CARD_BRIDGE                : 0x19,
+    BIRDGE_CHAINS_DROPDOWN           : 0x1A
 }
 
 function mapStoreToProps(component) {
@@ -43,11 +48,12 @@ function mapStoreToProps(component) {
             return function (state) {
                 return {
                     ...state.root,
-                    liquidityRemove : state.swapCard.liquidityRemove,
-                    exchange        : state.swapCard.exchange,
-                    liquidity       : state.swapCard.liquidity,
-                    removeLiquidity : state.swapCard.removeLiquidity,
-                    topPairs        : state.topPairs
+                    liquidityRemove     : state.swapCard.liquidityRemove,
+                    exchange            : state.swapCard.exchange,
+                    liquidity           : state.swapCard.liquidity,
+                    removeLiquidity     : state.swapCard.removeLiquidity,
+                    topPairs            : state.topPairs,
+                    nonNativeConnection : state.nonNativeConnection
                 }
             }
         case components.SWAP_CARD:
@@ -92,6 +98,20 @@ function mapStoreToProps(component) {
                     networkInfo : state.root.networkInfo
                 }
             }
+        case components.TOKEN_CARD_BRIDGE:
+            return function (state) {
+                return {
+                    ...state.swapCard,
+                    ...state.tokenCard,
+                    activeField : state.swapCard.activeField,
+                    menuItem    : state.root.menuItem,
+                    tokens      : state.root.tokens,
+                    balances    : state.root.balances,
+                    pairs       : state.root.pairs,
+                    net         : state.root.net,
+                    networkInfo : state.root.networkInfo
+                }
+            }    
         case components.ASIDE:
             return function (state) {
                 return {
@@ -377,6 +397,24 @@ function mapStoreToProps(component) {
                     net : state.root.net
                 }
             }
+        case components.SPACE_BRIDGE:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.spaceBridge,
+                    nonNativeConnection : state.nonNativeConnection,
+                    pubkey              : state.root.pubkey,
+                }
+            }
+        case components.BIRDGE_CHAINS_DROPDOWN:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.spaceBridge,
+                    nonNativeConnection : state.nonNativeConnection,
+                    pubkey              : state.root.pubkey,
+                }
+            }        
         default:
             return undefined
     }
@@ -388,11 +426,23 @@ function mapDispatchToProps(component) {
             return function (dispatch) {
                 return bindActionCreators({
                     ...rootCreator,
-                    assignBalanceObj: bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
-                    changeMenuItem  : rootCreator.changeMenuItem,
-                    assignTokenValue: swapCardCreator.assignTokenValue,
-                    assignCoinValue : swapCardCreator.assignCoinValue,
-                    updateFarmsList : farmsCreator.updateFarmsList
+                    assignBalanceObj               : bindActionCreators(swapCardCreator.assignBalanceObj, dispatch),
+                    changeMenuItem                 : rootCreator.changeMenuItem,
+                    assignTokenValue               : swapCardCreator.assignTokenValue,
+                    assignCoinValue                : swapCardCreator.assignCoinValue,
+                    updateFarmsList                : farmsCreator.updateFarmsList,
+
+                    updateWalletConnectIsConnected : nonNativeConnectionCreator.updateWalletConnectIsConnected,
+                    updateWalletConnect            : nonNativeConnectionCreator.updateWalletConnect,
+                    updateWalletConnectChain       : nonNativeConnectionCreator.updateWalletConnectChain,
+                    updateWalletConnectWalletTitle : nonNativeConnectionCreator.updateWalletConnectWalletTitle,
+                    updateWalletConnectAccountId   : nonNativeConnectionCreator.updateWalletConnectAccountId,
+
+                    updateWeb3ExtensionIsConnected : nonNativeConnectionCreator.updateWeb3ExtensionIsConnected,
+                    updateWeb3Extension            : nonNativeConnectionCreator.updateWeb3Extension,
+                    updateWeb3ExtensionChain       : nonNativeConnectionCreator.updateWeb3ExtensionChain,
+                    updateWeb3ExtensionWalletTitle : nonNativeConnectionCreator.updateWeb3ExtensionWalletTitle,
+                    updateWeb3ExtensionAccountId   : nonNativeConnectionCreator.updateWeb3ExtensionAccountId,
                 }, dispatch)
             }
         case components.SWAP_CARD:
@@ -581,7 +631,59 @@ function mapDispatchToProps(component) {
                 return bindActionCreators({
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch) 
-            }            
+            }
+        case components.SPACE_BRIDGE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updateWalletConnectIsConnected : nonNativeConnectionCreator.updateWalletConnectIsConnected,
+                    updateWalletConnect            : nonNativeConnectionCreator.updateWalletConnect,
+                    updateWalletConnectChain       : nonNativeConnectionCreator.updateWalletConnectChain,
+                    updateWalletConnectWalletTitle : nonNativeConnectionCreator.updateWalletConnectWalletTitle,
+                    updateWalletConnectAccountId   : nonNativeConnectionCreator.updateWalletConnectAccountId,
+
+                    updateWeb3ExtensionIsConnected : nonNativeConnectionCreator.updateWeb3ExtensionIsConnected,
+                    updateWeb3Extension            : nonNativeConnectionCreator.updateWeb3Extension,
+                    updateWeb3ExtensionChain       : nonNativeConnectionCreator.updateWeb3ExtensionChain,
+                    updateWeb3ExtensionWalletTitle : nonNativeConnectionCreator.updateWeb3ExtensionWalletTitle,
+                    updateWeb3ExtensionAccountId   : nonNativeConnectionCreator.updateWeb3ExtensionAccountId,
+ 
+                    updCurrentTxHash               : rootCreator.updCurrentTxHash,
+                    updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,
+                    updateSrcTokenAllowance        : spaceBridgeCreator.update_src_token_allowance,
+                    updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                    updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
+                    updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
+                    updateSrcTokenAmountToSend     : spaceBridgeCreator.update_src_token_amount_to_send,
+                    updateCurrentBridgeTx          : spaceBridgeCreator.update_current_bridge_tx,
+                    updateBridgeDirection          : spaceBridgeCreator.update_bridge_direction,
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,
+                    updateSrcTokenObj              : spaceBridgeCreator.update_src_token_obj,
+                    updateShowHistory              : spaceBridgeCreator.update_show_history,
+                    updateFromBlockchain           : spaceBridgeCreator.update_from_blockchain,
+                    updateToBlockchain             : spaceBridgeCreator.update_to_blockchain,
+                    updateDstDecimals              : spaceBridgeCreator.update_dst_decimals,
+    
+                }, dispatch) 
+            }
+        case components.BIRDGE_CHAINS_DROPDOWN:
+        return function (dispatch) {
+                return bindActionCreators({                    
+                    updateFromBlockchain  : spaceBridgeCreator.update_from_blockchain,
+                    updateToBlockchain    : spaceBridgeCreator.update_to_blockchain    
+                }, dispatch) 
+            }   
+        case components.TOKEN_CARD_BRIDGE:
+            return function (dispatch) {
+                return bindActionCreators({
+                    ...tokenCardCreator,
+                    updateShowTokenList            : spaceBridgeCreator.update_show_token_list,                    
+                    updateSrcTokenDecimals         : spaceBridgeCreator.update_src_token_decimals,
+                    updateSrcTokenTicker           : spaceBridgeCreator.update_src_token_ticker,
+                    updateSrcTokenHash             : spaceBridgeCreator.update_src_token_hash,
+                    updateSrcTokenBalance          : spaceBridgeCreator.update_src_token_balance,
+                    updateSrcTokenAllowance        : spaceBridgeCreator.update_src_token_allowance
+                }, dispatch)
+            }                    
         default:
             return undefined
     }

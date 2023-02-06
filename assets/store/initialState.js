@@ -36,6 +36,20 @@ const initialState = {
         recentTxs   : [],
         nativeToken : {}
     },
+    
+    nonNativeConnection : {
+        walletConnectIsConnected  : false,
+        walletConnect             : undefined,
+        walletConnectChain        : undefined,        
+        walletConnectWalletTitle  : undefined,
+        walletConnectAccountId    : undefined,
+       
+        web3ExtensionIsConnected  : false,
+        web3Extension             : undefined,
+        web3ExtensionChain        : undefined,
+        web3ExtensionWalletTitle  : undefined,
+        web3ExtensionAccountId    : undefined
+    },
 
     swapCard : {
         exchange: {
@@ -201,6 +215,25 @@ const initialState = {
             msgData            : {},
             stakeTokenAmount   : undefined
         }
+    },
+    spaceBridge : {
+        bridgeDirection : 'ENQ-ETH', //'ETH-ENQ' or 'ENQ-ETH',
+        fromBlockchain : undefined, //config.js availableNetworks array's item. NOT chain_id or id!!!
+        toBlockchain : undefined, //config.js availableNetworks array's item. NOT chain_id or id!!!
+        showHistory : false,
+        showLock : false,
+        showClaimInit : false,
+        showClaimConfirm : false,
+        srcNet : undefined,
+        srcTokenHash : undefined,
+        srcTokenAllowance : undefined,
+        srcTokenBalance : undefined,
+        srcTokenDecimals : undefined,
+        srcTokenTicker : undefined,
+        srcTokenAmountToSend : undefined,
+        dstDecimals : undefined,
+        currentBridgeTx : undefined,
+        showTokenList : false
     }
 
 }

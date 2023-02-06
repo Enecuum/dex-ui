@@ -102,6 +102,8 @@ class IndicatorPanel extends React.Component {
         if (this.props.networkInfo.dex) {
             let enxCoin = utils.getBalanceObj(this.props.balances, this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
             this.enx = vp.usCommasBigIntDecimals(enxCoin.amount, enxCoin.decimals)
+        } else {
+            this.enx = "---"
         }
     }
 
@@ -234,7 +236,11 @@ class IndicatorPanel extends React.Component {
         if (!netInfo.native_token)
             return
         let actualNativeToken = netInfo.native_token.hash
-        if (extRequests.nativeTokenHash !== actualNativeToken) {
+        if (
+            extRequests.nativeTokenHash !== actualNativeToken || 
+            this.props.mainTokenFee !== netInfo.native_token.fee_value || 
+            extRequests.genesis !== netInfo.origin.publisher
+        ) {
             let fee = netInfo.native_token.fee_value
             this.props.updMainTokenData(actualNativeToken, fee)
             extRequests.updNativeTokenData(actualNativeToken, fee, netInfo.origin.publisher)

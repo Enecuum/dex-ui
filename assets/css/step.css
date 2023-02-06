@@ -1,0 +1,29 @@
+.step-point {
+	height: 30px;
+	width: 30px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--color1);
+	background: transparent;
+	border: 2px solid var(--color2);
+	flex-basis: 30px;
+	min-width: 30px;
+	color: var(--color4);
+}
+
+.step-point-in-progress {
+	background: var(--color3);
+	color: var(--color1);
+	border: 2px solid var(--color3);
+}
+
+.step-edge {
+	width: 100%;
+	border-bottom: 2px solid var(--color2);
+}
+
+.step-edge-in-progress {
+	border-bottom: 2px solid var(--color3);
+}

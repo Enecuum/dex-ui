@@ -36,6 +36,8 @@ router.post(`/site\.webmanifest`, (req, res, next) => {
     readAndSend(req, res, "image/png")
 }).post(`/*\.(jpeg|jpg)$`, (req, res, next) => {
     readAndSend(req, res, "image/jpeg")
+}).post(`/*\.webp$`, (req, res, next) => {
+    readAndSend(req, res, "image/webp")
 }).post(`/token_list$`, (req, res, next) => {
     res.send(jsonrpcResponse(req.body.id, true, tokenList, "application/json"))
 })

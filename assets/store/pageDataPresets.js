@@ -92,12 +92,18 @@ const presets =  {
 
     dropFarms : {
         spaceHarvestFarms : {
-            whiteList : []
+            whiteList : [
+                '3b2a32d865a26b3a6d69fd30d7999de07ec4378724bd69d0b705e78b86b4bac0',//Pulse|cripto_banya
+                '97a60bead0f67d90fc523b285d3fe9738612cbe617a7c4be02b82036375012f2'//Pulse|alexcripto_SMT
+            ]
         },
         spaceDrops : {
             whiteList : [
                 'e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01',
                 '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
+                '7dcc38f4bd86493f93804b5d1000dbc383851f1a766444c2dfc49d8cac0966b7',//Pulse|cripto_banya
+                '717369faf4cee266dad3d85a833ba11b3a0ca6685b992cbff7c85b5a118bdcfb',//Pulse|alexcripto_SMT
+                'd235fa223260b2de8867ccaba5601fa4d384d1ce814236cd5afad71faa2928e9',//Pulse|sos-ig
                 'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
             ]
         }

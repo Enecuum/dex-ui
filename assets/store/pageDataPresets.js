@@ -23,16 +23,15 @@ const presets =  {
     },
 
     network : {
-        genesisPubKey : '029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d',
+        genesisPubKey : '02833f453fb8bf10cc5e8fd362d563851543559f3ea6e662ef114d8db8f72dda19',
         nativeToken   : {
-            ticker : 'BIT',
+            ticker : 'ENQ',
             hash   : '0000000000000000000000000000000000000000000000000000000000000000',//////////////// lastsymbol 1
             fee    : 1000000000
         },
         defaultNet : {
-            name : 'BIT',
-            //url  : 'http://bit-dev.enecuum.com/',
-            url  : 'https://f3-dev.enecuum.com/'//////////////bit
+            name : 'PULSE',
+            url  : 'https://pulse.enecuum.com/'
         }
     },
 
@@ -78,8 +77,9 @@ const presets =  {
         etm          : 'etm',
         farms        : 'space-harvest-farms',
         drops        : 'space-drops',
+        voting       : 'space-voting',
         spaceStation : 'space-station',
-        spaceBridge  : 'space-bridge'
+        spaceBridge  : 'space-bridge',
     },
 
     etm : {
@@ -99,6 +99,23 @@ const presets =  {
                 'e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01',
                 '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
                 'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
+            ]
+        },
+        voting : {
+            finalBlockNum : 5256585,
+            situationReadme : "https://github.com",
+            voutingReadme : "https://github.com",
+            list : [
+                {
+                    farm_id: "e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01",
+                    issue : "Burn 11.2 nil team's ENQ",
+                    proposal : "https://github.com"
+                },
+                {
+                    farm_id: "dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de",
+                    issue : "Burn 123123123123 nil team's ENQ",
+                    proposal : "https://github.com"
+                }
             ]
         }
     },

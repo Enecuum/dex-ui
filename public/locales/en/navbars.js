@@ -6,6 +6,7 @@ module.exports = {
         "ido" : "IDO",
         "farms" : "Harvest Farms",
         "pools" : "Space Drop",
+        "voting" : "Space Voting",
         "etm" : "ETM",
         "info" : "Info",
         "topPairs" : "Top Pairs",

@@ -8,6 +8,7 @@ import indicatorPanelCreator from './actionCreators/indicatorPanel'
 import etmCreator from './actionCreators/etm'
 import farmsCreator from './actionCreators/farms'
 import dropsCreator from './actionCreators/drops'
+import votingCreator from './actionCreators/voting'
 import spaceStationCreator from './actionCreators/spaceStation'
 import nonNativeConnectionCreator from './actionCreators/nonNativeConnection'
 import spaceBridgeCreator from './actionCreators/spaceBridge'
@@ -39,7 +40,8 @@ const components = {
     ROUTING                          : 0x17,
     SPACE_BRIDGE                     : 0x18,
     TOKEN_CARD_BRIDGE                : 0x19,
-    BIRDGE_CHAINS_DROPDOWN           : 0x1A
+    BIRDGE_CHAINS_DROPDOWN           : 0x1A,
+    VOTING                           : 0x1B
 }
 
 function mapStoreToProps(component) {
@@ -350,6 +352,13 @@ function mapStoreToProps(component) {
                     }
                 }
             }
+        case components.VOTING:
+            return function (state) {
+                return {
+                    ...state.root,
+                    ...state.voting
+                }
+            }
         case components.SPACE_STATION:
             return function (state) {
                 return {
@@ -602,6 +611,24 @@ function mapDispatchToProps(component) {
                     updatePricelist         : dropsCreator.updatePricelist,
                     updateCurrentAction     : dropsCreator.updateCurrentAction,
                     updateStakeData         : dropsCreator.updateStakeData,
+                    changeMenuItem          : rootCreator.changeMenuItem
+                }, dispatch) 
+            }
+        case components.VOTING:
+            return function (dispatch) {
+                return bindActionCreators({
+                    updCurrentTxHash        : rootCreator.updCurrentTxHash,
+                    updateFarmsList         : votingCreator.updateFarmsList,
+                    updateExpandedRow       : votingCreator.updateExpandedRow,
+                    updateManagedFarmData   : votingCreator.updateManagedFarmData,
+                    updateSortType          : votingCreator.updateSortType,                    
+                    updShowStakeModal       : votingCreator.updShowStakeModal,
+                    updateMainTokenAmount   : votingCreator.updateMainTokenAmount,
+                    updateMainTokenDecimals : votingCreator.updateMainTokenDecimals,
+                    updateMainTokenFee      : votingCreator.updateMainTokenFee,
+                    updatePricelist         : votingCreator.updatePricelist,
+                    updateCurrentAction     : votingCreator.updateCurrentAction,
+                    updateStakeData         : votingCreator.updateStakeData,
                     changeMenuItem          : rootCreator.changeMenuItem
                 }, dispatch) 
             }

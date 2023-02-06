@@ -1,6 +1,7 @@
 module.exports = {
     "subscriptDrops" : "Размещайте non-LP токены",
     "subscriptHarvestFarms" : "Размещайте LP и получайте в награду токены",
+    "subscriptVoting" : "Vote, vote, vote! Not voting is not a protest. It is a surrender. Vote all around!",
     "stakeNamedToken"              : "Стейк {{tokenName}}",
     "unstakeNamedToken"            : "Отозвать {{tokenName}}",
     "stakeLPTokens"                : "Стейк LP токенов",

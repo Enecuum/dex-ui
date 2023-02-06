@@ -34,6 +34,7 @@ import TopPairs from './components/TopPairs'
 import Etm from './pages/Etm'
 import Farms from './pages/Farms'
 import Drops from './pages/Drops'
+import Voting from './pages/Voting'
 import SpaceStation from './pages/SpaceStation'
 import SpaceBridge from './pages/SpaceBridge'
 
@@ -498,6 +499,12 @@ class Root extends React.Component {
                         <Drops useSuspense={false}/>
                     </div>                    
                 );
+            case 'voting':
+                return (
+                    <div className="regular-page p-2 p-md-5 px-lg-0" >
+                        <Voting useSuspense={false}/>
+                    </div>                    
+                );   
             case 'spaceBridge':
                 return (
                     <div className="regular-page p-2 p-md-5 px-lg-0" >

@@ -147,5 +147,7 @@ module.exports = {
     "add" : "Add",
     "remove" : "Remove",
     "pooled" : "Pooled",
-    "all" : "All"
+    "all" : "All",
+    "active" : "Active",
+    "inactive" : "Inactive"
 }

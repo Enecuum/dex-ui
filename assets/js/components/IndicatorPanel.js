@@ -28,6 +28,7 @@ class IndicatorPanel extends React.Component {
         this.intervalDescriptors.push(this.circleUpd())
         // this.intervalDescriptors.push(this.updPendingSpinner())
         this.updStatusesPermition = true
+        this.enx = {value: "---", ticker: "ENX"}
         this.state = {
             txNotificationToasts : {},
             accountInfoVisibility : false,
@@ -67,7 +68,7 @@ class IndicatorPanel extends React.Component {
                     <span className='text-uppercase mx-2'>{this.props.net.name}</span>
                 </div>
                 <div className='enx-amount wallet-info-boxes d-flex align-items-center justify-content-center px-3 border-0 mr-0 mr-sm-3'>
-                    {this.enx} ENX
+                    {this.enx.value} {this.enx.ticker}
                 </div>
                 <div className='wallet-info-boxes d-none d-sm-flex align-items-center justify-content-between'>
                     <div className='d-flex align-items-center justify-content-center px-3'>{this.props.coinAmount} {this.props.coinName}</div>
@@ -101,9 +102,11 @@ class IndicatorPanel extends React.Component {
 
         if (this.props.networkInfo.dex) {
             let enxCoin = utils.getBalanceObj(this.props.balances, this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
-            this.enx = vp.usCommasBigIntDecimals(enxCoin.amount, enxCoin.decimals)
+            this.enx.value = vp.usCommasBigIntDecimals(enxCoin.amount, enxCoin.decimals)
+            this.enx.ticker = enxCoin.ticker
         } else {
-            this.enx = "---"
+            this.enx.value = "---"
+            this.enx.ticker = "ENX"
         }
     }
 

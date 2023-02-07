@@ -133,5 +133,7 @@ module.exports = {
     "add" : "Добавить",
     "remove" : "Удалить",
     "pooled" : "Добавлено в пул",
-    "all" : "Все"
+    "all" : "Все",
+    "active" : "Active",
+    "inactive" : "Inactive"
 }

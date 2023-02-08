@@ -21,7 +21,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops', 'voting', /*'info', */'spaceStation', 'spaceBridge'];
+        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops', 'governance', /*'info', */'spaceStation', 'spaceBridge'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
@@ -56,10 +56,10 @@ class Aside extends React.Component {
                 action: this.changeMenuItem.bind(this, 'drops'),
                 actionAlias: 'space-drops' 
             },
-            voting : {
+            governance : {
                 iconClasses: 'icon-Icon5',
-                action : this.changeMenuItem.bind(this, 'voting'),
-                actionAlias: 'space-voting',
+                action : this.changeMenuItem.bind(this, 'governance'),
+                actionAlias: 'governance',
             },
             etm : {
                 iconClasses: 'icon-Icon25',

@@ -499,7 +499,7 @@ class Root extends React.Component {
                         <Drops useSuspense={false}/>
                     </div>                    
                 );
-            case 'voting':
+            case 'governance':
                 return (
                     <div className="regular-page p-2 p-md-5 px-lg-0" >
                         <Voting useSuspense={false}/>

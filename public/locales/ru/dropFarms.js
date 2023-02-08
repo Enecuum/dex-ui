@@ -35,7 +35,7 @@ module.exports = {
         "header" : "Voting about Enecuum security incident - {{status}}",
         "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",
         "currentBlock" : "Current block: {{block}}",
-        "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Five proposals from the team, five proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol.",
+        "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Proposals from the team, proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol.",
         "readMore1" : "Read more about the situation",
         "readMore2" : "Read more how the voting works",
 

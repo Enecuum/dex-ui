@@ -494,7 +494,7 @@ class Voting extends React.Component {
     }
 
     checkByStatus(farm) {
-        if (farm !== undefined && farm.blocks_left > 0)
+        if (farm !== undefined)
             return true
         return false
     }

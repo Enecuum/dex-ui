@@ -707,7 +707,7 @@ class Voting extends React.Component {
                     </div>
                 </div>
 
-		    	<div className="drop-farms-table-wrapper">	
+		    	<div className="drop-farms-table-wrapper governance">	
                     { finalBlock > this.height &&
                         <Table hover variant="dark" className="table-to-cards">
                             <tbody>
@@ -719,7 +719,7 @@ class Voting extends React.Component {
                                         <>
                                             <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
                                                 <td>
-                                                    <div className="cell-wrapper pl-5">
+                                                    <div className="cell-wrapper pl-5 text-nowrap">
                                                         <div className="h5 mb-0">{farmTitle}</div>
                                                         <div className="long-value" ><a href={farm.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
                                                     </div>	
@@ -761,15 +761,13 @@ class Voting extends React.Component {
                                 })}
                             </tbody>
                         </Table>			
-                    }		
+                    }
 				</div>
 			</>					
     	)
     }
 
     render() {
-		const t = this.props.t;
-       
     	return (
     		<div className="row">    		
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			

@@ -4,19 +4,19 @@ const proposals = {
         proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#8ba2"
     },
     p2 : {
-        issue : "Extend Max Supply to 700,000,000 ENQ and create a DAO to manage extra funds",
+        issue : "Extend Max Supply and create a DAO to manage extra funds",
         proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#3a8d"
     },
     p3 : {
-        issue : "Burn team’s ENQ + reduce mining emission period",
+        issue : "Burn team's ENQ + reduce mining emission period",
         proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#a820"
     },
     p4 : {
-        issue : "Increase transfer fee to 0.3ENQ and burn 0.2ENQ from it",
+        issue : "Increase transfer fee and burn a part from it",
         proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#d4fd"
     },
     p5 : {
-        issue : "Burn teams ENQ and extend max supply to the amount of uncontrolled emission",
+        issue : "Burn team's ENQ and extend max supply",
         proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#f152"
     },
     p6 : {

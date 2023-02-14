@@ -494,9 +494,9 @@ class Voting extends React.Component {
     }
 
     checkByStatus(farm) {
-        if (farm !== undefined)
+        // if (farm !== undefined)
             return true
-        return false
+        // return false
     }
 
     afterUpdate () {
@@ -708,12 +708,12 @@ class Voting extends React.Component {
                 </div>
 
 		    	<div className="drop-farms-table-wrapper governance">	
-                    { finalBlock > this.height &&
+                    {/* { finalBlock > this.height && */}
                         <Table hover variant="dark" className="table-to-cards">
                             <tbody>
                                 {this.farms.map(( farm, index ) => {
-                                    if (!this.checkByStatus(farm))
-                                        return <></>
+                                    {/* if (!this.checkByStatus(farm))
+                                        return <></> */}
                                     let farmTitle = farm.issue;
                                     return (
                                         <>
@@ -761,7 +761,7 @@ class Voting extends React.Component {
                                 })}
                             </tbody>
                         </Table>			
-                    }
+                    {/* } */}
 				</div>
 			</>					
     	)

@@ -86,3 +86,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+#bridgeWrapper .bridge-history-item .table thead th {
+    border-top: none;
+}
+
+.btn-info.no-focus-effect:not(:disabled):not(.disabled).active:focus, .btn-info.no-focus-effect:not(:disabled):not(.disabled):active:focus, .show>.btn-info.no-focus-effect.dropdown-toggle:focus,
+.btn-info.focus.no-focus-effect, .btn-info.no-focus-effect:focus {
+	box-shadow: none!important;
+}

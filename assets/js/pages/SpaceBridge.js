@@ -607,14 +607,14 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    claimInitEnq(bridgeItem, stateId) {
+    claimInitEnq(bridgeItem) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
             if (!(pubkey && claimInitData))
                 return
-            extRequests.claimInitTest(pubkey, claimInitData).then(result => {
+            extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
@@ -638,14 +638,14 @@ class SpaceBridge extends React.Component {
         } 
     } 
 
-    claimConfirmEnq(bridgeItem, stateId) {
+    claimConfirmEnq(bridgeItem) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
             if (!(pubkey && claimConfirmData))
                 return
-            extRequests.claimConfirmTest(pubkey, claimConfirmData).then(result => {
+            extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);
 
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
@@ -819,7 +819,10 @@ class SpaceBridge extends React.Component {
                     else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
                         res = 'Waiting for claim confirmation...';
                     else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
-                        res = this.getButtonLinkToEtherscan(item);                
+                        if (item.claimTxStatus == true)
+                            res = this.getButtonLinkToEtherscan(item);
+                        else
+                            res = this.getClaimEthButton(item);                                        
                 } else if (dstNetwork.type === 'enq') {
                     if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
                         res = this.getClaimEnqButton(item);
@@ -875,84 +878,189 @@ class SpaceBridge extends React.Component {
         let resume = 'Validated successfully';
         let stateId = 0;
         let txHash = undefined;
-        let claimType = undefined;
+        let claimType = 'claimInit';
         let actionStr = 'Claim';
+        let resetCurrent = false;
+        let showResetBridge = undefined;    
 
         if (item.claimConfirmTxStatus === true) {
             resume = 'Done';
             stateId = 1;
             txHash = item.claimConfirmTxHash;
-            claimType = 'claimConfirm';
+            showResetBridge = true;
         } else if (item.claimConfirmTxStatus === false) {
             resume = 'Claim confirmation failed';
             stateId = 2;
             txHash = item.claimConfirmTxHash;
             claimType = 'claimConfirm';
-            if (item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0)
-                actionStr = 'Confirm again';
-            else
-                actionStr = 'Confirm';
+            actionStr = 'Confirm again';
+            resetCurrent = true;
+            showResetBridge = true;
         } else if (item.claimConfirmTxHash !== undefined) {
             resume = 'Claim confirmation initialized';
             stateId = 3;
-        } else if (item.claimInitTxStatus === true) {
-            resume = 'Claim is ready';
-            stateId = 4; 
-            if (item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0)
-                actionStr = 'Confirm again';
-            else
-                actionStr = 'Confirm';
-        } else if (item.claimInitTxStatus === false) {
-            resume = 'Claim inititalization failed';
-            stateId = 5;
-            txHash = item.claimInitTxHash;
-            claimType = 'claimInit';
-             if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0)
+        } else {
+            if (item.claimInitTxStatus === true) {
+                if (item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) {
+                    resume = 'Claim confirmation failed';
+                    stateId = 4;
+                    actionStr = 'Confirm again';
+                    claimType = 'claimConfirm';
+                    resetCurrent = true;
+                    showResetBridge = true;
+                } else {
+                    resume = 'Claim is ready';
+                    stateId = 5;
+                    actionStr = 'Confirm';
+                    claimType = 'claimConfirm';
+                    resetCurrent = false;                 
+                }
+            } else if (item.claimInitTxStatus === false ||
+                (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
+                resume = 'Claim inititalization failed';
+                stateId = 6;
+                txHash = item.claimInitTxHash;
+                claimType = 'claimInit';
                 actionStr = 'Claim again';
-            else
-                actionStr = 'Claim';
-        } else if (item.claimInitTxHash !== undefined) {
-            resume = 'Claim initialized';
-            stateId = 6;
-        }
+                resetCurrent = true;
+                showResetBridge = true;
+            } else if (item.claimInitTxHash !== undefined) {
+                resume = 'Claim initialized';
+                stateId = 7;
+            }
+        } 
+
+
+        //  else (item.claimInitTxHash !== undefined) {
+        //     resume = 'Claim initialized';
+        //     stateId = 6;
+        // }   
+        // } else if (item.claimInitTxStatus === true) {
+
+        // } else if (item.claimInitTxStatus !== true) {
+        //     if ()
+        // } 
+
+
+
+
+
+        // else if (item.claimConfirmTxHash !== undefined) {
+        //     resume = 'Claim confirmation initialized';
+        //     stateId = 3;
+        // } else if () {
+
+        // }
+
+
+
+
+        //  else if (item.claimInitTxStatus === true) {
+        //     resume = 'Claim is ready';
+        //     stateId = 4;
+        //     actionStr = 'Confirm';
+        //     if ((item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) || item.claimConfirmTxStatus == false) {
+        //         resume = 'Claim confirmation failed';
+        //         actionStr = 'Confirm again';
+        //     }
+        // } else if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0 && item.claimInitTxStatus !== true) {            
+        //     stateId = 5;
+        //     txHash = item.claimInitTxHash;
+        //     claimType = 'claimInit';
+        //     resume = 'Claim inititalization failed';
+        //     actionStr = 'Claim again';              
+        //     //if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0) {
+              
+
+
+        // } else if (item.claimInitTxHash !== undefined) {
+        //     resume = 'Claim initialized';
+        //     stateId = 6;
+        // }
 
         return (
                 <>
                     <div className="mb-2">{resume}</div>
+                    {showResetBridge === true &&
+                        <div className="mb-2">
+                            {this.getResetBridgeButton()}
+                        </div>
+                    }
+{/*
+                    {stateId === 0 && matchChains &&
+                        <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>                        
+                        {actionStr}</Button>
+                    }*/}
+
+                    {[0,2,4,5,6].includes(stateId) && !matchChains &&
+                        <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
+                    }
+
+
+                    {[0,2,4,5,6].includes(stateId) && matchChains &&
+                        <>
+                            <Button
+                                className="d-block w-100 btn btn-secondary px-3 button-bg-3"
+                                onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>
+                                    {actionStr}                     
+                            </Button>
+                        </>    
+                    }
+
+                    {stateId === 1 &&
+                        <a
+                            href={`${chain.txPageUrl}${txHash}`} 
+                            className="d-block w-100 btn btn-info px-4"
+                            target="_blank">
+                            Info</a>
+                    }
+
+
+
+
+
+{/*                    <div className="mb-2">{resume}</div>
                     {stateId === 0 && matchChains &&
                     <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimInitEnq.bind(this, item, stateId)}>
+                        onClick={this.claimInitEnq.bind(this, item)}>
                         {actionStr}</Button>
                     }    
                     {stateId === 4 && matchChains &&
                         <Button
                         className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimConfirmEnq.bind(this, item, stateId)}>
+                        onClick={this.claimConfirmEnq.bind(this, item)}>
                         {actionStr}</Button>
                     }
                     {stateId !== 1 && !matchChains &&
                         <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
                     }
                     {(stateId === 1 || stateId === 2 || stateId === 5) && matchChains && <>
+                        
                         <div className="mb-2">
                             {this.getResetBridgeButton()}
                         </div>
-                        <div className="d-flex align-items-center justify-content-between">
-                            <a
-                            href={`${chain.txPageUrl}${txHash}`} 
-                            className="d-block w-100 btn btn-info px-4 mr-2"
-                            target="_blank">
-                                Info</a>
-                            <Button
-                                className="d-block btn btn-secondary px-3 button-bg-3 ml-2"
-                                onClick={this.passDataToResetClaimModal.bind(this, item, claimType)}>
-                                    <i className="fas fa-redo-alt"/>                     
-                            </Button>    
-                        </div>
                         
+                        {stateId !== 1 &&
+                            <div className="d-flex align-items-center justify-content-between">
+                                <Button
+                                    className="d-block w-100 btn btn-secondary px-3 button-bg-3"
+                                    onClick={this.reClaimEnq.bind(this, item, claimType)}>
+                                        {actionStr}                     
+                                </Button>    
+                            </div>
+                        }
+                        {stateId === 1 &&
+                            <a
+                                href={`${chain.txPageUrl}${txHash}`} 
+                                className="d-block w-100 btn btn-info px-4"
+                                target="_blank">
+                                Info</a>
+                        }                        
                     </>    
-                    }        
+                    }   */}     
                 </>
            );  
     }
@@ -966,8 +1074,20 @@ class SpaceBridge extends React.Component {
         )
     }
 
+    claimEnq(item, claimType, resetCurrent) {
+        if (resetCurrent === true)
+            this.passDataToResetClaimModal(item, claimType);
+        this[`${claimType}Enq`](item);
+    }
+
+    reClaimEth(item) {
+        this.passDataToResetClaimModal(item, 'claim');
+        this.claimEth(item);
+    }
+
     getClaimEthButton(item) {
         let action = undefined;
+        let resume = 'Validated successfully';
         let title = '';
         let addr = this.props.nonNativeConnection.web3ExtensionAccountId;
         if (this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {           
@@ -978,12 +1098,19 @@ class SpaceBridge extends React.Component {
             if (item.lock.dst_address.toUpperCase() !== addr.toUpperCase()) {
                 action = this.connectMMAcc.bind(this);
                 title = `Connect address ${utils.packAddressString(item.lock.dst_address)}`;
-            } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {
-                action = this.claimEth.bind(this, item);
-                if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0)
+            } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
+                if (item.claimTxStatus === false) {
+                    action = this.reClaimEth.bind(this, item);
+                    resume = 'Failed';
                     title = 'Claim again';
-                else
+                } else if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0) {
+                    action = this.claimEth.bind(this, item);
+                    resume = 'Failed';
+                    title = 'Claim again';
+                } else {
+                    action = this.claimEth.bind(this, item);
                     title = 'Claim';
+                }
             } else if (dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined) {
                 action = this.requestSwitchEthChain.bind(this, dstNetworkHexId);
                 title = 'Set chain';
@@ -1005,7 +1132,7 @@ class SpaceBridge extends React.Component {
 
         return (
             <>
-                <div className="mb-2">Validated successfully</div>
+                <div className="mb-2">{resume}</div>
                  <Button
                     className="d-block w-100 btn btn-secondary px-4 button-bg-3"
                     onClick={action}>
@@ -1106,9 +1233,6 @@ class SpaceBridge extends React.Component {
         if (chain !== undefined && chain.txPageUrl !== undefined)
             txPageUrl = `${chain.txPageUrl}${item.claimTxHash}`
 
-        function action() {
-            console.log('Try claim again');
-        }
         return (
                 <>
                     <div className="mb-2">{resume}</div>
@@ -1118,14 +1242,14 @@ class SpaceBridge extends React.Component {
                     <div className="d-flex align-items-center justify-content-between">
                         <a
                             href={txPageUrl} 
-                            className="d-block w-100 btn btn-info px-4 mr-2"
+                            className="d-block w-100 btn btn-info px-4"
                             target="_blank">
                             Info</a>
-                        <Button
+                        {/*<Button
                             className="d-block btn btn-secondary px-3 button-bg-3 ml-2"
                             onClick={this.passDataToResetClaimModal.bind(this, item, 'claim')}>
                                 <i className="fas fa-redo-alt"/>                     
-                        </Button>    
+                        </Button> */}   
                     </div>    
                 </>
            );        
@@ -1540,34 +1664,6 @@ class SpaceBridge extends React.Component {
         )
     }
 
-
-    basicExample() {
-      return (
-<Accordion defaultActiveKey="0">
-  <Card>
-    <Card.Header>
-      <Accordion.Toggle as={Button} variant="link" eventKey="0">
-        Click me!
-      </Accordion.Toggle>
-    </Card.Header>
-    <Accordion.Collapse eventKey="0">
-      <Card.Body>Hello! I'm the body</Card.Body>
-    </Accordion.Collapse>
-  </Card>
-  <Card>
-    <Card.Header>
-      <Accordion.Toggle as={Button} variant="link" eventKey="1">
-        Click me!
-      </Accordion.Toggle>
-    </Card.Header>
-    <Accordion.Collapse eventKey="1">
-      <Card.Body>Hello! I'm another body</Card.Body>
-    </Accordion.Collapse>
-  </Card>
-</Accordion>
-      );
-    }
-
     getTxStatusString(status) {
         let str = undefined;
         if (status === true)
@@ -1853,9 +1949,6 @@ class SpaceBridge extends React.Component {
                                 className={that.state.hasOwnProperty(`${index}-lockHash-${item.lock.transactionHash}-details-active`) && that.state[`${index}-lockHash-${item.lock.transactionHash}-details-active`] === true ? 'd-block' : 'd-none'}>
                             {that.getBridgeExtendedInfoWidget(item)}
                             </div>
-{/*                            <div className="mt-3">
-                                {that.basicExample()}
-                            </div>*/}
                         </div>
                     ))}
                     <div>

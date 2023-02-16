@@ -915,15 +915,19 @@ class SpaceBridge extends React.Component {
                     claimType = 'claimConfirm';
                     resetCurrent = false;                 
                 }
-            } else if (item.claimInitTxStatus === false ||
-                (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
-                resume = 'Claim inititalization failed';
-                stateId = 6;
-                txHash = item.claimInitTxHash;
-                claimType = 'claimInit';
-                actionStr = 'Claim again';
-                resetCurrent = true;
-                showResetBridge = true;
+            } else if (item.claimInitTxStatus === false || (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
+                if (item.claimInitTxHash !== undefined && item.claimInitTxStatus === undefined) {
+                    resume = 'Claim initialized';
+                    stateId = 7;
+                } else {
+                    resume = 'Claim inititalization failed';
+                    stateId = 6;
+                    txHash = item.claimInitTxHash;
+                    claimType = 'claimInit';
+                    actionStr = 'Claim again';
+                    resetCurrent = true;
+                    showResetBridge = true;                        
+                }
             } else if (item.claimInitTxHash !== undefined) {
                 resume = 'Claim initialized';
                 stateId = 7;
@@ -1268,28 +1272,31 @@ class SpaceBridge extends React.Component {
             let currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
             if (currentBridgeTxItem !== undefined) {
                 return (
-                    <>
-                        <div
-                            className="d-flex justify-content-between pb-3 mb-3 px-4">
-                            <div className="mr-3">                                                                   
-                                <div>
-                                    {this.getBridgeTxDirectionStr(currentBridgeTxItem)}
-                                </div>
-                                <div className="text-color4">
-                                    <span className="mr-2">Amount:</span>
-                                    <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
-                                </div>                                            
-                            </div>
-                            <div className="bridge-resume-wrapper">
-                                {this.getControl(currentBridgeTxItem)}
-                            </div>                                        
-                        </div>
+                    <div className="current-tx-resume">
+                        {this.getBridgeHistory('current', [currentBridgeTxItem])}
+                    </div>
+                    // <>
+                    //     <div
+                    //         className="d-flex justify-content-between pb-3 mb-3 px-4">
+                    //         <div className="mr-3">                                                                   
+                    //             <div>
+                    //                 {this.getBridgeTxDirectionStr(currentBridgeTxItem)}
+                    //             </div>
+                    //             <div className="text-color4">
+                    //                 <span className="mr-2">Amount:</span>
+                    //                 <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
+                    //             </div>                                            
+                    //         </div>
+                    //         <div className="bridge-resume-wrapper">
+                    //             {this.getControl(currentBridgeTxItem)}
+                    //         </div>                                        
+                    //     </div>
                         
-                    </>
+                    // </>
                 )
             }
         } else if (this.props.showHistory === true) {
-            return this.getBridgeHistory()
+            return this.getBridgeHistory('all')
         }
     }
 
@@ -1904,15 +1911,21 @@ class SpaceBridge extends React.Component {
         this.setState(itemVisibility);
     }
 
-    getBridgeHistory() {
-        let that = this;        
+    getBridgeHistory(layoutContext, historyArr = this.state.history) {
+        let that = this;
+        let title = undefined;
+        if (layoutContext === 'all')
+            title = 'History';
+        else if (layoutContext === 'current')
+            title = 'Resume';
+
         return (
             <>
                 <div className="mb-3 pt-2">
-                    <div className="h5">History</div>
+                    <div className="h5">{title}</div>
                 </div>                
                 <>
-                    {this.state.history.map((item, index) => (
+                    {historyArr.map((item, index) => (
                         <div
                         data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
                         key={`${index}-lock-${item.lock.transactionHash}`}
@@ -1951,7 +1964,7 @@ class SpaceBridge extends React.Component {
                             </div>
                         </div>
                     ))}
-                    <div>
+                    <div className="clear-history-wrapper">
                         <button
                             disabled={this.props.currentBridgeTx !== undefined}
                             className="d-block btn btn-danger mt-2 mb-4 px-4 mx-auto"

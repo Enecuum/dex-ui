@@ -75,6 +75,18 @@
 	text-align: center;
 }
 
+.current-tx-resume .bridge-history-resume-wrapper .bridge-reset-button {	
+	display: block!important;
+}
+
+.current-tx-resume .clear-history-wrapper {
+	display: none!important;
+}
+
+.current-tx-resume .bridge-history-item {
+	border-bottom: none!important;
+}
+
 .bridge-history-resume-wrapper .bridge-reset-button {
 	display: none;
 }

@@ -23,6 +23,11 @@
     height: 100%;
 }
 
+#farmsCard .governance th,
+#farmsCard .governance td * {
+    white-space: normal !important;
+}
+
 #farmsCard .drop-farms-table-wrapper .table thead th {
     border-top: none;
 }

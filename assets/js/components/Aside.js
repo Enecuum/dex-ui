@@ -21,7 +21,7 @@ class Aside extends React.Component {
         this.activeItemStyle = {
             color : 'var(--color4)'
         };
-        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops',/*'info', */'spaceStation', 'spaceBridge'];
+        this.itemsOrder = ['exchange', 'liquidity', 'topPairs', 'etm', /*'ido', */'farms', 'drops', 'governance', /*'info', */'spaceStation', 'spaceBridge'];
         this.menuItems = {
             home : {
                 iconClasses: 'icon-Icon23',
@@ -56,6 +56,11 @@ class Aside extends React.Component {
                 action: this.changeMenuItem.bind(this, 'drops'),
                 actionAlias: 'space-drops' 
             },
+            governance : {
+                iconClasses: 'icon-Icon5',
+                action : this.changeMenuItem.bind(this, 'governance'),
+                actionAlias: 'governance',
+            },
             etm : {
                 iconClasses: 'icon-Icon25',
                 action: this.changeMenuItem.bind(this, 'etm'),
@@ -78,13 +83,12 @@ class Aside extends React.Component {
                 iconClasses: 'icon-Icon24',
                 action: this.changeMenuItem.bind(this, 'spaceStation'),
                 actionAlias: 'space-station',
-                inactive: false
+                // inactive: true
             },
             spaceBridge : {
                 iconClasses: 'icon-Icon21',
                 action : this.changeMenuItem.bind(this, 'spaceBridge'),
                 actionAlias: 'space-bridge',
-                inactive: false
             }
         };
         this.exchRateUpdRate = 5 * sec;

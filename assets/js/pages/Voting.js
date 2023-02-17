@@ -7,34 +7,28 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
 import presets from '../../store/pageDataPresets';
-import StakeModal from '../components/StakeModal';
+import StakeModalVoting from '../components/StakeModalVoting';
 import networkApi from '../requests/networkApi';
 import swapApi from '../requests/swapApi';
 import extRequests from '../requests/extRequests';
 import ValueProcessor from '../utils/ValueProcessor';
-import {FarmsFilter} from "../elements/Filters";
 import utils from '../utils/swapUtils';
-import testFormulas from '../utils/testFormulas';
 import '../../css/drop-farms.css';
-import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
-import swapUtils from "../utils/swapUtils";
-import Tooltip from '../elements/Tooltip'
+
 
 const valueProcessor = new ValueProcessor();
 
-const HARVEST_FARMS_FILTER_NAME = "harvestFarmsFilter"
 
-
-class Farms extends React.Component {
+class Voting extends React.Component {
     constructor(props) {
         super(props);
         this.farms = [];
+        this.height = "---";
 
         this.dropFarmActions = [
             'farm_create',
@@ -78,7 +72,8 @@ class Farms extends React.Component {
         this.updateMainTokenAmount();
         this.updateStakeTokenBalance();        
         this.updatePricelist();
-        this.updateFarms(); 
+        this.updateFarms();
+        this.updStats()
     }
 
     componentDidMount() {
@@ -159,14 +154,35 @@ class Farms extends React.Component {
         });
     }
 
+    updStats() {
+        let rawData = networkApi.getStats()
+        
+        rawData.then(result => {
+            if (!result.lock) {
+                result.json().then(stats => {
+                    this.height = stats.height
+                })
+            }
+        })
+    }
+
     updateFarms() {
-        let whiteList = presets.dropFarms.spaceHarvestFarms.whiteList;
+        let list = presets.dropFarms.voting.list
+        let whiteList = list.map(farm => farm.farm_id);
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
                     this.farms = resultFarmsList;
+                    
+                    this.farms.map(farm => {
+                        let farmData = list.find(item => item.farm_id === farm.farm_id)
+                        if (farmData)
+                            farm = Object.assign(farm, farmData)
+                        return farm
+                    })
+
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });
@@ -192,11 +208,11 @@ class Farms extends React.Component {
         let managedFarm = this.farms.find(farm => farm.farm_id === farmId);
         this.props.updateManagedFarmData({
             value : managedFarm !== undefined ? managedFarm : null
-        });                       
+        });
 
         this.props.updateExpandedRow({
             value : farmId
-        });               
+        });
     }
 
     getItems () {
@@ -408,7 +424,7 @@ class Farms extends React.Component {
     }
 
     updateStakeTokenBalance() {
-        if (this.props.managedFarmData !== null) {
+        if (this.props.managedFarmData !== null && this.props.balances !== undefined) {
             let stakeTokenBalance = this.props.balances.find(token => token.token === this.props.managedFarmData.stake_token_hash);
 
             if (stakeTokenBalance !== undefined && BigInt(stakeTokenBalance.amount) > 0n) {
@@ -443,23 +459,10 @@ class Farms extends React.Component {
         });
     }
 
-    getFarmStatus(farm) {
-        let status = '---';
-        if (farm !== undefined) {
-            const t = this.props.t;
-            if (farm.blocks_left === null)
-                status = t('dropFarms.pausedFarmStatusDescription', {stakeTokenName : farm.stake_token_name});            
-            else if (farm.blocks_left <= 0)
-                status = t('dropFarms.finished');
-            else if (farm.blocks_left > 0) {
-                status = this.countTime(farm.blocks_left);
-            }
-        }
-        return status;
-    }
-
-    countTime (blocks_left) {
-        const t = this.props.t
+    countTime (curBlock, finalBlock) {
+        let blocksLeft = finalBlock - curBlock
+        if (blocksLeft < 0)
+            return "---"
 
         let formatDate = function (dateNum) {
             // return dateNum < 10 ? `0${dateNum}` : dateNum
@@ -468,7 +471,7 @@ class Farms extends React.Component {
 
         if (this.props.networkInfo && this.props.networkInfo.target_speed) {
             let curTime = new Date()
-            let endTime = new Date().getTime() + blocks_left * this.props.networkInfo.target_speed * 1000
+            let endTime = new Date().getTime() + blocksLeft * this.props.networkInfo.target_speed * 1000
             let diffTime = endTime - curTime.getTime()
 
             let days = formatDate(Math.floor(diffTime / (1000 * 60 * 60 * 24)))
@@ -484,38 +487,16 @@ class Farms extends React.Component {
                     langPath = "dropFarms.nHoursLeft"
             }
             let datetime = new Date(endTime).toLocaleString()
-            return {
-                main : t(langPath, timeIntParams),
-                tooltip : <>
-                    <div className={"row mx-1"}>{t("dropFarms.approximateDeadline", {datetime : datetime.substring(0, datetime.length - 3)})}</div>
-                    <hr className="my-1 mx-2"/>
-                    <div className={"row mx-1"}>{t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}</div>
-                </>
-            }
+            return datetime.substring(0, datetime.length - 3)
         } else {
-            return { main : t('dropFarms.nBlocksLeft', { blocksLeft: blocks_left })}
+            return blocksLeft
         }
     }
 
     checkByStatus(farm) {
-        let filter = lsdp.simple.get(HARVEST_FARMS_FILTER_NAME), items = this.getItems()
-        if (farm !== undefined && filter) {
-            if (filter === items.all.value)
-                return true
-            if (farm.blocks_left === null) {
-                return filter === items.paused.value
-            } else if (farm.blocks_left <= 0)
-                return filter === items.finished.value
-            else if (farm.blocks_left > 0)
-                return filter === items.active.value
-        }
-        return false
-    }
-
-    checkLPtoENX (farm) {
-        //if (farm.reward_token_hash !== this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
-        //    return false
-        return swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash)
+        // if (farm !== undefined)
+            return true
+        // return false
     }
 
     afterUpdate () {
@@ -524,6 +505,7 @@ class Farms extends React.Component {
 
     getFarmsTable() {
     	const t = this.props.t;
+        let finalBlock = presets.dropFarms.voting.finalBlockNum
 
     	return (
     		<>
@@ -696,125 +678,90 @@ class Farms extends React.Component {
 
                 <div className="d-flex justify-content-between">
                     <div>
-                        <div className="h2 mb-2">
-                            {t('navbars.left.farms')}
+                        <h2 className="h2 mb-4">
+                            {t('dropFarms.voting.header', {status: (finalBlock > this.height) ? t('active') : t('inactive')})}
+                        </h2>
+                        <div className="mb-0">
+                            {t('dropFarms.voting.votingTill', {
+                                block: valueProcessor.usCommasBigIntDecimals(finalBlock, 0, 0), 
+                                timeStr: this.countTime(this.height, finalBlock)
+                            })}
                         </div>
-                        <h5 className="mb-5 text-color4">
-                            {t('dropFarms.subscriptHarvestFarms')}
-                        </h5>
-                    </div>
-                    <div className="m-2">
-                        <FarmsFilter name={HARVEST_FARMS_FILTER_NAME}
-                                     title={t("status")}
-                                     getItems={this.getItems.bind(this)}
-                                     afterUpdate={this.afterUpdate.bind(this)}
-                        />
+                        <div className="mb-4">
+                            {t('dropFarms.voting.currentBlock', {block: valueProcessor.usCommasBigIntDecimals(this.height, 0, 0)})}
+                        </div>
+                        <div className="mb-0">
+                            {t('dropFarms.voting.description')}
+                        </div>
+                        <div className="mb-0">
+                            <a href={presets.dropFarms.voting.situationReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
+                        </div>
+                        <div className="mb-4">
+                            <a href={presets.dropFarms.voting.voutingReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
+                        </div>
+                        { finalBlock > this.height &&
+                            <h2 className="h2 mb-4">
+                                {t('dropFarms.voting.proposalsTitle')}
+                            </h2>
+                        }
                     </div>
                 </div>
 
-		    	<div className="drop-farms-table-wrapper">			    		
-					<Table hover variant="dark" className="table-to-cards">
-						<tbody>
-					        {this.farms.map(( farm, index ) => {
-					            if (!this.checkByStatus(farm) || !this.checkLPtoENX(farm))
-					                return <></>
-                                let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
-					            let farmStatus = this.getFarmStatus(farm)
-					        	return (
-						          	<>
-							            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
-											<td className="text-nowrap">                                                    
-												<div className="cell-wrapper text-center">
-                                                    <div className="text-color4">{t('dropFarms.stake')}-{t('dropFarms.earn')}</div>
-													<div>{farmTitle}</div>
-												</div>
-											</td>
-                                            <td className="">                                                    
-                                                <div className="cell-wrapper">
-                                                    <div className="text-color4">{t('status')}</div>
-                                                    <div className="d-flex farm-status align-items-center">
-                                                        <div className="mr-1">{farmStatus.main ? farmStatus.main : farmStatus}</div>
-                                                        {farmStatus.tooltip && <Tooltip text={farmStatus.tooltip} /> || <></>}
+		    	<div className="drop-farms-table-wrapper governance">	
+                    {/* { finalBlock > this.height && */}
+                        <Table hover variant="dark" className="table-to-cards">
+                            <tbody>
+                                {this.farms.map(( farm, index ) => {
+                                    {/* if (!this.checkByStatus(farm))
+                                        return <></> */}
+                                    let farmTitle = farm.issue;
+                                    return (
+                                        <>
+                                            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
+                                                <td>
+                                                    <div className="cell-wrapper pl-5 text-nowrap">
+                                                        <div className="h5 mb-0">{farmTitle}</div>
+                                                        <div className="long-value" ><a href={farm.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
+                                                    </div>	
+                                                </td>
+                                                <td>
+                                                    <div className="cell-wrapper pl-5">
+                                                        <div className="text-color4">{t('dropFarms.voting.totalVotes')}</div>
+                                                        <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.total_stake !== undefined ? farm.total_stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
+                                                    </div>	
+                                                </td>
+                                                <td>                                                    
+                                                    <div className="cell-wrapper pl-5">
+                                                        <div className="text-color4">{t('dropFarms.voting.myVotes')}</div>
+                                                        <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm !== null && farm.stake !== null ? farm.stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
                                                     </div>
-                                                </div>
-                                            </td>
-											<td>
-												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.earned')}</div>
-                                                    <div className="long-value">{
-                                                            farm.earned !== undefined && swapUtils.removeEndZeros(
-                                                                valueProcessor.usCommasBigIntDecimals(farm.earned, farm.reward_token_decimals, farm.reward_token_decimals)
-                                                            ) || "0.0"
-                                                        } {farm.reward_token_name}
-                                                    </div>
-												</div>	
-											</td>
-											<td>
-												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.apy')}</div>
-													<div className="long-value">{farm.apy && farm.blocks_left > 0 ? valueProcessor.usCommasBigIntDecimals(farm.apy, 2, 2) : '---'}%</div>
-												</div>	
-											</td>
-											<td>
-												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.liquidity')}</div>
-													<div className="long-value">${farm.liquidity !== null ? farm.liquidity.toLocaleString('en-us') : '---'}</div>
-												</div>
-											</td>
-											<td>
-												<div className="cell-wrapper">
-													<div className="text-color4">{t('dropFarms.rewardPerBlock')}</div>
-													<div className="long-value">
-                                                        {swapUtils.removeEndZeros(
-                                                            valueProcessor.usCommasBigIntDecimals((farm.block_reward !== undefined ? farm.block_reward : '---'), farm.stake_token_decimals, farm.stake_token_decimals)
-                                                        )}
-													</div>
-												</div>	
-											</td>
-
-											<td>
-												<div className="cell-wrapper d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedRow.bind(this)}>
-													<div className="mr-2">{t('dropFarms.details')}</div>
-													<span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
-												</div>	
-											</td>										
-							            </tr>
-							            {this.props.expandedRow === farm.farm_id &&
-											<tr className="mb-3 farm-controls-wrapper">
-												<td colSpan="7" className="py-4">
-													<div className="dropfarms-controls-wrapper mx-0 px-0">
-														<div className="dropfarm-control">
-															<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																<div className="d-flex align-items-center justify-content-start mb-2">
-																	{farm.earned !== undefined && farm.earned > 0 && 
-																		<div className="text-color3 mr-2">
-																			{farm.reward_token_name}
-																		</div>
-																	}
-																	<div className="color-2">
-																		{t('dropFarms.earned')}
-																	</div>																	
-																</div>
-																<div className="value-and-control harvest-wrapper">
-																	<div className="earned-value">{valueProcessor.usCommasBigIntDecimals((farm.earned !== undefined ? farm.earned : '---'), farm.reward_token_decimals, farm.reward_token_decimals)}</div>
-																	{this.getHarvestButton(farm.earned !== undefined && farm.earned > 0)}
-																</div>
-															</div>
-														</div>
-														<div className="dropfarm-control">
-															<div className="border-solid-2 c-border-radius2 border-color2 p-4">
-																{this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
-															</div>
-														</div>
-													</div>
-												</td>
-											</tr>
-							    		}
-						            </>
-					         	);
-					        })}
-					  	</tbody>
-					</Table>					
+                                                </td>
+                                                <td>
+                                                    <div className="cell-wrapper pl-5 d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedRow.bind(this)}>
+                                                        <div className="mr-2">{t('dropFarms.details')}</div>
+                                                        <span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
+                                                    </div>	
+                                                </td>
+                                            </tr>
+                                            {this.props.expandedRow === farm.farm_id &&
+                                                <tr className="mb-3 farm-controls-wrapper">
+                                                    <td colSpan="7" className="py-4">
+                                                        <div className="dropfarms-controls-wrapper mx-0 px-0">
+                                                            <div className="dropfarm-control">
+                                                                <div className="border-solid-2 c-border-radius2 border-color2 p-4">
+                                                                    {this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </>
+                                    );
+                                })}
+                            </tbody>
+                        </Table>			
+                    {/* } */}
 				</div>
 			</>					
     	)
@@ -833,13 +780,13 @@ class Farms extends React.Component {
 					</Card>    			
     			</div>
                 <Suspense fallback={<div>---</div>}>
-                    <StakeModal />
+                    <StakeModalVoting />
                 </Suspense>
     		</div>
         )
     }        
 };
 
-const WFarms = connect(mapStoreToProps(components.FARMS), mapDispatchToProps(components.FARMS))(withTranslation()(Farms));
+const WVoting = connect(mapStoreToProps(components.VOTING), mapDispatchToProps(components.VOTING))(withTranslation()(Voting));
 
-export default WFarms;    
+export default WVoting;    

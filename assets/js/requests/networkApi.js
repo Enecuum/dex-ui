@@ -15,6 +15,14 @@ class NetworkApi {
         this.url = url
     }
 
+    getStats (url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/stats`,
+            {
+                method : 'GET'
+            }
+        );
+    }
+
     getContractPricelist (url = this.url) {        
         return trafficController.simpleRequest(`${url}api/${config.api_version}/contract_pricelist`,
             {
@@ -24,14 +32,17 @@ class NetworkApi {
     };
 
     getDexFarms (farmer_id = '', whiteList = [], url = this.url) {
-
         let stringfyWhiteList = '';
+
+        if (!whiteList.length)
+            return new Promise(resolve => resolve({lock : true}))
 
         if (whiteList !== undefined && Array.isArray(whiteList) && whiteList.length > 0) {
             whiteList.forEach(element => {
                 stringfyWhiteList += '&farms=' + element;
             });
         }
+        
         return trafficController.simpleRequest(`${url}api/${config.api_version}/get_dex_farms?farmer_id=${farmer_id}${stringfyWhiteList}`,
             {
                 method : 'GET'

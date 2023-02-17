@@ -841,8 +841,6 @@ class Drops extends React.Component {
     }
 
     render() {
-		const t = this.props.t;
-       
     	return (
     		<div className="row">    		
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			

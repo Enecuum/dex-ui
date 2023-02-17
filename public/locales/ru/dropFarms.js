@@ -1,6 +1,7 @@
 module.exports = {
     "subscriptDrops" : "Размещайте non-LP токены",
     "subscriptHarvestFarms" : "Размещайте LP и получайте в награду токены",
+    "subscriptVoting" : "Vote, vote, vote! Not voting is not a protest. It is a surrender. Vote all around!",
     "stakeNamedToken"              : "Стейк {{tokenName}}",
     "unstakeNamedToken"            : "Отозвать {{tokenName}}",
     "stakeLPTokens"                : "Стейк LP токенов",
@@ -29,4 +30,18 @@ module.exports = {
     "finishedFilter"               : "Завершённый",
     "pausedFilter"                 : "Приостановленный",
     "activeFilter"                 : "Активный",
+
+    "voting" : {
+        "header" : "Voting about Enecuum security incident - {{status}}",
+        "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",
+        "currentBlock" : "Current block: {{block}}",
+        "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Proposals from the team, proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol.",
+        "readMore1" : "Read more about the situation",
+        "readMore2" : "Read more how the voting works",
+
+        "proposalsTitle" : "Proposals",
+        "totalVotes" : "Total votes",
+        "myVotes" : "My votes",
+        "readTheProposal" : "read the proposal"
+    }
 }

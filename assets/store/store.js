@@ -11,6 +11,7 @@ import dropsReducer from './reducers/drops';
 import spaceStationReducer from './reducers/spaceStation';
 import nonNativeConnectionReducer from './reducers/nonNativeConnection';
 import spaceBridgeReducer from './reducers/spaceBridge';
+import votingReducer from './reducers/voting'
 
 const totalReducer = combineReducers({
     root                : rootReducer,
@@ -21,6 +22,7 @@ const totalReducer = combineReducers({
     etm				    : etmReducer,
     farms               : farmsReducer,
     drops               : dropsReducer,
+    voting              : votingReducer,
     spaceStation        : spaceStationReducer,
     nonNativeConnection : nonNativeConnectionReducer,
     spaceBridge         : spaceBridgeReducer

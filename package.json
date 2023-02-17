@@ -29,6 +29,7 @@
     "buffer": "^6.0.3",
     "chokidar": "^3.5.2",
     "enq-web3": "^0.4.8",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "glob-parent": "^6.0.0",
     "react-window": "^1.8.7",

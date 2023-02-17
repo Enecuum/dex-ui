@@ -208,6 +208,13 @@ function getTokenObj (tokens, hash) {
         };
 }
 
+function packHashString(hash, prefix = '', symbolsFirst = 6, symbolsEnd = 4) {
+    if (hash)
+        return `${prefix}${hash.substring(0, symbolsFirst)}...${hash.substring(hash.length - symbolsEnd)}`
+    else
+        return '---'
+}
+
 function packAddressString (addr) {
     if (addr)
         return `0x${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
@@ -315,6 +322,7 @@ export default {
     countPercentsByPortion,
     poolShareWithStaked,
     countExchangeRate,
+    packHashString,
     packAddressString,
     countProviderFee,
     countPoolShare,

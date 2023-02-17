@@ -596,3 +596,8 @@ hr {
 .button-bg-3:hover {
     background: var(--color3-t);
 }
+
+.bg-transparent {
+    background: transparent;
+    background-color: transparent;
+}

@@ -30,7 +30,8 @@ class SpaceBridgeProvider {
 									token_amount,
 									token_hash,
 									token_decimals,
-									ticker
+									ticker,
+                                    timestamp : Date.now()
 								}					
 				};
 
@@ -86,6 +87,7 @@ class SpaceBridgeProvider {
 				let updatedHistory = bridgeHistoryArray.map(elem => {
 					if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
 						elem.claimTxHash = res;
+						elem.claimTxTimestamp = Date.now();
 					}
 					return elem
 				});

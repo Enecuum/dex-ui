@@ -7,6 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Card from 'react-bootstrap/Card';
+import Accordion from 'react-bootstrap/Accordion';
 
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import presets from '../../store/pageDataPresets';
@@ -81,13 +82,13 @@ class SpaceBridge extends React.Component {
             }
 
             if (this.props.currentBridgeTx === undefined) {
+                
                 this.resetStore();
                 this.setState({initData: undefined});
                 this.setState({confirmData: undefined});
                 this.setState({ticket: undefined});
                 this.setState({transfer_id: undefined});
-                this.setState({history: []});
-                this.props.updateShowHistory(false);
+                this.setState({history: []});                
 
                 if (prevProps.nonNativeConnection.web3ExtensionChain !== this.props.nonNativeConnection.web3ExtensionChain &&
                     this.props.nonNativeConnection.web3ExtensionChain !== undefined) {
@@ -123,9 +124,7 @@ class SpaceBridge extends React.Component {
             if (this.props.fromBlockchain?.id !== undefined  && this.props.toBlockchain?.id !== undefined && this.props.srcTokenHash !== undefined) {
                 this.getDstDecimalsFromValidator(this.props.fromBlockchain.id, this.props.toBlockchain.id, this.props.srcTokenHash)
                 .then(function(validatorRes) {
-                    console.log('111111111111111111111111111111111111', validatorRes)
                     if ((validatorRes.hasOwnProperty('err') && validatorRes.err == 0) && !isNaN(validatorRes.result.dst_decimals)) {
-                        console.log('call get_dst_decimals')
                         that.props.updateDstDecimals(Number(validatorRes.result.dst_decimals));
                         that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});                       
                     } else {
@@ -206,11 +205,11 @@ class SpaceBridge extends React.Component {
                                     console.log(res)
                                     res.json().then(function(tx) {                                        
                                         if (tx.status !== undefined) {
-                                            elem.lock.status = tx.status === 3 ? true : false;
+                                            elem.lock.status = tx.status === 3 ? true : false;                                            
                                             localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
                                         } else {
-                                            console.log('Undefuned lock transaction status', elem.lock.transactionHash);
+                                            console.log('Undefined lock transaction status', elem.lock.transactionHash);
                                         }
                                     }, function(err) {
                                         console.log('Can\'t get status for lock transaction', elem.lock.transactionHash, err);
@@ -232,7 +231,7 @@ class SpaceBridge extends React.Component {
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
                                 } else {
-                                    console.log('Undefuned claim transaction status', elem.lock.transactionHash);
+                                    console.log('Undefined claim transaction status', elem.lock.transactionHash);
                                 }
                             }, function(err) {
                                 console.log('Can\'t get receipt for claim transaction', elem.claimTxHash, err);
@@ -275,7 +274,7 @@ class SpaceBridge extends React.Component {
                                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
                                             } else {
-                                                console.log('Undefuned claim confirm transaction status', elem.lock.transactionHash);
+                                                console.log('Undefined claim confirm transaction status', elem.lock.transactionHash);
                                             }
                                         }, function(err) {
                                             console.log('Can\'t get status for claim confirm transaction', elem.claimConfirmTxHash);
@@ -608,18 +607,19 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    claimInitEnq(bridgeItem, stateId) {
+    claimInitEnq(bridgeItem) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
             if (!(pubkey && claimInitData))
                 return
-            extRequests.claimInitTest(pubkey, claimInitData).then(result => {
+            extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
                     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                        elem.claimInitTxTimestamp = Date.now();
                         elem.claimInitTxHash = result.hash;
                     }
                     return elem
@@ -638,19 +638,20 @@ class SpaceBridge extends React.Component {
         } 
     } 
 
-    claimConfirmEnq(bridgeItem, stateId) {
+    claimConfirmEnq(bridgeItem) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
             let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
             if (!(pubkey && claimConfirmData))
                 return
-            extRequests.claimConfirmTest(pubkey, claimConfirmData).then(result => {
+            extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);
 
                 let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
                 let updatedHistory = bridgeHistoryArray.map(elem => {
                     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                        elem.claimConfirmTxTimestamp = Date.now();
                         elem.claimConfirmTxHash = result.hash;
                     }
                     return elem
@@ -687,7 +688,7 @@ class SpaceBridge extends React.Component {
         let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
-            "src_network": this.props.fromBlockchain.id, //11
+            "src_network": this.props.fromBlockchain.id,
             "dst_address": address,
             "dst_network": this.props.toBlockchain.id,
             "amount": amount,
@@ -739,7 +740,8 @@ class SpaceBridge extends React.Component {
                                     token_amount : lockInfo.amount,
                                     token_hash : lockInfo.src_hash,
                                     token_decimals : lockInfo.token_decimals,
-                                    ticker : lockInfo.ticker
+                                    ticker : lockInfo.ticker,
+                                    timestamp : Date.now()
                                 }                    
                 };
 
@@ -774,7 +776,7 @@ class SpaceBridge extends React.Component {
             bridgeTxInfo.lock?.token_decimals !== undefined) {
             res = this.valueProcessor.usCommasBigIntDecimals(bridgeTxInfo.lock.token_amount, Number(bridgeTxInfo.lock.token_decimals), Number(bridgeTxInfo.lock.token_decimals));
             if (bridgeTxInfo.lock?.ticker !== undefined) {
-                res = `${res} (${bridgeTxInfo.lock.ticker})`
+                res = `${res} ${bridgeTxInfo.lock.ticker}`
             }
         }
 
@@ -817,7 +819,10 @@ class SpaceBridge extends React.Component {
                     else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus == undefined)
                         res = 'Waiting for claim confirmation...';
                     else if (item.validatorRes !== undefined && item.validatorRes?.ticket !== undefined && item.claimTxHash !== undefined && item.claimTxStatus !== undefined)
-                        res = this.getButtonLinkToEtherscan(item);                
+                        if (item.claimTxStatus == true)
+                            res = this.getButtonLinkToEtherscan(item);
+                        else
+                            res = this.getClaimEthButton(item);                                        
                 } else if (dstNetwork.type === 'enq') {
                     if (item.validatorRes !== undefined && item.validatorRes?.encoded_data?.enq !== undefined)
                         res = this.getClaimEnqButton(item);
@@ -873,59 +878,193 @@ class SpaceBridge extends React.Component {
         let resume = 'Validated successfully';
         let stateId = 0;
         let txHash = undefined;
+        let claimType = 'claimInit';
+        let actionStr = 'Claim';
+        let resetCurrent = false;
+        let showResetBridge = undefined;    
 
         if (item.claimConfirmTxStatus === true) {
             resume = 'Done';
             stateId = 1;
             txHash = item.claimConfirmTxHash;
+            showResetBridge = true;
         } else if (item.claimConfirmTxStatus === false) {
             resume = 'Claim confirmation failed';
             stateId = 2;
-            txHash = item.claimConfirmTxHash;         
+            txHash = item.claimConfirmTxHash;
+            claimType = 'claimConfirm';
+            actionStr = 'Retry';
+            resetCurrent = true;
+            showResetBridge = true;
         } else if (item.claimConfirmTxHash !== undefined) {
             resume = 'Claim confirmation initialized';
             stateId = 3;
-        } else if (item.claimInitTxStatus === true) {
-            resume = 'Claim is ready';
-            stateId = 4; 
-        } else if (item.claimInitTxStatus === false) {
-            resume = 'Claim inititalization failed';
-            stateId = 5;
-            txHash = item.claimInitTxHash;
-        } else if (item.claimInitTxHash !== undefined) {
-            resume = 'Claim initialized';
-            stateId = 6;
-        }
+        } else {
+            if (item.claimInitTxStatus === true) {
+                if (item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) {
+                    resume = 'Claim confirmation failed';
+                    stateId = 4;
+                    actionStr = 'Retry';
+                    claimType = 'claimConfirm';
+                    resetCurrent = true;
+                    showResetBridge = true;
+                } else {
+                    resume = 'Claim is ready';
+                    stateId = 5;
+                    actionStr = 'Confirm';
+                    claimType = 'claimConfirm';
+                    resetCurrent = false;                 
+                }
+            } else if (item.claimInitTxStatus === false || (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
+                if (item.claimInitTxHash !== undefined && item.claimInitTxStatus === undefined) {
+                    resume = 'Claim initialized';
+                    stateId = 7;
+                } else {
+                    resume = 'Claim inititalization failed';
+                    stateId = 6;
+                    txHash = item.claimInitTxHash;
+                    claimType = 'claimInit';
+                    actionStr = 'Retry';
+                    resetCurrent = true;
+                    showResetBridge = true;                        
+                }
+            } else if (item.claimInitTxHash !== undefined) {
+                resume = 'Claim initialized';
+                stateId = 7;
+            }
+        } 
+
+
+        //  else (item.claimInitTxHash !== undefined) {
+        //     resume = 'Claim initialized';
+        //     stateId = 6;
+        // }   
+        // } else if (item.claimInitTxStatus === true) {
+
+        // } else if (item.claimInitTxStatus !== true) {
+        //     if ()
+        // } 
+
+
+
+
+
+        // else if (item.claimConfirmTxHash !== undefined) {
+        //     resume = 'Claim confirmation initialized';
+        //     stateId = 3;
+        // } else if () {
+
+        // }
+
+
+
+
+        //  else if (item.claimInitTxStatus === true) {
+        //     resume = 'Claim is ready';
+        //     stateId = 4;
+        //     actionStr = 'Confirm';
+        //     if ((item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) || item.claimConfirmTxStatus == false) {
+        //         resume = 'Claim confirmation failed';
+        //         actionStr = 'Retry';
+        //     }
+        // } else if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0 && item.claimInitTxStatus !== true) {            
+        //     stateId = 5;
+        //     txHash = item.claimInitTxHash;
+        //     claimType = 'claimInit';
+        //     resume = 'Claim inititalization failed';
+        //     actionStr = 'Retry';              
+        //     //if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0) {
+              
+
+
+        // } else if (item.claimInitTxHash !== undefined) {
+        //     resume = 'Claim initialized';
+        //     stateId = 6;
+        // }
 
         return (
                 <>
                     <div className="mb-2">{resume}</div>
-                    {stateId === 0 && matchChains &&
-                    <Button
-                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimInitEnq.bind(this, item, stateId)}>
-                        Claim</Button>
-                    }    
-                    {stateId === 4 && matchChains &&
-                        <Button
-                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                        onClick={this.claimConfirmEnq.bind(this, item, stateId)}>
-                        Confirm</Button>
-                    }
-                    {stateId !== 1 && !matchChains &&
-                        <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
-                    }
-                    {(stateId === 1 || stateId === 2 || stateId === 5) && <>
+                    {showResetBridge === true &&
                         <div className="mb-2">
                             {this.getResetBridgeButton()}
                         </div>
+                    }
+{/*
+                    {stateId === 0 && matchChains &&
+                        <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>                        
+                        {actionStr}</Button>
+                    }*/}
+
+                    {[0,2,4,5,6].includes(stateId) && !matchChains &&
+                        <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
+                    }
+
+
+                    {[0,2,4,5,6].includes(stateId) && matchChains &&
+                        <>
+                            <Button
+                                className="d-block w-100 btn btn-secondary px-3 button-bg-3"
+                                onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>
+                                    {actionStr}                     
+                            </Button>
+                        </>    
+                    }
+
+                    {stateId === 1 &&
                         <a
                             href={`${chain.txPageUrl}${txHash}`} 
                             className="d-block w-100 btn btn-info px-4"
                             target="_blank">
                             Info</a>
+                    }
+
+
+
+
+
+{/*                    <div className="mb-2">{resume}</div>
+                    {stateId === 0 && matchChains &&
+                    <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimInitEnq.bind(this, item)}>
+                        {actionStr}</Button>
+                    }    
+                    {stateId === 4 && matchChains &&
+                        <Button
+                        className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                        onClick={this.claimConfirmEnq.bind(this, item)}>
+                        {actionStr}</Button>
+                    }
+                    {stateId !== 1 && !matchChains &&
+                        <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
+                    }
+                    {(stateId === 1 || stateId === 2 || stateId === 5) && matchChains && <>
+                        
+                        <div className="mb-2">
+                            {this.getResetBridgeButton()}
+                        </div>
+                        
+                        {stateId !== 1 &&
+                            <div className="d-flex align-items-center justify-content-between">
+                                <Button
+                                    className="d-block w-100 btn btn-secondary px-3 button-bg-3"
+                                    onClick={this.reClaimEnq.bind(this, item, claimType)}>
+                                        {actionStr}                     
+                                </Button>    
+                            </div>
+                        }
+                        {stateId === 1 &&
+                            <a
+                                href={`${chain.txPageUrl}${txHash}`} 
+                                className="d-block w-100 btn btn-info px-4"
+                                target="_blank">
+                                Info</a>
+                        }                        
                     </>    
-                    }        
+                    }   */}     
                 </>
            );  
     }
@@ -939,29 +1078,89 @@ class SpaceBridge extends React.Component {
         )
     }
 
+    claimEnq(item, claimType, resetCurrent) {
+        if (resetCurrent === true)
+            this.passDataToResetClaimModal(item, claimType);
+        this[`${claimType}Enq`](item);
+    }
+
+    reClaimEth(item) {
+        this.passDataToResetClaimModal(item, 'claim');
+        this.claimEth(item);
+    }
+
     getClaimEthButton(item) {
-        let dstNetworkHexId = `0x${Number(item.lock.dst_network).toString(16)}`;
-        let chain = this.availableNetworksUtils.getChainById(Number(item.lock.dst_network));
-        let chainId = undefined;
-        if (chain !== undefined)
-            chainId = chain.id
+        let action = undefined;
+        let resume = 'Validated successfully';
+        let title = '';
+        let addr = this.props.nonNativeConnection.web3ExtensionAccountId;
+        if (this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {           
+            let dstNetworkHexId = `0x${Number(item.lock.dst_network).toString(16)}`;
+            let chain = this.availableNetworksUtils.getChainById(Number(item.lock.dst_network));
+            let chainId = chain !== undefined ? chain.id : undefined;
+
+            if (item.lock.dst_address.toUpperCase() !== addr.toUpperCase()) {
+                action = this.connectMMAcc.bind(this);
+                title = `Connect address ${utils.packAddressString(item.lock.dst_address)}`;
+            } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
+                if (item.claimTxStatus === false) {
+                    action = this.reClaimEth.bind(this, item);
+                    resume = 'Failed';
+                    title = 'Retry';
+                } else if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0) {
+                    action = this.claimEth.bind(this, item);
+                    resume = 'Failed';
+                    title = 'Retry';
+                } else {
+                    action = this.claimEth.bind(this, item);
+                    title = 'Claim';
+                }
+            } else if (dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined) {
+                action = this.requestSwitchEthChain.bind(this, dstNetworkHexId);
+                title = 'Set chain';
+            }
+        } else if (this.props.nonNativeConnection.web3Extension?.provider !== undefined && addr == undefined) {
+            action = this.connectWeb3Ext.bind(this);
+            title = 'Connect Ethereum Wallet';
+        } else if (this.props.nonNativeConnection.web3Extension === undefined || this.props.nonNativeConnection.web3Extension?.provider === undefined) {
+            return (
+                <a className="link-primary transition-item" href="https://metamask.io/download/">
+                    <Button                        
+                        className="d-flex align-items-center justify-content-center w-100 btn btn-secondary px-4 button-bg-3">
+                        <div className="mr-2">Install Metamask</div>
+                        <img src={metamaskLogo} width="24" height="24"/>
+                    </Button>
+              </a>                    
+            )
+        }
+
         return (
-                <>
-                    <div className="mb-2">Validated successfully</div>
-                    {dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain &&
-                        <Button
-                            className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                            onClick={this.claimEth.bind(this, item)}>
-                            Claim</Button>
-                    }
-                    {dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined &&
-                        <Button
-                            className="d-block w-100 btn btn-secondary px-4 button-bg-3"
-                            onClick={this.requestSwitchEthChain.bind(this, dstNetworkHexId)}>
-                            Set chain</Button>
-                    }
-                </>
-           );        
+            <>
+                <div className="mb-2">{resume}</div>
+                 <Button
+                    className="d-block w-100 btn btn-secondary px-4 button-bg-3"
+                    onClick={action}>
+                        {title}                     
+                </Button>
+            </>
+        );        
+    }
+
+    async connectMMAcc() {
+        let that = this;
+        let requestData = {
+            method: "wallet_requestPermissions",
+            params: [
+                {
+                    eth_accounts: {}
+                }
+            ]
+        }
+        try {
+            await ethereum.request(requestData);
+        } catch (error) {
+          console.log(error)          
+        }
     }
 
     async requestSwitchEthChain(zeroXhexId) {
@@ -978,7 +1177,7 @@ class SpaceBridge extends React.Component {
         try {
             await ethereum.request(requestData).then(function(res) {
             }, function(res) {                
-                that.closeAction();
+                
             });
         } catch (error) {
           console.log(error)          
@@ -990,6 +1189,39 @@ class SpaceBridge extends React.Component {
         this.props.updateFromBlockchain(undefined);
         this.props.updateToBlockchain(undefined);
         this.props.updateCurrentBridgeTx(undefined);
+    }
+
+    passDataToResetClaimModal(item, claimType) {        
+        if (!(claimType === 'claim' || claimType === 'claimInit' || claimType === 'claimConfirm'))
+            return
+
+        let attemptsListPropStr = `${claimType}AttemptsList`;
+        let claimTxHashPropStr = `${claimType}TxHash`;
+        let claimTxStatusPropStr = `${claimType}TxStatus`;
+        let claimTxTimestampPropStr = `${claimType}TxTimestamp`;
+
+        let userHistory = this.bridgeHistoryProcessor.getBridgeHistoryArray();
+        let itemIndexInHistory = userHistory.findIndex(elem => elem[claimTxHashPropStr] === item[claimTxHashPropStr] && elem.lock.transactionHash === item.lock.transactionHash);
+
+        if (itemIndexInHistory !== -1) {            
+            let itemInHistory = userHistory[itemIndexInHistory];
+            let claimAttemptsList = [];
+            if (itemInHistory.hasOwnProperty(attemptsListPropStr) && itemInHistory[attemptsListPropStr].length > 0) {
+                claimAttemptsList = itemInHistory[attemptsListPropStr];                
+            }
+            let attempt = {};
+            attempt[claimTxHashPropStr] = item[claimTxHashPropStr];
+            attempt[claimTxStatusPropStr] = item[claimTxStatusPropStr];
+            attempt[claimTxTimestampPropStr] = item[claimTxTimestampPropStr];
+            claimAttemptsList.push(attempt);
+            itemInHistory[attemptsListPropStr] = claimAttemptsList;
+            itemInHistory[claimTxHashPropStr] = undefined;
+            itemInHistory[claimTxStatusPropStr] = undefined;
+            itemInHistory[claimTxTimestampPropStr] = undefined;
+            userHistory[itemIndexInHistory] = itemInHistory
+            localStorage.setItem('bridge_history', JSON.stringify(userHistory));
+            this.setState({history: userHistory});
+        } 
     }
 
     getButtonLinkToEtherscan(item) {        
@@ -1005,18 +1237,24 @@ class SpaceBridge extends React.Component {
         if (chain !== undefined && chain.txPageUrl !== undefined)
             txPageUrl = `${chain.txPageUrl}${item.claimTxHash}`
 
-
         return (
                 <>
                     <div className="mb-2">{resume}</div>
                     <div className="mb-2">
                         {this.getResetBridgeButton()}
                     </div>
-                    <a
-                        href={txPageUrl} 
-                        className="d-block w-100 btn btn-info px-4"
-                        target="_blank">
-                        Info</a>
+                    <div className="d-flex align-items-center justify-content-between">
+                        <a
+                            href={txPageUrl} 
+                            className="d-block w-100 btn btn-info px-4"
+                            target="_blank">
+                            Info</a>
+                        {/*<Button
+                            className="d-block btn btn-secondary px-3 button-bg-3 ml-2"
+                            onClick={this.passDataToResetClaimModal.bind(this, item, 'claim')}>
+                                <i className="fas fa-redo-alt"/>                     
+                        </Button> */}   
+                    </div>    
                 </>
            );        
     }
@@ -1034,28 +1272,31 @@ class SpaceBridge extends React.Component {
             let currentBridgeTxItem = history.find(elem => (elem.lock.transactionHash !== undefined && elem.lock.transactionHash == this.props.currentBridgeTx));
             if (currentBridgeTxItem !== undefined) {
                 return (
-                    <>
-                        <div
-                            className="d-flex justify-content-between pb-3 mb-3 px-4">
-                            <div className="mr-3">                                                                   
-                                <div>
-                                    {this.getBridgeTxDirectionStr(currentBridgeTxItem)}
-                                </div>
-                                <div className="text-color4">
-                                    <span className="mr-2">Amount:</span>
-                                    <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
-                                </div>                                            
-                            </div>
-                            <div className="bridge-resume-wrapper">
-                                {this.getControl(currentBridgeTxItem)}
-                            </div>                                        
-                        </div>
+                    <div className="current-tx-resume">
+                        {this.getBridgeHistory('current', [currentBridgeTxItem])}
+                    </div>
+                    // <>
+                    //     <div
+                    //         className="d-flex justify-content-between pb-3 mb-3 px-4">
+                    //         <div className="mr-3">                                                                   
+                    //             <div>
+                    //                 {this.getBridgeTxDirectionStr(currentBridgeTxItem)}
+                    //             </div>
+                    //             <div className="text-color4">
+                    //                 <span className="mr-2">Amount:</span>
+                    //                 <span>{this.getBridgeTxAmountStr(currentBridgeTxItem)}</span>                                                
+                    //             </div>                                            
+                    //         </div>
+                    //         <div className="bridge-resume-wrapper">
+                    //             {this.getControl(currentBridgeTxItem)}
+                    //         </div>                                        
+                    //     </div>
                         
-                    </>
+                    // </>
                 )
             }
         } else if (this.props.showHistory === true) {
-            return this.getBridgeHistory()
+            return this.getBridgeHistory('all')
         }
     }
 
@@ -1430,34 +1671,310 @@ class SpaceBridge extends React.Component {
         )
     }
 
-    getBridgeHistory() {
-        let that = this;        
+    getTxStatusString(status) {
+        let str = undefined;
+        if (status === true)
+            str = 'Success';
+        else if (status === false)
+            str = 'Failed';
+        return str
+    }
+
+    getTxPageUrl(chainId, txHash) {
+        let txPageUrl = undefined;
+        if (txHash !== undefined && chainId !== undefined && !isNaN(chainId)) {
+            let chain = this.availableNetworksUtils.getChainById(chainId);
+            if (chain !== undefined && chain.txPageUrl !== undefined)
+                txPageUrl = `${chain.txPageUrl}${txHash}`;            
+        }
+
+        return txPageUrl;
+    }
+
+    getChainName(chainId) {
+        let chainName = undefined;
+        if (chainId !== undefined && !isNaN(chainId)) {
+            let chain = this.availableNetworksUtils.getChainById(chainId);
+            if (chain !== undefined && chain.name !== undefined)
+                chainName = chain.name;            
+        }
+
+        return chainName;
+    }
+
+    getTxDateTime(timestamp) {
+        let txDateTime = '---';
+        if (timestamp !== undefined) {
+            txDateTime = new Date(timestamp).toLocaleString();
+        }
+
+        return txDateTime;
+    }
+
+    refineLockData(item) {
+        let txPageUrl, txStatusStr, txNetworkName, txDateTime, txHashTrimmed, originTicker;
+        let lock = item.lock;
+        if (lock !== undefined) {
+            txNetworkName = this.getChainName(lock.src_network);
+            txPageUrl = this.getTxPageUrl(lock.src_network, lock.transactionHash);
+            txStatusStr = this.getTxStatusString(lock.status);
+            txDateTime = this.getTxDateTime(lock.timestamp);
+            txHashTrimmed = utils.packHashString(lock.transactionHash);
+            originTicker = lock.ticker != undefined ? lock.ticker.toUpperCase() : '';                   
+        }
+        return {
+            txNetworkName,
+            txPageUrl,
+            txStatusStr,
+            txDateTime,
+            txHashTrimmed,
+            originTicker
+        }
+    }
+
+    refineClaimData(item) {
+        let that = this;
+        let claimData = {};
+        let chainType = undefined;
+        let claimInitAlias = undefined;
+        let lock = item.lock;        
+        let resultTicker = item.validatorRes?.ticket?.ticker !== undefined ? item.validatorRes.ticket.ticker.toUpperCase() : '';
+        console.log(resultTicker)
+        if (lock !== undefined) {
+            let chain = this.availableNetworksUtils.getChainById(Number(lock.dst_network));
+            if (chain !== undefined && chain.type !== undefined) {            
+                chainType = chain.type;
+                if (chainType === 'eth')
+                    claimInitAlias = 'claim';
+                else if (chainType === 'enq')
+                    claimInitAlias = 'claimInit';
+                else 
+                    return undefined
+            } else 
+                return undefined
+        } else
+            return undefined
+
+            
+        if (item[`${claimInitAlias}AttemptsList`] !== undefined && item[`${claimInitAlias}AttemptsList`].length > 0) {
+            
+            claimData[`${claimInitAlias}List`] = item[`${claimInitAlias}AttemptsList`].map(function(attemptItem) {
+                return {
+                    txDateTime : that.getTxDateTime(attemptItem[`${claimInitAlias}TxTimestamp`]),
+                    claimNetworkName : that.getChainName(lock.dst_network),
+                    claimType : claimInitAlias === 'claim' ? 'Claim' : 'Claim Init',
+                    txHashTrimmed : utils.packHashString(attemptItem[`${claimInitAlias}TxHash`]),
+                    txPageUrl : that.getTxPageUrl(lock.dst_network, attemptItem[`${claimInitAlias}TxHash`]),
+                    txStatusStr : that.getTxStatusString(attemptItem[`${claimInitAlias}TxStatus`]),
+                    resultTicker
+                }
+            });
+        }
+
+        if (item[`${claimInitAlias}TxHash`] !== undefined) {
+            if (claimData[`${claimInitAlias}List`] == undefined)
+                claimData[`${claimInitAlias}List`] = [];
+            claimData[`${claimInitAlias}List`].push({
+                txDateTime : that.getTxDateTime(item[`${claimInitAlias}TxTimestamp`]),
+                claimNetworkName : that.getChainName(lock.dst_network),
+                claimType : claimInitAlias === 'claim' ? 'Claim' : 'Claim Init',
+                txHashTrimmed : utils.packHashString(item[`${claimInitAlias}TxHash`]),
+                txPageUrl : that.getTxPageUrl(lock.dst_network, item[`${claimInitAlias}TxHash`]),
+                txStatusStr : that.getTxStatusString(item[`${claimInitAlias}TxStatus`]),
+                resultTicker
+            });
+        }
+
+        if (item.claimConfirmAttemptsList !== undefined && item.claimConfirmAttemptsList.length > 0) {
+            claimData.claimConfirmList = item.claimConfirmAttemptsList.map(function(attemptItem) {
+                return {
+                    txDateTime : that.getTxDateTime(attemptItem.claimConfirmTxTimestamp),
+                    claimNetworkName : that.getChainName(lock.dst_network),
+                    claimType : 'Claim Confirm',
+                    txHashTrimmed : utils.packHashString(attemptItem.claimConfirmTxHash),
+                    txPageUrl : that.getTxPageUrl(lock.dst_network, attemptItem.claimConfirmTxHash),
+                    txStatusStr : that.getTxStatusString(attemptItem.claimConfirmTxStatus),
+                    resultTicker
+                }
+            });
+        }
+
+        if (item.claimConfirmTxHash !== undefined) {
+            if (claimData.claimConfirmList == undefined)
+                claimData.claimConfirmList = [];
+            claimData.claimConfirmList.push({
+                txDateTime : that.getTxDateTime(item.claimConfirmTxTimestamp),
+                claimNetworkName : that.getChainName(lock.dst_network),
+                claimType : 'Claim Confirm',
+                txHashTrimmed : utils.packHashString(item.claimConfirmTxHash),
+                txPageUrl : that.getTxPageUrl(lock.dst_network, item.claimConfirmTxHash),
+                txStatusStr : that.getTxStatusString(item.claimConfirmTxStatus),
+                resultTicker
+            });
+        }
+
+        return claimData   
+    }
+
+    getBridgeExtendedInfo(item) {
+        let lockData = undefined;
+        let claimData = undefined;
+
+        if (item !== undefined) {
+            return {
+                lockData : this.refineLockData(item),
+                claimData : this.refineClaimData(item) 
+            }
+            
+        } else
+            return undefined
+    }
+
+    getBridgeExtendedInfoWidget(item) {
+        let info = this.getBridgeExtendedInfo(item);
+console.log(info)
+        return (
+            <table className="table table-dark table-hover w-100 mt-4" style={{backgroundColor: 'transparent'}}>
+                <thead style={{backgroundColor: 'transparent'}}>
+                    <th className="font-weight-normal">Action</th>
+                    <th>Asset</th>
+                    <th className="font-weight-normal">Time</th>
+                    <th className="font-weight-normal">Chain</th>                    
+                    <th className="font-weight-normal">Tx</th>
+                    <th className="font-weight-normal text-right">Status</th>
+                </thead>
+                {info.lockData !== undefined &&
+                    <tr style={{backgroundColor: 'transparent'}} className="text-color4">
+                        <td>Lock</td>
+                        <td>{info.lockData.originTicker}</td>
+                        <td>{info.lockData.txDateTime}</td>
+                        <td>{info.lockData.txNetworkName}</td>                        
+                        <td>
+                            <a
+                            href={info.lockData.txPageUrl} 
+                            className="text-color3"
+                            target="_blank">
+                                {info.lockData.txHashTrimmed}</a>
+                        </td>
+                        <td className="text-right">{info.lockData.txStatusStr}</td>
+                    </tr>
+                }
+
+                {info.claimData !== undefined && info.claimData.claimList !== undefined && info.claimData.claimList.map((item, index) => (
+                        <tr style={{backgroundColor: 'transparent'}} className="text-color4">
+                            <td>Claim</td>
+                            <td>{item.resultTicker}</td>
+                            <td>{item.txDateTime}</td>
+                            <td>{item.claimNetworkName}</td>                            
+                            <td>
+                                <a
+                                href={item.txPageUrl} 
+                                className="text-color3"
+                                target="_blank">
+                                    {item.txHashTrimmed}</a>
+                            </td>        
+                            <td className="text-right">{item.txStatusStr}</td>
+                        </tr>
+                    ))
+                }
+                {info.claimData !== undefined && info.claimData.claimInitList !== undefined && info.claimData.claimInitList.map((item, index) => (
+                        <tr style={{backgroundColor: 'transparent'}} className="text-color4">
+                            <td>Claim Init</td>
+                            <td>{item.resultTicker}</td>
+                            <td>{item.txDateTime}</td>
+                            <td>{item.claimNetworkName}</td>                            
+                            <td>
+                                <a
+                                href={item.txPageUrl} 
+                                className="text-color3"
+                                target="_blank">
+                                    {item.txHashTrimmed}</a>
+                            </td>
+                            <td className="text-right">{item.txStatusStr}</td>
+                        </tr>
+                    ))
+                }
+                {info.claimData !== undefined && info.claimData.claimConfirmList !== undefined && info.claimData.claimConfirmList.map((item, index) => (
+                        <tr style={{backgroundColor: 'transparent'}} className="text-color4">
+                            <td>Claim Confirm</td>
+                            <td>{item.resultTicker}</td>
+                            <td>{item.txDateTime}</td>
+                            <td>{item.claimNetworkName}</td>                            
+                            <td>
+                                <a
+                                href={item.txPageUrl} 
+                                className="text-color3"
+                                target="_blank">
+                                    {item.txHashTrimmed}</a>
+                            </td>
+                            <td className="text-right">{item.txStatusStr}</td>
+                        </tr>
+                    ))
+                }
+            </table>
+        )
+
+    }
+
+    toggleVisibility(item) {
+        let active;
+        let itemVisibility = {};
+        active =  (this.state.hasOwnProperty(item) && this.state[item] === true) ? false : true;
+        itemVisibility[item] = active;
+        this.setState(itemVisibility);
+    }
+
+    getBridgeHistory(layoutContext, historyArr = this.state.history) { //layoutContext all - for whole history, current - for current bridge workflow. Now used only 'all'
+        let that = this;
+
         return (
             <>
-                <div className="mb-3 pt-2">
-                    <div className="h5">History</div>
-                </div>                
+                {layoutContext === 'all' &&
+                    <div className="mb-3 pt-2">
+                        <div className="h5">History</div>
+                    </div>
+                }                
                 <>
-                    {this.state.history.map((item, index) => (
+                    {historyArr.map((item, index) => (
                         <div
-                            className="d-flex justify-content-between bottom-line-1 pb-3 mb-3"
-                            data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
-                            key={`${index}-lock-${item.lock.transactionHash}`}>
-                            <div className="mr-3">                                                                   
-                                <div>
-                                    {that.getBridgeTxDirectionStr(item)}
+                        data-resume={`${index}-lockHash-${item.lock.transactionHash}-direction-${item.lock.src_network}-${item.lock.dst_network}`}
+                        key={`${index}-lock-${item.lock.transactionHash}`}
+                        className="bottom-line-1 pb-3 mb-3 bridge-history-item">
+                            <div className="d-flex justify-content-between">
+                                <div className="mr-3">                                                                   
+                                    <div>
+                                        {that.getBridgeTxDirectionStr(item)}
+                                    </div>
+                                    <div className="text-color4">
+                                        <span className="mr-2">Amount:</span>
+                                        <span>{that.getBridgeTxAmountStr(item)}</span>                                                
+                                    </div>
+                                    <button
+                                    data-link={`${index}-lockHash-${item.lock.transactionHash}-details-active`}
+                                    onClick={that.toggleVisibility.bind(that, `${index}-lockHash-${item.lock.transactionHash}-details-active`)}
+                                    className="btn btn-info p-1 mt-1 bg-transparent no-focus-effect"
+                                    style={{minWidth : '125px'}}>
+                                        {that.state.hasOwnProperty(`${index}-lockHash-${item.lock.transactionHash}-details-active`) &&
+                                        that.state[`${index}-lockHash-${item.lock.transactionHash}-details-active`] === true ? 'Hide details' : 'Show details'}
+
+                                        <i
+                                        className={`fas ml-2 ${(that.state.hasOwnProperty(`${index}-lockHash-${item.lock.transactionHash}-details-active`) &&
+                                        that.state[`${index}-lockHash-${item.lock.transactionHash}-details-active`] === true) ? 'fa-chevron-up' : 'fa-chevron-down'}`}
+                                        style={{fontSize : '14px'}}/> 
+                                    </button>                                            
                                 </div>
-                                <div className="text-color4">
-                                    <span className="mr-2">Amount:</span>
-                                    <span>{that.getBridgeTxAmountStr(item)}</span>                                                
-                                </div>                                            
+                                <div className="bridge-history-resume-wrapper">
+                                    {that.getControl(item)}
+                                </div>                                                                        
                             </div>
-                            <div className="bridge-history-resume-wrapper">
-                                {that.getControl(item)}
-                            </div>                                        
+
+                            <div
+                                className={that.state.hasOwnProperty(`${index}-lockHash-${item.lock.transactionHash}-details-active`) && that.state[`${index}-lockHash-${item.lock.transactionHash}-details-active`] === true ? 'd-block' : 'd-none'}>
+                            {that.getBridgeExtendedInfoWidget(item)}
+                            </div>
                         </div>
                     ))}
-                    <div>
+                    <div className="clear-history-wrapper">
                         <button
                             disabled={this.props.currentBridgeTx !== undefined}
                             className="d-block btn btn-danger mt-2 mb-4 px-4 mx-auto"

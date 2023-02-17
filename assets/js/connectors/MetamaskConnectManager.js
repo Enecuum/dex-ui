@@ -41,13 +41,14 @@ class MetamaskConnectManager {
             });
         } else
             sessionState = null;
-
+        console.log('sessionState', sessionState);    
         return sessionState;
     }
 
     appIsConnected(account_id) {
         if (this.provider) {            
             let user_id = localStorage.getItem('user_id');
+            console.log('appIsConnected ', user_id !== undefined && user_id !== '' && account_id !== undefined && account_id === user_id);
             return (user_id !== undefined && user_id !== '' && account_id !== undefined && account_id === user_id) ? true : false;
         } else 
             return false

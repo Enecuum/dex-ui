@@ -1837,6 +1837,7 @@ console.log(info)
             <table className="table table-dark table-hover w-100 mt-4" style={{backgroundColor: 'transparent'}}>
                 <thead style={{backgroundColor: 'transparent'}}>
                     <th className="font-weight-normal">Action</th>
+                    <th>Asset</th>
                     <th className="font-weight-normal">Time</th>
                     <th className="font-weight-normal">Chain</th>                    
                     <th className="font-weight-normal">Tx</th>
@@ -1844,7 +1845,8 @@ console.log(info)
                 </thead>
                 {info.lockData !== undefined &&
                     <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                        <td>Lock {info.lockData.originTicker}</td>
+                        <td>Lock</td>
+                        <td>{info.lockData.originTicker}</td>
                         <td>{info.lockData.txDateTime}</td>
                         <td>{info.lockData.txNetworkName}</td>                        
                         <td>
@@ -1860,7 +1862,8 @@ console.log(info)
 
                 {info.claimData !== undefined && info.claimData.claimList !== undefined && info.claimData.claimList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim {item.resultTicker}</td>
+                            <td>Claim</td>
+                            <td>{item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>
@@ -1876,7 +1879,8 @@ console.log(info)
                 }
                 {info.claimData !== undefined && info.claimData.claimInitList !== undefined && info.claimData.claimInitList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim Init {item.resultTicker}</td>
+                            <td>Claim Init</td>
+                            <td>{item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>
@@ -1892,7 +1896,8 @@ console.log(info)
                 }
                 {info.claimData !== undefined && info.claimData.claimConfirmList !== undefined && info.claimData.claimConfirmList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim Confirm {item.resultTicker}</td>
+                            <td>Claim Confirm</td>
+                            <td>{item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>

@@ -893,7 +893,7 @@ class SpaceBridge extends React.Component {
             stateId = 2;
             txHash = item.claimConfirmTxHash;
             claimType = 'claimConfirm';
-            actionStr = 'Confirm again';
+            actionStr = 'Retry';
             resetCurrent = true;
             showResetBridge = true;
         } else if (item.claimConfirmTxHash !== undefined) {
@@ -904,7 +904,7 @@ class SpaceBridge extends React.Component {
                 if (item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) {
                     resume = 'Claim confirmation failed';
                     stateId = 4;
-                    actionStr = 'Confirm again';
+                    actionStr = 'Retry';
                     claimType = 'claimConfirm';
                     resetCurrent = true;
                     showResetBridge = true;
@@ -924,7 +924,7 @@ class SpaceBridge extends React.Component {
                     stateId = 6;
                     txHash = item.claimInitTxHash;
                     claimType = 'claimInit';
-                    actionStr = 'Claim again';
+                    actionStr = 'Retry';
                     resetCurrent = true;
                     showResetBridge = true;                        
                 }
@@ -965,14 +965,14 @@ class SpaceBridge extends React.Component {
         //     actionStr = 'Confirm';
         //     if ((item.hasOwnProperty('claimConfirmAttemptsList') && Array.isArray(item.claimConfirmAttemptsList) && item.claimConfirmAttemptsList.length > 0) || item.claimConfirmTxStatus == false) {
         //         resume = 'Claim confirmation failed';
-        //         actionStr = 'Confirm again';
+        //         actionStr = 'Retry';
         //     }
         // } else if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0 && item.claimInitTxStatus !== true) {            
         //     stateId = 5;
         //     txHash = item.claimInitTxHash;
         //     claimType = 'claimInit';
         //     resume = 'Claim inititalization failed';
-        //     actionStr = 'Claim again';              
+        //     actionStr = 'Retry';              
         //     //if (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0) {
               
 
@@ -1106,11 +1106,11 @@ class SpaceBridge extends React.Component {
                 if (item.claimTxStatus === false) {
                     action = this.reClaimEth.bind(this, item);
                     resume = 'Failed';
-                    title = 'Claim again';
+                    title = 'Retry';
                 } else if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0) {
                     action = this.claimEth.bind(this, item);
                     resume = 'Failed';
-                    title = 'Claim again';
+                    title = 'Retry';
                 } else {
                     action = this.claimEth.bind(this, item);
                     title = 'Claim';
@@ -1712,21 +1712,23 @@ class SpaceBridge extends React.Component {
     }
 
     refineLockData(item) {
-        let txPageUrl, txStatusStr, txNetworkName, txDateTime, txHashTrimmed;
+        let txPageUrl, txStatusStr, txNetworkName, txDateTime, txHashTrimmed, originTicker;
         let lock = item.lock;
         if (lock !== undefined) {
             txNetworkName = this.getChainName(lock.src_network);
             txPageUrl = this.getTxPageUrl(lock.src_network, lock.transactionHash);
             txStatusStr = this.getTxStatusString(lock.status);
             txDateTime = this.getTxDateTime(lock.timestamp);
-            txHashTrimmed = utils.packHashString(lock.transactionHash);                      
+            txHashTrimmed = utils.packHashString(lock.transactionHash);
+            originTicker = lock.ticker != undefined ? lock.ticker.toUpperCase() : '';                   
         }
         return {
             txNetworkName,
             txPageUrl,
             txStatusStr,
             txDateTime,
-            txHashTrimmed
+            txHashTrimmed,
+            originTicker
         }
     }
 
@@ -1735,7 +1737,9 @@ class SpaceBridge extends React.Component {
         let claimData = {};
         let chainType = undefined;
         let claimInitAlias = undefined;
-        let lock = item.lock;
+        let lock = item.lock;        
+        let resultTicker = item.validatorRes?.ticket?.ticker !== undefined ? item.validatorRes.ticket.ticker.toUpperCase() : '';
+        console.log(resultTicker)
         if (lock !== undefined) {
             let chain = this.availableNetworksUtils.getChainById(Number(lock.dst_network));
             if (chain !== undefined && chain.type !== undefined) {            
@@ -1761,7 +1765,8 @@ class SpaceBridge extends React.Component {
                     claimType : claimInitAlias === 'claim' ? 'Claim' : 'Claim Init',
                     txHashTrimmed : utils.packHashString(attemptItem[`${claimInitAlias}TxHash`]),
                     txPageUrl : that.getTxPageUrl(lock.dst_network, attemptItem[`${claimInitAlias}TxHash`]),
-                    txStatusStr : that.getTxStatusString(attemptItem[`${claimInitAlias}TxStatus`])
+                    txStatusStr : that.getTxStatusString(attemptItem[`${claimInitAlias}TxStatus`]),
+                    resultTicker
                 }
             });
         }
@@ -1775,7 +1780,8 @@ class SpaceBridge extends React.Component {
                 claimType : claimInitAlias === 'claim' ? 'Claim' : 'Claim Init',
                 txHashTrimmed : utils.packHashString(item[`${claimInitAlias}TxHash`]),
                 txPageUrl : that.getTxPageUrl(lock.dst_network, item[`${claimInitAlias}TxHash`]),
-                txStatusStr : that.getTxStatusString(item[`${claimInitAlias}TxStatus`])
+                txStatusStr : that.getTxStatusString(item[`${claimInitAlias}TxStatus`]),
+                resultTicker
             });
         }
 
@@ -1787,7 +1793,8 @@ class SpaceBridge extends React.Component {
                     claimType : 'Claim Confirm',
                     txHashTrimmed : utils.packHashString(attemptItem.claimConfirmTxHash),
                     txPageUrl : that.getTxPageUrl(lock.dst_network, attemptItem.claimConfirmTxHash),
-                    txStatusStr : that.getTxStatusString(attemptItem.claimConfirmTxStatus)
+                    txStatusStr : that.getTxStatusString(attemptItem.claimConfirmTxStatus),
+                    resultTicker
                 }
             });
         }
@@ -1801,7 +1808,8 @@ class SpaceBridge extends React.Component {
                 claimType : 'Claim Confirm',
                 txHashTrimmed : utils.packHashString(item.claimConfirmTxHash),
                 txPageUrl : that.getTxPageUrl(lock.dst_network, item.claimConfirmTxHash),
-                txStatusStr : that.getTxStatusString(item.claimConfirmTxStatus)
+                txStatusStr : that.getTxStatusString(item.claimConfirmTxStatus),
+                resultTicker
             });
         }
 
@@ -1824,7 +1832,7 @@ class SpaceBridge extends React.Component {
 
     getBridgeExtendedInfoWidget(item) {
         let info = this.getBridgeExtendedInfo(item);
-
+console.log(info)
         return (
             <table className="table table-dark table-hover w-100 mt-4" style={{backgroundColor: 'transparent'}}>
                 <thead style={{backgroundColor: 'transparent'}}>
@@ -1836,7 +1844,7 @@ class SpaceBridge extends React.Component {
                 </thead>
                 {info.lockData !== undefined &&
                     <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                        <td>Lock</td>
+                        <td>Lock {info.lockData.originTicker}</td>
                         <td>{info.lockData.txDateTime}</td>
                         <td>{info.lockData.txNetworkName}</td>                        
                         <td>
@@ -1852,7 +1860,7 @@ class SpaceBridge extends React.Component {
 
                 {info.claimData !== undefined && info.claimData.claimList !== undefined && info.claimData.claimList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim</td>
+                            <td>Claim {item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>
@@ -1868,7 +1876,7 @@ class SpaceBridge extends React.Component {
                 }
                 {info.claimData !== undefined && info.claimData.claimInitList !== undefined && info.claimData.claimInitList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim Init</td>
+                            <td>Claim Init {item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>
@@ -1884,7 +1892,7 @@ class SpaceBridge extends React.Component {
                 }
                 {info.claimData !== undefined && info.claimData.claimConfirmList !== undefined && info.claimData.claimConfirmList.map((item, index) => (
                         <tr style={{backgroundColor: 'transparent'}} className="text-color4">
-                            <td>Claim Confirm</td>
+                            <td>Claim Confirm {item.resultTicker}</td>
                             <td>{item.txDateTime}</td>
                             <td>{item.claimNetworkName}</td>                            
                             <td>
@@ -1911,19 +1919,16 @@ class SpaceBridge extends React.Component {
         this.setState(itemVisibility);
     }
 
-    getBridgeHistory(layoutContext, historyArr = this.state.history) {
+    getBridgeHistory(layoutContext, historyArr = this.state.history) { //layoutContext all - for whole history, current - for current bridge workflow. Now used only 'all'
         let that = this;
-        let title = undefined;
-        if (layoutContext === 'all')
-            title = 'History';
-        else if (layoutContext === 'current')
-            title = 'Resume';
 
         return (
             <>
-                <div className="mb-3 pt-2">
-                    <div className="h5">{title}</div>
-                </div>                
+                {layoutContext === 'all' &&
+                    <div className="mb-3 pt-2">
+                        <div className="h5">History</div>
+                    </div>
+                }                
                 <>
                     {historyArr.map((item, index) => (
                         <div

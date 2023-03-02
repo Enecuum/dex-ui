@@ -32,13 +32,24 @@ module.exports = {
     "activeFilter"                 : "Активный",
 
     "voting" : {
-        "header" : "Voting about Enecuum security incident - {{status}}",
+        "header" : "Governance",
+        "description" : "ENEX.SPACE offers a decentralized governance system that allows users to participate in decision-making processes through voting. By taking part in decentralized voting, users can contribute to making the network better together. This governance system is designed to ensure that all users have an equal say in the decision-making process, regardless of their stake or position within the network. Through this system, users can vote on proposals related to network upgrades, changes to consensus algorithms, and other important decisions that impact the ENEX.SPACE and Enecuum ecosystem. With a focus on decentralization and community-driven decision-making, ENEX governance system is designed to ensure transparency, fairness, and inclusivity in all decision-making processes. Whether you are a developer, miner, or enthusiast, we invites you to participate in governance and help shape the future of the network.",
+        "activeVotes" : "Active votes",
+        "pastVotes" : "Past votes",
+        "noVotes" : "No votes found",
+
+        "votes" : {
+            "nextSteps" : {
+                "header" : "Voting about Enecuum security incident - {{status}}",
+                "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Proposals from the team, proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol."
+            }
+        },
+
         "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",
         "currentBlock" : "Current block: {{block}}",
-        "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Proposals from the team, proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol.",
         "readMore1" : "Read more about the situation",
         "readMore2" : "Read more how the voting works",
-
+        "readMore3" : "Voting results",
         "proposalsTitle" : "Proposals",
         "totalVotes" : "Total votes",
         "myVotes" : "My votes",

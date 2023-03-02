@@ -4,6 +4,17 @@
     border-radius: var(--border-radius1);
 }
 
+.votingCard {
+    background-color: var(--color8) !important;
+    border-radius:  var(--border-radius2) !important;
+    border: 2px solid var(--color2) !important;
+    perspective: 1px;
+}
+
+.votingCard td .cell-wrapper {
+    border: 0 !important;
+}
+
 #farmsCard .drop-farms-table-wrapper td {
      background-color: var(--color8);
 }

@@ -39,6 +39,7 @@ class Voting extends React.Component {
         ];
 
         this.state = {
+            expandedVote : undefined,
             dropFarmActionsParams : {
                 farm_create : {
                     "stake_token": "0000000000000000000000000000000000000000000000000000000000000001",
@@ -167,7 +168,11 @@ class Voting extends React.Component {
     }
 
     updateFarms() {
-        let list = presets.dropFarms.voting.list
+        let list = []
+        let votes = presets.dropFarms.voting.votes
+        for (let vote in votes)
+            list = list.concat(votes[vote].list)
+
         let whiteList = list.map(farm => farm.farm_id);
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
@@ -503,225 +508,101 @@ class Voting extends React.Component {
         this.getDataSet()
     }
 
+    sortVotes(votes) {
+        let res = {active: [], past: []}
+        res = Object.keys(votes).reduce((sortedVotes, voteKey, index) => {
+            let vote = {...votes[voteKey], voteName : voteKey, voteIndex : index}
+            if (votes[voteKey].finalBlockNum < this.height || votes[voteKey].forceDeactivation)
+                sortedVotes.past.push(vote)
+            else 
+                sortedVotes.active.push(vote)
+            return sortedVotes
+        }, res)
+        return res
+    }
+
     getFarmsTable() {
-    	const t = this.props.t;
-        let finalBlock = presets.dropFarms.voting.finalBlockNum
+    	const t = this.props.t
+        let votes = this.sortVotes(presets.dropFarms.voting.votes)
 
     	return (
     		<>
-				<div className="SET-D-FLEX-IF-READY d-none align-items-center justify-content-between pb-4">
-					<div className="d-flex align-items-center justify-content-start">
-						<i className="fas fa-grip-horizontal mr-2" />
-						<i className="fas fa-table mr-3" />
-						<Dropdown className="mr-3 sort-by">
-						  <Dropdown.Toggle variant="success" id="dropdown-basic">
-						    Sort by
-						  </Dropdown.Toggle>
-
-						  <Dropdown.Menu>
-						    <Dropdown.Item >APY</Dropdown.Item>
-						    <Dropdown.Item >Reward</Dropdown.Item>
-						    <Dropdown.Item >Earned</Dropdown.Item>
-						    <Dropdown.Item >Liquidity</Dropdown.Item>
-						  </Dropdown.Menu>
-						</Dropdown>
-           
-					</div>
-					<div className="">
-                        <input  id='farms-filter-field'
-                                // onChange={}
-                                className='text-input-1 form-control'
-                                type='text'
-                                placeholder='Search farm' />
-                    </div>
-				</div>
-                <div className="d-none" id="farmActions">
-                    <div className="h2">
-                        Actions
-                    </div>
-
-                    <Accordion className="mb-4">
-                      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-                        <Accordion.Toggle as={Card.Header} eventKey="0"   style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           borderBottom: '2px solid #454d55'
-                                       }}
-                                       className="hover-pointer">
-                          Create a drop farm (farm_create)
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="0">
-                          <Card.Body className="pt-4" style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           opacity: '0.9'
-                                       }}>
-                                            <Form>
-                                              <Form.Group controlId="formGroupEmail">
-                                                <Form.Label>stake_token</Form.Label>
-                                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_create.stake_token} onChange={(e) => this.handleChange('farm_create','stake_token', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                              <Form.Group controlId="formGroupPassword">
-                                                <Form.Label>reward_token</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.reward_token} onChange={(e) => this.handleChange('farm_create','reward_token', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                              <Form.Group controlId="formGroupEmail">
-                                                <Form.Label>block_reward</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.block_reward} onChange={(e) => this.handleChange('farm_create','block_reward', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                              <Form.Group controlId="formGroupPassword">
-                                                <Form.Label>emission</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_create.emission} onChange={(e) => this.handleChange('farm_create','emission', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                            </Form>
-                                            <Button variant="primary"
-                                            onClick={this.executeDropFarmAction.bind(this, 'farm_create', this.props.pubkey, this.state.dropFarmActionsParams.farm_create)}>
-                                                Create a drop farm (farm_create)
-                                            </Button>
-                                       </Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                      <Card style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-                        <Accordion.Toggle as={Card.Header} eventKey="1"  style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           borderBottom: '2px solid #454d55'
-                                       }}
-                                       className="hover-pointer">
-                         Stake (farm_increase_stake)
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="1">
-                          <Card.Body className="pt-4" style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           opacity: '0.9'
-                                       }}>
-                                            <Form>
-                                              <Form.Group controlId="formGroupEmail">
-                                                <Form.Label>farm_id</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.farm_id} onChange={(e) => this.handleChange('farm_increase_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                              <Form.Group controlId="formGroupPassword">
-                                                <Form.Label>amount</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_increase_stake.amount} onChange={(e) => this.handleChange('farm_increase_stake','amount', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                            </Form>
-                                            <Button variant="primary"
-                                            onClick={this.executeDropFarmAction.bind(this, 'farm_increase_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_increase_stake)}>
-                                                Stake (farm_increase_stake)
-                                              </Button>
-                                       </Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-                        <Accordion.Toggle as={Card.Header} eventKey="2"  style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           borderBottom: '2px solid #454d55'
-                                       }}
-                                       className="hover-pointer">
-                         Unstake (farm_decrease_stake)
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="2">
-                          <Card.Body className="pt-4" style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           opacity: '0.9'
-                                       }}>
-                                            <Form>
-                                              <Form.Group controlId="formGroupEmail">
-                                                <Form.Label>farm_id</Form.Label>
-                                                <Form.Control type="text" placeholder=""   value={this.state.dropFarmActionsParams.farm_decrease_stake.farm_id} onChange={(e) => this.handleChange('farm_decrease_stake','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                              <Form.Group controlId="formGroupPassword">
-                                                <Form.Label>amount</Form.Label>
-                                                <Form.Control type="text" placeholder=""  value={this.state.dropFarmActionsParams.farm_decrease_stake.amount} onChange={(e) => this.handleChange('farm_decrease_stake','amount', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                            </Form>
-                                            <Button variant="primary"
-                                            onClick={this.executeDropFarmAction.bind(this, 'farm_decrease_stake', this.props.pubkey, this.state.dropFarmActionsParams.farm_decrease_stake)}>
-                                                Unstake (farm_decrease_stake)
-                                              </Button>
-                                       </Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                      <Card  style={{borderColor: 'var(--color2)', borderWidth: '2px', borderRadius: '3px'}}>
-                        <Accordion.Toggle as={Card.Header} eventKey="4"  style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           borderBottom: '2px solid #454d55'
-                                       }}
-                                       className="hover-pointer">
-                         Harvest reward (farm_get_reward)
-                        </Accordion.Toggle>
-                        <Accordion.Collapse eventKey="4">
-                          <Card.Body className="pt-4" style={{
-                                           color: 'white',
-                                           backgroundColor: 'var(--color8)',
-                                           opacity: '0.9'
-                                       }}>
-                                            <Form>
-                                              <Form.Group controlId="formGroupEmail">
-                                                <Form.Label>farm_id</Form.Label>
-                                                <Form.Control type="text" placeholder="" value={this.state.dropFarmActionsParams.farm_get_reward.farm_id} onChange={(e) => this.handleChange('farm_get_reward','farm_id', e)} style={{backgroundColor: '#777'}}/>
-                                              </Form.Group>
-                                            </Form>
-                                            <Button variant="primary"
-                                            onClick={this.executeDropFarmAction.bind(this, 'farm_get_reward', this.props.pubkey, this.state.dropFarmActionsParams.farm_get_reward)}>
-                                               Harvest reward (farm_get_reward)
-                                              </Button>
-                                       </Card.Body>
-                        </Accordion.Collapse>
-                      </Card>
-                    </Accordion>
-                </div>
-
-                <div className="d-flex justify-content-between">
+	            <div className="d-flex justify-content-between">
                     <div>
                         <h2 className="h2 mb-4">
-                            {t('dropFarms.voting.header', {status: (finalBlock > this.height) ? t('active') : t('inactive')})}
+                            {t('dropFarms.voting.header')}
                         </h2>
+                        <div className="mb-4">
+                            {t('dropFarms.voting.description')}
+                        </div>
+                        <h2 className="h2 mb-2">
+                            {t('dropFarms.voting.activeVotes')}
+                        </h2>
+                        <div className="mb-4">
+                            {this.getVotesAccordeons(votes.active, true)}
+                        </div>
+                        <h2 className="h2 mb-2">
+                            {t('dropFarms.voting.pastVotes')}
+                        </h2>
+                        <div className="mb-2">
+                            {this.getVotesAccordeons(votes.past)}
+                        </div>
+                    </div>
+                </div>
+			</>					
+    	)
+    }
+
+    renderVoteTable(vote, activeVouting) {
+        const t = this.props.t
+        return(
+            <>
+                <div className="d-flex justify-content-between">
+                    <div>
                         <div className="mb-0">
                             {t('dropFarms.voting.votingTill', {
-                                block: valueProcessor.usCommasBigIntDecimals(finalBlock, 0, 0), 
-                                timeStr: this.countTime(this.height, finalBlock)
+                                block: valueProcessor.usCommasBigIntDecimals(vote.finalBlockNum, 0, 0), 
+                                timeStr: this.countTime(this.height, vote.finalBlockNum)
                             })}
                         </div>
                         <div className="mb-4">
                             {t('dropFarms.voting.currentBlock', {block: valueProcessor.usCommasBigIntDecimals(this.height, 0, 0)})}
                         </div>
                         <div className="mb-0">
-                            {t('dropFarms.voting.description')}
+                            {vote.description}
                         </div>
                         <div className="mb-0">
-                            <a href={presets.dropFarms.voting.situationReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
+                            <a href={vote.situationReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
                         </div>
-                        <div className="mb-4">
-                            <a href={presets.dropFarms.voting.voutingReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
+                        <div className="mb-0">
+                            <a href={vote.voutingReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
                         </div>
-                        { finalBlock > this.height &&
-                            <h2 className="h2 mb-4">
-                                {t('dropFarms.voting.proposalsTitle')}
-                            </h2>
+                        {(!activeVouting || !vote.resultsReadme) && 
+                            <div className="mb-0">
+                                <a href={vote.resultsReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
+                            </div>
                         }
+                        <h2 className="h2 mb-4 mt-4">
+                            {t('dropFarms.voting.proposalsTitle')}
+                        </h2>
                     </div>
                 </div>
 
 		    	<div className="drop-farms-table-wrapper governance">	
-                    {/* { finalBlock > this.height && */}
                         <Table hover variant="dark" className="table-to-cards">
                             <tbody>
-                                {this.farms.map(( farm, index ) => {
-                                    {/* if (!this.checkByStatus(farm))
-                                        return <></> */}
-                                    let farmTitle = farm.issue;
+                                {vote.list.map(( listItem, index ) => {
+                                    let farm = this.farms.find(farm => farm.farm_id === listItem.farm_id)
+                                    if (!farm)
+                                        return <></>
+                                    let farmTitle = listItem.issue;
                                     return (
                                         <>
-                                            <tr key={index} data-farm-id={farm.farm_id} data-expanded-row={this.props.expandedRow === farm.farm_id}>
+                                            <tr key={index} data-farm-id={listItem.farm_id} data-expanded-row={this.props.expandedRow === listItem.farm_id} className="votingCard">
                                                 <td>
                                                     <div className="cell-wrapper pl-5 text-nowrap">
                                                         <div className="h5 mb-0">{farmTitle}</div>
-                                                        <div className="long-value" ><a href={farm.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
+                                                        <div className="long-value" ><a href={listItem.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
                                                     </div>	
                                                 </td>
                                                 <td>
@@ -743,7 +624,7 @@ class Voting extends React.Component {
                                                     </div>	
                                                 </td>
                                             </tr>
-                                            {this.props.expandedRow === farm.farm_id &&
+                                            {this.props.expandedRow === listItem.farm_id &&
                                                 <tr className="mb-3 farm-controls-wrapper">
                                                     <td colSpan="7" className="py-4">
                                                         <div className="dropfarms-controls-wrapper mx-0 px-0">
@@ -761,10 +642,68 @@ class Voting extends React.Component {
                                 })}
                             </tbody>
                         </Table>			
-                    {/* } */}
 				</div>
 			</>					
-    	)
+        )
+    }
+
+    getVotesAccordeons(votes, activeVouting) {
+        let t = this.props.t
+        return (
+            <>
+                <div className="drop-farms-table-wrapper governance">
+                    <Table hover variant="dark" className="table-to-cards">
+                        <tbody>
+                            {!votes.length &&
+                                <div className='d-flex justify-content-center'>
+                                    {t("dropFarms.voting.noVotes")}
+                                </div>
+                            }
+                            {votes.map(( vote, index ) => {
+                                let tPath = `dropFarms.voting.votes.${vote.voteName}`
+                                let voteTitle = t(`${tPath}.header`, {status: (vote.finalBlockNum > this.height) ? t('active') : t('inactive')})
+                                vote.description = t(`${tPath}.description`)
+                                return (
+                                    <>
+                                        <tr key={index} data-farm-id={index} data-expanded-row={this.state.expandedVote === vote.voteIndex}>
+                                            <td>
+                                                <div className="cell-wrapper pl-5 text-nowrap">
+                                                    <div className="h5 mb-0">{voteTitle}</div>
+                                                </div>	
+                                            </td>
+                                            <td>
+                                                <div className="cell-wrapper pl-5 d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedVote.bind(this, vote.voteIndex)}>
+                                                    <div className="mr-2">{t('dropFarms.details')}</div>
+                                                    <span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
+                                                </div>	
+                                            </td>
+                                        </tr>
+                                        {this.state.expandedVote === vote.voteIndex &&
+                                            <tr className="mb-3 farm-controls-wrapper">
+                                                <td colSpan="7" className="py-4">
+                                                    <div className="mx-0 px-0">
+                                                        <div className="dropfarm-control">
+                                                            <div className="border-solid-2 c-border-radius2 border-color2 p-4">
+                                                                {this.renderVoteTable(vote, activeVouting)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </>
+                                )
+                            })}
+                        </tbody>
+                    </Table>
+				</div>
+			</>
+        )
+    }
+
+    updateExpandedVote(voteIndex) {
+        let newIndex = this.state.expandedVote === voteIndex ? undefined : voteIndex
+        this.setState({expandedVote : newIndex})
     }
 
     render() {

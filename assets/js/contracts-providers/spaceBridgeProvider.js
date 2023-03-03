@@ -8,11 +8,27 @@ class SpaceBridgeProvider {
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
 	}
 
-	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, token_decimals, ticker, callback = undefined) {
+	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {
+		console.log('query SpaceBridgeProvider getTransfer');
+		let that = this;
+
+		return this.spaceBridgeContract.methods.getTransfer(src_address, src_hash, src_network, that.web3.utils.asciiToHex(dst_address), dst_network).call(function (err, res) {
+			//console.log(that.web3.utils.asciiToHex(src_address), src_hash, src_network, that.web3.utils.asciiToHex(dst_address), dst_network)
+            if (err) {
+                console.log("An error occured", err, ` Can't getTransfer`)
+                return undefined
+            } else {
+            	//console.log(res)
+            	return res
+            }
+		})
+	}
+
+	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
 
-		return this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash).send(
+		return this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send(
 			{ from: src_address },
 			function (err, res) {
 			if (err) {
@@ -31,7 +47,8 @@ class SpaceBridgeProvider {
 									token_hash,
 									token_decimals,
 									ticker,
-                                    timestamp : Date.now()
+                                    timestamp : Date.now(),
+                                    nonce
 								}					
 				};
 

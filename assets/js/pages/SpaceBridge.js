@@ -513,7 +513,7 @@ class SpaceBridge extends React.Component {
             this.props.toBlockchain !== undefined) {
 
                 let chain = this.props.toBlockchain;
-                let address = undefined;
+                let address = undefined;                
                 if (chain !== undefined) {
                     if (chain.type === 'enq')
                         address = this.props.pubkey;
@@ -532,9 +532,16 @@ class SpaceBridge extends React.Component {
     	    	let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenDecimals)).value;
                 let token_decimals = this.props.srcTokenDecimals;
                 let ticker = this.props.srcTokenTicker;
-    			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
-    				console.log('lock result', lockTx);
-    			});
+                bridgeProvider.getTransfer(src_address, token_hash, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id).then(function(nonce) {
+                    if (nonce == undefined)
+                        return
+                    console.log('nonce', nonce)
+    
+                    bridgeProvider.lock(src_address, that.props.fromBlockchain.id, dst_address, that.props.toBlockchain.id, amount, token_hash, Number(nonce)+1, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
+                        console.log('lock result', lockTx);
+                    });
+                });                
+
         	} else {
         		alert('Wrong input data')
         	}

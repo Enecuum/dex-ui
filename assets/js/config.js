@@ -31,7 +31,7 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x0966BF83Ef887ba057B101B109fA491a0C592034', //strig, undefined if not used
+        bridgeContractAddress : '0xAeEA5E8e367CedC676Bd4191450a9927D9A56114', //strig, undefined if not used
         vaultContractAddress  : '0x34fFe18F7Cb7367B20947E5968F728e93C66DBE5', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
@@ -46,8 +46,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0xb599b7A92E2282Ad3c3A53b64fd4980A6E3257D5', //strig, undefined if not used
-        vaultContractAddress  : '0x892B20d2B6cEC8ea6ECe25E001A687207AEc8297', //strig, undefined if not used
+        bridgeContractAddress : '0xdF48e62B6c01422F28bBe59F45e5c0432643E081', //strig, undefined if not used
+        vaultContractAddress  : '0xE1C39d0C64ae8B5197fd68D13901Cb3B267E2e73', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage
@@ -61,8 +61,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x6725B8a91F1A34c557106b5E2B048c584c50cF93', //strig, undefined if not used
-        vaultContractAddress  : '0xf2309A6825d2726a5a7d1a450973fD212DF1e3c9', //strig, undefined if not used
+        bridgeContractAddress : '0xce5068341633af3527a65e04d23b9723c555f519', //strig, undefined if not used
+        vaultContractAddress  : '0x2bd0624ee77d525fe2b494a122ab824cf973052a', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage

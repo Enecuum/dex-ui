@@ -120,13 +120,31 @@ const presets =  {
 
     dropFarms : {
         spaceHarvestFarms : {
-            whiteList : []
+            whiteList : [
+                'b0b493d3a05804327ad90ccb580a95cb7219c5ca34c509e7c8212953cf6d7333',
+                '784dac48920ae1a4ad7a22b45cc28df7109ed2316dc6f9ca0bfb8e0fead9ef6b',
+                'e8e8b2bc7427e261000df8b5cc4c857affd86e5e5c1992af79b14912cc38cfce',
+                '347f72d0934d10b4c670acc3593a199922d129403da736bc89ffe88174c88bc7',
+                '3b2a32d865a26b3a6d69fd30d7999de07ec4378724bd69d0b705e78b86b4bac0',
+                '97a60bead0f67d90fc523b285d3fe9738612cbe617a7c4be02b82036375012f2',
+                'a92c87cbdcf03ce1e962ced279e28905c7b618564ea6ed34ed01bdf79f7a029f'
+            ]
         },
         spaceDrops : {
             whiteList : [
+                '94a044b138fe0a8984bb6faf831ed6dffd9fd9f8cd1e59b879382b85513c44bf',
+                '66a8a2bbc33c76fc024c5e823d766117e1824fb036ae9443076063d8fb81886d',
+                'e6dec9127fb04674d782ffc4036d3e9cfec6f599336af6d116864b7ffbce9934',
+                '5864b58c49c5832af6fd88afdf5bac5205a881032f55e882aed414aefbcd1f1a',
                 'e395bcf6b3011b1624c22b19ae6d1246d93ba140602d0bc266384be44434df01',
                 '802f22e165d0c2bbddaa90d38f3aa6523881800fd9f72b904c3866c7ba4653c2',
-                'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de'
+                'dd48d8cce2d03e35c4f6fa07b6ef784edcb675c9fcd5986a0d208f524374a0de',
+                "572e9c1846a13e8135d984b231529e337301cd01b3f6209a773df822841f2aef",
+                '7dcc38f4bd86493f93804b5d1000dbc383851f1a766444c2dfc49d8cac0966b7',
+                '717369faf4cee266dad3d85a833ba11b3a0ca6685b992cbff7c85b5a118bdcfb',
+                'd235fa223260b2de8867ccaba5601fa4d384d1ce814236cd5afad71faa2928e9',
+                'c4754091a753e4765cb8924bae0fce40d2b7eea792a8a4250530d6f7e19ccfb8',
+                'adc28f9a66919db490be29be9d25ec6c98eadd9db4a8e29c58641dab4a64d6a4'
             ]
         },
         voting : {

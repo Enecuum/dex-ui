@@ -661,7 +661,7 @@ class Voting extends React.Component {
                             }
                             {votes.map(( vote, index ) => {
                                 let tPath = `dropFarms.voting.votes.${vote.voteName}`
-                                let voteTitle = t(`${tPath}.header`, {status: (vote.finalBlockNum > this.height) ? t('active') : t('inactive')})
+                                let voteTitle = t(`${tPath}.header`, {status: activeVouting ? t('active') : t('inactive')})
                                 vote.description = t(`${tPath}.description`)
                                 return (
                                     <>

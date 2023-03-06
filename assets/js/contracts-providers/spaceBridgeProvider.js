@@ -1,11 +1,13 @@
 import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
-import Web3 from "web3"
+import Web3 from "web3";
+
 
 class SpaceBridgeProvider {
 	constructor(provider, abi, contractAddress) {
 		this.web3 = new Web3(provider);
 		this.spaceBridgeContract = new this.web3.eth.Contract(abi, contractAddress);
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
+		
 	}
 
 	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {
@@ -77,19 +79,20 @@ class SpaceBridgeProvider {
 	async send_claim_init(params, from_address, elemLockTransactionHash) {
 		console.log('query SpaceBridgeProvider send_claim_init');
 		let that = this;
-
+		console.log(params)
 		let ticket = [
 				params.ticket.dst_address,
-				params.ticket.dst_network,
-				BigInt(params.ticket.amount),
-				params.ticket.src_hash,
-				params.ticket.src_address,
-				params.ticket.src_network,
-				params.ticket.origin_hash,
-				params.ticket.origin_network,
-				params.ticket.nonce,
-				params.ticket.name,
-				params.ticket.ticker
+		        params.ticket.dst_network,
+		        BigInt(params.ticket.amount),
+		        params.ticket.src_hash,
+		        params.ticket.src_address,
+		        params.ticket.src_network,				
+		        params.ticket.origin_hash,
+		        params.ticket.origin_network,
+		        Number(params.ticket.nonce),
+		        params.ticket.name,
+		        params.ticket.ticker,
+		        params.ticket.origin_decimals
 			];
 
 		return this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send(

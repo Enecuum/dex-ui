@@ -99,6 +99,14 @@ class NetworkApi {
         );
     };
 
+    getBridgeLastLockTransfer (url = this.url, dst_address, src_address, dst_network, src_hash) {        
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/bridge_last_lock_transfer?dst_address=${dst_address}&src_address=${src_address}&dst_network=${dst_network}&src_hash=${src_hash}`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+
     // ---------------------------------------------------------------------
 }
 

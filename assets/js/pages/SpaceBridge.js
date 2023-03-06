@@ -39,6 +39,8 @@ import {availableNetworks, smartContracts} from'./../config';
 
 import metamaskLogo from './../../img/metamask-logo.webp';
 
+import { Network, Alchemy } from "alchemy-sdk";
+
 class SpaceBridge extends React.Component {
 	constructor(props) {
         super(props);
@@ -60,6 +62,39 @@ class SpaceBridge extends React.Component {
             this.updateUserHistory();
             this.getValidatorRes();
         }, 5000)
+
+        //this.getEthBalances();
+    }
+
+    async getEthBalances() {
+        let that = this;
+        const settings = {
+          apiKey: "",
+          network: 'eth-goerli',
+        };
+        const alchemy = new Alchemy(settings);
+        const userAddress = "";
+
+        alchemy.core.getTokenBalances(userAddress).then(function(res) {
+            let userBalances = [];
+
+            if (res !== undefined && Array.isArray(res.tokenBalances)) {
+                res.tokenBalances.forEach(function(item) {
+                    alchemy.core.getTokenMetadata(item.contractAddress).then(function(tokenMeta) {
+                        userBalances.push({
+                            address : item.contractAddress,
+                            name : tokenMeta.name,
+                            ticker : tokenMeta.symbol,
+                            decimals : tokenMeta.decimals,
+                            balanceFormatted : that.valueProcessor.usCommasBigIntDecimals(BigInt(item.tokenBalance), Number(tokenMeta.decimals), Number(tokenMeta.decimals))
+                        })
+                        console.log(userBalances)                        
+                    })
+
+                })
+            } 
+
+        });
     }
 
     componentDidUpdate(prevProps) {
@@ -122,7 +157,7 @@ class SpaceBridge extends React.Component {
             (prevProps.srcTokenHash !== this.props.srcTokenHash)) {
             
             if (this.props.fromBlockchain?.id !== undefined  && this.props.toBlockchain?.id !== undefined && this.props.srcTokenHash !== undefined) {
-                this.getDstDecimalsFromValidator(this.props.fromBlockchain.id, this.props.toBlockchain.id, this.props.srcTokenHash)
+                extRequests.getDstDecimalsFromValidator(this.props.fromBlockchain.id, this.props.toBlockchain.id, this.props.srcTokenHash)
                 .then(function(validatorRes) {
                     if ((validatorRes.hasOwnProperty('err') && validatorRes.err == 0) && !isNaN(validatorRes.result.dst_decimals)) {
                         that.props.updateDstDecimals(Number(validatorRes.result.dst_decimals));
@@ -289,7 +324,7 @@ class SpaceBridge extends React.Component {
                 }
                 
     			if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
-                    that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
+                    extRequests.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
     					if (validatorRes === null || validatorRes.hasOwnProperty('err')) {
                             console.log('Validator_notify response is null for lock transaction', elem.lock.transactionHash)
     						return
@@ -379,43 +414,7 @@ class SpaceBridge extends React.Component {
 		}
 	}
 
-    async postToValidator(txHash, srcNetwork = undefined) {
-    	let URL = 'https://bridge.enex.space/api/v1/notify';    	
-    	return fetch(URL, {
-	        method: 'POST',
-	        body: JSON.stringify({networkId : srcNetwork, txHash : txHash}),
-	        headers: {'Content-Type': 'application/json','Accept': 'application/json'},
-            mode: 'cors'
-	    }).then(function(response) {            
-	        return response.json().then(res => {
-                console.log(txHash, res);
-                return res
-            }, err => {
-                console.log('Parse notify response failed');
-                return null
-            })
-	    }, function(err) {
-            console.log('Get notify response failed');
-            return null            
-        })    
-    }
 
-    async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
-        let URL = `https://bridge.enex.space/api/v1/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
-        return fetch(URL, {
-            method: 'GET'
-        }).then(function(response) {            
-            return response.json().then(res => {
-                return res
-            }, err => {
-                console.log('Parse get_dst_decimals response failed');
-                return null
-            })
-        }, function(err) {
-            console.log('Get get_dst_decimals response failed');
-            return null            
-        })    
-    }
 
     handleInputTokenHashChange(item) {
     	let that = this;
@@ -677,7 +676,7 @@ class SpaceBridge extends React.Component {
         } 
     }
 
-    async encodeDataAndLock() {
+    async proceesEnqLock() {
         let that = this;
         let chain = this.props.toBlockchain;
         let address = undefined;
@@ -690,7 +689,28 @@ class SpaceBridge extends React.Component {
             console.log('Errof: try to lock in undefined chain');
             return
         }
+        let net = that.availableNetworksUtils.getChainById(Number(that.props.fromBlockchain.id));                            
+        let url = net !== undefined ? net.explorerURL : undefined;
+        networkApi.getBridgeLastLockTransfer(url, address, this.props.pubkey, this.props.toBlockchain.id, this.props.srcTokenHash).then(function(res) {
+            if (res !== null && !res.lock) {
+                res.json().then(res => {
+                    if (res !== undefined && !isNaN(res)) {
+                        console.log(res)
+                        that.encodeDataAndLock(Number(res)+1, address);
+                    } else {
+                        console.log('Undefined nonce');
+                    }
+                }, function(err) {
+                    console.log('Can\'t get nonce');
+                });
+            }
+        }, function(err) {
+            console.log('Can\'t get nonce');
+        }); 
+    }
 
+    async encodeDataAndLock(nonce, address) {
+        let that = this;
         let URL =  'https://bridge.enex.space/api/v1/encode_lock';
         let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
@@ -700,7 +720,8 @@ class SpaceBridge extends React.Component {
             "dst_network": this.props.toBlockchain.id,
             "amount": amount,
             "src_hash": this.props.srcTokenHash,
-            "src_address": this.props.pubkey
+            "src_address": this.props.pubkey,
+            "nonce": nonce
         }
 
         let lockInfo = {...data, ...{token_decimals : token_decimals, ticker : this.props.srcTokenTicker}};
@@ -1663,7 +1684,7 @@ class SpaceBridge extends React.Component {
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
                            this.props.dstDecimals === undefined;
-                action = this.encodeDataAndLock.bind(this);
+                action = this.proceesEnqLock.bind(this);
             }            
         }
 

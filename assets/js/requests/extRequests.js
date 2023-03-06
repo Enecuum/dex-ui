@@ -6,7 +6,7 @@ import presets from '../../store/pageDataPresets';
 import trafficController from './trafficController';
 import networkApi from './networkApi';
 import ValueProcessor from '../utils/ValueProcessor';
-
+import {bridgeApi} from'./../config';
 const valueProcessor = new ValueProcessor();
 
 BigInt.prototype.toJSON = function () {
@@ -302,7 +302,45 @@ class ExtRequests {
         // console.log(data);
         // console.log(params);
         return trafficController.sendTransaction(data);
-    };    
+    };
+
+    async postToValidator(txHash, srcNetwork = undefined) {
+        let URL = `${bridgeApi.url}/notify`;        
+        return fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify({networkId : srcNetwork, txHash : txHash}),
+            headers: {'Content-Type': 'application/json','Accept': 'application/json'},
+            mode: 'cors'
+        }).then(function(response) {            
+            return response.json().then(res => {
+                console.log(txHash, res);
+                return res
+            }, err => {
+                console.log('Parse notify response failed');
+                return null
+            })
+        }, function(err) {
+            console.log('Get notify response failed');
+            return null            
+        })    
+    }
+
+    async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
+        let URL = `${bridgeApi.url}/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
+        return fetch(URL, {
+            method: 'GET'
+        }).then(function(response) {            
+            return response.json().then(res => {
+                return res
+            }, err => {
+                console.log('Parse get_dst_decimals response failed');
+                return null
+            })
+        }, function(err) {
+            console.log('Get get_dst_decimals response failed');
+            return null            
+        })    
+    }    
 
 }
 

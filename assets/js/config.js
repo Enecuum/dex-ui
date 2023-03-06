@@ -7,6 +7,10 @@ export const defaultParams = {
     chain : '0x1'
 }
 
+export const bridgeApi = {
+    url : 'https://bridge.enex.space/api/v1'
+}
+
 export const availableNetworks = [
     {
         id                    : 1, // Number, hex ???
@@ -22,7 +26,7 @@ export const availableNetworks = [
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://bit.enecuum.com/', // url to explorer mainpage
         txPageUrl             : 'https://bit.enecuum.com/#!/tx/'  // url to tx page without tx hash
-    },
+    },    
     {
         id                    : 5, // Number, hex ???
         web3ExtensionChainId  : '0x5', //strig as in Metamask, undefined if not used,
@@ -46,8 +50,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0xdF48e62B6c01422F28bBe59F45e5c0432643E081', //strig, undefined if not used
-        vaultContractAddress  : '0xE1C39d0C64ae8B5197fd68D13901Cb3B267E2e73', //strig, undefined if not used
+        bridgeContractAddress : '0xD4B3167445e5aD1D941DC2CAC26182b3840BD3Aa', //strig, undefined if not used
+        vaultContractAddress  : '0x608dA1817ffDF825586Cfc4F0C36e6000e8F4422', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage

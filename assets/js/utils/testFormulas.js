@@ -364,6 +364,8 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         // console.log(`===================\nprocesing vertex ${JSON.stringify(current)}`)
         let edges = pairs.filter(edge => edge.from === current.vertex || edge.to === current.vertex);
         edges.forEach((edge) => {
+            edge.volume1 = BigInt(edge.volume1)
+            edge.volume2 = BigInt(edge.volume2)
             if (edge.to === current.vertex) {
                 let tmp;
                 tmp = edge.from;
@@ -378,7 +380,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         // console.log('edges:', edges);
 
         edges.forEach((edge) => {
-            let adj = vertices.find((x) => x.vertex === edge.to);
+            let adj = vertices.find((x) => x.vertex === edge.to)
             let v1 = {
                 value : edge.volume1,
                 decimals : getDecimals(tokens, edge.from)
@@ -389,14 +391,15 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
                 value : current.outcome.value,
                 decimals : current.outcome.decimals
             }
-            let outcome = sellExact(v1, v2, amountIn, {
+            
+            let outcome = buyExact(v2, v1, amountIn, {
                 value : edge.pool_fee,
                 decimals : 2
             })
             if (adj) {
                 try {
                     let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(adj.outcome), _.cloneDeep(outcome))
-                    if (tmp.f < tmp.s) {
+                    if (tmp.f > tmp.s) {
                         let new_vertex = {
                             vertex: edge.to,
                             volume1 : _.cloneDeep(edge.volume1),
@@ -407,7 +410,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
                             source: edge.from
                         }
 
-                        vertices.push(new_vertex);
+                        vertices.push(new_vertex)
                     }
                 } catch (e) { }
             } else {
@@ -422,17 +425,17 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
                         source: edge.from
                     }
 
-                    vertices.push(new_vertex);
+                    vertices.push(new_vertex)
                     // console.log(`new vertex ${JSON.stringify(new_vertex)}`);
                 }
             }
         });
 
-        current.processed = true;
+        current.processed = true
         vertices.sort((a,b)=> {
             try {
                 let tmp = swapUtils.realignValueByDecimals(_.cloneDeep(a.outcome), _.cloneDeep(b.outcome))
-                if (tmp.f > tmp.s) {
+                if (tmp.f < tmp.s) {
                     return -1
                 }
                 else {
@@ -443,10 +446,12 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
             } catch (e) {
                 return 0
             }
-        });
+        })
 
-        current = vertices.find(x => x.processed === false);
+        current = vertices.find(x => x.processed === false)
     }
+
+    vertices = vertices.filter((v) => v.outcome.value >= 0n)
 
     // Backtrace
     let route = []
@@ -455,7 +460,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
     if (!current)
         return route
 
-    while (true) {
+    for (let ii = 0 ; ii < 18; ii++) {
         // check boundary
         if (!_limit) {
             // rollback
@@ -474,7 +479,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
         if (!current) {
             // if length > 1 then just roll back and set the lock filter
             if (route.length !== 1) {
-                route[0].lock = ++_limit
+                route[0].lock = _limit + 1
                 route[0].leftBehind = false
                 current = route.splice(0, 2)[1]
                 continue // avoid reducing of the _limit

@@ -94,8 +94,7 @@ class TopPairs extends React.Component {
 							hash : pair.token_0.hash,
 							ticker : uniquePairsTokensList[pair.token_0.hash].ticker,
 							volume : pair.token_0.volume,
-							decimals : uniquePairsTokensList[pair.token_0.hash].decimals
-							
+							decimals : uniquePairsTokensList[pair.token_0.hash].decimals,
 						},
 						token_1 : {
 							hash : pair.token_1.hash,
@@ -143,7 +142,7 @@ class TopPairs extends React.Component {
     }
 
     switchToSwap() {
-      this.props.changeMenuItem('exchange');      
+      this.props.changeMenuItem('exchange');
     }
 
     getPairsTable() {
@@ -231,9 +230,19 @@ class TopPairs extends React.Component {
     	)
     }
 
+    sortTable(pairsArr) {
+        // return pairsArr.sort((pair1, pair2) => {
+
+
+
+        // })
+        return pairsArr
+    }
+
     render() {
 		const t = this.props.t;
 		this.pairsArr = this.populateTable();
+        this.pairsArr = this.sortTable(this.pairsArr);
     	return (
     		<div className="row">
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			

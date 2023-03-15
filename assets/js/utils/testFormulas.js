@@ -306,7 +306,7 @@ function sellRoute (from, to, amount, pools, tokens, limit, slippage) {
         if (!current) {
             // if length > 1 then just roll back and set the lock filter
             if (route.length !== 1) {
-                route[0].lock = ++_limit
+                route[0].lock = _limit + 1
                 route[0].leftBehind = false
                 current = route.splice(0, 2)[1]
                 continue // avoid reducing of the _limit
@@ -460,7 +460,7 @@ function sellRouteRev (from, to, amount, pools, tokens, limit, slippage) {
     if (!current)
         return route
 
-    for (let ii = 0 ; ii < 18; ii++) {
+    while (true) {
         // check boundary
         if (!_limit) {
             // rollback

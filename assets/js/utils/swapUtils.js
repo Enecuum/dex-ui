@@ -223,7 +223,7 @@ function packAddressString (addr) {
 }
 
 function tenPowerDecimals (decimals) {
-    return BigInt('1' + '0'.repeat(decimals))
+    return 10n**decimals
 }
 
 function realignValueByDecimals (first, second) {

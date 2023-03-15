@@ -231,12 +231,78 @@ class TopPairs extends React.Component {
     }
 
     sortTable(pairsArr) {
-        // return pairsArr.sort((pair1, pair2) => {
+        let getVolumes = function(pair) {
+            return [
+                {
+                    value : BigInt(pair.token_0.volume),
+                    decimals : pair.token_0.decimals,
+                    hash : pair.token_0.hash
+                },
+                {
+                    value : BigInt(pair.token_1.volume),
+                    decimals : pair.token_1.decimals,
+                    hash : pair.token_1.hash
+                }                
+            ]
+        }
 
+        let getUsdVolumes = (volumes) => {
+            return volumes.reduce((res, vol) => {
+                let tokenObj = utils.getTokenObj(this.props.tokens, vol.hash)
+                if (!tokenObj.price_raw)
+                    return res
+                    
+                let usdPrice
+                if (tokenObj.price_raw.dex_price)
+                    usdPrice = tokenObj.price_raw.dex_price
+                // if (tokenObj.price_raw.cg_price)
+                //     usdPrice = tokenObj.price_raw.cg_price
+                if (!usdPrice)
+                    return res
 
+                usdPrice = {
+                    value : usdPrice,
+                    decimals : tokenObj.price_raw.decimals
+                }
+                res.push(valueProcessor.mul(vol, usdPrice))
+                return res
+            }, [])
+        }
 
-        // })
-        return pairsArr
+        let sumVols = function(volumes) {
+            return volumes.reduce((res, vol) => {
+                return valueProcessor.add(res, vol)
+            }, {value: 0, decimals: 0})
+        }
+
+        let volSort = function(volumes1, volumes2) {
+            let tvl1 = sumVols(volumes1)
+            let tvl2 = sumVols(volumes2)
+            let { f, s } = utils.realignValueByDecimals(tvl1, tvl2)
+            return f > s ? -1 : f == s ? 0 : 1
+        }
+
+        return pairsArr.sort((pair1, pair2) => {
+            let volumes1 = getVolumes(pair1)
+            let volumes2 = getVolumes(pair2)
+
+            if (volumes1[0].value + volumes1[1].value === 0n)
+                return 1
+            if (volumes2[0].value + volumes2[1].value === 0n)
+                return -1
+
+            let usdVolumes1 = getUsdVolumes(volumes1)
+            let usdVolumes2 = getUsdVolumes(volumes2)
+           
+            if (usdVolumes1.length && !usdVolumes2.length)
+                return -1
+            else if (!usdVolumes1.length && usdVolumes2.length)
+                return 1
+            else if (!usdVolumes1.length && !usdVolumes2.length)
+                return volSort(volumes1, volumes2)
+            else
+                return volSort(usdVolumes1, usdVolumes2)
+        })
     }
 
     render() {

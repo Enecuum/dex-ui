@@ -161,17 +161,61 @@ class Root extends React.Component {
     /* -------------------- Data loading --------------------- */
 
     updNetworkInfo () {
-        let networkInfo = networkApi.networkInfo();
-        networkInfo.then(result => {
-            if (!result.lock) {
-                if (result.status !== 200) {
-                    this.props.updateNetworkInfo({})
+        let networkInfoRequest = networkApi.networkInfo()
+        let trustedTokensInfoRequest = networkApi.getTrustedTokens()
+
+        Promise.allSettled([networkInfoRequest, trustedTokensInfoRequest])
+        .then(results => {
+            let infoPromises = []
+            results.forEach(result => {
+                if (result.status === "rejected")
                     return
-                }
-                result.json().then(info => {
-                    this.props.updateNetworkInfo(info);
+
+                result = result.value
+                if (result.lock)
+                    return
+                
+                if (result.status === 200)
+                    infoPromises.push(result.json())
+                else 
+                    infoPromises.push(new Promise((resolve, reject) => reject()))
+            })
+
+            Promise.allSettled(infoPromises)
+            .then(jsonResults => {
+                let networkInfo = {}
+                jsonResults.forEach((jsonResult, index) => {
+                    if (jsonResult.status === "rejected")
+                        return
+
+                    jsonResult = jsonResult.value
+                    if (index === 0)
+                        networkInfo = jsonResult
+                    if (index === 1) {
+                        if (!networkInfo.dex)
+                            networkInfo.dex = {}
+                        if (!networkInfo.dex.DEX_TRUSTED_TOKENS)
+                            networkInfo.dex.DEX_TRUSTED_TOKENS = []
+                        
+                        let newTrustedTokens = []
+                        let imgStorageInfo = []
+                        if (jsonResult.tokens && Array.isArray(jsonResult.tokens)) {
+                            for (let tToken of jsonResult.tokens) {
+                                let {address, logoURI} = tToken
+                                newTrustedTokens.push(address)
+                                imgStorageInfo.push({
+                                    hash : address,
+                                    logoURI
+                                })
+                            }
+                        }
+
+                        networkInfo.dex.DEX_TRUSTED_TOKENS = networkInfo.dex.DEX_TRUSTED_TOKENS.concat(newTrustedTokens)
+                        networkInfo.dex.IMG_STORAGE_INFO = imgStorageInfo
+                    }
                 })
-            }
+                this.props.updateNetworkInfo(networkInfo)
+            })
         })
     }
 
@@ -257,19 +301,6 @@ class Root extends React.Component {
     }
 
     updTokens() {
-        // if ()
-        //
-        // if (this.oldNet !== this.props.mainToken) {
-        //
-        //     while (this.oldStateLen )
-        //
-        //
-        //     this.oldNet = this.props.mainToken
-        //     setTimeout(, 2000)
-        // } else {
-        //     this.oldStateLen = this.props.pairs.length + this.props.tokens.length
-        // }
-
         swapApi.getTokens()
         .then(res => {
             if (!res.lock) {
@@ -384,7 +415,7 @@ class Root extends React.Component {
     updTokensImageInfo (tokens, withoutImagePlaces) {
         return new Promise(resolve => {
             let networkCut = ""
-            if (this.props.networkInfo && this.props.networkInfo.native_token.ticker)
+            if (this.props.networkInfo && this.props.networkInfo.native_token && this.props.networkInfo.native_token.ticker)
                 networkCut = this.props.networkInfo.native_token.ticker.toLowerCase()
             else {
                 resolve(tokens)
@@ -396,7 +427,7 @@ class Root extends React.Component {
                         for (let index of withoutImagePlaces)
                             tokens[index].logo = this.findLogo(infoStorageEnq, tokens[index].hash)
                         resolve(tokens)
-                    }).catch(() => resolve())
+                    }).catch((err) => resolve(err))
                 } else
                     resolve(tokens)
             })
@@ -404,8 +435,20 @@ class Root extends React.Component {
     }
 
     findLogo (infoStorageEnq, tokenHash) {
-        let res = infoStorageEnq.find(el => el.token_id === tokenHash)
-        return res ? res.logo : null
+        let networkInfo = this.props.networkInfo
+        if (networkInfo && networkInfo.dex) {
+            if (!networkInfo.dex.IMG_STORAGE_INFO)
+                return
+            let res = networkInfo.dex.IMG_STORAGE_INFO.find(token => token.hash === tokenHash)
+            if (res && res.logoURI) {
+                res = res.logoURI.split("/")
+                res = res[res.length - 1]
+                return res
+            } else {
+                res = infoStorageEnq.find(el => el.token_id === tokenHash)
+                return res ? res.logo : null
+            }
+        } else return
     }
 
     /* -------------- Upd balances in swapCard --------------- */

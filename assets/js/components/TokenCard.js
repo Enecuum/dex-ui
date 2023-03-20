@@ -52,6 +52,7 @@ class TokenCard extends React.Component  {
     }
 
     updTokens() {
+        
         this.props.assignTokenList(this.makeList(this.props.sort))
     }
 

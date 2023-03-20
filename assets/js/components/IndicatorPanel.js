@@ -274,64 +274,6 @@ class IndicatorPanel extends React.Component {
         this.setState({pendingVisibility : true})
     }
 
-    // controlPendingSpinnerVisibility (pendingArray) {
-    //     let promises = []
-    //     for (let pendingRequest of pendingArray)
-    //         promises.push(swapApi.tx(pendingRequest.hash))
-    //
-    //     Promise.allSettled(promises)
-    //         .then(results => {
-    //             let allDone = true
-    //             promises = []
-    //             for (let res of results) {
-    //                 promises.push(
-    //                     res.value.json()
-    //                         .then(res => {
-    //                             if (res.status !== 3 && res.status !== 2)
-    //                                 allDone = false
-    //                         })
-    //                         .catch(() => allDone = false)
-    //                 );
-    //             }
-    //             Promise.all(promises)
-    //                 .then(() => {
-    //                     if (allDone)
-    //                         this.hidePendingIndicator()
-    //                     else
-    //                         this.showPendingIndicator()
-    //                 })
-    //         })
-    // }
-
-    // filterEnexTxs (pendingArray) {
-    //     for (let i in pendingArray) {
-    //         let data = ENQWeb.Utils.ofd.parse(pendingArray[i].data)
-    //         if (Object.keys(pageDataPresets.pending.allowedTxTypes).indexOf(data.type) === -1)
-    //             pendingArray.splice(i, 1)
-    //     }
-    //     return pendingArray
-    // }
-
-    // updPendingSpinner () {
-    //     return setInterval(() => {
-    //         if (this.props.pubkey) {
-    //             swapApi.pendingTxAccount(this.props.pubkey)
-    //                 .then(res => {
-    //                     if (!res.lock)
-    //                         res.json()
-    //                             .then(pendingArray => {
-    //                                 if (Array.isArray(pendingArray) && pendingArray.length !== 0) {
-    //                                     pendingArray = this.filterEnexTxs(pendingArray)
-    //                                     this.controlPendingSpinnerVisibility(pendingArray)
-    //                                 } else {
-    //                                     this.hidePendingIndicator()
-    //                                 }
-    //                             })
-    //                 })
-    //         }
-    //     }, 1000)
-    // }
-
     toastHeader () {
         return(<>
             <div className="mr-auto">

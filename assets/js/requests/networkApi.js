@@ -15,13 +15,21 @@ class NetworkApi {
         this.url = url
     }
 
+    getTrustedTokens () {
+        return trafficController.simpleRequest(`https://app.enecuum.com/default_token_list.json`,
+            {
+                method : 'GET'
+            }
+        );
+    };
+
     getStats (url = this.url) {
         return trafficController.simpleRequest(`${url}api/${config.api_version}/stats`,
             {
                 method : 'GET'
             }
         );
-    }
+    };
 
     getContractPricelist (url = this.url) {        
         return trafficController.simpleRequest(`${url}api/${config.api_version}/contract_pricelist`,

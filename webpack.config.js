@@ -19,7 +19,8 @@ module.exports = () => {
     return {
         entry : {
             app : [path.resolve(SOURCE, 'root.js')],
-            routingWorker : path.resolve(SOURCE, 'utils/routingWorker.js')
+            routingWorker : path.resolve(SOURCE, 'utils/routingWorker.js'),
+            trustedTokensAnalyzer : path.resolve(SOURCE, 'utils/trustedTokensAnalyzer.js')
         },
         output : {
             path : PUBLIC,

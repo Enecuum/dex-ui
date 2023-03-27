@@ -48,6 +48,7 @@ import networkApi from './requests/networkApi'
 /* --------------------- Other utils --------------------- */
 import utils from './utils/swapUtils'
 import NonNativeConnectionManager from './nonNativeConnectionManager/NonNativeConnectionManager'
+import workerProcessor from './utils/WorkerProcessor'
 
 class Root extends React.Component {
     constructor (props) {
@@ -90,9 +91,18 @@ class Root extends React.Component {
         }
     }
 
+    componentDidMount () {
+        this.routingWorker = workerProcessor.spawn("/js/enex.trustedTokensAnalyzer.js")
+    }
+
     componentWillUnmount () {
         this.intervalDescriptors.forEach(descriptor => clearInterval(descriptor))
         clearInterval(this.updDexDataDescriptor)
+        if (this.routingWorker) {
+            try {
+                this.routingWorker.close()
+            } catch (e) {}
+        }
     }
 
     setUpdDataDescriptor (timeout) {
@@ -212,9 +222,19 @@ class Root extends React.Component {
 
                         networkInfo.dex.DEX_TRUSTED_TOKENS = networkInfo.dex.DEX_TRUSTED_TOKENS.concat(newTrustedTokens)
                         networkInfo.dex.IMG_STORAGE_INFO = imgStorageInfo
+
+
                     }
                 })
-                this.props.updateNetworkInfo(networkInfo)
+
+                this.routingWorker.postMessage({
+                    mode : "trusted_tokens_analyzer",
+                    trustedTokens : networkInfo.dex.DEX_TRUSTED_TOKENS,
+                    pairs : this.props.pairs
+                })
+                .then(trustedTokens => networkInfo.dex.DEX_TRUSTED_TOKENS = trustedTokens)
+                .catch(err => console.log(err))
+                .finally(() => this.props.updateNetworkInfo(networkInfo))
             })
         })
     }

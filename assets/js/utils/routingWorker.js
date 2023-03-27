@@ -12,7 +12,7 @@ self.addEventListener("message", (msg) => {
             data.limit,
             data.slippage
         )
-    else
+    else if ((data.mode === "buy"))
         route = testFormulas.sellRouteRev(
             data.token0.hash,
             data.token1.hash,
@@ -22,5 +22,7 @@ self.addEventListener("message", (msg) => {
             data.limit,
             data.slippage
         )
+    else 
+        return
     self.postMessage(route)
 })

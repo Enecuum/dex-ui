@@ -39,11 +39,8 @@ class NetworkApi {
         );
     };
 
-    getDexFarms (farmer_id = '', whiteList = [], url = this.url) {
+    getDexFarms (farmer_id = '', whiteList, url = this.url) {
         let stringfyWhiteList = '';
-
-        if (!whiteList.length)
-            return new Promise(resolve => resolve({lock : true}))
 
         if (whiteList !== undefined && Array.isArray(whiteList) && whiteList.length > 0) {
             whiteList.forEach(element => {

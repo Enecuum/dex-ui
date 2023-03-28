@@ -161,12 +161,23 @@ class Farms extends React.Component {
 
     updateFarms() {
         let whiteList = presets.dropFarms.spaceHarvestFarms.whiteList;
-        let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
+        // let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
+        let farmsList = networkApi.getDexFarms(this.props.pubkey);
 
         farmsList.then(result => {
             if (!result.lock) {
                 result.json().then(resultFarmsList => {
-                    this.farms = resultFarmsList;
+
+                    let farmGroups = resultFarmsList.reduce((prev, cur) => {
+                        if (whiteList.find(el => el === cur.farm_id))
+                            prev.whiteListFarms.push(cur)
+                        else 
+                            prev.otherFarms.push(cur)
+                        return prev
+                    }, {whiteListFarms: [], otherFarms: []})
+
+                    this.farms = farmGroups.whiteListFarms.concat(this.filterTrustedFarms(farmGroups.otherFarms))
+
                     this.props.updateFarmsList({
                         value : resultFarmsList
                     });
@@ -185,6 +196,20 @@ class Farms extends React.Component {
             this.farms = [];
         })
     }    
+
+    filterTrustedFarms (farms) {
+        return farms.filter(farm => {
+            let trustedCounter = 0
+            if (!this.checkLP(farm))
+                return false
+            for (let trustedToken of this.props.networkInfo.dex.DEX_TRUSTED_TOKENS) {
+                if (farm.reward_token_hash === trustedToken || farm.stake_token_hash === trustedToken)
+                    trustedCounter++
+                if (trustedCounter === 2)
+                    return true
+            }
+        })
+    }
 
     updateExpandedRow(event) {
     	const target = event.target;        
@@ -512,7 +537,7 @@ class Farms extends React.Component {
         return false
     }
 
-    checkLPtoENX (farm) {
+    checkLP (farm) {
         //if (farm.reward_token_hash !== this.props.networkInfo.dex.DEX_ENX_TOKEN_HASH)
         //    return false
         return swapUtils.searchByLt(this.props.pairs, farm.stake_token_hash)
@@ -716,8 +741,9 @@ class Farms extends React.Component {
 					<Table hover variant="dark" className="table-to-cards">
 						<tbody>
 					        {this.farms.map(( farm, index ) => {
-					            if (!this.checkByStatus(farm) || !this.checkLPtoENX(farm))
+					            if (!this.checkByStatus(farm) || !this.checkLP(farm))
 					                return <></>
+                                
                                 let farmTitle = farm.stake_token_name + '-' + farm.reward_token_name;
 					            let farmStatus = this.getFarmStatus(farm)
 					        	return (

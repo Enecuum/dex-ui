@@ -222,8 +222,6 @@ class Root extends React.Component {
 
                         networkInfo.dex.DEX_TRUSTED_TOKENS = networkInfo.dex.DEX_TRUSTED_TOKENS.concat(newTrustedTokens)
                         networkInfo.dex.IMG_STORAGE_INFO = imgStorageInfo
-
-
                     }
                 })
 

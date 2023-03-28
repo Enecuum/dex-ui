@@ -11,7 +11,7 @@ import { FixedSizeList } from "react-window"
 import '../../css/token-card.css'
 import '../../css/custom-toggle.css'
 
-import {LogoToken, LogoTokenLP, LogoTokenTrusted} from "../elements/LogoToken"
+import {LogoToken, LogoTokenLP, LogoTokenTrusted, LogoTokenLPTrusted} from "../elements/LogoToken"
 import TokenCardSettings from "./TokenCardSettings"
 import ModalMultiTab from "../elements/ModalMultiTab"
 
@@ -219,17 +219,23 @@ class TokenCard extends React.Component  {
                     }
 
                     let tBalance = swapUtils.getBalanceObj(this.props.balances, el.hash)
-
+                    let trusted = this.isTrustedToken(el.hash)
                     return (
                         <div style={style} key={index}>
                             <div onClick={this.assignToken.bind(this, el)} className="d-flex justify-content-between hover-pointer token-option">
                                 {
-                                    this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
-                                    lpPair && <LogoTokenLP customClasses='py-1 my-1 px-1'
+                                    lpPair && (
+                                        trusted && <LogoTokenLPTrusted customClasses='py-1 my-1 px-1'
                                                         data = {logoData}
                                                         fToken={fToken}
                                                         sToken={sToken}
-                                    /> ||
+                                        /> || <LogoTokenLP customClasses='py-1 my-1 px-1'
+                                                        data = {logoData}
+                                                        fToken={fToken}
+                                                        sToken={sToken}
+                                        />
+                                    ) || 
+                                    this.isTrustedToken(el.hash) && <LogoTokenTrusted customClasses='py-1 my-1 px-1' data = {logoData} /> ||
                                     <LogoToken customClasses='py-1 my-1 px-1' data = {logoData} />
                                 }
                                 <div className={"ml-3 pt-2 text-muted"}>

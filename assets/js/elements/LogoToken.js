@@ -58,9 +58,9 @@ class LogoTokenTrusted extends React.Component {
 }
 
 class LogoTokenLP extends React.Component {
-
     render () {
         let addInfo = <div>
+            {this.props.additionalInfo}
             <a href = {"/#!action=swap&pair=" + this.props.fToken.ticker + "-" + this.props.sToken.ticker + '&from=' + this.props.fToken.hash + "&to=" + this.props.sToken.hash}
                className="token-caption"
             >
@@ -71,6 +71,20 @@ class LogoTokenLP extends React.Component {
             <LogoTokenDef additionalInfo={addInfo}
                           customClasses={this.props.customClasses}
                           data={this.props.data}
+            />
+        )
+    }
+}
+
+class LogoTokenLPTrusted extends React.Component {
+    render () {
+        let addInfo = <img src={enqLogo} alt="*" className="trusted-logo mb-1 mr-2"/>
+        return (
+            <LogoTokenLP additionalInfo={addInfo}
+                         customClasses={this.props.customClasses}
+                         fToken={this.props.fToken}
+                         sToken={this.props.sToken}
+                         data={this.props.data}
             />
         )
     }
@@ -90,5 +104,6 @@ class LogoToken extends React.Component {
 export {
     LogoToken,
     LogoTokenLP,
-    LogoTokenTrusted
+    LogoTokenTrusted,
+    LogoTokenLPTrusted
 }

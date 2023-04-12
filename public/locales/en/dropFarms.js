@@ -41,6 +41,10 @@ module.exports = {
             "nextSteps" : {
                 "header" : "Voting about Enecuum security incident - {{status}}",
                 "description" : "Voting Description: A vote of the ENQ holders is necessary to choose a way forward to resolve the existing issue of 79,723,426.95 ENQ. Proposals from the team, proposals from the community were collected. The option with the highest ENQ steak will be chosen for further implementation in the protocol."
+            },
+            "miningSlots" : {
+                "header" : "Voting about reduction the lower threshold for participation in the distribution of mining slots - {{status}}",
+                "description" : "Voting Description: Enecuum network is offering a voting opportunity for a proposal to change the minimum stake required for obtaining a mining slot for user tokens. The aim is to reduce the lower threshold to enable more token owners to participate in the process. Currently, the minimum stake required is 500,000 enq on the token issuer's account. The voting process will begin on April 13 and last for two weeks, and members of the community are encouraged to participate. The mining slot mechanism is crucial for mining user tokens on the Enecuum network, and further information can be found on the Enecuum blog and documentation."
             }
         },
 

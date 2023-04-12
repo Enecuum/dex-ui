@@ -1,33 +1,4 @@
-const proposals = {
-    p1 : {
-        issue : "Extend max supply to the amount of uncontrolled emission",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#8ba2"
-    },
-    p2 : {
-        issue : "Extend Max Supply and create a DAO to manage extra funds",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#3a8d"
-    },
-    p3 : {
-        issue : "Burn team's ENQ + reduce mining emission period",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#a820"
-    },
-    p4 : {
-        issue : "Increase transfer fee and burn a part from it",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#d4fd"
-    },
-    p5 : {
-        issue : "Burn team's ENQ and extend max supply",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#f152"
-    },
-    p6 : {
-        issue : "Decrease mining rewards",
-        proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#22aa"
-    },
-}
-
-
 const presets =  {
-
     pending : {
         allowedTxTypes : {
             pool_create : 'pool_create',
@@ -149,6 +120,43 @@ const presets =  {
         },
         voting : {
             votes : {
+                miningSlots : {
+                    finalBlockNum : 5514240,
+                    forceDeactivation : false,
+                    situationReadme : "https://blog.enecuum.com/poa-mining-slots-announcement-46c038302373",
+                    voutingReadme : "https://trinitylab.gitbook.io/enex.space/how-to-use/governance",
+                    // resultsReadme : "", 
+                    list : [
+                        {
+                            issue : "Set minimal stake to: 500,000 ENQ",
+                            proposal : "https://blog.enecuum.com/mining-slots-voting-803c9b412c4c",
+                            farm_ids : [
+                                "28be327a0512fa0326bd385d85cfd64722d010f103d0aabe0beb8d788e233bdb"
+                            ]
+                        },
+                        {
+                            issue : "Set minimal stake to: 250,000 ENQ",
+                            proposal : "https://blog.enecuum.com/mining-slots-voting-803c9b412c4c",
+                            farm_ids : [
+                                "64f01b9d92675153803e99a3cab4687f909f4a415aa69db38826bc7a03c334d8"
+                            ]
+                        },
+                        {
+                            issue : "Set minimal stake to: 125,000 ENQ",
+                            proposal : "https://blog.enecuum.com/mining-slots-voting-803c9b412c4c",
+                            farm_ids : [
+                                "9db59aab986f596efe352397e6507de6bf482a0f13098c3a64c7a8be275cc7a2"
+                            ]
+                        },
+                        {
+                            issue : "Set minimal stake to: 75,000 ENQ",
+                            proposal : "https://blog.enecuum.com/mining-slots-voting-803c9b412c4c",
+                            farm_ids : [
+                                "eb461ae87b7cd3c6b19b905008e93bc758379a7569abeafbc5db4f3ff86ff0a0"
+                            ]
+                        }
+                    ]
+                },
                 nextSteps : {
                     finalBlockNum : 5111040,
                     forceDeactivation : true,
@@ -156,56 +164,53 @@ const presets =  {
                     voutingReadme : "https://trinitylab.gitbook.io/enex.space/how-to-use/governance",
                     resultsReadme : "https://blog.enecuum.com/voting-results-and-next-steps-an-overview-cd12b7f49f15", 
                     list : [
-                        // bit
                         {
-                            farm_id: "1d2296bdc6b018f8da636c7d0843b5a2c9acc7bdf44a60d4d3ffc20e928db9c2",
-                            ...proposals.p1
+                            issue : "Extend max supply to the amount of uncontrolled emission",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#8ba2",
+                            farm_ids : [
+                                "1d2296bdc6b018f8da636c7d0843b5a2c9acc7bdf44a60d4d3ffc20e928db9c2",
+                                "578b407bd9e8c316a5b3f298246df1800f4088c64050931b2c8363b2adfc11aa"
+                            ]
                         },
                         {
-                            farm_id: "5d4fc5565069b852658de1071811dffa116accf828c474b1806004b06dbe2e19",
-                            ...proposals.p2
+                            issue : "Extend Max Supply and create a DAO to manage extra funds",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#3a8d",
+                            farm_ids : [
+                                "5d4fc5565069b852658de1071811dffa116accf828c474b1806004b06dbe2e19",
+                                "5e85a3cc8495348ebe53efa537f6cea90f5f968650ad3d311184079b8468cb56"
+                            ]
                         },
                         {
-                            farm_id: "5f63c2df455400a7788e255d4b2bbf1d094d081d4c644a0c07279eecebc5f700",
-                            ...proposals.p3
+                            issue : "Burn team's ENQ + reduce mining emission period",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#a820",
+                            farm_ids : [
+                                "5f63c2df455400a7788e255d4b2bbf1d094d081d4c644a0c07279eecebc5f700",
+                                "677d61e17e1b682b6d79366152829bb0f6ac476f711688a226935d0ce0608695"
+                            ]
                         },
                         {
-                            farm_id: "c8452c255d3d51955aa438d42a0470bb29cfae320549825ebe0fc9c1cffc6425",
-                            ...proposals.p4
+                            issue : "Increase transfer fee and burn a part from it",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#d4fd",
+                            farm_ids : [
+                                "c8452c255d3d51955aa438d42a0470bb29cfae320549825ebe0fc9c1cffc6425",
+                                "6f00bd2cbc51e71f0afb2ff63c566229380d2f132c5dfcecdad9975d8400b651"
+                            ]
                         },
                         {
-                            farm_id: "cd53ca30759a8121e499d650482c916c066e1e9fd3c8ebc3cfedb657438fb3ff",
-                            ...proposals.p5
+                            issue : "Burn team's ENQ and extend max supply",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#f152",
+                            farm_ids : [
+                                "cd53ca30759a8121e499d650482c916c066e1e9fd3c8ebc3cfedb657438fb3ff",
+                                "9af399fa788bead59a8983d78abb633d3a6cdf30c2d7fd1b6d44bfb2d276787f"
+                            ]
                         },
                         {
-                            farm_id: "ecb398af2c94c3a175d8881f854a3e5a627d218d6cfd4f125b37a136e1def1a1",
-                            ...proposals.p6
-                        },
-        
-                        // pulse
-                        {
-                            farm_id: "578b407bd9e8c316a5b3f298246df1800f4088c64050931b2c8363b2adfc11aa",
-                            ...proposals.p1
-                        },
-                        {
-                            farm_id: "5e85a3cc8495348ebe53efa537f6cea90f5f968650ad3d311184079b8468cb56",
-                            ...proposals.p2
-                        },
-                        {
-                            farm_id: "677d61e17e1b682b6d79366152829bb0f6ac476f711688a226935d0ce0608695",
-                            ...proposals.p3
-                        },
-                        {
-                            farm_id: "6f00bd2cbc51e71f0afb2ff63c566229380d2f132c5dfcecdad9975d8400b651",
-                            ...proposals.p4
-                        },
-                        {
-                            farm_id: "9af399fa788bead59a8983d78abb633d3a6cdf30c2d7fd1b6d44bfb2d276787f",
-                            ...proposals.p5
-                        },
-                        {
-                            farm_id: "be7367e3454844a7dc467a3ef5a12cec45108cec88d4f1782d068535135aab48",
-                            ...proposals.p6
+                            issue : "Decrease mining rewards",
+                            proposal : "https://blog.enecuum.com/the-proposals-fe2dcf1a5dd7#22aa",
+                            farm_ids : [
+                                "ecb398af2c94c3a175d8881f854a3e5a627d218d6cfd4f125b37a136e1def1a1",
+                                "be7367e3454844a7dc467a3ef5a12cec45108cec88d4f1782d068535135aab48"
+                            ]
                         }
                     ]
                 }

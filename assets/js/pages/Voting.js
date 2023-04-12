@@ -19,6 +19,7 @@ import utils from '../utils/swapUtils';
 import '../../css/drop-farms.css';
 import 'simplebar/dist/simplebar.min.css';
 import lsdp from "../utils/localStorageDataProcessor";
+import _ from 'lodash';
 
 
 const valueProcessor = new ValueProcessor();
@@ -173,7 +174,11 @@ class Voting extends React.Component {
         for (let vote in votes)
             list = list.concat(votes[vote].list)
 
-        let whiteList = list.map(farm => farm.farm_id);
+        let whiteList = list.reduce((total, farm) => {
+            for (let farm_id of farm.farm_ids)
+                total.push(farm_id)
+            return total
+        }, []);
         let farmsList = networkApi.getDexFarms(this.props.pubkey, whiteList);
 
         farmsList.then(result => {
@@ -524,7 +529,6 @@ class Voting extends React.Component {
     getFarmsTable() {
     	const t = this.props.t
         let votes = this.sortVotes(presets.dropFarms.voting.votes)
-
     	return (
     		<>
 	            <div className="d-flex justify-content-between">
@@ -577,7 +581,7 @@ class Voting extends React.Component {
                         <div className="mb-0">
                             <a href={vote.voutingReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
                         </div>
-                        {(!activeVouting || !vote.resultsReadme) && 
+                        {(!activeVouting || vote.resultsReadme) && 
                             <div className="mb-0">
                                 <a href={vote.resultsReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
                             </div>
@@ -591,54 +595,60 @@ class Voting extends React.Component {
 		    	<div className="drop-farms-table-wrapper governance">	
                         <Table hover variant="dark" className="table-to-cards">
                             <tbody>
-                                {vote.list.map(( listItem, index ) => {
-                                    let farm = this.farms.find(farm => farm.farm_id === listItem.farm_id)
-                                    if (!farm)
-                                        return <></>
-                                    let farmTitle = listItem.issue;
+                                {vote.list.map(( listItem, index0 ) => {
                                     return (
-                                        <>
-                                            <tr key={index} data-farm-id={listItem.farm_id} data-expanded-row={this.props.expandedRow === listItem.farm_id} className="votingCard">
-                                                <td>
-                                                    <div className="cell-wrapper pl-5 text-nowrap">
-                                                        <div className="h5 mb-0">{farmTitle}</div>
-                                                        <div className="long-value" ><a href={listItem.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
-                                                    </div>	
-                                                </td>
-                                                <td>
-                                                    <div className="cell-wrapper pl-5">
-                                                        <div className="text-color4">{t('dropFarms.voting.totalVotes')}</div>
-                                                        <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.total_stake !== undefined ? farm.total_stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
-                                                    </div>	
-                                                </td>
-                                                <td>                                                    
-                                                    <div className="cell-wrapper pl-5">
-                                                        <div className="text-color4">{t('dropFarms.voting.myVotes')}</div>
-                                                        <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm !== null && farm.stake !== null ? farm.stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div className="cell-wrapper pl-5 d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedRow.bind(this)}>
-                                                        <div className="mr-2">{t('dropFarms.details')}</div>
-                                                        <span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
-                                                    </div>	
-                                                </td>
-                                            </tr>
-                                            {this.props.expandedRow === listItem.farm_id &&
-                                                <tr className="mb-3 farm-controls-wrapper">
-                                                    <td colSpan="7" className="py-4">
-                                                        <div className="dropfarms-controls-wrapper mx-0 px-0">
-                                                            <div className="dropfarm-control">
-                                                                <div className="border-solid-2 c-border-radius2 border-color2 p-4">
-                                                                    {this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
-                                                                </div>
+                                        listItem.farm_ids.map((farmId, index1) => {
+                                            listItem.farm_id = farmId
+                                            let index = String(index0) + String(index1)
+                                            let farm = this.farms.find(farm => farm.farm_id === listItem.farm_id)
+                                            if (!farm)
+                                                return <></>
+                                            let farmTitle = listItem.issue;
+                                            return (
+                                                <>
+                                                    <tr key={index} data-farm-id={listItem.farm_id} data-expanded-row={this.props.expandedRow === listItem.farm_id} className="votingCard">
+                                                        <td>
+                                                            <div className="cell-wrapper pl-5 text-nowrap">
+                                                                <div className="h5 mb-0">{farmTitle}</div>
+                                                                <div className="long-value" ><a href={listItem.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
+                                                            </div>	
+                                                        </td>
+                                                        <td>
+                                                            <div className="cell-wrapper pl-5">
+                                                                <div className="text-color4">{t('dropFarms.voting.totalVotes')}</div>
+                                                                <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm.total_stake !== undefined ? farm.total_stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
+                                                            </div>	
+                                                        </td>
+                                                        <td>                                                    
+                                                            <div className="cell-wrapper pl-5">
+                                                                <div className="text-color4">{t('dropFarms.voting.myVotes')}</div>
+                                                                <div className="long-value">{valueProcessor.usCommasBigIntDecimals((farm !== null && farm.stake !== null ? farm.stake : '---'), farm.stake_token_decimals, farm.stake_token_decimals)}</div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </>
-                                    );
+                                                        </td>
+                                                        <td>
+                                                            <div className="cell-wrapper pl-5 d-flex align-items-center justify-content-center text-color4 details-control unselectable-text" onClick={this.updateExpandedRow.bind(this)}>
+                                                                <div className="mr-2">{t('dropFarms.details')}</div>
+                                                                <span className="icon-Icon26 d-flex align-items-center chevron-down"></span>
+                                                            </div>	
+                                                        </td>
+                                                    </tr>
+                                                    {this.props.expandedRow === listItem.farm_id &&
+                                                        <tr className="mb-3 farm-controls-wrapper">
+                                                            <td colSpan="7" className="py-4">
+                                                                <div className="dropfarms-controls-wrapper mx-0 px-0">
+                                                                    <div className="dropfarm-control">
+                                                                        <div className="border-solid-2 c-border-radius2 border-color2 p-4">
+                                                                            {this.getStakeControl(farm.stake_token_name, !(farm.stake !== null && farm.stake > 0))}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </>
+                                            );  
+                                        })
+                                    )
                                 })}
                             </tbody>
                         </Table>			

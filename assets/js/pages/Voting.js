@@ -83,6 +83,8 @@ class Voting extends React.Component {
         this.interval = setInterval(() => {
             this.getDataSet()
         }, 1000)
+
+        this.updateExpandedVote(0)
     }
 
     componentWillUnmount() {
@@ -576,14 +578,14 @@ class Voting extends React.Component {
                             {vote.description}
                         </div>
                         <div className="mb-0">
-                            <a href={vote.situationReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
+                            <a href={vote.situationReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
                         </div>
                         <div className="mb-0">
-                            <a href={vote.voutingReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
+                            <a href={vote.voutingReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
                         </div>
                         {(!activeVouting || vote.resultsReadme) && 
                             <div className="mb-0">
-                                <a href={vote.resultsReadme} className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
+                                <a href={vote.resultsReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
                             </div>
                         }
                         <h2 className="h2 mb-4 mt-4">
@@ -610,7 +612,7 @@ class Voting extends React.Component {
                                                         <td>
                                                             <div className="cell-wrapper pl-5 text-nowrap">
                                                                 <div className="h5 mb-0">{farmTitle}</div>
-                                                                <div className="long-value" ><a href={listItem.proposal} className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
+                                                                <div className="long-value" ><a href={listItem.proposal} target="_blank" className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
                                                             </div>	
                                                         </td>
                                                         <td>

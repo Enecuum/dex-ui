@@ -124,7 +124,7 @@ const presets =  {
                     finalBlockNum : 5514240,
                     forceDeactivation : false,
                     situationReadme : "https://blog.enecuum.com/poa-mining-slots-announcement-46c038302373",
-                    voutingReadme : "https://trinitylab.gitbook.io/enex.space/how-to-use/governance",
+                    voutingReadme : "https://guides.enecuum.com/enq/token-issue.html#mining-slots",
                     // resultsReadme : "", 
                     list : [
                         {

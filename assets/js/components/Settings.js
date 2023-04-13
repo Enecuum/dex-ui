@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
 import { Form, Modal, InputGroup, FormControl } from "react-bootstrap"
+import {initSettings, settings} from "../utils/tokensSettings"
 
 import CommonModal from "../elements/CommonModal"
 import Tooltip from "../elements/Tooltip"
@@ -44,6 +45,7 @@ class Settings extends React.Component {
 				alias : '5%'
 			}
 		]
+        this.settings = initSettings()
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
@@ -96,6 +98,26 @@ class Settings extends React.Component {
 		lsdp.simple.write("ENEXUserSlippage", value)
 	}
 
+    renderToggle (localStorageKey) {
+        return (
+            <>
+                <div className="row mt-1">
+                    <div className="col d-flex align-items-center">
+                        <input  type="checkbox"
+                                className="c-toggle mx-0"
+                                onClick={e => this.updFlag(localStorageKey, e.target.checked)}
+                                defaultChecked={this.settings[localStorageKey]}
+                        />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    updFlag (key, value) {
+        lsdp.simple.write(key, value)
+    }
+
 	renderModalHeader () {
 		let t = this.props.t
 		return(
@@ -146,43 +168,54 @@ class Settings extends React.Component {
 	renderModalBody () {
 		let t = this.props.t
 		return(
-			<div className="d-flex justify-content-center px-3 w-100">
-				<div className="w-100">
-					<div className="row mb-2 mx-0">
-						<div className="mr-2">{t('trade.swapCard.settings.slippageHeader')}</div>
-						<Tooltip text={t('trade.swapCard.settings.slippageTooltip')}/>
-					</div>
-					<div className="d-flex justify-content-center mb-3">
-						<Form.Control onChange={e => this.setSlippagePercent(e.target.value)}
-									  className='text-input-1 form-control shadow-none text-right slippage-input'
-									  type='text'
-									  value={this.state.slippagePercent}
-									  autoComplete="off"
-									  autoFocus
-						/>
-						<span className="d-flex align-items-center px-1 percent-span">%</span>
-					</div>
-					<div className="row mx-0">
-						{this.renderRange()}
-					</div>
-					<div className="d-flex align-items-center justify-content-between row mx-0">
-						{this.settingsRanges.map((item, index) => (
-							<button key={index+''}
-									className="btn btn-secondary px-3 py-1 btn-sm"
-									size="sm"
-									onClick={this.setSlippagePercent.bind(this, item.value)}
-							>
-								{item.alias}
-							</button>
-						))}
-					</div>
-					{(this.state.errorMessage !== undefined) &&
-						<small className="row err-msg d-block form-text mx-0">
-							{ t(`errorMsg.${this.state.errorMessage}`, this.state.errorParams) }
-						</small>
-					}
-				</div>
-			</div>
+            <div>
+                <div className="d-flex justify-content-center px-3 w-100">
+                    <div className="w-100">
+                        <div className="row mb-2 mx-0">
+                            <div className="mr-2">{t('trade.swapCard.settings.slippageHeader')}</div>
+                            <Tooltip text={t('trade.swapCard.settings.slippageTooltip')}/>
+                        </div>
+                        <div className="d-flex justify-content-center mb-3">
+                            <Form.Control onChange={e => this.setSlippagePercent(e.target.value)}
+                                        className='text-input-1 form-control shadow-none text-right slippage-input'
+                                        type='text'
+                                        value={this.state.slippagePercent}
+                                        autoComplete="off"
+                                        autoFocus
+                            />
+                            <span className="d-flex align-items-center px-1 percent-span">%</span>
+                        </div>
+                        <div className="row mx-0">
+                            {this.renderRange()}
+                        </div>
+                        <div className="d-flex align-items-center justify-content-between row mx-0">
+                            {this.settingsRanges.map((item, index) => (
+                                <button key={index+''}
+                                        className="btn btn-secondary px-3 py-1 btn-sm"
+                                        size="sm"
+                                        onClick={this.setSlippagePercent.bind(this, item.value)}
+                                >
+                                    {item.alias}
+                                </button>
+                            ))}
+                        </div>
+                        {(this.state.errorMessage !== undefined) &&
+                            <small className="row err-msg d-block form-text mx-0">
+                                { t(`errorMsg.${this.state.errorMessage}`, this.state.errorParams) }
+                            </small>
+                        }
+                    </div>
+                </div>
+                <div className="d-flex justify-content-between mt-4 px-3">
+                    <div className="w-75 d-flex">
+                        <div className="mr-2">Routing switch</div>
+                        <Tooltip text={"coming soon"}/>
+                    </div>
+                    <div className="">
+                        {this.renderToggle(settings.routingSwitch, "")}
+                    </div>
+                </div>
+            </div>
 		)
 	}
 

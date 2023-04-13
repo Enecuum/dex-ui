@@ -3,14 +3,16 @@ import lsdp from "./localStorageDataProcessor"
 const settings = {
     upTrustedTokens : "raise_up_trusted_tokens",
     upBalances : "raise_up_balances",
-    upLpTokens : "raise_up_lp_tokens"
+    upLpTokens : "raise_up_lp_tokens",
+    routingSwitch : "routing_switch"
 }
 
 function initSettings () {
     return {
         [settings.upTrustedTokens] : initSetting(settings.upTrustedTokens),
         [settings.upBalances] : initSetting(settings.upBalances),
-        [settings.upLpTokens] : initSetting(settings.upLpTokens)
+        [settings.upLpTokens] : initSetting(settings.upLpTokens),
+        [settings.routingSwitch] : initSetting(settings.routingSwitch)
     }
 }
 
@@ -23,6 +25,8 @@ function defaultSetting (localStorageKey) {
         return "true"
     } else if (localStorageKey === settings.upLpTokens) {
         return false
+    } else if (localStorageKey === settings.routingSwitch) {
+        return true
     }
 }
 

@@ -29,6 +29,7 @@ import swapUtils from "../utils/swapUtils"
 import lsdp from '../utils/localStorageDataProcessor'
 import networkApi from '../requests/networkApi'
 import swapApi from '../requests/swapApi'
+import {settings} from "../utils/tokensSettings"
 
 const valueProcessor = new ValueProcessor()
 const JUST_TOKEN_PRICE = true
@@ -87,6 +88,17 @@ class SwapCard extends React.Component {
             this.initByGetRequestParams = false;
         }
 
+        let newRoutingSwitch = lsdp.simple.get(settings.routingSwitch)
+        let forceUpdateFlag = false
+        forceUpdateFlag += newRoutingSwitch !== this.settings.routingSwitch
+        
+        if (forceUpdateFlag) {
+            this.settings = {
+                routingSwitch : newRoutingSwitch
+            }
+            this.clearSwap()
+        }
+
         // if (lsdp.simple.get())
         // if (this.props.connectionStatus && ENQWeb.Enq.provider !== this.oldNet) {
         //     this.oldNet = ENQWeb.Enq.provider
@@ -109,6 +121,10 @@ class SwapCard extends React.Component {
         }
         this.updRemoveLiquidity()
         this.recalculateSwap(mode, undefined)
+
+        this.settings = {
+            routingSwitch : lsdp.simple.get(settings.routingSwitch)
+        }
     }
 
     componentWillUnmount() {
@@ -235,6 +251,13 @@ class SwapCard extends React.Component {
         this.props.swapFields(this.props.menuItem)
         this.recalculationStart = false
         setTimeout(this.recalculateSwap.bind(this), 100, mode, oldHash)
+    }
+
+    clearSwap() {
+        try {
+            this.changeField(this.props.exchange.field0.id, {value : "0"})
+            this.changeField(this.props.exchange.field1.id, {value : "0"})
+        } catch (e) {}
     }
 
     recalculateSwap (mode, oldHash, activeField="field0") {
@@ -405,7 +428,7 @@ class SwapCard extends React.Component {
                                              tokens={this.props.tokens}
                                              pairs={this.props.pairs}
                                              routingWaiting={this.state.routingWaiting}
-                                             routingVisibility={this.state.routingVisibility}
+                                             routingVisibility={this.state.routingVisibility && lsdp.simple.get(settings.routingSwitch) !== "false"}
                                     />
                                 </div>
                             }
@@ -1109,6 +1132,7 @@ class SwapCard extends React.Component {
     }
 
     countRoute (activeField, oppositeField, mode="sell") {
+        const defLimit = 4, minLimit = 2
         let data = {
             token0 : activeField.token,
             token1 : oppositeField.token,
@@ -1116,7 +1140,7 @@ class SwapCard extends React.Component {
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
             slippage : lsdp.simple.get("ENEXUserSlippage"),
-            limit : 4,
+            limit : lsdp.simple.get(settings.routingSwitch) === "false" ? minLimit : defLimit,
             mode : mode
         }
         return this.routingWorker.postMessage(data)

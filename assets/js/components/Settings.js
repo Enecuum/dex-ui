@@ -45,7 +45,6 @@ class Settings extends React.Component {
 				alias : '5%'
 			}
 		]
-        this.settings = initSettings()
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
@@ -85,6 +84,7 @@ class Settings extends React.Component {
 	}
 
 	openAction () {
+        this.settings = initSettings()
 		if (this.state.activeStyle === "active")
 			this.setState({settingsVisibility: true})
 	}
@@ -208,8 +208,8 @@ class Settings extends React.Component {
                 </div>
                 <div className="d-flex justify-content-between mt-4 px-3">
                     <div className="w-75 d-flex">
-                        <div className="mr-2">Routing switch</div>
-                        <Tooltip text={"coming soon"}/>
+                        <div className="mr-2">{t('trade.swapCard.settings.routingSwitch')}</div>
+                        <Tooltip text={t('trade.swapCard.settings.routingSwitchTooltip')}/>
                     </div>
                     <div className="">
                         {this.renderToggle(settings.routingSwitch, "")}

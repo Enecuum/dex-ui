@@ -114,7 +114,9 @@ module.exports = {
             "header" : "Transaction settings",
             "slippageHeader" : "Slippage tolerance",
             "autoButton" : "Default",
-            "slippageTooltip" : "Your transaction will revert if the price changes unfavorably by more than this percentage"
+            "slippageTooltip" : "Your transaction will revert if the price changes unfavorably by more than this percentage",
+            "routingSwitch" : "Routing switch",
+            "routingSwitchTooltip" : "Enable and disable the use of routing when calculating swaps"
         }
     },
     "tokenCard" : {

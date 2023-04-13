@@ -26,6 +26,7 @@ function defaultSetting (localStorageKey) {
     } else if (localStorageKey === settings.upLpTokens) {
         return false
     } else if (localStorageKey === settings.routingSwitch) {
+        lsdp.simple.write(localStorageKey, "true")
         return true
     }
 }

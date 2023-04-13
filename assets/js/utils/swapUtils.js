@@ -59,7 +59,7 @@ function countProviderFee (pool_fee, field0ValueObj) {
  */
 function countExchangeRate (route, firstPerSecond, tokens) {
     let len = route.length
-    if (!len)
+    if (len < 2)
         return "---"
 
     let vol1 = route[1].volume1

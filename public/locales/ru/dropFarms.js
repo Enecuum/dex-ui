@@ -51,8 +51,8 @@ module.exports = {
 
         "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",
         "currentBlock" : "Current block: {{block}}",
-        "readMore1" : "Read more about the situation",
-        "readMore2" : "Read more how the voting works",
+        "readMore1" : "Article",
+        "readMore2" : "Documentation",
         "readMore3" : "Voting results",
         "proposalsTitle" : "Proposals",
         "totalVotes" : "Total votes",

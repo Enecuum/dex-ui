@@ -29,9 +29,10 @@ class Tooltip extends React.Component {
             </Popover>
           )
 
+        let triggerContent = this.props.triggerContent ? this.props.triggerContent : this.defaultTriggerContent
         return (
             <OverlayTrigger show={this.show} placement={this.placement} overlay={popover}>
-                {this.triggerContent}
+                {triggerContent}
             </OverlayTrigger>
         )
     }

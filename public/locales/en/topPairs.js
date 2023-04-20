@@ -3,5 +3,6 @@ module.exports = {
     "ltTotalSupply" : "LP Total Supply",
     "volumeInPair"  : "Volume {{indexInPair}}",
     "yourTokensInPair" : "My token {{indexInPair}}",
-    "yourPoolShare" : "Your Pool share"
+    "yourPoolShare" : "My Pool share",
+    "totalLiquidity" : "Total liquidity"
 }

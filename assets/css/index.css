@@ -601,3 +601,20 @@ hr {
     background: transparent;
     background-color: transparent;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+    user-select: none;
+}
+
+.col-button:hover {
+    color: var(--color4);
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.top-pairs-cells:active {
+    color: var(--color4);
+}

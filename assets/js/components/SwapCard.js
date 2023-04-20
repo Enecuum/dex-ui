@@ -88,7 +88,7 @@ class SwapCard extends React.Component {
             this.initByGetRequestParams = false;
         }
 
-        let newRoutingSwitch = lsdp.simple.get(settings.routingSwitch)
+        let newRoutingSwitch = lsdp.simple.get(settings.routingSwitch, true)
         let forceUpdateFlag = false
         forceUpdateFlag += newRoutingSwitch !== this.settings.routingSwitch
         
@@ -123,7 +123,7 @@ class SwapCard extends React.Component {
         this.recalculateSwap(mode, undefined)
 
         this.settings = {
-            routingSwitch : lsdp.simple.get(settings.routingSwitch)
+            routingSwitch : lsdp.simple.get(settings.routingSwitch, true)
         }
     }
 
@@ -428,7 +428,7 @@ class SwapCard extends React.Component {
                                              tokens={this.props.tokens}
                                              pairs={this.props.pairs}
                                              routingWaiting={this.state.routingWaiting}
-                                             routingVisibility={this.state.routingVisibility && lsdp.simple.get(settings.routingSwitch) !== "false"}
+                                             routingVisibility={this.state.routingVisibility && lsdp.simple.get(settings.routingSwitch, true) !== "false"}
                                     />
                                 </div>
                             }
@@ -1140,7 +1140,7 @@ class SwapCard extends React.Component {
             pairs  : this.props.pairs,
             tokens : this.props.tokens,
             slippage : lsdp.simple.get("ENEXUserSlippage"),
-            limit : lsdp.simple.get(settings.routingSwitch) === "false" ? minLimit : defLimit,
+            limit : lsdp.simple.get(settings.routingSwitch, true) === "false" ? minLimit : defLimit,
             mode : mode
         }
         return this.routingWorker.postMessage(data)

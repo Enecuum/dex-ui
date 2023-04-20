@@ -1,10 +1,11 @@
 import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Tooltip from '../elements/Tooltip';
-import Table from 'react-bootstrap/Table';
 import { connect } from 'react-redux';
 import { mapStoreToProps, mapDispatchToProps, components } from '../../store/storeToProps';
 import { withTranslation } from "react-i18next";
+import Card from 'react-bootstrap/Card';
+import Tooltip from '../elements/Tooltip';
+import Table from 'react-bootstrap/Table';
+import {initSettings, settings} from "../utils/tokensSettings"
 import ValueProcessor from '../utils/ValueProcessor';
 import swapUtils from '../utils/swapUtils';
 import testFormulas from '../utils/testFormulas';
@@ -13,6 +14,7 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
 import PairLogos from './PairLogos'
 import utils from '../utils/swapUtils'
+import lsdp from '../utils/localStorageDataProcessor'
 
 const valueProcessor = new ValueProcessor();
 
@@ -30,9 +32,11 @@ class TopPairs extends React.Component {
     constructor(props) {
         super(props);
         this.pairsArr = '';   
+        this.settings = initSettings()
         this.state = {
             pairFilter : PAIR_FILTERS.totalLiquidity,
-            descFilter : true
+            descFilter : true,
+            trustedFilter : this.settings[settings.topPairsTrustedToken]
         }
     };
 
@@ -216,111 +220,119 @@ class TopPairs extends React.Component {
         ]
 
     	return (    		
-	    	<div className="pairs-table-wrapper">
-		    	<SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	
-					<Table hover variant="dark" style={{tableLayout : 'auto'}}>
-					  	<thead>
-					    	<tr>
-								<th key="ns">{t('numberSign')}</th>
-								<th key="n">{t('name')}</th>
-                                {tColumns.map((col, index) => {
-                                    let chevronClass = this.state.pairFilter === col.filter ? "fas fa-chevron-down accordion-chevron ml-2" : ""
-                                    let chevronDirection = ""
-                                    if (chevronClass)
-                                        chevronDirection = this.state.descFilter ? "" : "rotate-180"
+            <div>
+                <div className="d-flex justify-content-start mb-3 ml-2">
+                    {this.renderToggle(settings.topPairsTrustedToken)}
+                    <div className="pl-2">{t("trade.tokenCard.raiseUpTrustedTokens")}</div>
+                </div>
+                <div className="pairs-table-wrapper">
+                    <SimpleBar style={{paddingBottom: '25px', paddingTop : '10px'}} autoHide={false}>	
+                        <Table hover variant="dark" style={{tableLayout : 'auto'}}>
+                            <thead>
+                                <tr>
+                                    <th key="ns">{t('numberSign')}</th>
+                                    <th key="n">{t('name')}</th>
+                                    {tColumns.map((col, index) => {
+                                        let chevronClass = this.state.pairFilter === col.filter ? "fas fa-chevron-down accordion-chevron ml-2" : ""
+                                        let chevronDirection = ""
+                                        if (chevronClass)
+                                            chevronDirection = this.state.descFilter ? "" : "rotate-180"
+                                        return (
+                                            <th key={index} className="cursor-pointer col-button" onClick={() => this.selectPairsFilter(col.filter)}>
+                                                {col.text}
+                                                <i className={`${chevronClass} ${chevronDirection}`}/>
+                                            </th>
+                                        )
+                                    })}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.pairsArr.map(( pair, index ) => {
+                                    let totalSupply = valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)
+                                    let totalLiquidity = valueProcessor.usCommasBigIntDecimals((pair.totalLiquidity.value !== undefined ? pair.totalLiquidity.value : '---'), pair.totalLiquidity.decimals, pair.lt.decimals)
+                                    let token0 = valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)
+                                    let token1 = valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)
+                                    let t_0 = valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t0.value !== undefined ? pair.your_lp_tokens.t0.value : '---'), pair.your_lp_tokens.t0.decimals)
+                                    let t_1 = valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t1.value !== undefined ? pair.your_lp_tokens.t1.value : '---'), pair.your_lp_tokens.t1.decimals)
+
+                                    let renderTooltip = (manText, tooltipText) => {
+                                        return <Tooltip 
+                                            triggerContent={
+                                                <div className='cursor-pointer top-pairs-cells' onClick={() => {
+                                                    navigator.clipboard.writeText(tooltipText.replace(",", ""))
+                                                }}>
+                                                    {manText}
+                                                </div>
+                                            }
+                                            text={tooltipText}
+                                            placement="left"
+                                        />
+                                    }
+
                                     return (
-                                        <th key={index} className="cursor-pointer col-button" onClick={() => this.selectPairsFilter(col.filter)}>
-                                            {col.text}
-                                            <i className={`${chevronClass} ${chevronDirection}`}/>
-                                        </th>
-                                    )
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td className="text-nowrap d-flex">
+                                                <PairLogos
+                                                    logos={{
+                                                        logo1 : swapUtils.getTokenObj(this.props.tokens, pair.token_0.hash).logo,
+                                                        logo2 : swapUtils.getTokenObj(this.props.tokens, pair.token_1.hash).logo,
+                                                        net : this.props.net,
+                                                        size : 'xs'
+                                                    }}
+                                                />
+                                                <a
+                                                    href = {"/#!action=swap&pair=" + pair.token_0.ticker + "-" + pair.token_1.ticker + '&from=' + pair.token_0.hash + "&to=" + pair.token_1.hash}
+                                                    onClick={this.switchToSwap.bind(this)}
+                                                    className="text-color4-link hover-pointer ml-2">
+                                                    {pair.token_0.ticker}-{pair.token_1.ticker}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>{swapUtils.removeEndZeros(totalSupply.slice(0, -6))} {pair.lt.ticker}</div>,
+                                                    totalSupply
+                                                )}
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>${swapUtils.removeEndZeros(totalLiquidity.slice(0, -8))}</div>,
+                                                    totalLiquidity
+                                                )}
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>{swapUtils.removeEndZeros(token0.slice(0, -6))} {pair.token_0.ticker}</div>,
+                                                    token0
+                                                )}
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>{swapUtils.removeEndZeros(token1.slice(0, -6))} {pair.token_1.ticker}</div>,
+                                                    token1
+                                                )}
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>{swapUtils.removeEndZeros(t_0.slice(0, -6))} {pair.token_0.ticker}</div>,
+                                                    t_0
+                                                )}
+                                            </td>
+                                            <td>
+                                                {renderTooltip(
+                                                    <div>{swapUtils.removeEndZeros(t_1.slice(0, -6))} {pair.token_1.ticker}</div>,
+                                                    t_1
+                                                )}
+                                            </td>
+                                            <td>{swapUtils.removeEndZeros(pair.your_pool_share)}%</td>
+                                        </tr>
+                                    );
                                 })}
-					    	</tr>
-					  	</thead>
-						<tbody>
-					        {this.pairsArr.map(( pair, index ) => {
-                                let totalSupply = valueProcessor.usCommasBigIntDecimals((pair.lt.total_supply !== undefined ? pair.lt.total_supply : '---'), pair.lt.decimals, pair.lt.decimals)
-                                let totalLiquidity = valueProcessor.usCommasBigIntDecimals((pair.totalLiquidity.value !== undefined ? pair.totalLiquidity.value : '---'), pair.totalLiquidity.decimals, pair.lt.decimals)
-                                let token0 = valueProcessor.usCommasBigIntDecimals((pair.token_0.volume !== undefined ? pair.token_0.volume : '---'), pair.token_0.decimals, pair.token_0.decimals)
-                                let token1 = valueProcessor.usCommasBigIntDecimals((pair.token_1.volume !== undefined ? pair.token_1.volume : '---'), pair.token_1.decimals, pair.token_1.decimals)
-                                let t_0 = valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t0.value !== undefined ? pair.your_lp_tokens.t0.value : '---'), pair.your_lp_tokens.t0.decimals)
-                                let t_1 = valueProcessor.usCommasBigIntDecimals((pair.your_lp_tokens.t1.value !== undefined ? pair.your_lp_tokens.t1.value : '---'), pair.your_lp_tokens.t1.decimals)
-
-                                let renderTooltip = (manText, tooltipText) => {
-                                    return <Tooltip 
-                                        triggerContent={
-                                            <div className='cursor-pointer top-pairs-cells' onClick={() => navigator.clipboard.writeText(tooltipText)}>
-                                                {manText}
-                                            </div>
-                                        }
-                                        text={tooltipText}
-                                        placement="top"
-                                    />
-                                }
-
-                                return (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td className="text-nowrap d-flex">
-                                            <PairLogos
-                                                logos={{
-                                                    logo1 : swapUtils.getTokenObj(this.props.tokens, pair.token_0.hash).logo,
-                                                    logo2 : swapUtils.getTokenObj(this.props.tokens, pair.token_1.hash).logo,
-                                                    net : this.props.net,
-                                                    size : 'xs'
-                                                }}
-                                            />
-                                            <a
-                                                href = {"/#!action=swap&pair=" + pair.token_0.ticker + "-" + pair.token_1.ticker + '&from=' + pair.token_0.hash + "&to=" + pair.token_1.hash}
-                                                onClick={this.switchToSwap.bind(this)}
-                                                className="text-color4-link hover-pointer ml-2">
-                                                {pair.token_0.ticker}-{pair.token_1.ticker}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>{swapUtils.removeEndZeros(totalSupply.slice(0, -6))} {pair.lt.ticker}</div>,
-                                                totalSupply
-                                            )}
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>${swapUtils.removeEndZeros(totalLiquidity.slice(0, -8))}</div>,
-                                                totalLiquidity
-                                            )}
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>{swapUtils.removeEndZeros(token0.slice(0, -6))} {pair.token_0.ticker}</div>,
-                                                token0
-                                            )}
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>{swapUtils.removeEndZeros(token1.slice(0, -6))} {pair.token_1.ticker}</div>,
-                                                token1
-                                            )}
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>{swapUtils.removeEndZeros(t_0.slice(0, -6))} {pair.token_0.ticker}</div>,
-                                                t_0
-                                            )}
-                                        </td>
-                                        <td>
-                                            {renderTooltip(
-                                                <div>{swapUtils.removeEndZeros(t_1.slice(0, -6))} {pair.token_1.ticker}</div>,
-                                                t_1
-                                            )}
-                                        </td>
-                                        <td>{swapUtils.removeEndZeros(pair.your_pool_share)}%</td>
-                                    </tr>
-                                );
-					        })}
-					  	</tbody>
-					</Table>
-				</SimpleBar>
-			</div>				
+                            </tbody>
+                        </Table>
+                    </SimpleBar>
+                </div>	
+            </div>			
     	)
     }
 
@@ -376,7 +388,7 @@ class TopPairs extends React.Component {
                 let { f, s } = utils.realignValueByDecimals(tvl1, tvl2)
                 return f > s ? -1 : f == s ? 0 : 1
             } catch (e) {
-                return 0   
+                return 0
             }
         }
         let sortDirection = this.state.descFilter ? 1 : -1
@@ -489,10 +501,53 @@ class TopPairs extends React.Component {
         }
     }
 
+    renderToggle (localStorageKey) {
+        return (
+            <>
+                <div className="row mt-1">
+                    <div className="col d-flex align-items-center">
+                        <input  type="checkbox"
+                                className="c-toggle mx-0"
+                                onClick={e => this.updFlag(localStorageKey, e.target.checked)}
+                                defaultChecked={this.settings[localStorageKey]}
+                        />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    
+    updFlag (key, value) {
+        lsdp.simple.write(key, value, true)
+        this.setState({trustedFilter : value})
+    }
+
+    trustedTokensSort(pairsArr) {
+        if (!this.state.trustedFilter)
+            return pairsArr
+        else
+            return pairsArr.sort((pair1, pair2) => {
+                let tt = this.props.networkInfo.dex.DEX_TRUSTED_TOKENS
+                let isTrustedPair1 = tt.indexOf(pair1.token_0.hash) !== -1 || tt.indexOf(pair1.token_1.hash) !== -1
+                let isTrustedPair2 = tt.indexOf(pair2.token_0.hash) !== -1 || tt.indexOf(pair2.token_1.hash) !== -1
+
+                if (isTrustedPair1 && isTrustedPair2)
+                    return 0
+                else if (isTrustedPair1)
+                    return -1
+                else if (isTrustedPair2)
+                    return 1
+                else 
+                    return 0
+            })
+    }
+
     render() {
 		const t = this.props.t;
 		this.pairsArr = this.populateTable();
         this.pairsArr = this.sortTable(this.pairsArr);
+        this.pairsArr = this.trustedTokensSort(this.pairsArr);
     	return (
     		<div className="row">
     			<div className={!this.props.connectionStatus ? 'swap-card-wrapper px-2 pt-0 mt-0' : 'col-12 col-lg-10 offset-lg-1 col-xl-10 offset-xl-1'}>    			

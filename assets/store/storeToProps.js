@@ -230,7 +230,8 @@ function mapStoreToProps(component) {
                     pairs             : state.root.pairs,
                     balances          : state.root.balances,
                     tokens            : state.root.tokens,
-                    farmsList         : state.farms.farmsList
+                    farmsList         : state.farms.farmsList,
+                    networkInfo       : state.root.networkInfo
                 }
             }
         case components.ETM:

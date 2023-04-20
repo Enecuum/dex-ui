@@ -115,7 +115,7 @@ class Settings extends React.Component {
     }
 
     updFlag (key, value) {
-        lsdp.simple.write(key, value)
+        lsdp.simple.write(key, value, true)
     }
 
 	renderModalHeader () {

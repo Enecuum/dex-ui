@@ -14,51 +14,26 @@ class tokenERC20ContractProvider {
 
 	async getBalanceOf(accountId) {
 		console.log('query tokenERC20ContractProvider getBalanceOf', this.tokenHash);
-		return this.tokenContract.methods.balanceOf(accountId).call(function (err, res) {
-            if (err) {
-                console.log("An error occured", err, ` Can't get account ${accountId} balance.`)
-                return undefined
-            }
-
-			return res
-		})
+		let res = this.tokenContract.methods.balanceOf(accountId).call();
+		return res.toString();
 	}
 
 	async getSymbol() {
 		console.log('query tokenERC20ContractProvider getSymbol', this.tokenHash);
-		let that = this;
-		return this.tokenContract.methods.symbol().call(function (err, res) {
-            if (err) {
-                console.log("An error occured", err, ` Can't get token ${that.tokenHash} symbol.`)
-                return undefined
-            }
-
-			return res
-		})
+		let res = await this.tokenContract.methods.symbol().call();
+		return res
 	}
 
 	async getDecimals() {
 		console.log('query tokenERC20ContractProvider getDecimals', this.tokenHash);
-		let that = this;
-		return this.tokenContract.methods.decimals().call(function (err, res) {
-            if (err) {
-                console.log("An error occured", err, ` Can't get token ${that.tokenHash} decimals.`)
-                return undefined
-            }
-
-			return res
-		})
+		let res = await this.tokenContract.methods.decimals().call()
+		return Number(res);
 	}
 
 	async getAllowance(accountId, smartContractAddress) {
 		console.log('query tokenERC20ContractProvider getAllowance', this.tokenHash, accountId, smartContractAddress);
-		let token = this.tokenHash;
-		return this.tokenContract.methods.allowance(accountId, smartContractAddress).call(function (err, res) {
-            if (err) {
-                console.log("An error occured", err, ` Can't get token ${token} allowance for smart contract ${smartContractAddress}`)
-                return
-            }
-		})
+		let res = this.tokenContract.methods.allowance(accountId, smartContractAddress).call();
+		return res.toString();
 	}
 
 	async getAssetInfo(accountId) {
@@ -77,37 +52,18 @@ class tokenERC20ContractProvider {
 	}
 
 	async approveBalance(smartContractAddress, amount, accountId) {
-		return this.tokenContract.methods.approve(smartContractAddress, amount).send({ from: accountId }, function (err, res) {
-			if (err) {
-				console.log("An error occured", err)
-				return
-			}
-			console.log("send: " + res)
-		})
+		return this.tokenContract.methods.approve(smartContractAddress, amount).send({ from: accountId });
 	}
 
 	async deposit(accountId, amount) {
 		return this.tokenContract.methods.deposit().send({
 				from  : accountId,
 				value : amount
-			},
-			function (err, res) {
-			if (err) {
-				console.log("An error occured", err)
-				return
-			}
-			console.log("send: " + res)
-		})
+			});
 	}
 
 	async withdraw(accountId, amount) {
-		return this.tokenContract.methods.withdraw(amount).send({from: accountId}, function (err, res) {
-			if (err) {
-				console.log("An error occured", err)
-				return
-			}
-			console.log("send: " + res)
-		})
+		return this.tokenContract.methods.withdraw(amount).send({from: accountId});
 	}
 }
 

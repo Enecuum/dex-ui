@@ -1,5 +1,3 @@
-import Web3 from "web3"
-
 class tokenERC20ContractProvider {
 	constructor(provider, abi, tokenHash) {
 		this.web3 = new Web3(provider);
@@ -14,7 +12,7 @@ class tokenERC20ContractProvider {
 
 	async getBalanceOf(accountId) {
 		console.log('query tokenERC20ContractProvider getBalanceOf', this.tokenHash);
-		let res = this.tokenContract.methods.balanceOf(accountId).call();
+		let res = await this.tokenContract.methods.balanceOf(accountId).call();
 		return res.toString();
 	}
 
@@ -32,7 +30,7 @@ class tokenERC20ContractProvider {
 
 	async getAllowance(accountId, smartContractAddress) {
 		console.log('query tokenERC20ContractProvider getAllowance', this.tokenHash, accountId, smartContractAddress);
-		let res = this.tokenContract.methods.allowance(accountId, smartContractAddress).call();
+		let res = await this.tokenContract.methods.allowance(accountId, smartContractAddress).call();
 		return res.toString();
 	}
 

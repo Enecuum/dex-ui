@@ -1,9 +1,8 @@
 import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
-import Web3 from "web3"
 
 class Web3LibProvider {
 	constructor(provider) {
-		this.web3 = new Web3(provider);		
+		this.web3 = new Web3(provider);
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
 	}
 

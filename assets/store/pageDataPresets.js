@@ -122,7 +122,7 @@ const presets =  {
             votes : {
                 miningSlots : {
                     finalBlockNum : 5514240,
-                    forceDeactivation : false,
+                    forceDeactivation : true,
                     situationReadme : "https://blog.enecuum.com/poa-mining-slots-announcement-46c038302373",
                     voutingReadme : "https://guides.enecuum.com/enq/token-issue.html#mining-slots",
                     // resultsReadme : "", 

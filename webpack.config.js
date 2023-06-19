@@ -9,11 +9,12 @@ module.exports = () => {
     const PUBLIC    = path.resolve(__dirname, 'public')
     const SOURCE    = path.resolve(__dirname, 'assets/js')
     const VERSION   = execSync('git rev-parse --short HEAD').toString().trim()
-
     let plugins = []
     plugins.push(new webpack.DefinePlugin({
         VERSION : JSON.stringify(VERSION),
-        MODE : JSON.stringify(MODE)
+        MODE : JSON.stringify(MODE),
+        "process.env.NODE_DEBUG": JSON.stringify(process.env.NODE_DEBUG),
+        // "Math.pow": "((a,b) => {return a**b})" do not work
     }))
 
     return {

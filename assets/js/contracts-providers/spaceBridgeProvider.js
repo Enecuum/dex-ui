@@ -1,5 +1,4 @@
 import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
-import Web3 from "web3"
 
 class SpaceBridgeProvider {
 	constructor(provider, abi, contractAddress) {

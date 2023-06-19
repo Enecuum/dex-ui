@@ -1,5 +1,3 @@
-import Web3 from "web3"
-
 class vaultContractProvider {
 	constructor(provider, abi, tokenHash) {
 		this.web3 = new Web3(provider);

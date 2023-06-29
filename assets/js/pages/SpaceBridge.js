@@ -188,7 +188,7 @@ class SpaceBridge extends React.Component {
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
                             if (res !== null && res.status !== undefined) {
-                                elem.lock.status = res.status;
+                                elem.lock.status = Number(res.status) === 1 ? true : false;
                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                 that.setState({history: array});
                             }
@@ -227,7 +227,7 @@ class SpaceBridge extends React.Component {
                             let web3Provider = new web3LibProvider(dataProvider);
                             web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
                                 if (res !== null && res.status !== undefined) {
-                                    elem.claimTxStatus = res.status;
+                                    elem.claimTxStatus = Number(res.status) === 1 ? true : false;
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
                                 } else {
@@ -502,7 +502,7 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    lockEth() {    	
+    async lockEth() {    	
     	if (this.props.pubkey !== undefined &&
             this.props.srcTokenHash !== undefined &&
             (Number(this.props.srcTokenAmountToSend) > 0) &&
@@ -532,7 +532,12 @@ class SpaceBridge extends React.Component {
     	    	let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, Number(this.props.srcTokenDecimals)).value;
                 let token_decimals = this.props.srcTokenDecimals;
                 let ticker = this.props.srcTokenTicker;
-    			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
+                let src_address_0x = src_address !== undefined ? src_address.substring(0, 2) : undefined;
+                let src_address_trim_0x =  src_address_0x === '0x' ? src_address.slice(2).toLowerCase() : undefined;
+                console.log(src_address_trim_0x)             
+                let nonce = await bridgeProvider.getTransfer(src_address_trim_0x, token_hash, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id);
+                nonce = !isNaN(nonce) ? nonce + 1 : nonce;
+    			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, nonce, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
     				console.log('lock result', lockTx);
     			});
         	} else {

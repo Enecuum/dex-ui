@@ -135,7 +135,7 @@ class SpaceBridge extends React.Component {
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
                             if (res !== null && res.status !== undefined) {
-                                elem.lock.status = res.status;
+                                elem.lock.status = Number(res.status);
                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                 that.setState({history: array});
                             }
@@ -167,7 +167,7 @@ class SpaceBridge extends React.Component {
                             let web3Provider = new web3LibProvider(dataProvider);
                             web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
                                 if (res !== null && res.status !== undefined) {
-                                    elem.claimTxStatus = res.status;
+                                    elem.claimTxStatus = Number(res.status);
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
                                 }

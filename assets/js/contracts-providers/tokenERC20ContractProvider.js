@@ -1,6 +1,6 @@
 class tokenERC20ContractProvider {
 	constructor(provider, abi, tokenHash) {
-		this.web3 = new Web3(provider);
+		this.web3 = new window.Web3(provider);
 		this.tokenHash = tokenHash || '';
 
 		try {

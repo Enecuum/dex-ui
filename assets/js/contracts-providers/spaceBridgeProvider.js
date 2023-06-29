@@ -2,16 +2,16 @@ import BridgeHistoryProcessor from "./../utils/BridgeHistoryProcessor";
 
 class SpaceBridgeProvider {
 	constructor(provider, abi, contractAddress) {
-		this.web3 = new Web3(provider);
+		this.web3 = new window.Web3(provider);
 		this.spaceBridgeContract = new this.web3.eth.Contract(abi, contractAddress);
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
 	}
 
-	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, token_decimals, ticker, callback = undefined) {
+	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
 
-		const receipt = await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash).send({ from: src_address });
+		const receipt = await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address });
 		const transactionHash = receipt.transactionHash;
 		if (transactionHash) {
 			let accountInteractToBridgeItem = {
@@ -26,6 +26,7 @@ class SpaceBridgeProvider {
 								token_hash,
 								token_decimals,
 								ticker,
+								nonce,
                                 timestamp : Date.now()
 							}					
 			};
@@ -66,7 +67,8 @@ class SpaceBridgeProvider {
 				params.ticket.origin_network,
 				params.ticket.nonce,
 				params.ticket.name,
-				params.ticket.ticker
+				params.ticket.ticker,
+				params.ticket.origin_decimals
 			];
 
 		const receipt = await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address });
@@ -84,6 +86,18 @@ class SpaceBridgeProvider {
 			localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 		}
 		console.log("send: " + transactionHash);		
+	}
+
+	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {
+		try {
+			console.log(`query SpaceBridgeProvider getTransfer on contract ${this.contractHash}`);
+			let res = await this.spaceBridgeContract.methods.getTransfer(src_address, src_hash, src_network, dst_address, dst_network).call();
+			console.log('22222222222222222222222222222222222222222222', res)
+			return Number(res)
+		} catch(e) {
+			console.log(`query query SpaceBridgeProvider getTransfer on contract ${this.contractHash} error`, e);
+			return undefined;
+		}
 	}
 }
 

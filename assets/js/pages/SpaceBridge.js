@@ -534,8 +534,11 @@ class SpaceBridge extends React.Component {
                 let ticker = this.props.srcTokenTicker;
                 let src_address_0x = src_address !== undefined ? src_address.substring(0, 2) : undefined;
                 let src_address_trim_0x =  src_address_0x === '0x' ? src_address.slice(2).toLowerCase() : undefined;
-                console.log(src_address_trim_0x)             
-                let nonce = await bridgeProvider.getTransfer(src_address_trim_0x, token_hash, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id);
+
+                let token_hash_0x = token_hash !== undefined ? token_hash.substring(0, 2) : undefined;
+                let token_hash_trim_0x =  token_hash_0x === '0x' ? token_hash.slice(2).toLowerCase() : undefined;
+             
+                let nonce = await bridgeProvider.getTransfer(src_address_trim_0x, token_hash_trim_0x, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id);
                 nonce = !isNaN(nonce) ? nonce + 1 : nonce;
     			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, nonce, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
     				console.log('lock result', lockTx);
@@ -685,11 +688,21 @@ class SpaceBridge extends React.Component {
             else if (chain.type === 'eth')
                 address = this.props.nonNativeConnection.web3ExtensionAccountId;
         } else {
-            console.log('Errof: try to lock in undefined chain');
+            console.log('Error: try to lock in undefined chain');
             return
         }
 
-        let URL =  'https://bridge.enex.space/api/v1/encode_lock';
+        let response = await networkApi.getBridgeLastLockTransfer(address, this.props.pubkey, this.props.toBlockchain.id, this.props.srcTokenHash);
+
+
+
+        let nonce = await response.json();
+        if (nonce !== undefined && nonce !== null)
+            nonce = Number(nonce);
+
+        nonce++;
+        
+        URL =  'https://bridge.enex.space/api/v1/encode_lock';
         let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
@@ -698,7 +711,8 @@ class SpaceBridge extends React.Component {
             "dst_network": this.props.toBlockchain.id,
             "amount": amount,
             "src_hash": this.props.srcTokenHash,
-            "src_address": this.props.pubkey
+            "src_address": this.props.pubkey,
+            "nonce" : nonce
         }
 
         let lockInfo = {...data, ...{token_decimals : token_decimals, ticker : this.props.srcTokenTicker}};

@@ -353,7 +353,7 @@ class SpaceBridge extends React.Component {
         localStorage.setItem('try_metamask_connect', false);
     }
 
-	approveSrcTokenBalance() {
+	async approveSrcTokenBalance() {
 		if (this.props.srcTokenHash && this.props.nonNativeConnection.web3ExtensionAccountId) {
 			let dataProvider = this.props.nonNativeConnection.web3Extension.provider;
 	    	let ABI = smartContracts.erc20token.ABI;
@@ -365,16 +365,29 @@ class SpaceBridge extends React.Component {
             let that = this;
             let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
 			assetProvider.approveBalance(vaultContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
-                if (approveTx.status === true &&
-                    approveTx.events?.Approval?.returnValues?.owner !== undefined && 
-                    approveTx.events?.Approval?.returnValues?.owner.toLowerCase() == that.props.nonNativeConnection.web3ExtensionAccountId.toLowerCase() &&
-                    approveTx.events?.Approval?.returnValues?.spender !== undefined && 
-                    approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.vaultContractAddress.toLowerCase() &&
-                    approveTx.events?.Approval?.address !== undefined && 
-                    approveTx.events?.Approval?.address.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
-                        that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
-                        that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
+                // console.log('1111111111111111111111111',approveTx)
+                if (approveTx.status === 1n) {
+                    let web3Provider = new web3LibProvider(dataProvider);
+                    web3Provider.getTxReceipt(approveTx.transactionHash, `Approve ${token_hash} for vault contract ${vaultContractAddress}`).then(function(res) {
+                        if (res !== null && res.status !== undefined) {
+                            // console.log('33333333333333333333333', res)
+                        } else {
+                            console.log('Undefined approve balance transaction status', approveTx.transactionHash);
+                        }
+                    }, function(err) {
+                        console.log('Can\'t get receipt for approve balance transaction', approveTx.transactionHash, err);
+                    });
                 }
+                // if (approveTx.status === 1n &&
+                //     approveTx.from !== undefined && 
+                //     approveTx.from.toLowerCase() == that.props.nonNativeConnection.web3ExtensionAccountId.toLowerCase() &&
+                //     approveTx.events?.Approval?.returnValues?.spender !== undefined && 
+                //     approveTx.events?.Approval?.returnValues?.spender.toLowerCase() == that.props.fromBlockchain?.vaultContractAddress.toLowerCase() &&
+                //     approveTx.to !== undefined && 
+                //     approveTx.to.toLowerCase() == that.props.srcTokenHash.toLowerCase()) {
+                //         that.props.updateSrcTokenAllowance(approveTx.events?.Approval?.returnValues?.value);
+                //         that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
+                // }
 			});			
 		}
 	}
@@ -469,7 +482,7 @@ class SpaceBridge extends React.Component {
         if (readyForProcess) {
             this.setState({blockConfirmByAmount : false});
             let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
-            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
+            if (ethType && (bigIntAmount.value >= this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
                 console.log('Amount less than allowance');

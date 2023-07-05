@@ -179,8 +179,10 @@ class SpaceBridge extends React.Component {
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
     		userHistory.forEach(function(elem, index, array) {
-                let srcNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.src_network).type;
-                let dstNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.dst_network).type;                
+                let srcNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.src_network);
+                let dstNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.dst_network);                
+                srcNetworkType = srcNetworkType !== undefined ? srcNetworkType.type : undefined;
+                dstNetworkType = dstNetworkType !== undefined ? dstNetworkType.type : undefined;
 
                 if (!elem.lock.hasOwnProperty('status')) {
                     if (srcNetworkType === 'eth'  && that.props.nonNativeConnection.web3Extension?.provider) {

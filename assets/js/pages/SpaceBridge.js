@@ -2008,7 +2008,7 @@ console.log(info)
                             </div>
                         </div>
                     ))}
-                    <div className="clear-history-wrapper">
+                    <div className="clear-history-wrapper d-none">
                         <button
                             disabled={this.props.currentBridgeTx !== undefined}
                             className="d-block btn btn-danger mt-2 mb-4 px-4 mx-auto"

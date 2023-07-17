@@ -368,12 +368,13 @@ class SpaceBridge extends React.Component {
             let that = this;
             let vaultContractAddress = this.props.fromBlockchain.vaultContractAddress;
 			assetProvider.approveBalance(vaultContractAddress, '100000000000000000000000000000000000000000000000000000', account_id).then(function(approveTx) {
-                // console.log('1111111111111111111111111',approveTx)
                 if (approveTx.status === 1n) {
                     let web3Provider = new web3LibProvider(dataProvider);
                     web3Provider.getTxReceipt(approveTx.transactionHash, `Approve ${token_hash} for vault contract ${vaultContractAddress}`).then(function(res) {
-                        if (res !== null && res.status !== undefined) {
-                            // console.log('33333333333333333333333', res)
+                        if (res !== null && res.status !== undefined && res.logs[0].data !== undefined) {
+                            let strOutput = res.logs[0].data.toString();
+                            that.props.updateSrcTokenAllowance(strOutput);
+                            that.handleInputTokenAmountChange({target : {value : that.props.srcTokenAmountToSend}});
                         } else {
                             console.log('Undefined approve balance transaction status', approveTx.transactionHash);
                         }

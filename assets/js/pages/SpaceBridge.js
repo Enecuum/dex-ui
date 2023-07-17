@@ -64,6 +64,7 @@ class SpaceBridge extends React.Component {
 
     componentDidUpdate(prevProps) {
         let that = this;
+
         if (prevProps.pubkey !== this.props.pubkey  ||
             prevProps.net.url !== this.props.net.url ||
             prevProps.nonNativeConnection?.web3Extension?.provider?.isMetaMask !== this.props.nonNativeConnection?.web3Extension?.provider?.isMetaMask ||
@@ -174,7 +175,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        console.log(userHistory)
+        //console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -908,6 +909,10 @@ class SpaceBridge extends React.Component {
         if (chain !== undefined)
             chainId = chain.enqExtensionChainId;
         let matchChains = chainId === this.props.net.url ? true : false;
+        let matchDstAddress = false;
+
+        if (item.lock?.dst_address !== undefined && this.props.pubkey !== undefined)
+            matchDstAddress = item.lock.dst_address.toUpperCase() === this.props.pubkey.toUpperCase() ? true : false;
 
         let resume = 'Validated successfully';
         let stateId = 0;
@@ -1036,8 +1041,11 @@ class SpaceBridge extends React.Component {
                         <div className="text-color3"> {`Set ${chain.name} as current network in your ENQ extension for continue`}</div>
                     }
 
+                    {[0,2,4,5,6].includes(stateId) && matchChains && !matchDstAddress &&
+                        <div className="text-color3"> {`Set ${utils.packHashString(this.props.pubkey)} as current account in your ENQ extension for continue`}</div>
+                    }
 
-                    {[0,2,4,5,6].includes(stateId) && matchChains &&
+                    {[0,2,4,5,6].includes(stateId) && matchChains && matchDstAddress &&
                         <>
                             <Button
                                 className="d-block w-100 btn btn-secondary px-3 button-bg-3"
@@ -1129,7 +1137,7 @@ class SpaceBridge extends React.Component {
         let title = '';
         let addr = this.props.nonNativeConnection.web3ExtensionAccountId;
         if (this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {           
-            let dstNetworkHexId = `0x${Number(item.lock.dst_network).toString(16)}`;
+            let dstNetworkHexId = `${Number(item.lock.dst_network).toString(16)}`;
             let chain = this.availableNetworksUtils.getChainById(Number(item.lock.dst_network));
             let chainId = chain !== undefined ? chain.id : undefined;
 
@@ -1773,7 +1781,7 @@ class SpaceBridge extends React.Component {
         let claimInitAlias = undefined;
         let lock = item.lock;        
         let resultTicker = item.validatorRes?.ticket?.ticker !== undefined ? item.validatorRes.ticket.ticker.toUpperCase() : '';
-        console.log(resultTicker)
+        //console.log(resultTicker)
         if (lock !== undefined) {
             let chain = this.availableNetworksUtils.getChainById(Number(lock.dst_network));
             if (chain !== undefined && chain.type !== undefined) {            
@@ -1866,7 +1874,7 @@ class SpaceBridge extends React.Component {
 
     getBridgeExtendedInfoWidget(item) {
         let info = this.getBridgeExtendedInfo(item);
-console.log(info)
+//console.log(info)
         return (
             <table className="table table-dark table-hover w-100 mt-4" style={{backgroundColor: 'transparent'}}>
                 <thead style={{backgroundColor: 'transparent'}}>

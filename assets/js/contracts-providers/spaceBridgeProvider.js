@@ -92,7 +92,6 @@ class SpaceBridgeProvider {
 		try {
 			console.log(`query SpaceBridgeProvider getTransfer on contract ${this.contractHash}`);
 			let res = await this.spaceBridgeContract.methods.getTransfer(src_address, src_hash, src_network, dst_address, dst_network).call();
-			console.log('22222222222222222222222222222222222222222222', res)
 			return Number(res)
 		} catch(e) {
 			console.log(`query query SpaceBridgeProvider getTransfer on contract ${this.contractHash} error`, e);

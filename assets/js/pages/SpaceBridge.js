@@ -1042,7 +1042,7 @@ class SpaceBridge extends React.Component {
                     }
 
                     {[0,2,4,5,6].includes(stateId) && matchChains && !matchDstAddress &&
-                        <div className="text-color3"> {`Set ${utils.packHashString(this.props.pubkey)} as current account in your ENQ extension for continue`}</div>
+                        <div className="text-color3"> {`Set ${utils.packHashString(item.lock.dst_address)} as current account in your ENQ extension for continue`}</div>
                     }
 
                     {[0,2,4,5,6].includes(stateId) && matchChains && matchDstAddress &&

@@ -14,7 +14,7 @@ class ValueProcessor {
         let str = String(inputNumber).replace(/,/g, '.');
         let parts_array = str.split('.');
         let integerPart = parts_array[0] === '' ? '0' : parts_array[0];
-        let rawFractionalPart = parts_array[1] === '' || parts_array[1] === undefined ? '0' : parts_array[1]; //before trim by decimals
+        let rawFractionalPart = parts_array[1] === '' || parts_array[1] === undefined ? '' : parts_array[1]; //before trim by decimals
         let fractionalPart = rawFractionalPart.slice(0, decimals);
         let counter = decimals - rawFractionalPart.length;
         for (let i=0; i < counter; i++) {

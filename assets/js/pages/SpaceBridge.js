@@ -1138,7 +1138,7 @@ class SpaceBridge extends React.Component {
         let title = '';
         let addr = this.props.nonNativeConnection.web3ExtensionAccountId;
         if (this.props.nonNativeConnection.web3ExtensionAccountId !== undefined) {           
-            let dstNetworkHexId = `${Number(item.lock.dst_network).toString(16)}`;
+            let dstNetworkHexId = `0x${Number(item.lock.dst_network).toString(16)}`;
             let chain = this.availableNetworksUtils.getChainById(Number(item.lock.dst_network));
             let chainId = chain !== undefined ? chain.id : undefined;
 
@@ -1216,6 +1216,8 @@ class SpaceBridge extends React.Component {
                 }
             ]
         };
+
+        console.log(requestData)
 
         try {
             await ethereum.request(requestData).then(function(res) {

@@ -11,9 +11,13 @@ class SpaceBridgeProvider {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
 
-		const receipt = await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address });
+		const receipt = await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address }).on('sent', resullt => {
+        console.log('111111111111111111111111111111111111111111111111', resullt); // true | false
+    });;
 		const transactionHash = receipt.transactionHash;
+
 		if (transactionHash) {
+			console.log('22222222222222222222222222222222222222222222222222', transactionHash);
 			let accountInteractToBridgeItem = {
 				initiator : `${src_address}_${dst_address}`,
 				lock 	  : {

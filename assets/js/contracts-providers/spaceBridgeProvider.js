@@ -11,45 +11,43 @@ class SpaceBridgeProvider {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
 
-		const receipt = await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address }).on('sent', resullt => {
-        console.log('111111111111111111111111111111111111111111111111', resullt); // true | false
-    });;
-		const transactionHash = receipt.transactionHash;
+		await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address })
+		.on('transactionHash', transactionHash => {
+	        if (transactionHash) {
+				let accountInteractToBridgeItem = {
+					initiator : `${src_address}_${dst_address}`,
+					lock 	  : {
+									transactionHash : transactionHash,
+									src_address,
+									src_network,
+									dst_address,
+									dst_network,
+									token_amount,
+									token_hash,
+									token_decimals,
+									ticker,
+									nonce,
+	                                timestamp : Date.now()
+								}					
+				};
 
-		if (transactionHash) {
-			console.log('22222222222222222222222222222222222222222222222222', transactionHash);
-			let accountInteractToBridgeItem = {
-				initiator : `${src_address}_${dst_address}`,
-				lock 	  : {
-								transactionHash : transactionHash,
-								src_address,
-								src_network,
-								dst_address,
-								dst_network,
-								token_amount,
-								token_hash,
-								token_decimals,
-								ticker,
-								nonce,
-                                timestamp : Date.now()
-							}					
-			};
+				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+				if (bridgeHistoryArray.length > 0) {
+					let itemIsExist = bridgeHistoryArray.find(function(elem) {
+						if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === transactionHash)
+							return true
+					});
 
-			let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-			if (bridgeHistoryArray.length > 0) {
-				let itemIsExist = bridgeHistoryArray.find(function(elem) {
-					if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === transactionHash)
-						return true
-				});
-
-				if (itemIsExist !== undefined)
-					return
-				else
-					that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
-			} else {
-				that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+					if (itemIsExist !== undefined)
+						return
+					else
+						that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+				} else {
+					that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+				}
 			}
-		}
+    	});
+		
 		console.log("send: " + transactionHash);
 		if (callback !== undefined) {
 			callback(transactionHash)
@@ -75,20 +73,21 @@ class SpaceBridgeProvider {
 				params.ticket.origin_decimals
 			];
 
-		const receipt = await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address });
-		const transactionHash = receipt.transactionHash;
-		if (transactionHash) {
-			let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-			let updatedHistory = bridgeHistoryArray.map(elem => {
-				if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
-					elem.claimTxHash = transactionHash;
-					elem.claimTxTimestamp = Date.now();
-				}
-				return elem
-			});
+		await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address })
+		.on('transactionHash', transactionHash => {
+			if (transactionHash) {
+				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+				let updatedHistory = bridgeHistoryArray.map(elem => {
+					if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+						elem.claimTxHash = transactionHash;
+						elem.claimTxTimestamp = Date.now();
+					}
+					return elem
+				});
 
-			localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
-		}
+				localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+			}
+		});
 		console.log("send: " + transactionHash);		
 	}
 

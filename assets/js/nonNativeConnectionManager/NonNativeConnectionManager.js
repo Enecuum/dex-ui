@@ -68,7 +68,6 @@ class NonNativeConnectionManager {
         rootStoreMethodsWeb3Ext.updateWeb3Extension(web3ExtensionConnectManager);
         console.log('App connected to metamask ', appIsConnected);
         if (appIsConnected) {
-            console.log('111111111111111111111111111111111111')
             if (timer != undefined)
                 clearTimeout(timer);
             this.rootStoreMethods.updateWeb3ExtensionAccountId(sessionState.account_id);

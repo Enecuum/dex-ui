@@ -10,10 +10,12 @@ class SpaceBridgeProvider {
 	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
 		let that = this;
-
+		let txHash;
 		await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address })
 		.on('transactionHash', transactionHash => {
+			console.log('Lock transactionHash ', transactionHash)
 	        if (transactionHash) {
+	        	txHash = transactionHash
 				let accountInteractToBridgeItem = {
 					initiator : `${src_address}_${dst_address}`,
 					lock 	  : {
@@ -48,16 +50,16 @@ class SpaceBridgeProvider {
 			}
     	});
 		
-		console.log("send: " + transactionHash);
+		console.log("send: " + txHash);
 		if (callback !== undefined) {
-			callback(transactionHash)
+			callback(txHash)
 		}		
 	}
 
 	async send_claim_init(params, from_address, elemLockTransactionHash) {
 		console.log('query SpaceBridgeProvider send_claim_init');
 		let that = this;
-
+		let txHash;
 		let ticket = [
 				params.ticket.dst_address,
 				params.ticket.dst_network,
@@ -75,10 +77,13 @@ class SpaceBridgeProvider {
 
 		await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address })
 		.on('transactionHash', transactionHash => {
+			console.log('Claim transactionHash ', transactionHash)
 			if (transactionHash) {
+				txHash = transactionHash;
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				let updatedHistory = bridgeHistoryArray.map(elem => {
 					if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+						console.log('UPDATE STORAGE AFTER CLAIM -----------------------------------')
 						elem.claimTxHash = transactionHash;
 						elem.claimTxTimestamp = Date.now();
 					}
@@ -88,7 +93,7 @@ class SpaceBridgeProvider {
 				localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 			}
 		});
-		console.log("send: " + transactionHash);		
+		console.log("send: " + txHash);		
 	}
 
 	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {

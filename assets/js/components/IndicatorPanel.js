@@ -151,6 +151,10 @@ class IndicatorPanel extends React.Component {
 
     getFreshInterpolateParams (rawDataSrt, interpolateParams, txHash) {
         return new Promise(resolve => {
+            if (rawDataSrt.indexOf("undefined")) {
+                resolve(interpolateParams)
+                return
+            }
             let objData = ENQWeb.Utils.ofd.parse(rawDataSrt)
             const allowedTypes = [txTypes.pool_swap, txTypes.farm_get_reward]
             if (allowedTypes.indexOf(objData.type) !== -1) {

@@ -76,7 +76,7 @@ class Web3LibProvider {
                     //console.log(receipt);
                     return receipt
                 }, function(err) {
-                	console.log(`Get ${txType} Tx receipt error: `, err );
+                	console.log(`Get ${txType} Tx ${txHash} receipt error: `, err );
                 });
 	}
 

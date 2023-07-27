@@ -84,7 +84,7 @@ class Voting extends React.Component {
             this.getDataSet()
         }, 1000)
 
-        this.updateExpandedVote(0)
+        this.updateExpandedVote(2)
     }
 
     componentWillUnmount() {
@@ -561,6 +561,9 @@ class Voting extends React.Component {
 
     renderVoteTable(vote, activeVouting) {
         const t = this.props.t
+        let situationReadme = vote.situationReadme
+        let voutingReadme = vote.voutingReadme
+        let resultsReadme = vote.resultsReadme
         return(
             <>
                 <div className="d-flex justify-content-between">
@@ -577,15 +580,15 @@ class Voting extends React.Component {
                         <div className="mb-0">
                             {vote.description}
                         </div>
-                        <div className="mb-0">
-                            <a href={vote.situationReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
-                        </div>
-                        <div className="mb-0">
-                            <a href={vote.voutingReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
-                        </div>
-                        {(!activeVouting || vote.resultsReadme) && 
+                        {situationReadme && <div className="mb-0">
+                            <a href={situationReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore1')}</a>
+                        </div> || <></>}
+                        {voutingReadme && <div className="mb-0">
+                            <a href={voutingReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore2')}</a>
+                        </div> || <></>}
+                        {(!activeVouting || resultsReadme) && resultsReadme &&
                             <div className="mb-0">
-                                <a href={vote.resultsReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
+                                <a href={resultsReadme} target="_blank" className='text-color4-link hover-pointer'>{t('dropFarms.voting.readMore3')}</a>
                             </div>
                         }
                         <h2 className="h2 mb-4 mt-4">
@@ -612,7 +615,11 @@ class Voting extends React.Component {
                                                         <td>
                                                             <div className="cell-wrapper pl-5 text-nowrap">
                                                                 <div className="h5 mb-0">{farmTitle}</div>
-                                                                <div className="long-value" ><a href={listItem.proposal} target="_blank" className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a></div>
+                                                                {listItem.proposal &&
+                                                                    <div className="long-value" >
+                                                                        <a href={listItem.proposal} target="_blank" className="text-color4-link hover-pointer">{t('dropFarms.voting.readTheProposal')}</a>
+                                                                    </div>
+                                                                }
                                                             </div>	
                                                         </td>
                                                         <td>
@@ -672,6 +679,7 @@ class Voting extends React.Component {
                                 </div>
                             }
                             {votes.map(( vote, index ) => {
+                                console.log(this.state.expandedVote, vote.voteIndex)
                                 let tPath = `dropFarms.voting.votes.${vote.voteName}`
                                 let voteTitle = t(`${tPath}.header`, {status: activeVouting ? t('active') : t('inactive')})
                                 vote.description = t(`${tPath}.description`)

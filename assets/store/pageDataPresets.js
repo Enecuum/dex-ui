@@ -213,6 +213,29 @@ const presets =  {
                             ]
                         }
                     ]
+                },
+                tickerPrefix : {
+                    finalBlockNum : 6061056,
+                    forceDeactivation : false,
+                    situationReadme : "",
+                    voutingReadme : "",
+                    resultsReadme : "", 
+                    list : [
+                        {
+                            issue : "Save current logic. Add \"sb\" prefix to token's ticker in the destination network.",
+                            proposal : "",
+                            farm_ids : [
+                                "c86eedcd0423c0d7f21ca84e7f4e2fbc9cb1d0dc79677d563941d8afdfbf9781",
+                            ]
+                        },
+                        {
+                            issue : "Change logic. Save the original  token's ticker in the destination network.",
+                            proposal : "",
+                            farm_ids : [
+                                "d431583f7d828777d85c96c21f75714107b76b8c69e565ad0c6610562075c689",
+                            ]
+                        }
+                    ]
                 }
             }
         }

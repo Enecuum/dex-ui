@@ -46,8 +46,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0xa994aa746ba106DEf866B4AA27cAC2C35b0A4678', //strig, undefined if not used
-        vaultContractAddress  : '0x9bA80762F115e3A6f2396dB22d74e32E1B46184c', //strig, undefined if not used
+        bridgeContractAddress : '0x1C68b5F025AF40d78888Ae723166F75cbA9BCbD3', //strig, undefined if not used
+        vaultContractAddress  : '0xA8aB442975bA3283DE6aBcEe7fc68344e703ac8A', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage
@@ -61,8 +61,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x9E7c6500244D2AF33B40Ae9df386f2Df8b188348', //strig, undefined if not used
-        vaultContractAddress  : '0x745aA87F9e0cf367B3F603600aaE90E785b11993', //strig, undefined if not used
+        bridgeContractAddress : '0x2a696978852Cf04F06566Fc5D687DF4F9238FF89', //strig, undefined if not used
+        vaultContractAddress  : '0x075C145c03Ddb2d88046653ee5fB68D56Bd80D0A', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage
@@ -76,8 +76,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x2F795ec61F302CbcaAc8142804245C649E4d6E49', //strig, undefined if not used
-        vaultContractAddress  : '0x22CA93cd9ce9196722DfB1f28F317933eF43dbd0', //strig, undefined if not used
+        bridgeContractAddress : '0xA8218026C5eF1a66C6da4fCB4d415f8f0F114FE4', //strig, undefined if not used
+        vaultContractAddress  : '0x58AACA9826C034b902e01491bE94f14E89E3ca6b', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://sepolia.etherscan.io/', // url to explorer mainpage

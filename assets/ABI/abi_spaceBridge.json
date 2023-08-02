@@ -245,29 +245,42 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "getGovernance",
-      "outputs": [
+      "inputs": [
         {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
+          "internalType": "string",
+          "name": "src_address",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "src_hash",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "src_network",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "dst_address",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dst_network",
+          "type": "uint256"
         }
       ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getPendingGovernance",
+      "name": "getChannelId",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "bytes32",
           "name": "",
-          "type": "address"
+          "type": "bytes32"
         }
       ],
-      "stateMutability": "view",
+      "stateMutability": "pure",
       "type": "function"
     },
     {
@@ -298,12 +311,38 @@
           "type": "uint256"
         }
       ],
-      "name": "getTransfer",
+      "name": "getChannelNonce",
       "outputs": [
         {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getGovernance",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPendingGovernance",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",

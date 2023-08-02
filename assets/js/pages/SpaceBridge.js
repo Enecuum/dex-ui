@@ -89,7 +89,6 @@ class SpaceBridge extends React.Component {
                 this.setState({ticket: undefined});
                 this.setState({transfer_id: undefined});
                 this.setState({history: []});
-                console.log('1111111111111111')                
 
                 if (prevProps.nonNativeConnection.web3ExtensionChain !== this.props.nonNativeConnection.web3ExtensionChain &&
                     this.props.nonNativeConnection.web3ExtensionChain !== undefined) {
@@ -179,7 +178,6 @@ class SpaceBridge extends React.Component {
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
-            console.log('22222222222222')
     		userHistory.forEach(function(elem, index, array) {
                 let srcNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.src_network);
                 let dstNetworkType = that.availableNetworksUtils.getChainById(elem.lock?.dst_network);                

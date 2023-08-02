@@ -99,7 +99,7 @@ class SpaceBridgeProvider {
 	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {
 		try {
 			console.log(`query SpaceBridgeProvider getTransfer on contract ${this.contractHash}`);
-			let res = await this.spaceBridgeContract.methods.getTransfer(src_address, src_hash, src_network, dst_address, dst_network).call();
+			let res = await this.spaceBridgeContract.methods.getChannelNonce(src_address, src_hash, src_network, dst_address, dst_network).call();
 			return Number(res)
 		} catch(e) {
 			console.log(`query query SpaceBridgeProvider getTransfer on contract ${this.contractHash} error`, e);

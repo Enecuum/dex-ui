@@ -80,7 +80,7 @@ class NetworkApi {
     }
 
     getAccountBalancesAll (accountHash, url = this.url) {
-        return trafficController.simpleRequest(`${url}api/${config.api_version}/balance_all?id=${accountHash}`,
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/balance_all_unfiltered?id=${accountHash}`,
             {
                 method : 'GET'
             }

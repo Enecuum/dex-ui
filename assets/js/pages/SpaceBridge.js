@@ -193,7 +193,6 @@ class SpaceBridge extends React.Component {
                                 elem.lock.status = Number(res.status) === 1 ? true : false;
                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                 that.setState({history: array});
-                                console.log('333333333333333')
                             }
                         }, function(err) {
                             console.log('Can\'t get receipt for lock transaction', elem.lock.transactionHash, err);
@@ -211,7 +210,6 @@ class SpaceBridge extends React.Component {
                                             elem.lock.status = tx.status === 3 ? true : false;                                            
                                             localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
-                                            console.log('4444444444444444444444')
                                         } else {
                                             console.log('Undefined lock transaction status', elem.lock.transactionHash);
                                         }
@@ -234,7 +232,6 @@ class SpaceBridge extends React.Component {
                                     elem.claimTxStatus = Number(res.status) === 1 ? true : false;
                                     localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
-                                    console.log('555555555555555')
                                 } else {
                                     console.log('Undefined claim transaction status', elem.lock.transactionHash);
                                 }
@@ -255,7 +252,6 @@ class SpaceBridge extends React.Component {
                                                 elem.claimInitTxStatus = tx.status === 3 ? true : false;
                                                 localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
-                                                console.log('66666666666666666666')
                                             }
                                         }, function(err) {
                                             console.log('Can\'t get status for Claim Init transaction', elem.claimInitTxHash, err);

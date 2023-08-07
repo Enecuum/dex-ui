@@ -137,7 +137,7 @@ class Aside extends React.Component {
         },
         err => {
             console.log(err);
-            this.props.updExchangeRate('---');
+            this.props.updExchangeRate(0);
         });
     };
 
@@ -186,7 +186,7 @@ class Aside extends React.Component {
                         <div className='exchange-rate d-flex justify-content-between'>
                             <img src={img} width='30px' height='30px'/>
                             <div>
-                                ${utils.removeEndZeros(this.props.exchangeRate, 5)}
+                                ${this.props.exchRate === 0 ? "---" : utils.removeEndZeros(this.props.exchangeRate, 5)}
                             </div>
                         </div>
                         <div className="dropup lang-switcher d-flex align-items-center justify-content-between">

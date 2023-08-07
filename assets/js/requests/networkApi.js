@@ -87,6 +87,14 @@ class NetworkApi {
         );        
     }
 
+    getAccountBalancesAllUnfiltered (accountHash, url = this.url) {
+        return trafficController.simpleRequest(`${url}api/${config.api_version}/balance_all_unfiltered?id=${accountHash}`,
+            {
+                method : 'GET'
+            }
+        );        
+    }
+
     tokenInfoStorage (net, url = this.url) {
         let jsonFile = `token-info-storage-${net}.json`
         return trafficController.simpleRequest(`${url}/info/${jsonFile}`,

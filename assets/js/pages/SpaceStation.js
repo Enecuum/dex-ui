@@ -205,7 +205,7 @@ class SpaceStation extends React.Component {
                 result.json().then(resultSpaceStationPools => {
                     let spaceStationPools = resultSpaceStationPools;
                     let commanderBalances = networkApi.getAccountBalancesAll();
-                    networkApi.getAccountBalancesAll(that.props.networkInfo.dex.DEX_COMMANDER_ADDRESS)
+                    networkApi.getAccountBalancesAllUnfiltered(that.props.networkInfo.dex.DEX_COMMANDER_ADDRESS)
                     .then(balances => {
                         balances.json().then(function(commanderBalances) {
                             let enxHash = that.props.networkInfo.dex.DEX_ENX_TOKEN_HASH;
@@ -471,7 +471,7 @@ class SpaceStation extends React.Component {
 
     getValueInUSD() {
         let res;
-        let price = this.props.exchangeRate !== undefined ? this.props.exchangeRate : 0;
+        let price = (this.props.exchangeRate !== undefined && this.props.exchangeRate !== "---") ? this.props.exchangeRate : 0;
         let stringPrice = price.toString();
         let priceDecimalsPart = stringPrice.split('.')[1];
         let priceDecimals = priceDecimalsPart !== undefined ? priceDecimalsPart.length : 0;

@@ -265,8 +265,8 @@ class ExtRequests {
     claimInit (pubKey, data_packed) {
        let data = {
             from : pubKey,
-            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
-            value : 1e9,//////
+            to : this.genesis,////////
+            value : this.nativeTokenFee,//////
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
             data : data_packed
@@ -279,8 +279,8 @@ class ExtRequests {
     claimConfirm (pubKey, data_packed) {
        let data = {
             from : pubKey,
-            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
-            value : 1e9,//////
+            to : this.genesis,////////
+            value : this.nativeTokenFee,//////
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
             data : data_packed
@@ -293,8 +293,8 @@ class ExtRequests {
     enqLock (pubKey, data_packed) {
        let data = {
             from : pubKey,
-            to : "029dd222eeddd5c3340e8d46ae0a22e2c8e301bfee4903bcf8c899766c8ceb3a7d",////////
-            value : 1e9,//////
+            to : this.genesis,////////
+            value : this.nativeTokenFee,//////
             tokenHash : this.nativeTokenHash,
             nonce : Math.floor(Math.random() * 1e15),
             data : data_packed

@@ -11,7 +11,7 @@ export const availableNetworks = [
     {
         id                    : 0, // Number, hex ???
         web3ExtensionChainId  : undefined, //strig as in Metamask, undefined if not used,
-        enqExtensionChainId   : 'https://pulse.enecuum.com/',
+        enqExtensionChainId   : 'https://pulse3.enecuum.com/',
         name                  : 'Pulse', //string
         type                  : 'enq', //'eth', 'enq'
         testnet               : false, //true false 
@@ -20,8 +20,8 @@ export const availableNetworks = [
         vaultContractAddress  : '', //strig, undefined if not used
         bridgeContractABI     : undefined, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
-        explorerURL           : 'https://pulse.enecuum.com/', // url to explorer mainpage
-        txPageUrl             : 'https://pulse.enecuum.com/#!/tx/'  // url to tx page without tx hash
+        explorerURL           : 'https://pulse3.enecuum.com/', // url to explorer mainpage
+        txPageUrl             : 'https://pulse3.enecuum.com/#!/tx/'  // url to tx page without tx hash
     },
     {
         id                    : 1, // Number, hex ???
@@ -31,8 +31,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : false, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '', //strig, undefined if not used
-        vaultContractAddress  : '', //strig, undefined if not used
+        bridgeContractAddress : '0x5A39a0B3B5Eecc2AA986014eaeE2975079463049', //strig, undefined if not used
+        vaultContractAddress  : '0x6195c4d074f18DC65e75BC0c48AB4a163850652a', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://etherscan.io', // url to explorer mainpage
@@ -46,13 +46,13 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : false, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '', //strig, undefined if not used
-        vaultContractAddress  : '', //strig, undefined if not used
+        bridgeContractAddress : '0x5A39a0B3B5Eecc2AA986014eaeE2975079463049', //strig, undefined if not used
+        vaultContractAddress  : '0x6195c4d074f18DC65e75BC0c48AB4a163850652a', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://polygonscan.com', // url to explorer mainpage
         txPageUrl             : 'https://polygonscan.com/tx/'  // url to tx page without tx hash
-    },
+    },/*
     {
         id                    : 10, // Number, hex ???
         web3ExtensionChainId  : '0xA', //strig as in Metamask, undefined if not used,
@@ -82,7 +82,7 @@ export const availableNetworks = [
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://arbiscan.io', // url to explorer mainpage
         txPageUrl             : 'https://arbiscan.io/tx/'  // url to tx page without tx hash
-    },
+    },*/
     {
         id                    : 56, // Number, hex ???
         web3ExtensionChainId  : '0x38', //strig as in Metamask, undefined if not used,
@@ -91,8 +91,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : false, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '', //strig, undefined if not used
-        vaultContractAddress  : '', //strig, undefined if not used
+        bridgeContractAddress : '0x5A39a0B3B5Eecc2AA986014eaeE2975079463049', //strig, undefined if not used
+        vaultContractAddress  : '0x6195c4d074f18DC65e75BC0c48AB4a163850652a', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://bscscan.com', // url to explorer mainpage

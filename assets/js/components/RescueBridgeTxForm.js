@@ -57,8 +57,8 @@ class RescueBridgeTxForm extends React.Component {
                 initiator : `${ticket.src_address}_${ticket.dst_address}`,
                 lock       : {
                                 transactionHash : transactionHash,
-                                src_address     : parseInt(ticket.src_address),
-                                src_network     : ticket.src_network,
+                                src_address     : ticket.src_address,
+                                src_network     : parseInt(ticket.src_network),
                                 dst_address     : ticket.dst_address,
                                 dst_network     : parseInt(ticket.dst_network),
                                 token_amount    : ticket.amount,

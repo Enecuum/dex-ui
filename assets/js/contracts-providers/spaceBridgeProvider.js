@@ -9,6 +9,7 @@ class SpaceBridgeProvider {
 
 	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker, callback = undefined) {
 		console.log('query SpaceBridgeProvider lock');
+		console.log({src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker})
 		let that = this;
 		let txHash;
 		await this.spaceBridgeContract.methods.lock(that.web3.utils.asciiToHex(dst_address), dst_network, token_amount, token_hash, nonce).send({ from: src_address })
@@ -33,6 +34,9 @@ class SpaceBridgeProvider {
 								}					
 				};
 
+
+				localStorage.setItem(`bh_lock_${transactionHash}`, JSON.stringify(accountInteractToBridgeItem));
+
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				if (bridgeHistoryArray.length > 0) {
 					let itemIsExist = bridgeHistoryArray.find(function(elem) {
@@ -40,11 +44,15 @@ class SpaceBridgeProvider {
 							return true
 					});
 
-					if (itemIsExist !== undefined)
+					if (itemIsExist !== undefined) {
+						console.log('itemIsExist')
 						return
-					else
+					} else {
+						console.log('addBridgeHistoryItem')
 						that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+					}
 				} else {
+					console.log('initiateHistoryStorage')
 					that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
 				}
 			}
@@ -78,6 +86,7 @@ class SpaceBridgeProvider {
 		await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address })
 		.on('transactionHash', transactionHash => {
 			console.log('Claim transactionHash ', transactionHash)
+			localStorage.setItem(`bh_claim_${transactionHash}`, JSON.stringify(ticket));
 			if (transactionHash) {
 				txHash = transactionHash;
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();

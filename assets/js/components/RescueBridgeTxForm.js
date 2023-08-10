@@ -98,9 +98,10 @@ class RescueBridgeTxForm extends React.Component {
         let that = this;
         let disabled = false;
         return (
-            <div>
+            <div id="rescueForm" className="d-none">
+                <div className="h3">Rescue</div>
                 <div className="row">
-                    <div className="col col-xl-3">
+                    <div className="col col-xl-3">                        
                         <div>Network</div>
                         <Dropdown as={ButtonGroup} className="w-100">
                             <Dropdown.Toggle className="w-100">

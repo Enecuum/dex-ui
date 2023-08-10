@@ -55,7 +55,7 @@ export const availableNetworks = [
     },/*
     {
         id                    : 10, // Number, hex ???
-        web3ExtensionChainId  : '0xA', //strig as in Metamask, undefined if not used,
+        web3ExtensionChainId  : '0xa', //strig as in Metamask, undefined if not used,
         enqExtensionChainId   : undefined,
         name                  : 'Optimism', //string
         type                  : 'eth', //'eth', 'enq'
@@ -70,7 +70,7 @@ export const availableNetworks = [
     },
     {
         id                    : 42161, // Number, hex ???
-        web3ExtensionChainId  : '0xA4B1', //strig as in Metamask, undefined if not used,
+        web3ExtensionChainId  : '0xa4b1', //strig as in Metamask, undefined if not used,
         enqExtensionChainId   : undefined,
         name                  : 'Arbitrum One', //string
         type                  : 'eth', //'eth', 'enq'

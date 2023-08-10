@@ -489,7 +489,7 @@ class SpaceBridge extends React.Component {
         if (readyForProcess) {
             this.setState({blockConfirmByAmount : false});
             let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
-            if (ethType && (bigIntAmount.value >= this.props.srcTokenAllowance)) {
+            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
                 console.log('Amount less than allowance');

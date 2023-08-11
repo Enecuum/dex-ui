@@ -482,7 +482,6 @@ class SpaceBridge extends React.Component {
                                       this.props.dstDecimals !== undefined;
         let satisfyExtraConditions = true;
         let fromEthType = this.props.fromBlockchain?.type === 'eth';
-        //let fromEnqType = this.props.fromBlockchain?.type === 'enq';
         let toEnqType = this.props.toBlockchain?.type === 'enq';
         if (fromEthType)
             satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
@@ -1582,7 +1581,7 @@ class SpaceBridge extends React.Component {
             (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).rawFractionalPart.length <= Number(this.props.dstDecimals))) {
                 return
         } else if (cause == 'exeeds-enq-max-value' && this.props.toBlockchain?.type === 'enq' &&               
-            (this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals).value <= maxEnqValue)) {
+            (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).value <= maxEnqValue)) {
                 return
         } else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
             return(

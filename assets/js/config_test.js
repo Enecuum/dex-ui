@@ -7,6 +7,8 @@ export const defaultParams = {
     chain : '0x1'
 }
 
+export const maxEnqValue = BigInt('18446744073709551615'); //amount in cents
+
 export const availableNetworks = [
     {
         id                    : 111, // Number, hex ???

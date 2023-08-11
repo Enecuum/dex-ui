@@ -7,12 +7,14 @@ export const defaultParams = {
     chain : '0x1'
 }
 
+export const maxEnqValue = BigInt('18446744073709551615'); //amount in cents
+
 export const availableNetworks = [
     {
         id                    : 0, // Number, hex ???
         web3ExtensionChainId  : undefined, //strig as in Metamask, undefined if not used,
-        enqExtensionChainId   : 'https://pulse3.enecuum.com/',
-        name                  : 'Pulse', //string
+        enqExtensionChainId   : 'https://pulse.enecuum.com/',
+        name                  : 'Enecuum', //string
         type                  : 'enq', //'eth', 'enq'
         testnet               : false, //true false 
         available             : true, //true false 
@@ -20,8 +22,8 @@ export const availableNetworks = [
         vaultContractAddress  : '', //strig, undefined if not used
         bridgeContractABI     : undefined, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
-        explorerURL           : 'https://pulse3.enecuum.com/', // url to explorer mainpage
-        txPageUrl             : 'https://pulse3.enecuum.com/#!/tx/'  // url to tx page without tx hash
+        explorerURL           : 'https://pulse.enecuum.com/', // url to explorer mainpage
+        txPageUrl             : 'https://pulse.enecuum.com/#!/tx/'  // url to tx page without tx hash
     },
     {
         id                    : 1, // Number, hex ???

@@ -35,7 +35,7 @@ import AvailableNetworksUtils from '../utils/AvailableNetworksUtils';
 import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
 
-import {availableNetworks, smartContracts} from'./../config';
+import {availableNetworks, smartContracts, maxEnqValue} from'./../config';
 
 import metamaskLogo from './../../img/metamask-logo.webp';
 
@@ -481,15 +481,17 @@ class SpaceBridge extends React.Component {
                                       this.props.srcTokenBalance !== undefined &&
                                       this.props.dstDecimals !== undefined;
         let satisfyExtraConditions = true;
-        let ethType = this.props.fromBlockchain?.type === 'eth';        
-        if (ethType)
+        let fromEthType = this.props.fromBlockchain?.type === 'eth';
+        //let fromEnqType = this.props.fromBlockchain?.type === 'enq';
+        let toEnqType = this.props.toBlockchain?.type === 'enq';
+        if (fromEthType)
             satisfyExtraConditions = this.props.srcTokenAllowance !== undefined;        
         let readyForProcess = satisfyCommonConditions && satisfyExtraConditions;                               
 
         if (readyForProcess) {
             this.setState({blockConfirmByAmount : false});
             let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
-            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
+            if (fromEthType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
                 console.log('Amount less than allowance');
@@ -505,7 +507,11 @@ class SpaceBridge extends React.Component {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('exeeds-dst-decimals');        
                 console.log('Fractional part is longer than dst_decimals');
-            }
+            }  else if (toEnqType && (bigIntAmount.value > maxEnqValue)) {
+                this.setState({blockConfirmByAmount : true});
+                this.showAmountWarning('exeeds-enq-max-value');        
+                console.log('Too much amount for destination chain! Result token amount exeeds maxEnqValue');
+            } 
         } else {
             this.setState({blockConfirmByAmount : true});
             this.showAmountWarning('incorrect-token-info');        
@@ -1534,6 +1540,10 @@ class SpaceBridge extends React.Component {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
             this.setState({'formInputWarningMsg' : `Decimals in destination network for this token can\`t exeeds ${this.props.dstDecimals}`});
+        }  else if (cause == 'exeeds-enq-max-value') {
+            this.setState({'formInputWarningCause' : cause});
+            this.setState({'showFormInputWarning' : true});        
+            this.setState({'formInputWarningMsg' : `Destination network can\'t provide so much token amount`});
         }
     }
 
@@ -1570,6 +1580,9 @@ class SpaceBridge extends React.Component {
                 return
         } else if (cause == 'exeeds-dst-decimals' &&                
             (this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, this.props.srcTokenDecimals).rawFractionalPart.length <= Number(this.props.dstDecimals))) {
+                return
+        } else if (cause == 'exeeds-enq-max-value' && this.props.toBlockchain?.type === 'enq' &&               
+            (this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals).value <= maxEnqValue)) {
                 return
         } else if (this.state.showFormInputWarning === true && this.state.formInputWarningMsg !== undefined && this.state.formInputWarningCause !== undefined) {       
             return(

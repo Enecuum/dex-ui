@@ -78,8 +78,8 @@ export const availableNetworks = [
         type                  : 'eth', //'eth', 'enq'
         testnet               : true, //true false 
         available             : true, //true false 
-        bridgeContractAddress : '0x2F795ec61F302CbcaAc8142804245C649E4d6E49', //strig, undefined if not used
-        vaultContractAddress  : '0x22CA93cd9ce9196722DfB1f28F317933eF43dbd0', //strig, undefined if not used
+        bridgeContractAddress : '0x85130CA631c82Ef377AF161CB3936f8afDDa1805', //strig, undefined if not used
+        vaultContractAddress  : '0xea07aF35235675437F05A9d591396EB9ad3d1855', //strig, undefined if not used
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://sepolia.etherscan.io/', // url to explorer mainpage

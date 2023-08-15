@@ -572,6 +572,7 @@ class SpaceBridge extends React.Component {
 
     getValidatorRes () {
         let that = this;
+        console.log(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId)
         let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
 
         if (this.props.currentBridgeTx !== undefined) {
@@ -1149,7 +1150,7 @@ class SpaceBridge extends React.Component {
 
             if (item.lock.dst_address.toUpperCase() !== addr.toUpperCase()) {
                 action = this.connectMMAcc.bind(this);
-                title = `Connect address ${utils.packAddressString(item.lock.dst_address)}`;
+                title = `Connect address ${utils.packHashString(item.lock.dst_address)}`;
             } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
                 if (item.claimTxStatus === false) {
                     action = this.reClaimEth.bind(this, item);

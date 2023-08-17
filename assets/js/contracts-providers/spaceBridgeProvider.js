@@ -33,21 +33,23 @@ class SpaceBridgeProvider {
 	                                timestamp : Date.now()
 								}					
 				};
+				localStorage.setItem(`bh_lock_${txHash}`, JSON.stringify(accountInteractToBridgeItem));
 
 				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-				if (bridgeHistoryArray.length > 0) {
-					let itemIsExist = bridgeHistoryArray.find(function(elem) {
-						if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === transactionHash)
-							return true
-					});
+				// if (bridgeHistoryArray.length > 0) {
+				// 	let itemIsExist = bridgeHistoryArray.find(function(elem) {
+				// 		if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === transactionHash)
+				// 			return true
+				// 	});
 
-					if (itemIsExist !== undefined)
-						return
-					else
-						that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
-				} else {
-					that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
-				}
+				// 	if (itemIsExist !== undefined)
+				// 		return
+				// 	else {
+				// 		that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+				// 	}
+				// } else {
+				// 	that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+				// }
 			}
     	});
 		
@@ -76,22 +78,30 @@ class SpaceBridgeProvider {
 				params.ticket.origin_decimals
 			];
 
+		let accountInteractToBridgeItem = {
+					initiator : `${params.ticket.src_address}_${params.ticket.dst_address}`,
+					validatorRes : params					
+				};	
+
 		await this.spaceBridgeContract.methods.claim(ticket, [[params.validator_sign.v, params.validator_sign.r, params.validator_sign.s]]).send({ from: from_address })
 		.on('transactionHash', transactionHash => {
 			console.log('Claim transactionHash ', transactionHash)
 			if (transactionHash) {
 				txHash = transactionHash;
-				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-				let updatedHistory = bridgeHistoryArray.map(elem => {
-					if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
-						console.log('UPDATE STORAGE AFTER CLAIM -----------------------------------')
-						elem.claimTxHash = transactionHash;
-						elem.claimTxTimestamp = Date.now();
-					}
-					return elem
-				});
+				accountInteractToBridgeItem.claimTxHash = transactionHash;
+				accountInteractToBridgeItem.claimTxTimestamp = Date.now();
+				localStorage.setItem(`bh_claim_eth_${txHash}`, JSON.stringify(accountInteractToBridgeItem));
+				// let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+				// let updatedHistory = bridgeHistoryArray.map(elem => {
+				// 	if ((elem.initiator.toUpperCase().includes(params.ticket.dst_address.toUpperCase()) || elem.initiator.toUpperCase().includes(params.ticket.src_address.toUpperCase())) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === elemLockTransactionHash) {
+				// 		console.log('UPDATE STORAGE AFTER CLAIM -----------------------------------')
+				// 		elem.claimTxHash = transactionHash;
+				// 		elem.claimTxTimestamp = Date.now();
+				// 	}
+				// 	return elem
+				// });
 
-				localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+				// localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 			}
 		});
 		console.log("send: " + txHash);		

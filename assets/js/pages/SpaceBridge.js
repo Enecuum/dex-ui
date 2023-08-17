@@ -176,7 +176,7 @@ class SpaceBridge extends React.Component {
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        //console.log(userHistory)
+        console.log('aaaaaaaaaaaaa',userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -193,7 +193,7 @@ class SpaceBridge extends React.Component {
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
                             if (res !== null && res !== undefined && res.status !== undefined) {
                                 elem.lock.status = Number(res.status) === 1 ? true : false;
-                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                 that.setState({history: array});
                             }
                         }, function(err) {
@@ -209,8 +209,9 @@ class SpaceBridge extends React.Component {
                                     console.log(res)
                                     res.json().then(function(tx) {                                        
                                         if (tx.status !== undefined) {
-                                            elem.lock.status = tx.status === 3 ? true : false;                                            
-                                            localStorage.setItem('bridge_history', JSON.stringify(array));
+                                            elem.lock.status = tx.status === 3 ? true : false;
+                                            localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));                                            
+                                            //localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
                                         } else {
                                             console.log('Undefined lock transaction status', elem.lock.transactionHash);
@@ -232,7 +233,8 @@ class SpaceBridge extends React.Component {
                             web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
                                 if (res !== null && res !== undefined && res.status !== undefined) {
                                     elem.claimTxStatus = Number(res.status) === 1 ? true : false;
-                                    localStorage.setItem('bridge_history', JSON.stringify(array));
+                                    localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
+                                    //localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
                                 } else {
                                     console.log('Undefined claim transaction status', elem.lock.transactionHash);
@@ -252,7 +254,7 @@ class SpaceBridge extends React.Component {
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
                                                 elem.claimInitTxStatus = tx.status === 3 ? true : false;
-                                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                                //localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
                                             }
                                         }, function(err) {
@@ -275,7 +277,7 @@ class SpaceBridge extends React.Component {
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
                                                 elem.claimConfirmTxStatus = tx.status === 3 ? true : false;
-                                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                                //localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
                                                 console.log('7777777777777777777')
                                             } else {
@@ -301,7 +303,8 @@ class SpaceBridge extends React.Component {
     						return
                         }
     					elem.validatorRes = validatorRes;
-    					localStorage.setItem('bridge_history', JSON.stringify(array));
+                        localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
+    					//localStorage.setItem('bridge_history', JSON.stringify(array));
                         that.setState({history: array});
                         console.log('888888888888888')
     				}, function(err) {
@@ -647,16 +650,23 @@ class SpaceBridge extends React.Component {
                 return
             extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
-                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-                let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
-                        elem.claimInitTxTimestamp = Date.now();
-                        elem.claimInitTxHash = result.hash;
-                    }
-                    return elem
-                });
+                let accountInteractToBridgeItem = {
+                    initiator : `${bridgeItem.ticket.src_address}_${bridgeItem.ticket.dst_address}`,
+                    claimInitData,
+                    claimInitTxTimestamp : Date.now(),
+                    claimInitTxHash : result.hash                   
+                };
+                localStorage.setItem(`bh_claim_init_enq_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));
+                // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                // let updatedHistory = bridgeHistoryArray.map(elem => {
+                //     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                //         elem.claimInitTxTimestamp = Date.now();
+                //         elem.claimInitTxHash = result.hash;
+                //     }
+                //     return elem
+                // });
 
-                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+                // localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 
                 let interpolateParams, txTypes = presets.pending.allowedTxTypes;
                 let actionType = presets.pending.allowedTxTypes.claim_init;
@@ -678,17 +688,23 @@ class SpaceBridge extends React.Component {
                 return
             extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);
+                let accountInteractToBridgeItem = {
+                    initiator : `${bridgeItem.ticket.src_address}_${bridgeItem.ticket.dst_address}`,
+                    claimConfirmData,
+                    claimConfirmTxTimestamp : Date.now(),
+                    claimConfirmTxHash : result.hash                   
+                };
+                localStorage.setItem(`bh_claim_confirm_enq_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));
+                // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                // let updatedHistory = bridgeHistoryArray.map(elem => {
+                //     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                //         elem.claimConfirmTxTimestamp = Date.now();
+                //         elem.claimConfirmTxHash = result.hash;
+                //     }
+                //     return elem
+                // });
 
-                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-                let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
-                        elem.claimConfirmTxTimestamp = Date.now();
-                        elem.claimConfirmTxHash = result.hash;
-                    }
-                    return elem
-                });
-
-                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+                // localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 
                 let interpolateParams, txTypes = presets.pending.allowedTxTypes;
                 let actionType = presets.pending.allowedTxTypes.claim_confirm;
@@ -786,21 +802,21 @@ class SpaceBridge extends React.Component {
                                     timestamp : Date.now()
                                 }                    
                 };
+            localStorage.setItem(`bh_lock_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));    
+            // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            // if (bridgeHistoryArray.length > 0) {
+            //     let itemIsExist = bridgeHistoryArray.find(function(elem) {
+            //         if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
+            //             return true
+            //     });
 
-            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-            if (bridgeHistoryArray.length > 0) {
-                let itemIsExist = bridgeHistoryArray.find(function(elem) {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
-                        return true
-                });
-
-                if (itemIsExist !== undefined)
-                    return
-                else
-                    that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
-            } else {
-                that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
-            }
+            //     if (itemIsExist !== undefined)
+            //         return
+            //     else
+            //         that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+            // } else {
+            //     that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+            // }
         },
         error => {
             console.log('Error')
@@ -1270,9 +1286,8 @@ class SpaceBridge extends React.Component {
             itemInHistory[claimTxStatusPropStr] = undefined;
             itemInHistory[claimTxTimestampPropStr] = undefined;
             userHistory[itemIndexInHistory] = itemInHistory
-            localStorage.setItem('bridge_history', JSON.stringify(userHistory));
+            //localStorage.setItem('bridge_history', JSON.stringify(userHistory));
             this.setState({history: userHistory});
-            console.log('aaaaaaaaaaaaaa')
         } 
     }
 

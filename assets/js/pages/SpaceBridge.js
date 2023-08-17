@@ -494,7 +494,7 @@ class SpaceBridge extends React.Component {
             if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
-                console.log('Amount less than allowance');
+                console.log('Amount more than allowance');
             } else if (bigIntAmount.value > this.props.srcTokenBalance) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('exeeds-balance');        
@@ -1524,7 +1524,7 @@ class SpaceBridge extends React.Component {
         } else if (cause == 'low-allowance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
-            this.setState({'formInputWarningMsg' : 'Amount less than appoved balance'});
+            this.setState({'formInputWarningMsg' : 'Amount more than appoved balance'});
         } else if (cause == 'exeeds-balance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        

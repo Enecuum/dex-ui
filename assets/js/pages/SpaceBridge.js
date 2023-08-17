@@ -19,6 +19,8 @@ import ChainsDropdown from './../elements/bridge/ChainsDropdown';
 
 import TokenCardBridge from './../components/TokenCardBridge';
 import RescueBridgeTxForm from './../components/RescueBridgeTxForm';
+import ConfirmActionBridge from './../components/ConfirmActionBridge';
+
 
 import '../../css/bridge.css';
 
@@ -56,7 +58,9 @@ class SpaceBridge extends React.Component {
             showFormInputWarning : false,
             formInputWarningCause : undefined,
             formInputWarningMsg : '',
-            blockConfirmByAmount : true
+            blockConfirmByAmount : true,
+            showBridgeActionConfirmModal : false,
+            bridgeActionParams : undefined
         }
         setInterval(() => {
             this.updateUserHistory();
@@ -494,7 +498,7 @@ class SpaceBridge extends React.Component {
             if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
-                console.log('Amount less than allowance');
+                console.log('Amount more than allowance');
             } else if (bigIntAmount.value > this.props.srcTokenBalance) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('exeeds-balance');        
@@ -522,6 +526,38 @@ class SpaceBridge extends React.Component {
 			this.props.updateSrcTokenAmountToSend(value);
             this.processSrcTokenAmountToSend(value);
         }
+    }
+
+
+    passActionDataToConfirm(method, parmsObj = undefined) {
+        let allowedMethods = ['connectWeb3Ext',
+                              'approveSrcTokenBalance',
+                              'lockEth',
+                              'encodeDataAndLock',
+                              'claimEth',
+                              'reClaimEth',
+                              'claimENQ'];
+        if (!allowedMethods.includes(method)) {
+            this.setState({'showBridgeActionConfirmModal' : false});
+            this.setState({'bridgeActionParams' : undefined});
+            this.setState({'bridgeActionType' : undefined});
+            console.log('Try to call method', method);
+            return
+        }
+        this.setState({'showBridgeActionConfirmModal' : true});
+        this.setState({'bridgeActionParams' : parmsObj});
+        this.setState({'bridgeActionType' : method});                        
+  
+        // connectWeb3Ext - без аргумента, без модалки
+        // approveSrcTokenBalance - без аргумента
+
+        // lockEth - без аргумента
+        // encodeDataAndLock - без аргумента
+        // claimEth {item}
+        // reClaimEth {item} клейм тайп!!!
+        // claimENQ {item, claimType, resetCurrent}
+
+        //claimENQ -> if (!(claimType === 'claim' || claimType === 'claimInit' || claimType === 'claimConfirm'))
     }
 
     async lockEth() {    	
@@ -1129,12 +1165,12 @@ class SpaceBridge extends React.Component {
 
     claimEnq(item, claimType, resetCurrent) {
         if (resetCurrent === true)
-            this.passDataToResetClaimModal(item, claimType);
+            this.passDataToResetClaim(item, claimType);
         this[`${claimType}Enq`](item);
     }
 
     reClaimEth(item) {
-        this.passDataToResetClaimModal(item, 'claim');
+        this.passDataToResetClaim(item, 'claim');
         this.claimEth(item);
     }
 
@@ -1242,7 +1278,7 @@ class SpaceBridge extends React.Component {
         this.props.updateCurrentBridgeTx(undefined);
     }
 
-    passDataToResetClaimModal(item, claimType) {        
+    passDataToResetClaim(item, claimType) {        
         if (!(claimType === 'claim' || claimType === 'claimInit' || claimType === 'claimConfirm'))
             return
 
@@ -1272,7 +1308,6 @@ class SpaceBridge extends React.Component {
             userHistory[itemIndexInHistory] = itemInHistory
             localStorage.setItem('bridge_history', JSON.stringify(userHistory));
             this.setState({history: userHistory});
-            console.log('aaaaaaaaaaaaaa')
         } 
     }
 
@@ -1303,7 +1338,7 @@ class SpaceBridge extends React.Component {
                             Info</a>
                         {/*<Button
                             className="d-block btn btn-secondary px-3 button-bg-3 ml-2"
-                            onClick={this.passDataToResetClaimModal.bind(this, item, 'claim')}>
+                            onClick={this.passDataToResetClaim.bind(this, item, 'claim')}>
                                 <i className="fas fa-redo-alt"/>                     
                         </Button> */}   
                     </div>    
@@ -1524,7 +1559,7 @@ class SpaceBridge extends React.Component {
         } else if (cause == 'low-allowance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
-            this.setState({'formInputWarningMsg' : 'Amount less than appoved balance'});
+            this.setState({'formInputWarningMsg' : 'Amount more than appoved balance'});
         } else if (cause == 'exeeds-balance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
@@ -1696,7 +1731,7 @@ class SpaceBridge extends React.Component {
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
                            this.props.dstDecimals === undefined;         
-                action = this.lockEth.bind(this);
+                action = this.passActionDataToConfirm.bind(this, 'lockEth');
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
                            this.props.pubkey === undefined ||
@@ -2086,6 +2121,7 @@ class SpaceBridge extends React.Component {
                         </div>
                     </>
                 }
+                <ConfirmActionBridge context = {this}/>
             </>    
         );
     };

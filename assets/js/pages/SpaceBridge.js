@@ -191,7 +191,11 @@ class SpaceBridge extends React.Component {
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
                             if (res !== null && res !== undefined && res.status !== undefined) {
-                                elem.lock.status = Number(res.status) === 1 ? true : false;
+                                if (Number(res.status) === 1)
+                                    elem.lock.status = true;
+                                else if (Number(res.status) === 0)
+                                    elem.lock.status = false;
+                                // elem.lock.status = Number(res.status) === 1 ? true : false;
                                 localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                 that.setState({history: array});
                             }
@@ -208,7 +212,11 @@ class SpaceBridge extends React.Component {
                                     console.log(res)
                                     res.json().then(function(tx) {                                        
                                         if (tx.status !== undefined) {
-                                            elem.lock.status = tx.status === 3 ? true : false;
+                                            if (tx.status === 3)
+                                                elem.lock.status = true;
+                                            else if (tx.status === 2)
+                                                elem.lock.status = false;
+
                                             localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));                                            
                                             //localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
@@ -231,7 +239,11 @@ class SpaceBridge extends React.Component {
                             let web3Provider = new web3LibProvider(dataProvider);
                             web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
                                 if (res !== null && res !== undefined && res.status !== undefined) {
-                                    elem.claimTxStatus = Number(res.status) === 1 ? true : false;
+                                    if (Number(res.status) === 1)
+                                        elem.claimTxStatus = true;
+                                    else if (Number(res.status) === 0)
+                                        elem.claimTxStatus = false;
+                                    //elem.claimTxStatus = Number(res.status) === 1 ? true : false;
                                     localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                     //localStorage.setItem('bridge_history', JSON.stringify(array));
                                     that.setState({history: array});
@@ -252,7 +264,11 @@ class SpaceBridge extends React.Component {
                                     if (res !== null && !res.lock) {                                        
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
-                                                elem.claimInitTxStatus = tx.status === 3 ? true : false;
+                                                if (tx.status === 3)
+                                                    elem.claimInitTxStatus = true;
+                                                else if (tx.status === 2)
+                                                    elem.claimInitTxStatus = false;
+
                                                 localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                                 //localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});
@@ -276,7 +292,11 @@ class SpaceBridge extends React.Component {
                                     if (res !== null && !res.lock) {
                                         res.json().then(tx => {
                                             if (tx.status !== undefined) {
-                                                elem.claimConfirmTxStatus = tx.status === 3 ? true : false;
+                                                if (tx.status === 3)
+                                                    elem.claimConfirmTxStatus = true;
+                                                else if (tx.status === 2)
+                                                    elem.claimConfirmTxStatus = false;
+
                                                 localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                                 //localStorage.setItem('bridge_history', JSON.stringify(array));
                                                 that.setState({history: array});

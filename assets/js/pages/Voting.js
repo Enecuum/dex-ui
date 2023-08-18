@@ -84,7 +84,7 @@ class Voting extends React.Component {
             this.getDataSet()
         }, 1000)
 
-        this.updateExpandedVote(2)
+        this.updateExpandedVote(3)
     }
 
     componentWillUnmount() {

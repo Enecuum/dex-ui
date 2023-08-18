@@ -216,7 +216,7 @@ const presets =  {
                 },
                 tickerPrefix : {
                     finalBlockNum : 6061056,
-                    forceDeactivation : false,
+                    forceDeactivation : true,
                     situationReadme : "",
                     voutingReadme : "",
                     resultsReadme : "", 
@@ -235,6 +235,36 @@ const presets =  {
                                 "d431583f7d828777d85c96c21f75714107b76b8c69e565ad0c6610562075c689",
                             ]
                         }
+                    ]
+                },
+                tuneTokenomics: {
+                    finalBlockNum : 6155264,
+                    forceDeactivation : false,
+                    situationReadme : "",
+                    voutingReadme : "https://blog.enecuum.com/the-next-steps-in-shaping-the-future-of-the-enecuum-network-7024780f4946",
+                    resultsReadme : "",
+                    list : [
+                        {
+                            issue : "Extend Max Supply to 2,500,000,000 ENQ",
+                            proposal : "",
+                            farm_ids : [
+                                "119559f5ba540f76d579c240056997a9ddf5a262a04d0bb7e8b7de51f40af549",
+                            ]
+                        },
+                        {
+                            issue : "Extend Max Supply to 3,500,000,000 ENQ",
+                            proposal : "",
+                            farm_ids : [
+                                "8ec18b2b7693257cb06857a4ce850ee2c07ca20ad7f071217803e09756eeee52",
+                            ]
+                        },
+                        {
+                            issue : "Extend Max Supply to 5,000,000,000 ENQ",
+                            proposal : "",
+                            farm_ids : [
+                                "f99b4a02d88bced756ab029234d8a988aae6efe2cb469b6daecb36697f139c87",
+                            ]
+                        },
                     ]
                 }
             }

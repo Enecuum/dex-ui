@@ -50,13 +50,17 @@ module.exports = {
             "tickerPrefix" : {
                 "header" : "Voting about the ticker generation algorithm for tokens issued by the bridge - {{status}}",
                 "description" : "We have a proposal from the community regarding the ticker generation algorithm for a token issued by a bridge in the destination network. The current process involves adding the prefix \"sb\" to the ticker when creating a token in the destination network. For instance, if a user wants to transfer tokens from network A to network B, and the token does not yet exist in network B, the bridge will issue it in network B with the ticker prefixed as \"sbTST\" (for example, if the original token ticker is TST). However, @anaks77 suggests a modification to this logic. The proposal is to refrain from adding the \"sb\" prefix to the token being created on the destination network."
-            }
+            },
+            "tuneTokenomics" : {
+                "header" : "Voting about tokenomics tuning - {{status}}",
+                "description" : "We have a proposal to tune the tokenomics for the future project development."
+            },
         },
 
         "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",
         "currentBlock" : "Current block: {{block}}",
         "readMore1" : "Article",
-        "readMore2" : "Documentation",
+        "readMore2" : "Read more",
         "readMore3" : "Voting results",
         "proposalsTitle" : "Proposals",
         "totalVotes" : "Total votes",

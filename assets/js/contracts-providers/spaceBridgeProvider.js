@@ -16,7 +16,7 @@ class SpaceBridgeProvider {
 		.on('transactionHash', transactionHash => {
 			console.log('Lock transactionHash ', transactionHash)
 	        if (transactionHash) {
-	        	txHash = transactionHash
+	        	txHash = transactionHash;
 				let accountInteractToBridgeItem = {
 					initiator : `${src_address}_${dst_address}`,
 					lock 	  : {
@@ -34,8 +34,10 @@ class SpaceBridgeProvider {
 								}					
 				};
 				localStorage.setItem(`bh_lock_${txHash}`, JSON.stringify(accountInteractToBridgeItem));
-
-				let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+				if (callback !== undefined) {
+					callback(txHash)
+				}
+				//let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
 				// if (bridgeHistoryArray.length > 0) {
 				// 	let itemIsExist = bridgeHistoryArray.find(function(elem) {
 				// 		if ((elem.initiator.toUpperCase().includes(src_address.toUpperCase()) || elem.initiator.toUpperCase().includes(dst_address.toUpperCase())) && elem.lock?.transactionHash === transactionHash)

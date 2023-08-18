@@ -5,6 +5,7 @@ class SpaceBridgeProvider {
 		this.web3 = new window.Web3(provider);
 		this.spaceBridgeContract = new this.web3.eth.Contract(abi, contractAddress);
 		this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
+		this.contractHash = contractAddress;
 	}
 
 	async lock(src_address, src_network, dst_address, dst_network, token_amount, token_hash, nonce, token_decimals, ticker, callback = undefined) {
@@ -97,6 +98,7 @@ class SpaceBridgeProvider {
 	}
 
 	async getTransfer(src_address, src_hash, src_network, dst_address, dst_network) {
+		console.log(src_address, src_hash, src_network, dst_address, dst_network)
 		try {
 			console.log(`query SpaceBridgeProvider getTransfer on contract ${this.contractHash}`);
 			let res = await this.spaceBridgeContract.methods.getChannelNonce(src_address, src_hash, src_network, dst_address, dst_network).call();

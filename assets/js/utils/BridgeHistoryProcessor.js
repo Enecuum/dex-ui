@@ -30,6 +30,7 @@ class BridgeHistoryProcessor {
             let rawHistory = this.getBridgeHistoryArray();
             if (rawHistory.length > 0) {
                 let web3ExtUserIdFormatted = web3ExtUserId ? web3ExtUserId.toUpperCase() : web3ExtUserId;
+
                 userHistory = rawHistory.filter(function(elem) {
                     return (elem.initiator.toUpperCase().includes(enqExtUserId.toUpperCase()) || elem.initiator.toUpperCase().includes(web3ExtUserIdFormatted.toUpperCase())) ? true : false;
                 });

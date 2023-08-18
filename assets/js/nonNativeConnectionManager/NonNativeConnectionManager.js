@@ -23,6 +23,10 @@ class NonNativeConnectionManager {
             updateWeb3ExtensionWalletTitle : this.rootStoreMethods.updateWeb3ExtensionWalletTitle
         }
 
+        this.launchMetamask(rootStoreMethodsWeb3Ext);
+
+        return
+
         const walletConnectManager = new WalletConnectManager(rootStoreMethodsWC);
         walletConnectManager.subscribeToEvents();
         rootStoreMethodsWC.updateWalletConnect(walletConnectManager);///

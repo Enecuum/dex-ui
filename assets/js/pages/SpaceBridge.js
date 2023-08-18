@@ -18,6 +18,7 @@ import ClaimControl from './../elements/bridge/ClaimControl';
 import ChainsDropdown from './../elements/bridge/ChainsDropdown';
 
 import TokenCardBridge from './../components/TokenCardBridge';
+import RescueBridgeTxForm from './../components/RescueBridgeTxForm';
 
 import '../../css/bridge.css';
 
@@ -34,6 +35,7 @@ import AvailableNetworksUtils from '../utils/AvailableNetworksUtils';
 
 import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
+import validatorRequests from "../requests/ValidatorRequests";
 
 import {availableNetworks, smartContracts} from'./../config';
 
@@ -185,7 +187,7 @@ class SpaceBridge extends React.Component {
                 dstNetworkType = dstNetworkType !== undefined ? dstNetworkType.type : undefined;
 
                 if (!elem.lock.hasOwnProperty('status')) {
-                    if (srcNetworkType === 'eth'  && that.props.nonNativeConnection.web3Extension?.provider) {
+                    if (srcNetworkType === 'eth' && that.props.nonNativeConnection.web3Extension?.provider) {
                         let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
@@ -293,7 +295,7 @@ class SpaceBridge extends React.Component {
                 
                 //if (!elem.hasOwnProperty('validatorRes') || elem.validatorRes.transfer_id == undefined) {
     			if (!elem.hasOwnProperty('validatorRes')) {
-                    that.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
+                    validatorRequests.postToValidator(elem.lock.transactionHash, elem.lock.src_network).then(function(validatorRes) {
     					if (validatorRes === null || validatorRes.hasOwnProperty('err')) {
                             console.log('Validator_notify response is null for lock transaction', elem.lock.transactionHash)
     						return
@@ -399,26 +401,26 @@ class SpaceBridge extends React.Component {
 		}
 	}
 
-    async postToValidator(txHash, srcNetwork = undefined) {
-    	let URL = 'https://bridge.enex.space/api/v1/notify';    	
-    	return fetch(URL, {
-	        method: 'POST',
-	        body: JSON.stringify({networkId : srcNetwork, txHash : txHash}),
-	        headers: {'Content-Type': 'application/json','Accept': 'application/json'},
-            mode: 'cors'
-	    }).then(function(response) {            
-	        return response.json().then(res => {
-                //console.log(txHash, res);
-                return res
-            }, err => {
-                console.log('Parse notify response failed');
-                return null
-            })
-	    }, function(err) {
-            console.log('Get notify response failed');
-            return null            
-        })    
-    }
+    // async postToValidator(txHash, srcNetwork = undefined) {
+    // 	let URL = 'https://bridge.enex.space/api/v1/notify';    	
+    // 	return fetch(URL, {
+	   //      method: 'POST',
+	   //      body: JSON.stringify({networkId : srcNetwork, txHash : txHash}),
+	   //      headers: {'Content-Type': 'application/json','Accept': 'application/json'},
+    //         mode: 'cors'
+	   //  }).then(function(response) {            
+	   //      return response.json().then(res => {
+    //             //console.log(txHash, res);
+    //             return res
+    //         }, err => {
+    //             console.log('Parse notify response failed');
+    //             return null
+    //         })
+	   //  }, function(err) {
+    //         console.log('Get notify response failed');
+    //         return null            
+    //     })    
+    // }
 
     async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
         let URL = `https://bridge.enex.space/api/v1/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
@@ -489,10 +491,10 @@ class SpaceBridge extends React.Component {
         if (readyForProcess) {
             this.setState({blockConfirmByAmount : false});
             let bigIntAmount = this.valueProcessor.valueToBigInt(amount, this.props.srcTokenDecimals);
-            if (ethType && (bigIntAmount.value >= this.props.srcTokenAllowance)) {
+            if (ethType && (bigIntAmount.value > this.props.srcTokenAllowance)) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('low-allowance');        
-                console.log('Amount less than allowance');
+                console.log('Amount more than allowance');
             } else if (bigIntAmount.value > this.props.srcTokenBalance) {
                 this.setState({blockConfirmByAmount : true});
                 this.showAmountWarning('exeeds-balance');        
@@ -557,7 +559,7 @@ class SpaceBridge extends React.Component {
 
                 let token_hash_0x = token_hash !== undefined ? token_hash.substring(0, 2) : undefined;
                 let token_hash_trim_0x =  token_hash_0x === '0x' ? token_hash.slice(2).toLowerCase() : undefined;
-             
+                console.log({src_address_trim_0x, token_hash_trim_0x, fromBlockchain : this.props.fromBlockchain.id, dst_address, toBlockchain : this.props.toBlockchain.id})
                 let nonce = await bridgeProvider.getTransfer(src_address_trim_0x, token_hash_trim_0x, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id);
                 nonce = !isNaN(nonce) ? nonce + 1 : nonce;
     			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, nonce, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
@@ -570,6 +572,7 @@ class SpaceBridge extends React.Component {
 
     getValidatorRes () {
         let that = this;
+        console.log(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId)
         let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
 
         if (this.props.currentBridgeTx !== undefined) {
@@ -1147,7 +1150,7 @@ class SpaceBridge extends React.Component {
 
             if (item.lock.dst_address.toUpperCase() !== addr.toUpperCase()) {
                 action = this.connectMMAcc.bind(this);
-                title = `Connect address ${utils.packAddressString(item.lock.dst_address)}`;
+                title = `Connect address ${utils.packHashString(item.lock.dst_address)}`;
             } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
                 if (item.claimTxStatus === false) {
                     action = this.reClaimEth.bind(this, item);
@@ -1521,7 +1524,7 @@ class SpaceBridge extends React.Component {
         } else if (cause == 'low-allowance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
-            this.setState({'formInputWarningMsg' : 'Amount less than appoved balance'});
+            this.setState({'formInputWarningMsg' : 'Amount more than appoved balance'});
         } else if (cause == 'exeeds-balance') {
             this.setState({'formInputWarningCause' : cause});
             this.setState({'showFormInputWarning' : true});        
@@ -1692,7 +1695,7 @@ class SpaceBridge extends React.Component {
                            (this.props.srcTokenAmountToSend != undefined && (isNaN(this.props.srcTokenAmountToSend) || !(this.props.srcTokenAmountToSend > 0))) ||
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
-                           this.props.dstDecimals === undefined;
+                           this.props.dstDecimals === undefined;         
                 action = this.lockEth.bind(this);
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
@@ -2072,9 +2075,12 @@ class SpaceBridge extends React.Component {
                                         {this.renderCardHeader()}
                                         <Card.Text as="div" className="p-4">
                                             {this.getBridgeCardContent()}
+                                            <div className="my-4">
+                                                <RescueBridgeTxForm/>
+                                            </div>
                                         </Card.Text>
                                       </Card.Body>
-                                    </Card>                
+                                    </Card>                                    
                                 </div>
                             </div>
                         </div>

@@ -37,7 +37,7 @@ import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
 import validatorRequests from "../requests/ValidatorRequests";
 
-import {availableNetworks, smartContracts} from'./../config';
+import {availableNetworks, smartContracts, bridgeApiURL} from'./../config';
 
 import metamaskLogo from './../../img/metamask-logo.webp';
 
@@ -444,7 +444,7 @@ class SpaceBridge extends React.Component {
     // }
 
     async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
-        let URL = `https://bridge.enex.space/api/v1/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
+        let URL = `${bridgeApiURL}/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;
         return fetch(URL, {
             method: 'GET'
         }).then(function(response) {            
@@ -758,7 +758,7 @@ class SpaceBridge extends React.Component {
 
         nonce++;
         
-        URL =  'https://bridge.enex.space/api/v1/encode_lock';
+        URL =  `${bridgeApiURL}/encode_lock`;
         let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {

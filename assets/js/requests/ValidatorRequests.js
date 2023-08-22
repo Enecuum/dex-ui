@@ -1,11 +1,11 @@
 /**
- *  @fileoverview Requets to Validator
+ *  @fileoverview Requests to Validator
  */
-import config from '../config.js';
+import {bridgeApiURL} from './../config.js';
 
 class ValidatorRequests { 
     constructor () {
-        this.url = 'https://bridge.enex.space/api/v1/notify';
+        this.url = `${bridgeApiURL}/notify`;
     }
 
     async postToValidator(txHash, srcNetwork = undefined) {

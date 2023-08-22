@@ -3,11 +3,8 @@ import vaultABI from './../ABI/vault';
 import spaceBridgeABI from './../ABI/abi_spaceBridge.json';
 import wethABI from './../ABI/abi_weth.json';
 
-export const defaultParams = {
-    chain : '0x1'
-}
-
 export const maxEnqValue = BigInt('18446744073709551615'); //amount in cents
+export const bridgeApiURL = 'https://bridge.enex.space/api/v1';
 
 export const availableNetworks = [
     {

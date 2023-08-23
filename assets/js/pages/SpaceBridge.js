@@ -49,6 +49,14 @@ class SpaceBridge extends React.Component {
         this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
         this.valueProcessor = new ValueProcessor;
         this.availableNetworksUtils = new AvailableNetworksUtils();
+        this.allowedMethods = ['connectWeb3Ext',
+                              'approveSrcTokenBalance',
+                              'lockEth',
+                              'encodeDataAndLock',
+                              'claimEth',
+                              'reClaimEth',
+                              'claimInitEnq',
+                              'claimConfirmEnq'];
         this.state = {
             initData : undefined,
             confirmData : undefined,
@@ -551,14 +559,7 @@ class SpaceBridge extends React.Component {
 
 
     passActionDataToConfirm(method, parmsObj = undefined) {
-        let allowedMethods = ['connectWeb3Ext',
-                              'approveSrcTokenBalance',
-                              'lockEth',
-                              'encodeDataAndLock',
-                              'claimEth',
-                              'reClaimEth',
-                              'claimENQ'];
-        if (!allowedMethods.includes(method)) {
+        if (!this.allowedMethods.includes(method)) {
             this.setState({'showBridgeActionConfirmModal' : false});
             this.setState({'bridgeActionParams' : undefined});
             this.setState({'bridgeActionType' : undefined});
@@ -692,19 +693,23 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    claimInitEnq(bridgeItem) {
+    claimInitEnq(bridgeActionParams) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
-            let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
+            let claimInitData = bridgeActionParams.bridgeItem.validatorRes.encoded_data.enq.init;
             if (!(pubkey && claimInitData))
                 return
+
+            if (bridgeActionParams.resetCurrent === true)
+                this.passDataToResetClaim(bridgeActionParams.bridgeItem, claimType);
+
             extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
                 let accountInteractToBridgeItem = {
-                    initiator : `${bridgeItem.validatorRes.ticket.src_address}_${bridgeItem.validatorRes.ticket.dst_address}`,
+                    initiator : `${bridgeActionParams.bridgeItem.validatorRes.ticket.src_address}_${bridgeActionParams.bridgeItem.validatorRes.ticket.dst_address}`,
                     claimInitData,
-                    validatorRes : bridgeItem.validatorRes,
+                    validatorRes : bridgeActionParams.bridgeItem.validatorRes,
                     claimInitTxTimestamp : Date.now(),
                     claimInitTxHash : result.hash                   
                 };
@@ -731,19 +736,23 @@ class SpaceBridge extends React.Component {
         } 
     } 
 
-    claimConfirmEnq(bridgeItem) {
+    claimConfirmEnq(bridgeActionParams) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
-            let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
+            let claimConfirmData = bridgeActionParams.bridgeItem.validatorRes.encoded_data.enq.confirm;
             if (!(pubkey && claimConfirmData))
                 return
+
+            if (bridgeActionParams.resetCurrent === true)
+                this.passDataToResetClaim(bridgeActionParams.item, claimType);
+
             extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);
                 let accountInteractToBridgeItem = {
-                    initiator : `${bridgeItem.validatorRes.ticket.src_address}_${bridgeItem.validatorRes.ticket.dst_address}`,
+                    initiator : `${bridgeActionParams.bridgeItem.validatorRes.ticket.src_address}_${bridgeActionParams.bridgeItem.validatorRes.ticket.dst_address}`,
                     claimConfirmData,
-                    validatorRes : bridgeItem.validatorRes,
+                    validatorRes : bridgeActionParams.bridgeItem.validatorRes,
                     claimConfirmTxTimestamp : Date.now(),
                     claimConfirmTxHash : result.hash                   
                 };
@@ -785,8 +794,6 @@ class SpaceBridge extends React.Component {
         }
 
         let response = await networkApi.getBridgeLastLockTransfer(address, this.props.pubkey, this.props.toBlockchain.id, this.props.srcTokenHash);
-
-
 
         let nonce = await response.json();
         if (nonce !== undefined && nonce !== null)
@@ -993,7 +1000,7 @@ class SpaceBridge extends React.Component {
         let resume = 'Validated successfully';
         let stateId = 0;
         let txHash = undefined;
-        let claimType = 'claimInit';
+        let claimType = 'claimInitEnq';
         let actionStr = 'Claim';
         let resetCurrent = false;
         let showResetBridge = undefined;    
@@ -1007,7 +1014,7 @@ class SpaceBridge extends React.Component {
             resume = 'Claim confirmation failed';
             stateId = 2;
             txHash = item.claimConfirmTxHash;
-            claimType = 'claimConfirm';
+            claimType = 'claimConfirmEnq';
             actionStr = 'Retry';
             resetCurrent = true;
             showResetBridge = true;
@@ -1020,14 +1027,14 @@ class SpaceBridge extends React.Component {
                     resume = 'Claim confirmation failed';
                     stateId = 4;
                     actionStr = 'Retry';
-                    claimType = 'claimConfirm';
+                    claimType = 'claimConfirmEnq';
                     resetCurrent = true;
                     showResetBridge = true;
                 } else {
                     resume = 'Claim is ready';
                     stateId = 5;
                     actionStr = 'Confirm';
-                    claimType = 'claimConfirm';
+                    claimType = 'claimConfirmEnq';
                     resetCurrent = false;                 
                 }
             } else if (item.claimInitTxStatus === false || (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
@@ -1038,7 +1045,7 @@ class SpaceBridge extends React.Component {
                     resume = 'Claim inititalization failed';
                     stateId = 6;
                     txHash = item.claimInitTxHash;
-                    claimType = 'claimInit';
+                    claimType = 'claimInitEnq';
                     actionStr = 'Retry';
                     resetCurrent = true;
                     showResetBridge = true;                        
@@ -1124,8 +1131,8 @@ class SpaceBridge extends React.Component {
                     {[0,2,4,5,6].includes(stateId) && matchChains && matchDstAddress &&
                         <>
                             <Button
-                                className="d-block w-100 btn btn-secondary px-3 button-bg-3"
-                                onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>
+                                className="d-block w-100 btn btn-secondary px-3 button-bg-3" //claimEnq.bind(this, item, claimType, resetCurrent)
+                                onClick={this.passActionDataToConfirm.bind(this, claimType, {bridgeItem: item, resetCurrent})}> 
                                     {actionStr}                     
                             </Button>
                         </>    
@@ -1196,11 +1203,11 @@ class SpaceBridge extends React.Component {
         )
     }
 
-    claimEnq(item, claimType, resetCurrent) {
-        if (resetCurrent === true)
-            this.passDataToResetClaim(item, claimType);
-        this[`${claimType}Enq`](item);
-    }
+    // claimEnq(claimType, bridgeActionParams) {
+    //     if (bridgeActionParams.resetCurrent === true)
+    //         this.passDataToResetClaim(bridgeActionParams.item, claimType);
+    //     this[`${claimType}Enq`](item);
+    // }
 
     reClaimEth(item) {
         this.passDataToResetClaim(item, 'claim');
@@ -1222,15 +1229,15 @@ class SpaceBridge extends React.Component {
                 title = `Connect address ${utils.packHashString(item.lock.dst_address)}`;
             } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
                 if (item.claimTxStatus === false) {
-                    action = this.reClaimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'reClaimEth', item); //reClaimEth.bind(this, item);
                     resume = 'Failed';
                     title = 'Retry';
                 } else if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0) {
-                    action = this.claimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'claimEth', item); //claimEth.bind(this, item);
                     resume = 'Failed';
                     title = 'Retry';
                 } else {
-                    action = this.claimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'claimEth', item); //claimEth.bind(this, item);
                     title = 'Claim';
                 }
             } else if (dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined) {
@@ -1472,7 +1479,7 @@ class SpaceBridge extends React.Component {
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
                                         <button
                                             className="d-block btn btn-info mb-2 p-1"
-                                            onClick={this.approveSrcTokenBalance.bind(this)}>Approve</button>
+                                            onClick={this.passActionDataToConfirm.bind(this, 'approveSrcTokenBalance')}>Approve</button>
                                             
                                     </div>
                                 </>
@@ -1777,7 +1784,7 @@ class SpaceBridge extends React.Component {
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
                            this.props.dstDecimals === undefined;
-                action = this.encodeDataAndLock.bind(this);
+                action = this.passActionDataToConfirm.bind(this, 'encodeDataAndLock');
             }            
         }
 

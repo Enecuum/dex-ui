@@ -15,17 +15,33 @@ class ConfirmActionBridge extends React.Component {
 		return 'Action'
 	}
 
+	getActionTitle() {
+		let method = this.props.context.state.bridgeActionType;
+		let res = 'Unknown Method';
+		if (this.props.context.allowedMethods.includes(method)) {
+			if (method === 'connectWeb3Ext')
+				res = 'Connect Web3 Extension';
+			else if (method === 'approveSrcTokenBalance')
+				res = 'Approve Balance';
+			else if (method === 'lockEth' || method === 'encodeDataAndLock')
+				res = 'Lock';
+			else if (method === 'claimEth' || method === 'reClaimEth' || method === 'claimInitEnq' || method === claimConfirmEnq)
+				res = 'Claim';
+		}
+		return res
+	}
+
 	renderModalBody() {
 		return (
 			<>
-				 <Button
+				<Button
                         className='btn-secondary mx-auto mt-5'
-                        onClick={this.props.context[this.props.context.state.bridgeActionType].bind(this.props.context)}
+                        onClick={this.props.context[this.props.context.state.bridgeActionType].bind(this.props.context, this.props.context.state.bridgeActionParams)}
                     >
-                        { this.props.context.state.bridgeActionType }
+                        Confirm 
                     </Button>
 			</>
-		)
+		)//{ this.props.context.state.bridgeActionType }
 	}
 
 	closeConfirmCard () {
@@ -36,7 +52,7 @@ class ConfirmActionBridge extends React.Component {
 		return(
 			<>
 				{this.props.context.state.showBridgeActionConfirmModal && <CommonModal
-	                renderHeader={this.renderModalHeader.bind(this)}
+	                renderHeader={this.getActionTitle.bind(this)}
 	                renderBody={this.renderModalBody.bind(this)}
 	                closeAction={this.closeConfirmCard.bind(this)}/>}
             </>    

@@ -55,6 +55,10 @@ module.exports = {
                 "header" : "Voting about tokenomics tuning - {{status}}",
                 "description" : "We have a proposal to tune the tokenomics for the future project development."
             },
+            "testVouting" : {
+                "header" : "Voting about tokenomics tuning - {{status}}",
+                "description" : "We have a proposal to tune the tokenomics for the future project development."
+            },
         },
 
         "votingTill" : "Voting till: {{block}} block in Enecuum Network (approx.: {{timeStr}})",

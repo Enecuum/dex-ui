@@ -119,6 +119,7 @@ const presets =  {
             ]
         },
         voting : {
+            voteToken : "75798e583350dd0d77e4466e52af16e086adc25895f84c3372bbd2d4ec958248",
             votes : {
                 miningSlots : {
                     finalBlockNum : 5514240,
@@ -238,10 +239,11 @@ const presets =  {
                     ]
                 },
                 tuneTokenomics: {
-                    finalBlockNum : 6155264,
+                    finalBlockNum : 6172544,
                     forceDeactivation : false,
+                    canceled : true,
                     situationReadme : "",
-                    voutingReadme : "https://blog.enecuum.com/the-next-steps-in-shaping-the-future-of-the-enecuum-network-7024780f4946",
+                    voutingReadme : "https://t.me/Enecuum_EN/316613",
                     resultsReadme : "",
                     list : [
                         {
@@ -263,6 +265,37 @@ const presets =  {
                             proposal : "",
                             farm_ids : [
                                 "f99b4a02d88bced756ab029234d8a988aae6efe2cb469b6daecb36697f139c87",
+                            ]
+                        },
+                        {
+                            issue : "DAO token proposal",
+                            proposal : "",
+                            farm_ids : [
+                                "e3c91e604480cc57878816afd0320cad1454827f9fcd34d9a95f3f9a968072bb",
+                            ]
+                        },
+                    ]
+                },
+                testVouting : {
+                    finalBlockNum : 6500544,
+                    forceDeactivation : false,
+                    canceled : false,
+                    situationReadme : "",
+                    voutingReadme : "https://t.me/Enecuum_EN/316613",
+                    resultsReadme : "",
+                    list : [
+                        {
+                            issue : "Distribute Trinity DAO (governance) token as a drop based on accounts balance and history. Extend Max Supply to 2,500,000,000 ENQ.",
+                            proposal : "",
+                            farm_ids : [
+                                "9b6c30b7674ac670f8383d2a1b495f71390496d173efb4e0b62e899c4051af4d",
+                            ]
+                        },
+                        {
+                            issue : "Distribute Trinity DAO (governance) token in exchange for donation to the network developers team budget. Leave Max Supply unchanged.",
+                            proposal : "",
+                            farm_ids : [
+                                "01ef8132546e477a359133683ce31707a71589fdb3c19dc5841381c5751ff10d",
                             ]
                         },
                     ]

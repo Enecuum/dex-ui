@@ -1,7 +1,7 @@
 import erc20TokenABI from './../ABI/abi_erc20';
 import vaultABI from './../ABI/vault';
-import spaceBridgeABI from './../ABI/abi_spaceBridge.json';
-import wethABI from './../ABI/abi_weth.json';
+import spaceBridgeABI from '../ABI/abi_spaceBridge.json';
+import wethABI from '../ABI/abi_weth.json';
 
 export const defaultParams = {
     chain : '0x1'

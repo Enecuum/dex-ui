@@ -24,6 +24,8 @@ import _ from 'lodash';
 
 const valueProcessor = new ValueProcessor();
 
+const voteToken = presets.dropFarms.voting.voteToken
+
 
 class Voting extends React.Component {
     constructor(props) {
@@ -267,8 +269,8 @@ class Voting extends React.Component {
     }
 
     updateMainTokenAmount() {
-        if (this.props.mainToken !== undefined && this.props.balances !== undefined) {
-            let mainTokenBalance = this.props.balances.find(token => token.token === this.props.mainToken);
+        if (voteToken !== undefined && this.props.balances !== undefined) {
+            let mainTokenBalance = this.props.balances.find(token => token.token === voteToken);
 
             if (mainTokenBalance !== undefined) {
                let mainTokenAmount = mainTokenBalance.amount;
@@ -288,7 +290,7 @@ class Voting extends React.Component {
     }
 
     updateMainTokenInfo() {
-        let mainTokenHash = this.props.mainToken
+        let mainTokenHash = voteToken
         let tokenInfoRequest = swapApi.getTokenInfo(mainTokenHash);
         tokenInfoRequest.then(result => {
             if (!result.lock) {
@@ -519,7 +521,7 @@ class Voting extends React.Component {
         let res = {active: [], past: []}
         res = Object.keys(votes).reduce((sortedVotes, voteKey, index) => {
             let vote = {...votes[voteKey], voteName : voteKey, voteIndex : index}
-            if (votes[voteKey].finalBlockNum < this.height || votes[voteKey].forceDeactivation)
+            if (votes[voteKey].finalBlockNum < this.height || votes[voteKey].forceDeactivation || votes[voteKey].canceled)
                 sortedVotes.past.push(vote)
             else 
                 sortedVotes.active.push(vote)
@@ -679,9 +681,13 @@ class Voting extends React.Component {
                                 </div>
                             }
                             {votes.map(( vote, index ) => {
-                                console.log(this.state.expandedVote, vote.voteIndex)
                                 let tPath = `dropFarms.voting.votes.${vote.voteName}`
-                                let voteTitle = t(`${tPath}.header`, {status: activeVouting ? t('active') : t('inactive')})
+                                let voteTitle
+                                if (vote.canceled) {
+                                    voteTitle = t(`${tPath}.header`, {status: t('canceled')})
+                                } else {
+                                    voteTitle = t(`${tPath}.header`, {status: activeVouting ? t('active') : t('inactive')})
+                                }
                                 vote.description = t(`${tPath}.description`)
                                 return (
                                     <>

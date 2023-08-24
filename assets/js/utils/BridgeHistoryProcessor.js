@@ -13,6 +13,16 @@ class BridgeHistoryProcessor {
         return history
     }
 
+    getBridgeHistoryLocksArray() {
+        let locksArr = [];
+        for(let key in localStorage) {
+            if (key.includes('bh_lock_')) {
+                lockArr.push(JSON.parse(localStorage.getItem(key)))
+            }
+        }
+        return locksArr;        
+    }
+
     initiateHistoryStorage(item) {
         localStorage.setItem('bridge_history', JSON.stringify([item]));
     }

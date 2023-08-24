@@ -70,7 +70,7 @@ class RescueBridgeTxForm extends React.Component {
                 
             };
 
-            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryLocksArray();
                 if (bridgeHistoryArray.length > 0) {
                     let itemIsExist = bridgeHistoryArray.find(function(elem) {
                         if ((elem.initiator.toUpperCase().includes(ticket.src_address.toUpperCase()) ||
@@ -83,11 +83,11 @@ class RescueBridgeTxForm extends React.Component {
                         return
                     } else {
                         console.log('addBridgeHistoryItem')
-                        that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+                        localStorage.setItem(`bh_lock_${transactionHash}`, JSON.stringify(accountInteractToBridgeItem));
                     }
                 } else {
                     console.log('initiateHistoryStorage')
-                    that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+                    localStorage.setItem(`bh_lock_${transactionHash}`, JSON.stringify(accountInteractToBridgeItem));
                 }
         }, function(err) {
             console.log('Can\'t get notify response ', err);

@@ -185,6 +185,7 @@ class SpaceBridge extends React.Component {
     }
 
     async updateUserHistory() {
+        this.bridgeHistoryProcessor.fragmentBridgeHistoryToSingleLocks();
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);

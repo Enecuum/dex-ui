@@ -3,6 +3,29 @@ class BridgeHistoryProcessor {
 
     }
 
+    fragmentBridgeHistoryToSingleLocks() {
+       let history = this.getBridgeHistoryArray();
+       if (history.length > 0) {
+           let locksArr = this.getBridgeHistoryLocksArray();
+           history.forEach(function(itemOfBridgeHistory, index, array) {
+               if (itemOfBridgeHistory.hasOwnProperty('lock') && itemOfBridgeHistory.lock?.transactionHash !== undefined) {
+                   let txHash = itemOfBridgeHistory.lock.transactionHash;                   
+                   let itemIsExistAsSingleLock = locksArr.find(function(singleLockItem) {
+                       if (singleLockItem.lock?.transactionHash == txHash)
+                           return true
+                   });
+                   if (itemIsExistAsSingleLock !== undefined) {
+                       return
+                   } else {
+                       localStorage.setItem(`bh_lock_${txHash}`, JSON.stringify(itemOfBridgeHistory));
+                   }                   
+               }
+           });
+           localStorage.setItem('bridge_history_archive', JSON.stringify(history));
+           localStorage.removeItem('bridge_history');
+       }
+   }
+
     getBridgeHistoryArray() {
         let history = [];
         let lsHistory = localStorage.getItem('bridge_history');

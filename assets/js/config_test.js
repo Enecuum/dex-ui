@@ -52,7 +52,7 @@ export const availableNetworks = [
         explorerURL           : 'https://testnet.bscscan.com', // url to explorer mainpage
         txPageUrl             : 'https://testnet.bscscan.com/tx/'  // url to tx page without tx hash
     },
-    {
+   /* {
         id                    : 80001, // Number, hex ???
         web3ExtensionChainId  : '0x13881', //strig as in Metamask, undefined if not used,
         enqExtensionChainId   : undefined,
@@ -66,7 +66,7 @@ export const availableNetworks = [
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://mumbai.polygonscan.com', // url to explorer mainpage
         txPageUrl             : 'https://mumbai.polygonscan.com/tx/'  // url to tx page without tx hash
-    },
+    },*/
     {
         id                    : 11155111, // Number, hex ???
         web3ExtensionChainId  : '0xaa36a7', //strig as in Metamask, undefined if not used,

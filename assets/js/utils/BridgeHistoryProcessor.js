@@ -17,7 +17,7 @@ class BridgeHistoryProcessor {
         let locksArr = [];
         for(let key in localStorage) {
             if (key.includes('bh_lock_')) {
-                lockArr.push(JSON.parse(localStorage.getItem(key)))
+                locksArr.push(JSON.parse(localStorage.getItem(key)))
             }
         }
         return locksArr;        

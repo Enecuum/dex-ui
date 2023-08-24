@@ -240,7 +240,7 @@ const presets =  {
                 },
                 tuneTokenomics: {
                     finalBlockNum : 6172544,
-                    forceDeactivation : false,
+                    forceDeactivation : true,
                     canceled : true,
                     situationReadme : "",
                     voutingReadme : "https://t.me/Enecuum_EN/316613",
@@ -277,11 +277,11 @@ const presets =  {
                     ]
                 },
                 testVouting : {
-                    finalBlockNum : 6500544,
+                    finalBlockNum : 6196733,
                     forceDeactivation : false,
                     canceled : false,
                     situationReadme : "",
-                    voutingReadme : "https://t.me/Enecuum_EN/316613",
+                    voutingReadme : "https://blog.enecuum.com/start-of-the-voting-on-trinity-dao-token-f884474f4ac5",
                     resultsReadme : "",
                     list : [
                         {

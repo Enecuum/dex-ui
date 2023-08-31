@@ -80,7 +80,7 @@ export const availableNetworks = [
         bridgeContractABI     : spaceBridgeABI, //JSON, undefined if not used
         logo                  : undefined, //image, undefined if not used
         explorerURL           : 'https://sepolia.etherscan.io/', // url to explorer mainpage
-        txPageUrl             : 'https://sepolia.etherscan.io//tx/'  // url to tx page without tx hash
+        txPageUrl             : 'https://sepolia.etherscan.io/tx/'  // url to tx page without tx hash
     }
 ]
 

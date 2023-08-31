@@ -55,7 +55,7 @@ class ConfirmActionBridge extends React.Component {
 				
 				res = `Lock ${amountFormatted} ${ticker}`;
 			} else if (method === 'claimEth' || method === 'reClaimEth' || method === 'claimInitEnq' || method === 'claimConfirmEnq') {
-				let ticker = this.props.context.state.bridgeActionParams.lock.ticker || this.props.context.state.bridgeActionParams.bridgeItem.lock.ticker;	
+				let ticker = this.props.context.state.bridgeActionParams.lock?.ticker || this.props.context.state.bridgeActionParams.bridgeItem?.lock?.ticker;	
 				if (method === 'claimEth' || method === 'reClaimEth' || method === 'claimConfirmEnq') {
 					res = `Claim ${ticker} tokens`;
 				} else if (method === 'claimInitEnq') {

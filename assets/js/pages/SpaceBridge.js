@@ -703,7 +703,7 @@ class SpaceBridge extends React.Component {
                 return
 
             if (bridgeActionParams.resetCurrent === true)
-                this.passDataToResetClaim(bridgeActionParams.bridgeItem, claimType);
+                this.passDataToResetClaim(bridgeActionParams.bridgeItem, 'claimInit');
 
             extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
@@ -746,7 +746,7 @@ class SpaceBridge extends React.Component {
                 return
 
             if (bridgeActionParams.resetCurrent === true)
-                this.passDataToResetClaim(bridgeActionParams.item, claimType);
+                this.passDataToResetClaim(bridgeActionParams.item, 'claimConfirm');
 
             extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);

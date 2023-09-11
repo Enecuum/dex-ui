@@ -247,82 +247,90 @@ class SpaceBridge extends React.Component {
                     }
                 } else if (elem.lock.status === true) {
                     if (dstNetworkType === 'eth') {
-                        if (elem.claimTxHash !== undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
+                        if (elem.claimTxHash == undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
                             let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                             let web3Provider = new web3LibProvider(dataProvider);
-                            web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
-                                if (res !== null && res !== undefined && res.status !== undefined) {
-                                    if (Number(res.status) === 1)
-                                        elem.claimTxStatus = true;
-                                    else if (Number(res.status) === 0)
-                                        elem.claimTxStatus = false;
-                                    //elem.claimTxStatus = Number(res.status) === 1 ? true : false;
-                                    localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
-                                    //localStorage.setItem('bridge_history', JSON.stringify(array));
-                                    that.setState({history: array});
-                                } else {
-                                    console.log('Undefined claim transaction status', elem.lock.transactionHash);
+                            console.log(elem.claimEthStorage)
+                            elem.claimEthStorage.forEach(function(claim, claimIndex, claimArray) {
+                                let lsClaimEth = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_eth_${claim}`);
+                                if (lsClaimEth !== undefined && lsClaimEth.claimTxStatus == undefined) {
+                                    web3Provider.getTxReceipt(lsClaimEth.claimTxHash, 'Claim').then(function(res) {
+                                        if (res !== null && res !== undefined && res.status !== undefined) {
+                                            if (Number(res.status) === 1)
+                                                lsClaimEth.claimTxStatus = true;                                                
+                                            else if (Number(res.status) === 0)
+                                                lsClaimEth.claimTxStatus = false; 
+                                            
+                                            localStorage.setItem(`bh_claim_eth_${claim}`, JSON.stringify(lsClaimEth));
+                                        } else {
+                                            console.log('Undefined claim transaction status', claim);
+                                        }
+                                    }, function(err) {
+                                        console.log('Can\'t get receipt for claim transaction', claim, err);
+                                    });
                                 }
-                            }, function(err) {
-                                console.log('Can\'t get receipt for claim transaction', elem.claimTxHash, err);
                             });
                         }
                     }
-                    if (elem.claimInitTxHash !== undefined && elem.claimInitTxStatus === undefined) {
+                    if (elem.claimInitTxHash == undefined && elem.claimInitTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
                             let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
-                            if (url !== undefined) {
-                                networkApi.getTx(url, elem.claimInitTxHash).then(function(res) {
-                                    if (res !== null && !res.lock) {                                        
-                                        res.json().then(tx => {
-                                            if (tx.status !== undefined) {
-                                                if (tx.status === 3)
-                                                    elem.claimInitTxStatus = true;
-                                                else if (tx.status === 2)
-                                                    elem.claimInitTxStatus = false;
+                            if (url !== undefined) {                                
+                                elem.claimInitENQStorage.forEach(function(claim, claimIndex, claimArray){
+                                    let lsClaimInitENQ = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_init_enq_${claim}`);
+                                    if (lsClaimInitENQ !== undefined && lsClaimInitENQ.claimInitTxStatus == undefined) {
+                                        networkApi.getTx(url, lsClaimInitENQ.claimInitTxHash).then(function(res) {
+                                            if (res !== null && !res.lock) {                                        
+                                                res.json().then(tx => {
+                                                    if (tx.status !== undefined) {
+                                                        if (tx.status === 3)
+                                                            lsClaimInitENQ.claimInitTxStatus = true;
+                                                        else if (tx.status === 2)
+                                                            lsClaimInitENQ.claimInitTxStatus = false;
 
-                                                localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
-                                                //localStorage.setItem('bridge_history', JSON.stringify(array));
-                                                that.setState({history: array});
+                                                        localStorage.setItem(`bh_claim_init_enq_${claim}`, JSON.stringify(lsClaimInitENQ));
+                                                    }
+                                                }, function(err) {
+                                                    console.log('Can\'t get status for Claim Init transaction', claim, err);
+                                                });
                                             }
                                         }, function(err) {
-                                            console.log('Can\'t get status for Claim Init transaction', elem.claimInitTxHash, err);
+                                            console.log('Can\'t get data for Claim init transaction', claim, err);
                                         });
                                     }
-                                }, function(err) {
-                                    console.log('Can\'t get data for Claim init transaction', elem.claimInitTxHash, err);
-                                });                        
+                                });
                             }
                         }
                     }
-                    if (elem.claimConfirmTxHash !== undefined && elem.claimConfirmTxStatus === undefined) {
+                    if (elem.claimConfirmTxHash == undefined && elem.claimConfirmTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
                             let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
-                            if (url !== undefined) {
-                                networkApi.getTx(url, elem.claimConfirmTxHash).then(function(res) {
-                                    if (res !== null && !res.lock) {
-                                        res.json().then(tx => {
-                                            if (tx.status !== undefined) {
-                                                if (tx.status === 3)
-                                                    elem.claimConfirmTxStatus = true;
-                                                else if (tx.status === 2)
-                                                    elem.claimConfirmTxStatus = false;
+                            if (url !== undefined) {                                
+                                elem.claimConfirmENQStorage.forEach(function(claim, claimIndex, claimArray){
+                                    let lsClaimConfirmENQ = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_confirm_enq_${claim}`);
+                                    if (lsClaimConfirmENQ !== undefined && lsClaimConfirmENQ.claimConfirmTxStatus == undefined) {
+                                        networkApi.getTx(url, lsClaimConfirmENQ.claimConfirmTxHash).then(function(res) {
+                                            if (res !== null && !res.lock) {                                        
+                                                res.json().then(tx => {
+                                                    if (tx.status !== undefined) {
+                                                        if (tx.status === 3)
+                                                            lsClaimConfirmENQ.claimConfirmTxStatus = true;
+                                                        else if (tx.status === 2)
+                                                            lsClaimConfirmENQ.claimConfirmTxStatus = false;
 
-                                                localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
-                                                //localStorage.setItem('bridge_history', JSON.stringify(array));
-                                                that.setState({history: array});
-                                            } else {
-                                                console.log('Undefined claim confirm transaction status', elem.lock.transactionHash);
+                                                        localStorage.setItem(`bh_claim_confirm_enq_${claim}`, JSON.stringify(lsClaimConfirmENQ));
+                                                    }
+                                                }, function(err) {
+                                                    console.log('Can\'t get status for Claim Confirm transaction', claim, err);
+                                                });
                                             }
                                         }, function(err) {
-                                            console.log('Can\'t get status for claim confirm transaction', elem.claimConfirmTxHash);
+                                            console.log('Can\'t get data for Claim Confirm transaction', claim, err);
                                         });
                                     }
-                                }, function(err) {
-                                    console.log('Can\'t get data for Claim Confirm transaction', elem.claimConfirmTxHash);
-                                });                        
+                                });
                             }
                         }
                     }

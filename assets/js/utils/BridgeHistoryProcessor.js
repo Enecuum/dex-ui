@@ -36,6 +36,16 @@ class BridgeHistoryProcessor {
         return history
     }
 
+    getBridgeHistoryItem(itemKey) {
+        let item = undefined;
+        let lsItem = localStorage.getItem(itemKey);
+        if (lsItem !== undefined && lsItem !== null && (typeof lsItem === 'string')) {
+            let parsedItem = JSON.parse(lsItem);
+            item = parsedItem;
+        }
+        return item
+    }
+
     getBridgeHistoryLocksArray() {
         let locksArr = [];
         for(let key in localStorage) {
@@ -120,33 +130,93 @@ class BridgeHistoryProcessor {
                 userHistory = lockArr;
 
                 lockArr.forEach(function(lock, lockIndex, lockArray){
+                    lock.claimEthStorage = [];
+                    lock.claimInitENQStorage = [];
+                    lock.claimConfirmENQStorage = [];
+
+                    let claimEthFailCounter = 0;
+                    let claimInitENQFailCounter = 0;
+                    let claimConfirmENQFailCounter = 0;
+                    let claimEthLastFailTx = undefined;
+                    let claimInitENQLastFailTx = undefined;
+                    let claimConfirmENQLastFailTx = undefined;
+
                     claimEthArr.forEach(function(claim, claimIndex, claimArray){
                         if (lock.hasOwnProperty('validatorRes') && lock.validatorRes?.ticket_hash !== undefined &&
                             claim.hasOwnProperty('validatorRes') && claim.validatorRes?.ticket_hash !== undefined &&
+                            lock.lock.status === true &&
                             lock.validatorRes.ticket_hash === claim.validatorRes.ticket_hash) {
-                            lock.claimTxHash = claim.claimTxHash;
-                            lock.claimTxTimestamp = claim.claimTxTimestamp;
+                            if (claim.hasOwnProperty('claimTxStatus') && claim.claimTxStatus === true) {
+                                lock.claimTxHash = claim.claimTxHash;
+                                lock.claimTxStatus = true;
+                                lock.claimTxTimestamp = claim.claimTxTimestamp;
+                            } else if (claim.hasOwnProperty('claimTxStatus') && claim.claimTxStatus === false) {
+                                claimEthFailCounter++;
+                                claimEthLastFailTx = claim;
+                            }
+                            // lock.claimTxHash = claim.claimTxHash;
+                            // lock.claimTxTimestamp = claim.claimTxTimestamp;
+                            lock.claimEthStorage.push(claim.claimTxHash);                            
                             localStorage.setItem(`bh_lock_${lock.lock.transactionHash}`, JSON.stringify(lock));
                         }
                     });
+                    if (claimEthFailCounter > 0 && claimEthFailCounter === lock.claimEthStorage.length) {
+                        lock.claimTxHash = claimEthLastFailTx.claimTxHash;
+                        lock.claimTxStatus = false;
+                        lock.claimTxTimestamp = claimEthLastFailTx.claimTxTimestamp;
+                    }
+
                     claimInitENQArr.forEach(function(claim, claimIndex, claimArray){
                         if (lock.hasOwnProperty('validatorRes') && lock.validatorRes?.ticket_hash !== undefined &&
                             claim.hasOwnProperty('validatorRes') && claim.validatorRes?.ticket_hash !== undefined &&
+                            lock.lock.status === true &&
                             lock.validatorRes.ticket_hash === claim.validatorRes.ticket_hash) {
-                            lock.claimInitTxHash = claim.claimInitTxHash;
-                            lock.claimInitTxTimestamp = claim.claimInitTxTimestamp;
+                            if (claim.hasOwnProperty('claimInitTxStatus') && claim.claimInitTxStatus === true) {
+                                lock.claimInitTxHash = claim.claimInitTxHash;
+                                lock.claimInitTxStatus = true;
+                                lock.claimInitTxTimestamp = claim.claimInitTxTimestamp;
+                            } else if (claim.hasOwnProperty('claimInitTxStatus') && claim.claimInitTxStatus === false) {
+                                claimInitENQFailCounter++;
+                                claimInitENQLastFailTx = claim;
+                            }
+                            // lock.claimInitTxHash = claim.claimInitTxHash;
+                            // lock.claimInitTxTimestamp = claim.claimInitTxTimestamp;
+                            lock.claimInitENQStorage.push(claim.claimInitTxHash);
                             localStorage.setItem(`bh_lock_${lock.lock.transactionHash}`, JSON.stringify(lock));
                         }
                     });
+                    if (claimInitENQFailCounter > 0 && claimInitENQFailCounter === lock.claimInitENQStorage.length) {
+                        lock.claimInitTxHash = claimInitENQLastFailTx.claimInitTxHash;
+                        lock.claimInitTxStatus = false;
+                        lock.claimInitTxTimestamp = claimInitENQLastFailTx.claimInitTxTimestamp;
+                    }
+
+
                     claimConfirmENQArr.forEach(function(claim, claimIndex, claimArray){
                         if (lock.hasOwnProperty('validatorRes') && lock.validatorRes?.ticket_hash !== undefined &&
                             claim.hasOwnProperty('validatorRes') && claim.validatorRes?.ticket_hash !== undefined &&
+                            lock.lock.status === true &&
                             lock.validatorRes.ticket_hash === claim.validatorRes.ticket_hash) {
-                            lock.claimConfirmTxHash = claim.claimConfirmTxHash;
-                            lock.claimConfirmTxTimestamp = claim.claimConfirmTxTimestamp;
+                            if (claim.hasOwnProperty('claimConfirmTxStatus') && claim.claimConfirmTxStatus === true) {
+                                lock.claimConfirmTxHash = claim.claimConfirmTxHash;
+                                lock.claimConfirmTxStatus = true;
+                                lock.claimConfirmTxTimestamp = claim.claimConfirmTxTimestamp;
+                            }  else if (claim.hasOwnProperty('claimConfirmTxStatus') && claim.claimConfirmTxStatus === false) {
+                                claimConfirmENQFailCounter++;
+                                claimConfirmENQLastFailTx = claim;
+                            }
+                            // lock.claimConfirmTxHash = claim.claimConfirmTxHash;
+                            // lock.claimConfirmTxTimestamp = claim.claimConfirmTxTimestamp;
+                            lock.claimConfirmENQStorage.push(claim.claimConfirmTxHash);
                             localStorage.setItem(`bh_lock_${lock.lock.transactionHash}`, JSON.stringify(lock));
                         }
                     });
+                    if (claimConfirmENQFailCounter > 0 && claimConfirmENQFailCounter === lock.claimConfirmENQStorage.length) {
+                        lock.claimConfirmTxHash = claimConfirmENQLastFailTx.claimConfirmTxHash;
+                        lock.claimConfirmTxStatus = false;
+                        lock.claimConfirmTxTimestamp = claimConfirmENQLastFailTx.claimConfirmTxTimestamp;
+                    }
+                    localStorage.setItem(`bh_lock_${lock.lock.transactionHash}`, JSON.stringify(lock));
                 });
                 userHistory = lockArr;
             } else {

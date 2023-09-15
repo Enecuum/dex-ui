@@ -19,6 +19,8 @@ import ChainsDropdown from './../elements/bridge/ChainsDropdown';
 
 import TokenCardBridge from './../components/TokenCardBridge';
 import RescueBridgeTxForm from './../components/RescueBridgeTxForm';
+import ConfirmActionBridge from './../components/ConfirmActionBridge';
+
 
 import '../../css/bridge.css';
 
@@ -37,7 +39,7 @@ import extRequests from '../requests/extRequests';
 import networkApi from "../requests/networkApi";
 import validatorRequests from "../requests/ValidatorRequests";
 
-import {availableNetworks, smartContracts} from'./../config';
+import {availableNetworks, smartContracts, bridgeApiURL} from'./../config';
 
 import metamaskLogo from './../../img/metamask-logo.webp';
 
@@ -47,6 +49,14 @@ class SpaceBridge extends React.Component {
         this.bridgeHistoryProcessor = new BridgeHistoryProcessor();
         this.valueProcessor = new ValueProcessor;
         this.availableNetworksUtils = new AvailableNetworksUtils();
+        this.allowedMethods = ['connectWeb3Ext',
+                              'approveSrcTokenBalance',
+                              'lockEth',
+                              'encodeDataAndLock',
+                              'claimEth',
+                              'reClaimEth',
+                              'claimInitEnq',
+                              'claimConfirmEnq'];
         this.state = {
             initData : undefined,
             confirmData : undefined,
@@ -56,7 +66,9 @@ class SpaceBridge extends React.Component {
             showFormInputWarning : false,
             formInputWarningCause : undefined,
             formInputWarningMsg : '',
-            blockConfirmByAmount : true
+            blockConfirmByAmount : true,
+            showBridgeActionConfirmModal : false,
+            bridgeActionParams : undefined
         }
         setInterval(() => {
             this.updateUserHistory();
@@ -173,10 +185,10 @@ class SpaceBridge extends React.Component {
     }
 
     async updateUserHistory() {
+        this.bridgeHistoryProcessor.fragmentBridgeHistoryToSingleLocks();
     	let enqExtUserId = this.props.pubkey;
     	let web3ExtUserId = this.props.nonNativeConnection.web3ExtensionAccountId;
     	let userHistory = this.bridgeHistoryProcessor.getUserHistory(enqExtUserId, web3ExtUserId);
-        //console.log(userHistory)
     	let that = this;
     	if (userHistory.length > 0) {
             this.setState({history: userHistory});
@@ -192,8 +204,12 @@ class SpaceBridge extends React.Component {
                         let web3Provider = new web3LibProvider(dataProvider);
                         web3Provider.getTxReceipt(elem.lock.transactionHash, 'Lock').then(function(res) {
                             if (res !== null && res !== undefined && res.status !== undefined) {
-                                elem.lock.status = Number(res.status) === 1 ? true : false;
-                                localStorage.setItem('bridge_history', JSON.stringify(array));
+                                if (Number(res.status) === 1)
+                                    elem.lock.status = true;
+                                else if (Number(res.status) === 0)
+                                    elem.lock.status = false;
+                                // elem.lock.status = Number(res.status) === 1 ? true : false;
+                                localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
                                 that.setState({history: array});
                             }
                         }, function(err) {
@@ -209,8 +225,13 @@ class SpaceBridge extends React.Component {
                                     console.log(res)
                                     res.json().then(function(tx) {                                        
                                         if (tx.status !== undefined) {
-                                            elem.lock.status = tx.status === 3 ? true : false;                                            
-                                            localStorage.setItem('bridge_history', JSON.stringify(array));
+                                            if (tx.status === 3)
+                                                elem.lock.status = true;
+                                            else if (tx.status === 2)
+                                                elem.lock.status = false;
+
+                                            localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));                                            
+                                            //localStorage.setItem('bridge_history', JSON.stringify(array));
                                             that.setState({history: array});
                                         } else {
                                             console.log('Undefined lock transaction status', elem.lock.transactionHash);
@@ -226,68 +247,90 @@ class SpaceBridge extends React.Component {
                     }
                 } else if (elem.lock.status === true) {
                     if (dstNetworkType === 'eth') {
-                        if (elem.claimTxHash !== undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
+                        if (elem.claimTxHash == undefined && !elem.hasOwnProperty('claimTxStatus') && that.props.nonNativeConnection.web3Extension?.provider) {
                             let dataProvider = that.props.nonNativeConnection.web3Extension.provider;
                             let web3Provider = new web3LibProvider(dataProvider);
-                            web3Provider.getTxReceipt(elem.claimTxHash, 'Claim').then(function(res) {
-                                if (res !== null && res !== undefined && res.status !== undefined) {
-                                    elem.claimTxStatus = Number(res.status) === 1 ? true : false;
-                                    localStorage.setItem('bridge_history', JSON.stringify(array));
-                                    that.setState({history: array});
-                                } else {
-                                    console.log('Undefined claim transaction status', elem.lock.transactionHash);
+                            console.log(elem.claimEthStorage)
+                            elem.claimEthStorage.forEach(function(claim, claimIndex, claimArray) {
+                                let lsClaimEth = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_eth_${claim}`);
+                                if (lsClaimEth !== undefined && lsClaimEth.claimTxStatus == undefined) {
+                                    web3Provider.getTxReceipt(lsClaimEth.claimTxHash, 'Claim').then(function(res) {
+                                        if (res !== null && res !== undefined && res.status !== undefined) {
+                                            if (Number(res.status) === 1)
+                                                lsClaimEth.claimTxStatus = true;                                                
+                                            else if (Number(res.status) === 0)
+                                                lsClaimEth.claimTxStatus = false; 
+                                            
+                                            localStorage.setItem(`bh_claim_eth_${claim}`, JSON.stringify(lsClaimEth));
+                                        } else {
+                                            console.log('Undefined claim transaction status', claim);
+                                        }
+                                    }, function(err) {
+                                        console.log('Can\'t get receipt for claim transaction', claim, err);
+                                    });
                                 }
-                            }, function(err) {
-                                console.log('Can\'t get receipt for claim transaction', elem.claimTxHash, err);
                             });
                         }
                     }
-                    if (elem.claimInitTxHash !== undefined && elem.claimInitTxStatus === undefined) {
+                    if (elem.claimInitTxHash == undefined && elem.claimInitTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
                             let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
-                            if (url !== undefined) {
-                                networkApi.getTx(url, elem.claimInitTxHash).then(function(res) {
-                                    if (res !== null && !res.lock) {                                        
-                                        res.json().then(tx => {
-                                            if (tx.status !== undefined) {
-                                                elem.claimInitTxStatus = tx.status === 3 ? true : false;
-                                                localStorage.setItem('bridge_history', JSON.stringify(array));
-                                                that.setState({history: array});
+                            if (url !== undefined) {                                
+                                elem.claimInitENQStorage.forEach(function(claim, claimIndex, claimArray){
+                                    let lsClaimInitENQ = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_init_enq_${claim}`);
+                                    if (lsClaimInitENQ !== undefined && lsClaimInitENQ.claimInitTxStatus == undefined) {
+                                        networkApi.getTx(url, lsClaimInitENQ.claimInitTxHash).then(function(res) {
+                                            if (res !== null && !res.lock) {                                        
+                                                res.json().then(tx => {
+                                                    if (tx.status !== undefined) {
+                                                        if (tx.status === 3)
+                                                            lsClaimInitENQ.claimInitTxStatus = true;
+                                                        else if (tx.status === 2)
+                                                            lsClaimInitENQ.claimInitTxStatus = false;
+
+                                                        localStorage.setItem(`bh_claim_init_enq_${claim}`, JSON.stringify(lsClaimInitENQ));
+                                                    }
+                                                }, function(err) {
+                                                    console.log('Can\'t get status for Claim Init transaction', claim, err);
+                                                });
                                             }
                                         }, function(err) {
-                                            console.log('Can\'t get status for Claim Init transaction', elem.claimInitTxHash, err);
+                                            console.log('Can\'t get data for Claim init transaction', claim, err);
                                         });
                                     }
-                                }, function(err) {
-                                    console.log('Can\'t get data for Claim init transaction', elem.claimInitTxHash, err);
-                                });                        
+                                });
                             }
                         }
                     }
-                    if (elem.claimConfirmTxHash !== undefined && elem.claimConfirmTxStatus === undefined) {
+                    if (elem.claimConfirmTxHash == undefined && elem.claimConfirmTxStatus === undefined) {
                         if (dstNetworkType === 'enq') {
                             let net = that.availableNetworksUtils.getChainById(Number(elem.lock.dst_network));                            
                             let url = net !== undefined ? net.explorerURL : undefined;
-                            if (url !== undefined) {
-                                networkApi.getTx(url, elem.claimConfirmTxHash).then(function(res) {
-                                    if (res !== null && !res.lock) {
-                                        res.json().then(tx => {
-                                            if (tx.status !== undefined) {
-                                                elem.claimConfirmTxStatus = tx.status === 3 ? true : false;
-                                                localStorage.setItem('bridge_history', JSON.stringify(array));
-                                                that.setState({history: array});
-                                                console.log('7777777777777777777')
-                                            } else {
-                                                console.log('Undefined claim confirm transaction status', elem.lock.transactionHash);
+                            if (url !== undefined) {                                
+                                elem.claimConfirmENQStorage.forEach(function(claim, claimIndex, claimArray){
+                                    let lsClaimConfirmENQ = that.bridgeHistoryProcessor.getBridgeHistoryItem(`bh_claim_confirm_enq_${claim}`);
+                                    if (lsClaimConfirmENQ !== undefined && lsClaimConfirmENQ.claimConfirmTxStatus == undefined) {
+                                        networkApi.getTx(url, lsClaimConfirmENQ.claimConfirmTxHash).then(function(res) {
+                                            if (res !== null && !res.lock) {                                        
+                                                res.json().then(tx => {
+                                                    if (tx.status !== undefined) {
+                                                        if (tx.status === 3)
+                                                            lsClaimConfirmENQ.claimConfirmTxStatus = true;
+                                                        else if (tx.status === 2)
+                                                            lsClaimConfirmENQ.claimConfirmTxStatus = false;
+
+                                                        localStorage.setItem(`bh_claim_confirm_enq_${claim}`, JSON.stringify(lsClaimConfirmENQ));
+                                                    }
+                                                }, function(err) {
+                                                    console.log('Can\'t get status for Claim Confirm transaction', claim, err);
+                                                });
                                             }
                                         }, function(err) {
-                                            console.log('Can\'t get status for claim confirm transaction', elem.claimConfirmTxHash);
+                                            console.log('Can\'t get data for Claim Confirm transaction', claim, err);
                                         });
                                     }
-                                }, function(err) {
-                                    console.log('Can\'t get data for Claim Confirm transaction', elem.claimConfirmTxHash);
-                                });                        
+                                });
                             }
                         }
                     }
@@ -301,9 +344,9 @@ class SpaceBridge extends React.Component {
     						return
                         }
     					elem.validatorRes = validatorRes;
-    					localStorage.setItem('bridge_history', JSON.stringify(array));
+                        localStorage.setItem(`bh_lock_${elem.lock.transactionHash}`, JSON.stringify(elem));
+    					//localStorage.setItem('bridge_history', JSON.stringify(array));
                         that.setState({history: array});
-                        console.log('888888888888888')
     				}, function(err) {
                         console.log('Can\'t get notify response ', err);
                     });                    				
@@ -315,7 +358,6 @@ class SpaceBridge extends React.Component {
     clearHistory() {
         localStorage.removeItem('bridge_history');
         this.setState({history: []});
-        console.log('9999999999999999')
         this.toggleHistoryBridge();
     }
 
@@ -423,7 +465,7 @@ class SpaceBridge extends React.Component {
     // }
 
     async getDstDecimalsFromValidator(src_network_id, dst_network_id, src_token_hash) {
-        let URL = `https://bridge.enex.space/api/v1/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;        
+        let URL = `${bridgeApiURL}/get_dst_decimals?src_network_id=${src_network_id}&dst_network_id=${dst_network_id}&hash=${src_token_hash}`;
         return fetch(URL, {
             method: 'GET'
         }).then(function(response) {            
@@ -524,6 +566,31 @@ class SpaceBridge extends React.Component {
         }
     }
 
+
+    passActionDataToConfirm(method, parmsObj = undefined) {
+        if (!this.allowedMethods.includes(method)) {
+            this.setState({'showBridgeActionConfirmModal' : false});
+            this.setState({'bridgeActionParams' : undefined});
+            this.setState({'bridgeActionType' : undefined});
+            console.log('Try to call method', method);
+            return
+        }
+        this.setState({'showBridgeActionConfirmModal' : true});
+        this.setState({'bridgeActionParams' : parmsObj});
+        this.setState({'bridgeActionType' : method});                        
+  
+        // connectWeb3Ext - без аргумента, без модалки
+        // approveSrcTokenBalance - без аргумента
+
+        // lockEth - без аргумента
+        // encodeDataAndLock - без аргумента
+        // claimEth {item}
+        // reClaimEth {item} клейм тайп!!!
+        // claimENQ {item, claimType, resetCurrent}
+
+        //claimENQ -> if (!(claimType === 'claim' || claimType === 'claimInit' || claimType === 'claimConfirm'))
+    }
+
     async lockEth() {    	
     	if (this.props.pubkey !== undefined &&
             this.props.srcTokenHash !== undefined &&
@@ -562,9 +629,7 @@ class SpaceBridge extends React.Component {
                 console.log({src_address_trim_0x, token_hash_trim_0x, fromBlockchain : this.props.fromBlockchain.id, dst_address, toBlockchain : this.props.toBlockchain.id})
                 let nonce = await bridgeProvider.getTransfer(src_address_trim_0x, token_hash_trim_0x, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id);
                 nonce = !isNaN(nonce) ? nonce + 1 : nonce;
-    			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, nonce, token_decimals, ticker, that.props.updateCurrentBridgeTx).then(function(lockTx) {
-    				console.log('lock result', lockTx);
-    			});
+    			bridgeProvider.lock(src_address, this.props.fromBlockchain.id, dst_address, this.props.toBlockchain.id /*11*/, amount, token_hash, nonce, token_decimals, ticker, that.props.updateCurrentBridgeTx);
         	} else {
         		alert('Wrong input data')
         	}
@@ -572,7 +637,6 @@ class SpaceBridge extends React.Component {
 
     getValidatorRes () {
         let that = this;
-        console.log(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId)
         let userHistory = this.bridgeHistoryProcessor.getUserHistory(this.props.pubkey, this.props.nonNativeConnection.web3ExtensionAccountId);
 
         if (this.props.currentBridgeTx !== undefined) {
@@ -638,25 +702,37 @@ class SpaceBridge extends React.Component {
         }
     }
 
-    claimInitEnq(bridgeItem) {
+    claimInitEnq(bridgeActionParams) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
-            let claimInitData = bridgeItem.validatorRes.encoded_data.enq.init;
+            let claimInitData = bridgeActionParams.bridgeItem.validatorRes.encoded_data.enq.init;
             if (!(pubkey && claimInitData))
                 return
+
+            if (bridgeActionParams.resetCurrent === true)
+                this.passDataToResetClaim(bridgeActionParams.bridgeItem, 'claimInit');
+
             extRequests.claimInit(pubkey, claimInitData).then(result => {
                 console.log('Success', result.hash);
-                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-                let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
-                        elem.claimInitTxTimestamp = Date.now();
-                        elem.claimInitTxHash = result.hash;
-                    }
-                    return elem
-                });
+                let accountInteractToBridgeItem = {
+                    initiator : `${bridgeActionParams.bridgeItem.validatorRes.ticket.src_address}_${bridgeActionParams.bridgeItem.validatorRes.ticket.dst_address}`,
+                    claimInitData,
+                    validatorRes : bridgeActionParams.bridgeItem.validatorRes,
+                    claimInitTxTimestamp : Date.now(),
+                    claimInitTxHash : result.hash                   
+                };
+                localStorage.setItem(`bh_claim_init_enq_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));
+                // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                // let updatedHistory = bridgeHistoryArray.map(elem => {
+                //     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                //         elem.claimInitTxTimestamp = Date.now();
+                //         elem.claimInitTxHash = result.hash;
+                //     }
+                //     return elem
+                // });
 
-                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+                // localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 
                 let interpolateParams, txTypes = presets.pending.allowedTxTypes;
                 let actionType = presets.pending.allowedTxTypes.claim_init;
@@ -669,26 +745,37 @@ class SpaceBridge extends React.Component {
         } 
     } 
 
-    claimConfirmEnq(bridgeItem) {
+    claimConfirmEnq(bridgeActionParams) {
         if (this.props.pubkey !== undefined) {
             let that = this;
             let pubkey = this.props.pubkey;
-            let claimConfirmData = bridgeItem.validatorRes.encoded_data.enq.confirm;
+            let claimConfirmData = bridgeActionParams.bridgeItem.validatorRes.encoded_data.enq.confirm;
             if (!(pubkey && claimConfirmData))
                 return
+
+            if (bridgeActionParams.resetCurrent === true)
+                this.passDataToResetClaim(bridgeActionParams.item, 'claimConfirm');
+
             extRequests.claimConfirm(pubkey, claimConfirmData).then(result => {
                 console.log('Success', result.hash);
+                let accountInteractToBridgeItem = {
+                    initiator : `${bridgeActionParams.bridgeItem.validatorRes.ticket.src_address}_${bridgeActionParams.bridgeItem.validatorRes.ticket.dst_address}`,
+                    claimConfirmData,
+                    validatorRes : bridgeActionParams.bridgeItem.validatorRes,
+                    claimConfirmTxTimestamp : Date.now(),
+                    claimConfirmTxHash : result.hash                   
+                };
+                localStorage.setItem(`bh_claim_confirm_enq_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));
+                // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+                // let updatedHistory = bridgeHistoryArray.map(elem => {
+                //     if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
+                //         elem.claimConfirmTxTimestamp = Date.now();
+                //         elem.claimConfirmTxHash = result.hash;
+                //     }
+                //     return elem
+                // });
 
-                let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-                let updatedHistory = bridgeHistoryArray.map(elem => {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock.transactionHash !== undefined && elem.lock.transactionHash === bridgeItem.lock.transactionHash) {
-                        elem.claimConfirmTxTimestamp = Date.now();
-                        elem.claimConfirmTxHash = result.hash;
-                    }
-                    return elem
-                });
-
-                localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
+                // localStorage.setItem('bridge_history', JSON.stringify(updatedHistory));
 
                 let interpolateParams, txTypes = presets.pending.allowedTxTypes;
                 let actionType = presets.pending.allowedTxTypes.claim_confirm;
@@ -717,15 +804,13 @@ class SpaceBridge extends React.Component {
 
         let response = await networkApi.getBridgeLastLockTransfer(address, this.props.pubkey, this.props.toBlockchain.id, this.props.srcTokenHash);
 
-
-
         let nonce = await response.json();
         if (nonce !== undefined && nonce !== null)
             nonce = Number(nonce);
 
         nonce++;
         
-        URL =  'https://bridge.enex.space/api/v1/encode_lock';
+        URL =  `${bridgeApiURL}/encode_lock`;
         let token_decimals = Number(this.props.srcTokenDecimals);
         let amount = this.valueProcessor.valueToBigInt(this.props.srcTokenAmountToSend, token_decimals).value;
         let data = {
@@ -786,21 +871,21 @@ class SpaceBridge extends React.Component {
                                     timestamp : Date.now()
                                 }                    
                 };
+            localStorage.setItem(`bh_lock_${result.hash}`, JSON.stringify(accountInteractToBridgeItem));    
+            // let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
+            // if (bridgeHistoryArray.length > 0) {
+            //     let itemIsExist = bridgeHistoryArray.find(function(elem) {
+            //         if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
+            //             return true
+            //     });
 
-            let bridgeHistoryArray = that.bridgeHistoryProcessor.getBridgeHistoryArray();
-            if (bridgeHistoryArray.length > 0) {
-                let itemIsExist = bridgeHistoryArray.find(function(elem) {
-                    if (elem.initiator.toUpperCase().includes(pubkey.toUpperCase()) && elem.lock?.transactionHash === result.hash)
-                        return true
-                });
-
-                if (itemIsExist !== undefined)
-                    return
-                else
-                    that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
-            } else {
-                that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
-            }
+            //     if (itemIsExist !== undefined)
+            //         return
+            //     else
+            //         that.bridgeHistoryProcessor.addBridgeHistoryItem(accountInteractToBridgeItem);
+            // } else {
+            //     that.bridgeHistoryProcessor.initiateHistoryStorage(accountInteractToBridgeItem);
+            // }
         },
         error => {
             console.log('Error')
@@ -924,7 +1009,7 @@ class SpaceBridge extends React.Component {
         let resume = 'Validated successfully';
         let stateId = 0;
         let txHash = undefined;
-        let claimType = 'claimInit';
+        let claimType = 'claimInitEnq';
         let actionStr = 'Claim';
         let resetCurrent = false;
         let showResetBridge = undefined;    
@@ -938,7 +1023,7 @@ class SpaceBridge extends React.Component {
             resume = 'Claim confirmation failed';
             stateId = 2;
             txHash = item.claimConfirmTxHash;
-            claimType = 'claimConfirm';
+            claimType = 'claimConfirmEnq';
             actionStr = 'Retry';
             resetCurrent = true;
             showResetBridge = true;
@@ -951,14 +1036,14 @@ class SpaceBridge extends React.Component {
                     resume = 'Claim confirmation failed';
                     stateId = 4;
                     actionStr = 'Retry';
-                    claimType = 'claimConfirm';
+                    claimType = 'claimConfirmEnq';
                     resetCurrent = true;
                     showResetBridge = true;
                 } else {
                     resume = 'Claim is ready';
                     stateId = 5;
                     actionStr = 'Confirm';
-                    claimType = 'claimConfirm';
+                    claimType = 'claimConfirmEnq';
                     resetCurrent = false;                 
                 }
             } else if (item.claimInitTxStatus === false || (item.claimInitTxStatus === undefined && (item.hasOwnProperty('claimInitAttemptsList') && Array.isArray(item.claimInitAttemptsList) && item.claimInitAttemptsList.length > 0))) {
@@ -969,7 +1054,7 @@ class SpaceBridge extends React.Component {
                     resume = 'Claim inititalization failed';
                     stateId = 6;
                     txHash = item.claimInitTxHash;
-                    claimType = 'claimInit';
+                    claimType = 'claimInitEnq';
                     actionStr = 'Retry';
                     resetCurrent = true;
                     showResetBridge = true;                        
@@ -1055,8 +1140,8 @@ class SpaceBridge extends React.Component {
                     {[0,2,4,5,6].includes(stateId) && matchChains && matchDstAddress &&
                         <>
                             <Button
-                                className="d-block w-100 btn btn-secondary px-3 button-bg-3"
-                                onClick={this.claimEnq.bind(this, item, claimType, resetCurrent)}>
+                                className="d-block w-100 btn btn-secondary px-3 button-bg-3" //claimEnq.bind(this, item, claimType, resetCurrent)
+                                onClick={this.passActionDataToConfirm.bind(this, claimType, {bridgeItem: item, resetCurrent})}> 
                                     {actionStr}                     
                             </Button>
                         </>    
@@ -1127,14 +1212,14 @@ class SpaceBridge extends React.Component {
         )
     }
 
-    claimEnq(item, claimType, resetCurrent) {
-        if (resetCurrent === true)
-            this.passDataToResetClaimModal(item, claimType);
-        this[`${claimType}Enq`](item);
-    }
+    // claimEnq(claimType, bridgeActionParams) {
+    //     if (bridgeActionParams.resetCurrent === true)
+    //         this.passDataToResetClaim(bridgeActionParams.item, claimType);
+    //     this[`${claimType}Enq`](item);
+    // }
 
     reClaimEth(item) {
-        this.passDataToResetClaimModal(item, 'claim');
+        this.passDataToResetClaim(item, 'claim');
         this.claimEth(item);
     }
 
@@ -1153,15 +1238,15 @@ class SpaceBridge extends React.Component {
                 title = `Connect address ${utils.packHashString(item.lock.dst_address)}`;
             } else if (dstNetworkHexId === this.props.nonNativeConnection.web3ExtensionChain) {                
                 if (item.claimTxStatus === false) {
-                    action = this.reClaimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'reClaimEth', item); //reClaimEth.bind(this, item);
                     resume = 'Failed';
                     title = 'Retry';
                 } else if (item.hasOwnProperty('claimAttemptsList') && Array.isArray(item.claimAttemptsList) && item.claimAttemptsList.length > 0) {
-                    action = this.claimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'claimEth', item); //claimEth.bind(this, item);
                     resume = 'Failed';
                     title = 'Retry';
                 } else {
-                    action = this.claimEth.bind(this, item);
+                    action = this.passActionDataToConfirm.bind(this, 'claimEth', item); //claimEth.bind(this, item);
                     title = 'Claim';
                 }
             } else if (dstNetworkHexId !== this.props.nonNativeConnection.web3ExtensionChain && chainId !== undefined) {
@@ -1242,7 +1327,7 @@ class SpaceBridge extends React.Component {
         this.props.updateCurrentBridgeTx(undefined);
     }
 
-    passDataToResetClaimModal(item, claimType) {        
+    passDataToResetClaim(item, claimType) {        
         if (!(claimType === 'claim' || claimType === 'claimInit' || claimType === 'claimConfirm'))
             return
 
@@ -1251,7 +1336,7 @@ class SpaceBridge extends React.Component {
         let claimTxStatusPropStr = `${claimType}TxStatus`;
         let claimTxTimestampPropStr = `${claimType}TxTimestamp`;
 
-        let userHistory = this.bridgeHistoryProcessor.getBridgeHistoryArray();
+        let userHistory = this.state.history;//this.bridgeHistoryProcessor.getBridgeHistoryArray();
         let itemIndexInHistory = userHistory.findIndex(elem => elem[claimTxHashPropStr] === item[claimTxHashPropStr] && elem.lock.transactionHash === item.lock.transactionHash);
 
         if (itemIndexInHistory !== -1) {            
@@ -1269,10 +1354,10 @@ class SpaceBridge extends React.Component {
             itemInHistory[claimTxHashPropStr] = undefined;
             itemInHistory[claimTxStatusPropStr] = undefined;
             itemInHistory[claimTxTimestampPropStr] = undefined;
-            userHistory[itemIndexInHistory] = itemInHistory
-            localStorage.setItem('bridge_history', JSON.stringify(userHistory));
+            userHistory[itemIndexInHistory] = itemInHistory;
+            localStorage.setItem(`bh_lock_${item.lock.transactionHash}`, JSON.stringify(item));
+            //localStorage.setItem('bridge_history', JSON.stringify(userHistory));
             this.setState({history: userHistory});
-            console.log('aaaaaaaaaaaaaa')
         } 
     }
 
@@ -1303,7 +1388,7 @@ class SpaceBridge extends React.Component {
                             Info</a>
                         {/*<Button
                             className="d-block btn btn-secondary px-3 button-bg-3 ml-2"
-                            onClick={this.passDataToResetClaimModal.bind(this, item, 'claim')}>
+                            onClick={this.passDataToResetClaim.bind(this, item, 'claim')}>
                                 <i className="fas fa-redo-alt"/>                     
                         </Button> */}   
                     </div>    
@@ -1403,7 +1488,7 @@ class SpaceBridge extends React.Component {
                                         <span>Approved balance: {this.props.srcTokenAllowance / Math.pow(10, this.props.srcTokenDecimals)}</span>                                                    
                                         <button
                                             className="d-block btn btn-info mb-2 p-1"
-                                            onClick={this.approveSrcTokenBalance.bind(this)}>Approve</button>
+                                            onClick={this.passActionDataToConfirm.bind(this, 'approveSrcTokenBalance')}>Approve</button>
                                             
                                     </div>
                                 </>
@@ -1696,7 +1781,7 @@ class SpaceBridge extends React.Component {
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
                            this.props.dstDecimals === undefined;         
-                action = this.lockEth.bind(this);
+                action = this.passActionDataToConfirm.bind(this, 'lockEth');
             } else if (this.props.fromBlockchain?.type === 'enq') {
                 disabled = this.props.net.url !== this.props.fromBlockchain?.enqExtensionChainId || 
                            this.props.pubkey === undefined ||
@@ -1708,7 +1793,7 @@ class SpaceBridge extends React.Component {
                            this.props.toBlockchain == undefined ||
                            this.state.blockConfirmByAmount ||
                            this.props.dstDecimals === undefined;
-                action = this.encodeDataAndLock.bind(this);
+                action = this.passActionDataToConfirm.bind(this, 'encodeDataAndLock');
             }            
         }
 
@@ -2086,6 +2171,7 @@ class SpaceBridge extends React.Component {
                         </div>
                     </>
                 }
+                <ConfirmActionBridge context = {this}/>
             </>    
         );
     };

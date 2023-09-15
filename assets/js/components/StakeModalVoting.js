@@ -346,7 +346,7 @@ class StakeModalVoting extends React.Component {
                             </Button>                        
                         </div>
                         
-                        {this.props.managedFarmData !== null &&
+                        {/* {this.props.managedFarmData !== null &&
                           <div className="text-center">
                               <a
                                 href = {this.getLinkToPair()}
@@ -356,7 +356,7 @@ class StakeModalVoting extends React.Component {
                                 <span className="icon-Icon11"/>                                
                               </a>
                           </div>
-                        }
+                        } */}
                     </Modal.Body>
                 </Modal>
             </>

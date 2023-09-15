@@ -50,7 +50,7 @@ class StakeModalSpaceStation extends React.Component {
     getLinkToPair() {
       if (this.props.managedFarmData !== null && this.props.managedFarmData !== undefined) {
         let data = this.props.managedFarmData;
-        return "/#!action=swap&pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + data.stake_token_hash + "&to=" + data.reward_token_hash;
+        return "/#!action=swap&pair=" + data.stake_token_name + "-" + data.reward_token_name + '&from=' + this.props.mainToken + "&to=" + data.stake_token_hash;
       } 
     }
     
@@ -359,7 +359,7 @@ class StakeModalSpaceStation extends React.Component {
                                 onClick={this.switchToSwap.bind(this)}
                                 className="text-color4-link hover-pointer">
                                 {this.props.managedFarmData !== null && this.props.managedFarmData !== undefined && 
-                                  <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name +'-' + this.props.managedFarmData.reward_token_name})}</span>
+                                  <span className="mr-2">{t('dropFarms.getLPToken', {tokenName : this.props.managedFarmData.stake_token_name})}</span>
                                 }
                                 <span className="icon-Icon11"/>                                
                               </a>

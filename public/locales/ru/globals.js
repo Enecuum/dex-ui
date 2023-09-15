@@ -135,5 +135,6 @@ module.exports = {
     "pooled" : "Добавлено в пул",
     "all" : "Все",
     "active" : "Active",
-    "inactive" : "Finished"
+    "inactive" : "Finished",
+    "canceled" : "Canceled"
 }
